@@ -106,3 +106,12 @@
  {IN_SUBS}
 </div>
 <<- 'NAVIGATOR_ITEM'>>
+
+<<+ 'SONE_OBJECT_COMMON'>>
+<h2>{IN_CAPTION}</h2>
+<pre>{IN_DATA}</pre>
+<<- 'SONE_OBJECT_COMMON'>>
+
+<<+ 'SONE_PAGE_404'>>
+<h1>404</h1>
+<<- 'SONE_PAGE_404'>>

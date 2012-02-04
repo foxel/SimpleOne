@@ -54,16 +54,29 @@ class SOne_Application extends K3_Application
     {
         $navis = $this->objects->loadNavigationByPath($this->request->path);
         $tipObject = end($navis);
-        $tipObject = $this->objects->loadOne($tipObject['id']);
+        if (trim($tipObject['path'], '/') == $this->request->path) {
+            $tipObject = $this->objects->loadOne($tipObject['id']);
+        } else {
+            $tipObject = new SOne_Model_Object_Page404(array('path' => $this->request->path));
+            $this->getResponse()->setStatusCode(404);
+        }
 
         $this->renderPage($tipObject);
     }
 
     protected function renderPage(SOne_Model_Object $pageObject)
     {
+        $objectNode = $pageObject->visualize($this->env);
+
+        if ($this->env->request->isAjax) {
+            $this->getResponse()->clearBuffer()
+                ->write($objectNode->parse())
+                ->sendBuffer();
+        }
+
         $pageNode = new FVISNode('GLOBAL_HTMLPAGE', 0, $this->VIS);
         $this->VIS->setRootNode($pageNode);
-        $pageNode->appendChild('page_cont', $pageObject->visualize($this->env));
+        $pageNode->appendChild('page_cont', $objectNode);
 
         $pageNode->appendChild('navigator', $this->renderDefaultNavigator($this->objects->loadObjectsTreeByPath($pageObject->path, true)));
 
