@@ -95,6 +95,7 @@ class SOne_Application extends K3_Application
             $node->addDataArray(array(
                 'href' => FStr::fullUrl($item->path),
                 'scaption' => FStr::smartTrim($item->caption, 23 - $item->treeLevel),
+                'isCurrent' => (trim($item->path, '/') == $this->request->path) ? 1 : null,
             ));
             $parents[$item->treeLevel]->appendChild('subs', $node);
             $parents[$item->treeLevel+1] = $node;

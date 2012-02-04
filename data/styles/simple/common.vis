@@ -93,18 +93,22 @@
 
 
 <<+ 'NAVIGATOR_BLOCK'>>
-<div id="mp_navigator">
- {IN_SUBS}
+<div id="mp_navigator_container">
+ <ul id="mp_navigator">
+  {IN_SUBS}
+ </ul>
 </div>
 <<- 'NAVIGATOR_BLOCK'>>
 
 <<+ 'NAVIGATOR_ITEM'>>
-<div class="mp_navigator_item">
- <a class="mp_navigator_item_a" href="{IN_HREF}">{!IN_SCAPTION}</a>
-</div>
-<div class="mp_navigator_item_subs">
- {IN_SUBS}
-</div>
+<li class="mp_navigator_item">
+ <a class="mp_navigator_item_a{IF:IN_ISCURRENT} current{/IF}" href="{IN_HREF}">{!IN_SCAPTION}</a>
+ {IF:IN_SUBS}
+  <ul class="mp_navigator_item_subs">
+   {IN_SUBS}
+  </ul>
+ {/IF}
+</li>
 <<- 'NAVIGATOR_ITEM'>>
 
 <<+ 'SONE_OBJECT_COMMON'>>
