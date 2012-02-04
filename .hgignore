@@ -3,3 +3,5 @@ syntax: glob
 data/cache/
 tags
 *.log
+.k3.compiled.*
+sess
