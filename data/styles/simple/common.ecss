@@ -1,0 +1,17 @@
+
+/* * { margin: 0; padding: 0; } */
+div { border: 0 solid #000000; margin: 0; padding: 0; }
+div#mp_border { border-width: 1px; }
+div#mp_head { height: 30px; border-bottom-width: 1px; }
+div#mp_sidebar { float: left; width: 200px; min-height: 300px; border-width: 0 1px 0 0; }
+div#mp_mainpage { position: relative; margin: 0 0 0 200px !important;  border-width: 0 0 0 1px; background-color: #7FFF7F; }
+div#mp_footer { border-width: 1px 0 0 0; padding: 5px; }
+div#mp_genstats { float: left; }
+div#mp_staticons { float: right; }
+
+div.clearfloats { clear: both !important; }
+div.invisible { border: 0 !important; margin: 0 !important; padding: 0 !important; visibility: hidden !important; height: 0 !important; overflow: hidden !important; }
+
+div.mp_navigator_item { border-width: 0 0 1px 0; }
+a.mp_navigator_item_a { display: block; padding: 2px 5px; }
+div.mp_navigator_item_subs { margin: 0 0 0 10px; }

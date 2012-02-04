@@ -1,0 +1,108 @@
+// <?xml version="1.0"?> deleted from the top... IE bugs with drawing
+
+<<+ 'GLOBAL_HTMLPAGE'>>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <!--Meta-Content-Type-->
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <meta name="Generator" Content="QuickFox SimpleOne Alpha" />
+  {IF:IN_META_DESCRIPTION}<meta name="Description" content="{!IN_META_DESCRIPTION}" />{ENDIF}
+  {IF:IN_META_KEYWORDS}<meta name="Keywords" content="{!IN_META_KEYWORDS}" />{ENDIF}
+  <!-- <meta http-equiv="MSThemeCompatible" content="no" /> -->
+  <title>{!IN_SITE_NAME}{IF:IN_PAGE_TITLE} :: {!IN_PAGE_TITLE}{IF:IN_PAGE_SUBTITLE} :: {!IN_PAGE_SUBTITLE}{ENDIF}{ENDIF}</title>
+  {IN_META}
+
+  <link rel="shortcut icon" href="{IMGS}/qf_ico.ico" />
+
+  {IF:IN_CSS}
+  <style type="text/css">
+  /* CSS starts here <![CDATA[ */
+   script { display: none; }
+   {IN_CSS}
+  /* ]]> CSS ends here */
+  </style>
+  {ENDIF}
+</head>
+<body>
+{IN_JS_BLOCKS}
+
+<script type="text/javascript">
+// JavaScript Starts Here <![CDATA[
+ // compatability htc rules loading for MSIE
+ if (document.all && /MSIE (5\.5|6)/.test(navigator.userAgent) &&
+  document.styleSheets && document.styleSheets[0] && document.styleSheets[0].addRule)
+ {
+  document.styleSheets[0].addRule('input', 'behavior: url("{RURL:fox2_htc_data|"ie_inputs"}")');
+  document.styleSheets[0].addRule('img', 'behavior: url("{RURL:fox2_htc_data|"ie_png"}")');
+ }
+ {IN_JS}
+//]]> JavaScript ends here
+</script>
+
+<div id="mp_outer"><div id="mp_outer1"><div id="mp_border">
+ <div id="mp_head">
+  <div id="mp_head_site">{!IN_SITE_NAME}</div>
+  <div id="mp_head_title">{!IN_PAGE_TITLE}{IF:IN_PAGE_SUBTITLE} :: {!IN_PAGE_SUBTITLE}{ENDIF}</div>
+  {IF:IN_MENU_ITEMS}
+  <div id="mp_head_menu">
+   {IN_MENU_ITEMS}
+  </div>
+  {ENDIF}
+ </div>
+ <div id="mp_sidebar">
+  {IN_NAVIGATOR}
+ </div>
+ <div id="mp_mainpage">
+  <div class="invisible">&nbsp;</div>
+  {IF:IN_PATH_ITEMS}
+  <div id="mp_page_pathline">
+   {IN_PATH_ITEMS}
+  </div>
+  {ENDIF}
+  <div id="mp_pagecont">
+   {IN_PAGE_CONT}
+  </div>
+  <div class="clearfloats invisible">&nbsp;</div>
+ </div>
+ <div id="mp_footer">
+  <div id="mp_genstats">
+   <!--Page-Stats-->
+  </div>
+  <div id="mp_staticons">
+   {IN_FOOTSTAT}
+   <a href="http://validator.w3.org/check?uri=referer">
+    <img src="http://www.w3.org/Icons/valid-xhtml10-blue.png" alt="Valid XHTML 1.0 Strict" style="height: 31px; width: 88px;" />
+   </a>
+  </div>
+  <div class="clearfloats invisible">&nbsp;</div>
+ </div>
+</div></div></div>
+
+{IF:IN_BOTT_JS}
+<script type="text/javascript">
+// JavaScript Starts Here (bottom section) <![CDATA[
+ {IN_BOTT_JS}
+//]]> JavaScript ends here
+</script>
+{ENDIF}
+</body>
+</html>
+<<- 'GLOBAL_HTMLPAGE'>>
+
+
+<<+ 'NAVIGATOR_BLOCK'>>
+<div id="mp_navigator">
+ {IN_SUBS}
+</div>
+<<- 'NAVIGATOR_BLOCK'>>
+
+<<+ 'NAVIGATOR_ITEM'>>
+<div class="mp_navigator_item">
+ <a class="mp_navigator_item_a" href="{IN_HREF}">{!IN_SCAPTION}</a>
+</div>
+<div class="mp_navigator_item_subs">
+ {IN_SUBS}
+</div>
+<<- 'NAVIGATOR_ITEM'>>

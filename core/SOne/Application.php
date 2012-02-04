@@ -1,0 +1,92 @@
+<?php
+
+class SOne_Application extends K3_Application
+{
+    protected $config  = array();
+    protected $db      = null;
+    protected $request = null;
+    protected $VIS     = null;
+    protected $objects = null; // objects repository
+
+    public function __construct(K3_Environment $env = null)
+    {
+        $this->env = is_null($env) ? F()->appEnv : $env;
+
+        $this->pool = array(
+            'environment' => &$this->env,
+            'config'      => &$this->config,
+        );
+    }
+
+    public function bootstrap()
+    {
+        $this->config = FMisc::loadDatafile(F_DATA_ROOT.DIRECTORY_SEPARATOR.'sone.qfc.php', FMisc::DF_SLINE);
+
+        // preparing DB
+        $this->db = F()->DBase; //new FDataBase('mysql');
+        $this->db->connect(
+            array(
+                'dbname' => $this->config['db.database'],
+                'host'   => $this->config['db.host'],
+            ),
+            $this->config['db.username'],
+            $this->config['db.password'],
+            $this->config['db.prefix']
+        );
+
+        $this->request = new SOne_Request($this->env);
+        $this->VIS = new FVISInterface($this->env);
+        $this->VIS->addAutoLoadDir(F_DATA_ROOT.'/styles/simple')
+            ->loadECSS(F_DATA_ROOT.'/styles/simple/common.ecss');
+
+        $this->objects = new SOne_Repository_Object($this->db);
+
+        // putting to environment
+        $this->env
+            ->put('db',  $this->db)
+            ->put('VIS', $this->VIS)
+            ->put('app', $this);
+
+        return $this;
+    }
+
+    public function run()
+    {
+        $navis = $this->objects->loadNavigationByPath($this->request->path);
+        $tipObject = end($navis);
+        $tipObject = $this->objects->loadOne($tipObject['id']);
+
+        $this->renderPage($tipObject);
+    }
+
+    protected function renderPage(SOne_Model_Object $pageObject)
+    {
+        $pageNode = new FVISNode('GLOBAL_HTMLPAGE', 0, $this->VIS);
+        $this->VIS->setRootNode($pageNode);
+        $pageNode->appendChild('page_cont', $pageObject->visualize($this->env));
+
+        $pageNode->appendChild('navigator', $this->renderDefaultNavigator($this->objects->loadObjectsTreeByPath($pageObject->path, true)));
+
+        $this->getResponse()->clearBuffer()
+            ->write($this->VIS->makeHTML())
+            ->sendBuffer();
+    }
+
+    protected function renderDefaultNavigator($tree)
+    {
+        $container = new FVISNode('NAVIGATOR_BLOCK', 0, $this->VIS);
+        $parents = Array($container, $container);
+
+        foreach ($tree as $item) {
+            $node = new FVISNode('NAVIGATOR_ITEM', 0, $this->VIS);
+            $node->addDataArray(array(
+                'href' => FStr::fullUrl($item->path),
+                'scaption' => FStr::smartTrim($item->caption, 23 - $item->treeLevel),
+            ));
+            $parents[$item->treeLevel]->appendChild('subs', $node);
+            $parents[$item->treeLevel+1] = $node;
+        }
+
+        return $container;
+    }
+}
