@@ -10,7 +10,7 @@ class SOne_Request extends FBaseClass
         if (reset($query) === '') { // for queries like foo/bar?edit
             $action = FStr::cast(key($query), FStr::WORD);
         } else {
-            $query = $env->request->getString('action', K3_Request::ALL, FStr::WORD);
+            $action = $env->request->getString('action', K3_Request::POST, FStr::WORD);
         }
 
         $this->pool = array(

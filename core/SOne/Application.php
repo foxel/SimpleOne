@@ -56,6 +56,14 @@ class SOne_Application extends K3_Application
         $tipObject = end($navis);
         if (trim($tipObject['path'], '/') == $this->request->path) {
             $tipObject = $this->objects->loadOne($tipObject['id']);
+            // performing action
+            if ($this->request->action) {
+                $tipObject->doAction($this->request->action, $this->env, $objectUpdated);
+                // TODO: think about deleting
+                if ($objectUpdated) {
+                    $this->objects->save($tipObject);
+                }
+            }
         } else {
             $tipObject = new SOne_Model_Object_Page404(array('path' => $this->request->path));
             $this->getResponse()->setStatusCode(404);

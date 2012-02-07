@@ -6,10 +6,10 @@ DirectoryIndex index.php index.html index.htm
 
  RewriteBase /
 
- RewriteRule ^[^/\.]+$ $0/ [R,L] #adding slashes
+ #RewriteRule ^[^/\.]+$ $0/ [R,L] #adding slashes
 
  RewriteCond $1 !^(static|stuff)$
- RewriteRule ^([^/\.]+)(\.html?|/(.*))$ index.php [L,QSA] #normal usage
+ RewriteRule ^([^/\.]+)(\.html?|/(.*)|)$ index.php [L,QSA] #normal usage
 </IfModule>
 
 <IfModule mod_php4.c>

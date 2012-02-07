@@ -88,7 +88,7 @@ class SOne_Repository_Object
     public function loadAll(array $filters = array())
     {
         $select = $this->db->select('objects', 'o')
-            ->join('objects_navi', array('id' => 'o.id'), 'n', array('path', 'path_hash'))
+            ->joinLeft('objects_navi', array('id' => 'o.id'), 'n', array('path', 'path_hash'))
             ->joinLeft('objects_data', array('o_id' => 'o.id'), 'd', array('data'))
             ->order('o.order_id');
         
@@ -117,5 +117,49 @@ class SOne_Repository_Object
         $objects = $this->loadAll($filter);
 
         return reset($objects);
+    }
+
+    public function save(SOne_Model_Object $object)
+    {
+        $objData = array(
+            'parent_id'   => $object->parentId,
+            'class'       => $object->className,
+            'caption'     => $object->caption,
+            'owner_id'    => $object->ownerId,
+            'create_time' => $object->createTime,
+            'update_time' => $object->updateTime,
+            'acc_lvl'     => $object->accessLevel,
+            'edit_lvl'    => $object->editLevel,
+            'order_id'    => $object->orderId,
+        );
+
+        if ($object->id) {
+            $this->db->doUpdate('objects', $objData, array('id' => $object->id));
+        } else {
+            $object->id = $this->db->doInsert('objects', $objData);
+        }
+
+        if (!is_null($object->path)) {
+            // TODO: checking paths with parents
+            $naviData = array(
+                'id'        => $object->id,
+                'path'      => $object->path,
+                'path_hash' => $object->pathHash,
+            );
+            $this->db->doInsert('objects_navi', $naviData, true);
+        } else {
+            $this->db->doDelete('objects_navi', array('id' => $object->id));
+        }
+
+        $data = $object->serializeData();
+        if (!is_null($data)) {
+            $data = array(
+                'o_id' => $object->id,
+                'data' => $data,
+            );
+            $this->db->doInsert('objects_data', $data, true);
+        } else {
+            $this->db->doDelete('objects_data', array('id' => $object->id));
+        }
     }
 }
