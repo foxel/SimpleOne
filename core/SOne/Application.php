@@ -34,6 +34,8 @@ class SOne_Application extends K3_Application
             $this->config['db.prefix']
         );
 
+        $this->env->session->setDBase($this->db, 'sessions');
+
         $this->request = new SOne_Request($this->env);
         $this->VIS = new FVISInterface($this->env);
         $this->VIS->addAutoLoadDir(F_DATA_ROOT.'/styles/simple')
@@ -43,9 +45,10 @@ class SOne_Application extends K3_Application
 
         // putting to environment
         $this->env
-            ->put('db',  $this->db)
-            ->put('VIS', $this->VIS)
-            ->put('app', $this);
+            ->put('db',   $this->db)
+            ->put('VIS',  $this->VIS)
+            ->put('user', $this->bootstrapUser())
+            ->put('app',  $this);
 
         return $this;
     }
@@ -74,6 +77,9 @@ class SOne_Application extends K3_Application
 
     protected function renderPage(SOne_Model_Object $pageObject)
     {
+        $pageNode = new FVISNode('GLOBAL_HTMLPAGE', 0, $this->VIS);
+        $this->VIS->setRootNode($pageNode);
+
         $objectNode = $pageObject->visualize($this->env);
 
         if ($this->env->request->isAjax) {
@@ -82,8 +88,6 @@ class SOne_Application extends K3_Application
                 ->sendBuffer();
         }
 
-        $pageNode = new FVISNode('GLOBAL_HTMLPAGE', 0, $this->VIS);
-        $this->VIS->setRootNode($pageNode);
         $pageNode->appendChild('page_cont', $objectNode);
 
         $pageNode->appendChild('navigator', $this->renderDefaultNavigator($this->objects->loadObjectsTreeByPath($pageObject->path, true)));
@@ -110,5 +114,22 @@ class SOne_Application extends K3_Application
         }
 
         return $container;
+    }
+
+
+    protected function bootstrapUser()
+    {
+        $user = null;
+        if ($uid = $this->env->session->userId) {
+            $users = new SOne_Repository_User($this->db);
+            $user = $users->loadOne((int) $uid);
+        }
+        if (!$user) {
+            $user = new SOne_Model_User(array(
+                'last_ip' => $this->env->clientIPInteger,
+            ));
+        }
+
+        return $user;
     }
 }

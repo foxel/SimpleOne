@@ -1,15 +1,7 @@
 <?php
 
-class SOne_Repository_Object
+class SOne_Repository_Object extends SOne_Repository
 {
-    protected $db    = null;
-    protected $cache = array();
-
-    public function __construct(FDataBase $db)
-    {
-        $this->db = $db;
-    }
-
     public function loadNavigationByPath($path)
     {
         $pathHash = 'navi'.md5($path);
@@ -91,7 +83,7 @@ class SOne_Repository_Object
             ->joinLeft('objects_navi', array('id' => 'o.id'), 'n', array('path', 'path_hash'))
             ->joinLeft('objects_data', array('o_id' => 'o.id'), 'd', array('data'))
             ->order('o.order_id');
-        
+
         foreach ($filters as $key => $filter) {
             $select->where($key, $filter);
         }
@@ -105,18 +97,6 @@ class SOne_Repository_Object
         }
 
         return $objects;
-    }
-
-    public function loadOne($filter) {
-        if (!is_array($filter)) {
-            $filter = array(
-                'id' => $filter,
-            );
-        }
-
-        $objects = $this->loadAll($filter);
-
-        return reset($objects);
     }
 
     public function save(SOne_Model_Object $object)

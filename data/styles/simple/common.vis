@@ -173,3 +173,11 @@
 <div class="htmlpage">{IN_DATA}</div>
 {/IF}
 <<- 'SONE_OBJECT_HTMLPAGE'>>
+
+<<+ 'SONE_OBJECT_LOGINPAGE'>>
+<form action="{FULLURL:IN_PATH}?login" method="post">
+ <input type="text" name="login" value="" />
+ <input type="password" name="password" value="" />
+ <button type="submit">{L_EDITOR_SUBMIT_LOGIN}</button>
+</form>
+<<- 'SONE_OBJECT_LOGINPAGE'>>
