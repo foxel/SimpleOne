@@ -172,7 +172,32 @@
 {ELSE}
 <div class="htmlpage">{IN_DATA}</div>
 {/IF}
+{VIS:SONE_OBJECT_COMMENTS|ACTIONSTATE=IN_actionState|COMMENTS=IN_COMMENTS|PATH=IN_PATH}
 <<- 'SONE_OBJECT_HTMLPAGE'>>
+
+<<+ 'SONE_OBJECT_COMMENTS'>>
+<h3>Comments:</h3>
+{IF:IN_actionState="addComment"}
+{VIS:SONE_OBJECT_COMMENTS_FORM|PATH=IN_PATH}
+{ELSE}
+<a href="{FULLURL:IN_PATH}?addComment">Add comment</a>
+{/IF}
+{IN_COMMENTS}
+<<- 'SONE_OBJECT_COMMENTS'>>
+
+<<+ 'SONE_OBJECT_COMMENTS_FORM'>>
+<form action="{FULLURL:IN_PATH}?saveComment" method="post">
+ <textarea class="" name="commentText"></textarea>
+ <hr />
+ <button type="submit">{L_EDITOR_SUBMIT_ADDCOMMENT}</button>
+</form>
+<<- 'SONE_OBJECT_COMMENTS_FORM'>>
+
+<<+ 'SONE_OBJECT_COMMENTS_ITEM'>>
+<div>
+<strong>{FTIME:IN_TIME}:</strong> {IN_TEXT}
+</div>
+<<- 'SONE_OBJECT_COMMENTS_ITEM'>>
 
 <<+ 'SONE_OBJECT_LOGINPAGE'>>
 <form action="{FULLURL:IN_PATH}?login" method="post">

@@ -1,14 +1,20 @@
 <?php
 
-class SOne_Model_Object_HTMLPage extends SOne_Model_Object
+class SOne_Model_Object_HTMLPage extends SOne_Model_Object_Commentable
 {
     public function visualize(K3_Environment $env)
     {
-        if ($this->actionState == 'save') {
+        if (in_array($this->actionState, array('save', 'saveComment'))) {
             $env->response->sendRedirect($this->path);
         }
         $node = new FVISNode('SONE_OBJECT_HTMLPAGE', 0, $env->get('VIS'));
-        $node->addDataArray($this->pool);
+        $data = $this->pool;
+        if ($data['comments']) {
+            $node->appendChild('comments', $comments = new FVISNode('SONE_OBJECT_COMMENTS_ITEM', FVISNode::VISNODE_ARRAY, $env->get('VIS')));
+            $comments->addDataArray($data['comments']);
+            unset($data['comments']);
+        }
+        $node->addDataArray($data);
         return $node;
     }
 
