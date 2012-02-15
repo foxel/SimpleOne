@@ -93,6 +93,12 @@ class SOne_Repository_Object extends SOne_Repository
         $objects = array();
         foreach ($rows as $row) {
             $object = SOne_Model_Object::construct($row);
+            if ($object instanceof SOne_Interface_Object_WithExtraData) {
+                $object->loadExtraData($this->db);
+            }
+            if ($object instanceof SOne_Interface_Object_WithSubObjects) {
+                $object->setSubObjects($this->loadAll($object->getSubObjectsFilter()));
+            }
             $objects[$object->id] = $object;
         }
 
@@ -140,6 +146,20 @@ class SOne_Repository_Object extends SOne_Repository
             $this->db->doInsert('objects_data', $data, true);
         } else {
             $this->db->doDelete('objects_data', array('id' => $object->id));
+        }
+
+        if ($object instanceof SOne_Interface_Object_WithExtraData) {
+            $object->saveExtraData($this->db);
+        }
+        if ($object instanceof SOne_Interface_Object_WithSubObjects) {
+            $this->saveAll($object->getSubObjects());
+        }
+    }
+
+    public function saveAll(array $objects)
+    {
+        foreach ($objects as $object) {
+            $this->save($object);
         }
     }
 }

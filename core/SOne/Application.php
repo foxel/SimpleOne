@@ -41,7 +41,7 @@ class SOne_Application extends K3_Application
         $this->VIS->addAutoLoadDir(F_DATA_ROOT.'/styles/simple')
             ->loadECSS(F_DATA_ROOT.'/styles/simple/common.ecss');
 
-        $this->objects = new SOne_Repository_Object($this->db);
+        $this->objects = SOne_Repository_Object::getInstance($this->db);
 
         // putting to environment
         $this->env
@@ -89,6 +89,7 @@ class SOne_Application extends K3_Application
         }
 
         $pageNode->appendChild('page_cont', $objectNode);
+        $pageNode->addData('page_cont', '<pre>'.print_r(get_included_files(), true).'</pre>');
 
         $pageNode->appendChild('navigator', $this->renderDefaultNavigator($this->objects->loadObjectsTreeByPath($pageObject->path, true)));
 
