@@ -1,14 +1,20 @@
 
 /* * { margin: 0; padding: 0; } */
+html, body { border: 0; margin: 0; padding: 0; }
+td, th, div { cursor: default; }
+td, th { vertical-align: top; }
+a, a * { cursor: pointer; }
 div { border: 0 solid #000000; margin: 0; padding: 0; }
+div#mp_outer { width: 1000px; margin: 5px auto; }
 div#mp_border { border-width: 1px; }
-div#mp_head { height: 30px; border-bottom-width: 1px; }
+div#mp_head { height: 150px; border-bottom-width: 1px; background: transparent url("/static/images/head.jpg") no-repeat center top; }
 div#mp_sidebar { float: left; width: 200px; min-height: 300px; border-width: 0 1px 0 0; }
-div#mp_mainpage { position: relative; margin: 0 0 0 200px !important;  border-width: 0 0 0 1px; background-color: #7FFF7F; }
+div#mp_mainpage { position: relative; margin: 0 0 0 200px !important;  border-width: 0 0 0 1px; background-color: #DFE8FF; }
 div#mp_footer { border-width: 1px 0 0 0; padding: 5px; }
 div#mp_genstats { float: left; }
 div#mp_staticons { float: right; }
 
+div#mp_pagecont { padding: 15px 10px; }
 div.clearfloats { clear: both !important; }
 div.invisible { border: 0 !important; margin: 0 !important; padding: 0 !important; visibility: hidden !important; height: 0 !important; overflow: hidden !important; }
 

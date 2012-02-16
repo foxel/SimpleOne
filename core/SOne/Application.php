@@ -61,10 +61,14 @@ class SOne_Application extends K3_Application
             $tipObject = $this->objects->loadOne($tipObject['id']);
             // performing action
             if ($this->request->action) {
-                $tipObject->doAction($this->request->action, $this->env, $objectUpdated);
-                // TODO: think about deleting
-                if ($objectUpdated) {
-                    $this->objects->save($tipObject);
+                if ($tipObject->isActionAllowed($this->request->action, $this->env->get('user'))) {
+                    $tipObject->doAction($this->request->action, $this->env, $objectUpdated);
+                    // TODO: think about deleting
+                    if ($objectUpdated) {
+                        $this->objects->save($tipObject);
+                    }
+                } else {
+                    $tipObject = new SOne_Model_Object_Page403(array('path' => $this->request->path));
                 }
             }
         } else {
@@ -80,6 +84,33 @@ class SOne_Application extends K3_Application
         $pageNode = new FVISNode('GLOBAL_HTMLPAGE', 0, $this->VIS);
         $this->VIS->setRootNode($pageNode);
 
+        if ($opageObject instanceof SOne_Model_Object_Poll) {
+            $pageObject->data = array(
+                'questions' => array(
+                    'q1' => array(
+                        'caption' => 'Вопрос 1',
+                        'valueVariants' => array(
+                            'a1' => 'Ответ 1',
+                            'a2' => 'Ответ 11',
+                            'a3' => 'Ответ 12',
+                            'a4' => 'Ответ 13',
+                        ),
+                    ),
+                    'q2' => array(
+                        'caption' => 'Вопрос 2',
+                        'valueVariants' => array(
+                            'a1' => 'Ответ 1',
+                            'a2' => 'Ответ 4',
+                            'a3' => 'Ответ 2',
+                            'a4' => 'Ответ 3',
+                        ),
+                    ),
+                ),
+                'lockAnswers' => true,
+            ) + (array) $pageObject->data;
+            $this->objects->save($pageObject);
+        }
+
         $objectNode = $pageObject->visualize($this->env);
 
         if ($this->env->request->isAjax) {
@@ -89,7 +120,8 @@ class SOne_Application extends K3_Application
         }
 
         $pageNode->appendChild('page_cont', $objectNode);
-        $pageNode->addData('page_cont', '<pre>'.print_r(get_included_files(), true).'</pre>');
+        $pageNode->addData('page_title', $pageObject->caption);
+        //$pageNode->addData('page_cont', '<pre>'.print_r(get_included_files(), true).'</pre>');
 
         $pageNode->appendChild('navigator', $this->renderDefaultNavigator($this->objects->loadObjectsTreeByPath($pageObject->path, true)));
 

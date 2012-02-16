@@ -3,6 +3,11 @@
 abstract class SOne_Model_Object extends FBaseClass
 {
     /**
+     * @var array
+     */
+    protected $aclEditActionsList = array('edit', 'save');
+
+    /**
      * @param  array $init
      * @return SOne_Model_Object
      */
@@ -121,6 +126,21 @@ abstract class SOne_Model_Object extends FBaseClass
     public function serializeData()
     {
         return serialize($this->pool['data']);
+    }
+
+    /**
+     * This should be introduced in clild classes
+     * @param  string $action
+     * @param  SOne_Model_User $user
+     * @return boolean
+     */
+    public function isActionAllowed($action, SOne_Model_User $user)
+    {
+        if (in_array($action, $this->aclEditActionsList)) {
+            return $this->pool['editLevel'] <= $user->accessLevel;
+        }
+
+        return $this->pool['accessLevel'] <= $user->accessLevel;
     }
 
     /**

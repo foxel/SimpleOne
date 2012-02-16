@@ -8,6 +8,10 @@ class SOne_Model_Object_LoginPage extends SOne_Model_Object
             $env->response->sendRedirect('/');
         }
         $node = new FVISNode('SONE_OBJECT_LOGINPAGE', 0, $env->get('VIS'));
+        $user = $env->get('user');
+        if ($user->id) {
+            $node->addData('logged_as', $user->nick);
+        }
         $node->addDataArray($this->pool);
         return $node;
     }
