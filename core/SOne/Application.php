@@ -122,6 +122,7 @@ class SOne_Application extends K3_Application
         $pageNode->appendChild('page_cont', $objectNode);
         $pageNode->addData('page_title', $pageObject->caption);
         //$pageNode->addData('page_cont', '<pre>'.print_r(get_included_files(), true).'</pre>');
+        //$pageNode->addData('page_cont', '<pre>'.print_r($this->db->history, true).'</pre>');
 
         $pageNode->appendChild('navigator', $this->renderDefaultNavigator($this->objects->loadObjectsTreeByPath($pageObject->path, true)));
 
@@ -154,8 +155,12 @@ class SOne_Application extends K3_Application
     {
         $user = null;
         if ($uid = $this->env->session->userId) {
-            $users = new SOne_Repository_User($this->db);
-            $user = $users->loadOne((int) $uid);
+            $users = SOne_Repository_User::getInstance($this->db);
+            if ($user = $users->loadOne(array('id' => (int) $uid, 'last_sid' => $this->env->session->getSID()))) {
+                //$users->save($user->updateLastSeen($this->env));
+            } else {
+                $this->env->session->drop('userId');
+            }
         }
         if (!$user) {
             $user = new SOne_Model_User(array(

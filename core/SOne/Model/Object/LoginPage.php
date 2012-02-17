@@ -24,6 +24,7 @@ class SOne_Model_Object_LoginPage extends SOne_Model_Object
             $user = $users->loadOne(array('login' => $env->request->getString('login', K3_Request::POST, FStr::WORD)));
             if ($user && $user->checkPassword($env->request->getString('password', K3_Request::POST, FStr::LINE))) {
                 $env->session->userId = $user->id;
+                $users->save($user->updateLastSeen($env));
                 $env->put('user', $user);
                 $this->pool['actionState'] = 'redirect';
             }

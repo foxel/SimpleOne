@@ -47,19 +47,20 @@ class SOne_Repository_User extends SOne_Repository
         } else {
             $object->id = $this->db->doInsert('users', $userData);
         }
+        
+        if ($object->authUpdated) {
+            if (!empty($object->login)) {
+                $authData = array(
+                    'uid'        => $object->id,
+                    'login'      => $object->login,
+                    'pass_crypt' => $object->cryptedPassword,
+                    'last_auth'  => $object->lastAuth,
+                );
 
-        if (!empty($object->login)) {
-            $authData = array(
-                'uid'        => $object->id,
-                'login'      => $object->login,
-                'pass_crypt' => $object->cryptedPassword,
-                'last_auth'  => $object->lastAuth,
-            );
-
-            $this->db->doInsert('users_auth', $authData, true);
-        } else {
-            $this->db->doDelete('users_auth', array('uid' => $object->id));
+                $this->db->doInsert('users_auth', $authData, true);
+            } else {
+                $this->db->doDelete('users_auth', array('uid' => $object->id));
+            }
         }
     }
-
 }

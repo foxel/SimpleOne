@@ -24,6 +24,8 @@ class SOne_Model_User extends FBaseClass
             'cryptedPassword' => isset($init['pass_crypt'])  ? (string) $init['pass_crypt']  : null,
             'lastAuth'        => isset($init['last_auth'])   ? (int) $init['last_auth']      : null,
         );
+
+        $this->pool['authUpdated'] = !$this->pool['id'];
     }
 
     public function checkPassword($password)
@@ -34,6 +36,7 @@ class SOne_Model_User extends FBaseClass
     public function setPassword($password)
     {
         $this->pool['cryptedPassword'] = crypt($password, '$1$'.FStr::shortUID());
+        $this->pool['authUpdated']     = true;
         return $this;
     }
 
@@ -44,6 +47,15 @@ class SOne_Model_User extends FBaseClass
     public function setId($id)
     {
         $this->pool['id'] = $id > 0 ? (int) $id : null;
+        return $this;
+    }
+
+    public function updateLastSeen(K3_Environment $env)
+    {
+        $this->pool['lastSeen'] = time();
+        $this->pool['lastIP']   = $env->clientIPInteger;
+        $this->pool['lastSID']  = $env->session->getSID();
+        $this->pool['lastUrl']  = $env->requestUrl;
         return $this;
     }
 

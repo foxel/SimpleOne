@@ -31,6 +31,7 @@ class SOne_Model_Object_HTMLPage extends SOne_Model_Object_Commentable
         parent::doAction($action, $env, $updated);
         if ($action == 'save') {
             $this->data = $env->request->getString('data', K3_Request::POST);
+            $this->pool['updateTime'] = time();
             $updated = true;
         }
     }

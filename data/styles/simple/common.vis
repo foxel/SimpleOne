@@ -231,9 +231,9 @@
   / <strong>Регистрация</strong>
  </legend>
  <form action="{FULLURL:IN_PATH}?register" method="post">
-  <label>Имя/ник: <input type="text" name="reg_name" value="{IN_REG_NAME}" /></label><br />
-  <label>Логин: <input type="text" name="reg_login" value="{IN_REG_LOGIN}" /></label><br />
-  <label>Пароль: <input type="password" name="reg_password" value="{IN_REG_PASSWORD}" /></label><br />
+  <label>Имя/ник: <input type="text" name="reg_name" value="{IN_REG_NAME}" autocomplete="off" /></label><br />
+  <label>Логин: <input type="text" name="reg_login" value="{IN_REG_LOGIN}" autocomplete="off" /></label><br />
+  <label>Пароль: <input type="password" name="reg_password" value="{IN_REG_PASSWORD}" autocomplete="off" /></label><br />
   <button type="submit">{L_EDITOR_SUBMIT_REGISTER}</button>
  </form>
 </fieldset>

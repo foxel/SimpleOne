@@ -151,6 +151,7 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
             }
 
             $this->pool['questions'] = $newQuestions;
+            $this->pool['updateTime'] = time();
 
             $updated = true;
         }
