@@ -4,6 +4,7 @@ class SOne_Repository_Object extends SOne_Repository
 {
     public function loadNavigationByPath($path)
     {
+        $path = trim($path, ' \\/');
         $pathHash = 'navi'.md5($path);
         if (isset($this->cache[$pathHash])) {
             return $this->cache[$pathHash];

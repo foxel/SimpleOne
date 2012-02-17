@@ -5,6 +5,7 @@ abstract class SOne_Model_Object_Commentable extends SOne_Model_Object implement
     public function __construct(array $init = array())
     {
         parent::__construct($init);
+        $this->pool['commentsAllowed'] = true;
 
         $this->setComments(isset($init['comments']) ? $init['comments'] : array());
     }
@@ -18,6 +19,11 @@ abstract class SOne_Model_Object_Commentable extends SOne_Model_Object implement
     public function doAction($action, K3_Environment $env, &$objectUpdated = false)
     {
         parent::doAction($action, $env, $objectUpdated);
+
+        if (!$this->commentsAllowed) {
+            return;
+        }
+
         switch ($action) {
             case 'saveComment':
                 $this->addComment(

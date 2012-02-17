@@ -51,10 +51,11 @@
    plugins : "autolink,lists,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,advlist",
 
    // Theme options
-   theme_advanced_buttons1 : "save,newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,styleselect,formatselect,fontselect,fontsizeselect",
-   theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,image,cleanup,help,code,|,insertdate,inserttime,preview,|,forecolor,backcolor",
-   theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,sub,sup,|,charmap,emotions,iespell,media,advhr,|,print,|,ltr,rtl,|,fullscreen",
-   theme_advanced_buttons4 : "insertlayer,moveforward,movebackward,absolute,|,styleprops,|,cite,abbr,acronym,del,ins,attribs,|,visualchars,nonbreaking,template,pagebreak",
+   theme_advanced_buttons1 : "save,newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,fontselect,fontsizeselect,|,styleprops",
+   //theme_advanced_buttons1 : "save,newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,styleselect,formatselect,fontselect,fontsizeselect,|,styleprops",
+   theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,image,cleanup,code,|,insertdate,inserttime,preview,|,forecolor,backcolor",
+   theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,sub,sup,|,charmap,emotions,iespell,media,|,print,|,fullscreen",
+   //theme_advanced_buttons4 : "insertlayer,moveforward,movebackward,absolute,|,styleprops,|,cite,abbr,acronym,del,ins,attribs,|,visualchars,nonbreaking,template,pagebreak",
    theme_advanced_toolbar_location : "top",
    theme_advanced_toolbar_align : "left",
    theme_advanced_statusbar_location : "bottom",
@@ -169,7 +170,8 @@
 <<+ 'SONE_OBJECT_HTMLPAGE'>>
 {IF:IN_actionState="edit"}
 <form action="{FULLURL:IN_PATH}?save" method="post">
- <textarea class="htmleditor" name="data" style="width: 100%; height: 450px;">{!IN_DATA}</textarea>
+ <textarea class="htmleditor" name="content" style="width: 100%; height: 450px;">{!IN_CONTENT}</textarea>
+ <label><input type="checkbox" name="commentsAllowed"{IF:IN_commentsAllowed} checked="checked"{/IF} /> разрешить комментарии</label>
  <hr />
  <button type="submit">{L_EDITOR_SUBMIT_SAVE}</button>
 </form>
@@ -178,8 +180,11 @@
     <a href="{FULLURL:IN_PATH}?edit">[Править]</a>
 </div>{/IF}
 <h2>{IN_CAPTION}</h2>
-<div class="htmlpage">{IN_DATA}</div>
-{VIS:SONE_OBJECT_COMMENTS|ACTIONSTATE=IN_actionState|COMMENTS=IN_COMMENTS|PATH=IN_PATH}
+<div class="htmlpage">{IN_CONTENT}</div>
+{IF:IN_commentsAllowed}
+ <hr />
+ {VIS:SONE_OBJECT_COMMENTS|ACTIONSTATE=IN_actionState|COMMENTS=IN_COMMENTS|PATH=IN_PATH}
+{/IF}
 {/IF}
 <<- 'SONE_OBJECT_HTMLPAGE'>>
 
@@ -195,8 +200,7 @@
 
 <<+ 'SONE_OBJECT_COMMENTS_FORM'>>
 <form action="{FULLURL:IN_PATH}?saveComment" method="post">
- <textarea class="" name="commentText" style="width: 450px; height: 100px;"></textarea>
- <hr />
+ <textarea class="" name="commentText" style="width: 450px; height: 70px;"></textarea>
  <button type="submit">{L_EDITOR_SUBMIT_ADDCOMMENT}</button>
 </form>
 <<- 'SONE_OBJECT_COMMENTS_FORM'>>
@@ -243,6 +247,8 @@
 <<+ 'SONE_OBJECT_POLL'>>
 {IF:IN_actionState="edit"}
 <form action="{FULLURL:IN_PATH}?save" method="POST" class="pollEditor">
+ <textarea class="htmleditor" name="description" style="width: 100%; height: 450px;">{!IN_DESCRIPTION}</textarea>
+ <hr />
  <div class="pollEditQuestionsContainer">
  {IF:IN_question_items}{IN_question_items}{ELSE}
  {VIS:SONE_OBJECT_POLL_ITEM_EDIT|ID="0"}
@@ -259,6 +265,7 @@
     <a href="{FULLURL:IN_PATH}?edit">[Править]</a>
 </div>{/IF}
 <h2>{!IN_CAPTION}</h2>
+<div class="htmlcontent">{IN_DESCRIPTION}</div>
 <form action="{FULLURL:IN_PATH}?fill" method="POST">
  <div>
  {IN_question_items}

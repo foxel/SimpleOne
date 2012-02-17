@@ -76,10 +76,12 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
     public function setData(array $data)
     {
         $this->pool['data'] = $data + array(
+            'description' => '',
             'questions'   => array(),
             'answers'     => array(),
             'lockAnswers' => false,
         );
+        $this->pool['description'] =& $this->pool['data']['description'];
         $this->pool['questions']   =& $this->pool['data']['questions'];
         $this->pool['answers']     =& $this->pool['data']['answers'];
         $this->pool['lockAnswers'] =& $this->pool['data']['lockAnswers'];
@@ -150,8 +152,9 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
                 );
             }
 
-            $this->pool['questions'] = $newQuestions;
-            $this->pool['updateTime'] = time();
+            $this->pool['questions']   = $newQuestions;
+            $this->pool['description'] = $env->request->getString('description', K3_Request::POST);
+            $this->pool['updateTime']  = time();
 
             $updated = true;
         }

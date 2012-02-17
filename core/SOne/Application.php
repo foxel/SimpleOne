@@ -33,6 +33,7 @@ class SOne_Application extends K3_Application
             $this->config['db.password'],
             $this->config['db.prefix']
         );
+        //$this->db->beginTransaction(); // TODO: add transaction autocommit
 
         $this->env->session->setDBase($this->db, 'sessions');
 
@@ -83,33 +84,6 @@ class SOne_Application extends K3_Application
     {
         $pageNode = new FVISNode('GLOBAL_HTMLPAGE', 0, $this->VIS);
         $this->VIS->setRootNode($pageNode);
-
-        if ($opageObject instanceof SOne_Model_Object_Poll) {
-            $pageObject->data = array(
-                'questions' => array(
-                    'q1' => array(
-                        'caption' => 'Вопрос 1',
-                        'valueVariants' => array(
-                            'a1' => 'Ответ 1',
-                            'a2' => 'Ответ 11',
-                            'a3' => 'Ответ 12',
-                            'a4' => 'Ответ 13',
-                        ),
-                    ),
-                    'q2' => array(
-                        'caption' => 'Вопрос 2',
-                        'valueVariants' => array(
-                            'a1' => 'Ответ 1',
-                            'a2' => 'Ответ 4',
-                            'a3' => 'Ответ 2',
-                            'a4' => 'Ответ 3',
-                        ),
-                    ),
-                ),
-                'lockAnswers' => true,
-            ) + (array) $pageObject->data;
-            $this->objects->save($pageObject);
-        }
 
         $objectNode = $pageObject->visualize($this->env);
 
