@@ -6,7 +6,7 @@ class SOne_Model_User extends FBaseClass
     {
         $this->pool = array(
             'id'              => isset($init['id'])          ? (int) $init['id']             : null,
-            'nick'            => isset($init['nick'])        ? (string) $init['nick']        : '',
+            'name'            => isset($init['nick'])        ? (string) $init['nick']        : '',
             'accessLevel'     => isset($init['level'])       ? (int) $init['level']          : 0,
             'modLevel'        => isset($init['mod_lvl'])     ? (int) $init['mod_lvl']        : 0,
             'adminLevel'      => isset($init['adm_lvl'])     ? (int) $init['adm_lvl']        : 0,
@@ -36,4 +36,15 @@ class SOne_Model_User extends FBaseClass
         $this->pool['cryptedPassword'] = crypt($password, '$1$'.FStr::shortUID());
         return $this;
     }
+
+    /**
+     * @param  integer|null $id
+     * @return SOne_Model_User
+     */
+    public function setId($id)
+    {
+        $this->pool['id'] = $id > 0 ? (int) $id : null;
+        return $this;
+    }
+
 }

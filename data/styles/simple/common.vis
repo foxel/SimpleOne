@@ -174,9 +174,9 @@
  <button type="submit">{L_EDITOR_SUBMIT_SAVE}</button>
 </form>
 {ELSE}
-<div style="float: right;">
+{IF:IN_canEdit}<div style="float: right;">
     <a href="{FULLURL:IN_PATH}?edit">[Править]</a>
-</div>
+</div>{/IF}
 <h2>{IN_CAPTION}</h2>
 <div class="htmlpage">{IN_DATA}</div>
 {VIS:SONE_OBJECT_COMMENTS|ACTIONSTATE=IN_actionState|COMMENTS=IN_COMMENTS|PATH=IN_PATH}
@@ -208,14 +208,35 @@
 <<- 'SONE_OBJECT_COMMENTS_ITEM'>>
 
 <<+ 'SONE_OBJECT_LOGINPAGE'>>
+{IF:IN_ERRORS}<div style="border: 1px solid red; padding: 5px;">
+ {IN_ERRORS}
+</div>{/IF}
 {IF:IN_LOGGED_AS}
 <div>Вы авторизированы как <strong>{IN_LOGGED_AS}</strong> (<a href="{FULLURL:IN_PATH}?logout">Выход</a>).</div>
 {ELSE}
-<form action="{FULLURL:IN_PATH}?login" method="post">
- <label>Логин: <input type="text" name="login" value="" /></label><br />
- <label>Пароль: <input type="password" name="password" value="" /></label><br />
- <button type="submit">{L_EDITOR_SUBMIT_LOGIN}</button>
-</form>
+<fieldset id="loginpageLogin"{IF:IN_actionState="register"} style="display: none;"{/IF}>
+ <legend>
+  <strong>Вход</strong> /
+  <a href="#" onclick="$('#loginpageLogin').hide(); $('#loginpageRegister').show(); return false;">Регистрация</a>
+ </legend>
+ <form action="{FULLURL:IN_PATH}?login" method="post">
+  <label>Логин: <input type="text" name="login" value="" /></label><br />
+  <label>Пароль: <input type="password" name="password" value="" /></label><br />
+  <button type="submit">{L_EDITOR_SUBMIT_LOGIN}</button>
+ </form>
+</fieldset>
+<fieldset id="loginpageRegister"{!IF:IN_actionState="register"} style="display: none;"{/IF}>
+ <legend>
+  <a href="#" onclick="$('#loginpageRegister').hide(); $('#loginpageLogin').show(); return false;">Вход</a>
+  / <strong>Регистрация</strong>
+ </legend>
+ <form action="{FULLURL:IN_PATH}?register" method="post">
+  <label>Имя/ник: <input type="text" name="reg_name" value="{IN_REG_NAME}" /></label><br />
+  <label>Логин: <input type="text" name="reg_login" value="{IN_REG_LOGIN}" /></label><br />
+  <label>Пароль: <input type="password" name="reg_password" value="{IN_REG_PASSWORD}" /></label><br />
+  <button type="submit">{L_EDITOR_SUBMIT_REGISTER}</button>
+ </form>
+</fieldset>
 {/IF}
 <<- 'SONE_OBJECT_LOGINPAGE'>>
 
@@ -234,9 +255,9 @@
  <button type="submit">{L_EDITOR_SUBMIT_SAVE}</button>
 </form>
 {ELSE}
-<div style="float: right;">
+{IF:IN_canEdit}<div style="float: right;">
     <a href="{FULLURL:IN_PATH}?edit">[Править]</a>
-</div>
+</div>{/IF}
 <h2>{!IN_CAPTION}</h2>
 <form action="{FULLURL:IN_PATH}?fill" method="POST">
  <div>

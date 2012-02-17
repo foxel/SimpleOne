@@ -14,7 +14,9 @@ class SOne_Model_Object_HTMLPage extends SOne_Model_Object_Commentable
             $comments->addDataArray($data['comments']);
             unset($data['comments']);
         }
-        $node->addDataArray($data);
+        $node->addDataArray($data + array(
+            'canEdit'       => $this->isActionAllowed('edit', $env->get('user')) ? 1 : null,
+        ));
         return $node;
     }
 

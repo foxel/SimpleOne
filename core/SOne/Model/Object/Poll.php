@@ -66,8 +66,9 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
         }
 
         $node->addDataArray($this->pool + array(
-            'locked' => $pollLocked,
+            'locked'        => $pollLocked,
             'ask_for_login' => $env->get('user')->id ? null : 1,
+            'canEdit'       => $this->isActionAllowed('edit', $env->get('user')) ? 1 : null,
         ));
         return $node;
     }
@@ -111,7 +112,7 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
         }
 
         if ($action == 'save') {
-            $newQuestionsRaw = $env->request->get('questions');
+            $newQuestionsRaw = (array) $env->request->get('questions');
             $newQuestions = array();
             $oldQuestions = $this->pool['questions'];
             foreach ($newQuestionsRaw as $qId => $newQuestionRaw) {
@@ -120,7 +121,9 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
                     : array();
                 $newVariants = array();
 
-                if (empty($newVariantsRaw) || !isset($newQuestionRaw['caption']) || !$newQuestionRaw['caption']) {
+                if (empty($newVariantsRaw)
+                    || !isset($newQuestionRaw['caption'])  || empty($newQuestionRaw['caption'])
+                    || !isset($newQuestionRaw['variants']) || empty($newQuestionRaw['variants'])) {
                     continue;
                 }
 
@@ -132,6 +135,9 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
                 }
 
                 foreach ($newVariantsRaw as $aId => $aTitle) {
+                    if (!strlen($aTitle)) {
+                        continue;
+                    }
                     if (!isset($oldVariants[$aId])) {
                         $aId = FStr::shortUID();
                     }
