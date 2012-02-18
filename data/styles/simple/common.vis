@@ -297,12 +297,15 @@
 <h2>{!IN_CAPTION}</h2>
 <div class="htmlcontent">{IN_DESCRIPTION}</div>
 <form action="{FULLURL:IN_PATH}?fill" method="POST">
+{IF:IN_ASK_FOR_LOGIN}
+ <div style="color: darkred;">Авторизируйтесь, чтобы сохранить ответы.</div>
+{/IF}
 <div>
  {IN_question_items}
 </div>
 <hr />
 {IF:IN_ASK_FOR_LOGIN}
- <span>Авторизируйтесь, чтобы сохранить ответы.</span>
+ <div style="color: darkred;">Авторизируйтесь, чтобы сохранить ответы.</div>
 {ELSE}
  <button type="submit"{IF:IN_LOCKED} disabled="disabled" title="Вы уже ответили на все вопросы данной анкеты"{/IF}>{L_EDITOR_SUBMIT_FILL}</button>
  {IF:IN_LOCKED}<span title="Вы уже ответили на все вопросы данной анкеты">*</span>{/IF}
