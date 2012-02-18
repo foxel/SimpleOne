@@ -37,6 +37,7 @@ class SOne_Model_Object_LoginPage extends SOne_Model_Object
             $login    = $env->request->getString('reg_login', K3_Request::POST, FStr::LINE);
             $password = $env->request->getString('reg_password', K3_Request::POST, FStr::LINE);
             $username = $env->request->getString('reg_name', K3_Request::POST, FStr::LINE);
+            $email    = $env->request->getString('reg_email', K3_Request::POST, FStr::LINE);
 
             $errors = array();
             $nameLen = FStr::strLen($username);
@@ -53,11 +54,15 @@ class SOne_Model_Object_LoginPage extends SOne_Model_Object
             if (FStr::strLen($password) < 8) {
                 $errors[] = $env->get('lang')->lang('SONE_REGISTER_ERROR_PASSWORD_SHORT');
             }
+            if (!FStr::isEmail($email, true)) {
+                $errors[] = $env->get('lang')->lang('SONE_REGISTER_ERROR_EMAIL_INCORRECT');
+            }
 
             if (empty($errors)) {
                 $user = new SOne_Model_User(array(
                     'login' => $login,
                     'nick'  => $username,
+                    'email' => $email,
                     'level' => 1,
                     'regtime' => time(),
                 ));
@@ -72,6 +77,7 @@ class SOne_Model_Object_LoginPage extends SOne_Model_Object
                     'reg_login'    => $login,
                     'reg_password' => $password,
                     'reg_name'     => $username,
+                    'reg_email'    => $email,
                 );
             }
         }

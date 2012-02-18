@@ -28,6 +28,7 @@ class SOne_Repository_User extends SOne_Repository
     {
         $userData = array(
             'nick'        => $object->name,
+            'email'       => $object->email,
             'level'       => $object->accessLevel,
             'mod_lvl'     => $object->modLevel,
             'adm_lvl'     => $object->adminLevel,

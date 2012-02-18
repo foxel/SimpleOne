@@ -7,6 +7,7 @@ class SOne_Model_User extends FBaseClass
         $this->pool = array(
             'id'              => isset($init['id'])          ? (int) $init['id']             : null,
             'name'            => isset($init['nick'])        ? (string) $init['nick']        : '',
+            'email'           => isset($init['email'])       ? (string) $init['email']       : '',
             'accessLevel'     => isset($init['level'])       ? (int) $init['level']          : 0,
             'modLevel'        => isset($init['mod_lvl'])     ? (int) $init['mod_lvl']        : 0,
             'adminLevel'      => isset($init['adm_lvl'])     ? (int) $init['adm_lvl']        : 0,
