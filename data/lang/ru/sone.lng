@@ -1,0 +1,25 @@
+EDITOR_SUBMIT_SAVE: Сохранить
+---
+EDITOR_SUBMIT_ADDCOMMENT: Добавить комментарий
+---
+EDITOR_SUBMIT_LOGIN: Вход
+---
+EDITOR_SUBMIT_REGISTER: Регистрация
+---
+EDITOR_SUBMIT_SAVE: Сохранить
+---
+EDITOR_SUBMIT_FILL: Сохранить ответы
+---
+SONE_REGISTER_ERROR_NAME_INCORRECT: Имя пользователя некорректно. Имя должно иметь длину от 3-х до 16-и символов.
+---
+SONE_REGISTER_ERROR_NAME_USED: Это имя уже используется в системе.
+---
+SONE_REGISTER_ERROR_LOGIN_INCORRECT: Логин пользователя некорректен. Логин должен иметь длину от 3-х до 16-и символов и может включать только латинские буквы, цифры и знак "_".
+---
+SONE_REGISTER_ERROR_LOGIN_USED: Указанный логин уже используется.
+---
+SONE_REGISTER_ERROR_PASSWORD_SHORT: Пароль слишком короткий. Используйте пароль длиной более 8 символов.
+---
+SONE_REGISTER_ERROR_EMAIL_INCORRECT: e-Mail адрес задан неверно или не существует.
+---
+
