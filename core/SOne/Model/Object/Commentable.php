@@ -31,7 +31,7 @@ abstract class SOne_Model_Object_Commentable extends SOne_Model_Object implement
                     $env->request->getNumber('commentAnswerTo', K3_Request::POST),
                     array(
                         'client_ip' => $env->clientIPInteger,
-                        'author_id' => $env->user->id,
+                        'author_id' => $env->get('user')->id,
                     )
                 );
                 $objectUpdated = true;
