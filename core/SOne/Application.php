@@ -116,6 +116,11 @@ class SOne_Application extends K3_Application
         $parents = Array($container, $container);
 
         foreach ($tree as $item) {
+            if ($item->accessLevel > $this->env->get('user')->accessLevel || !$parents[$item->treeLevel]) {
+                $parents[$item->treeLevel+1] = null;
+                continue;
+            }
+
             $node = new FVISNode('NAVIGATOR_ITEM', 0, $this->VIS);
             $node->addDataArray(array(
                 'href' => FStr::fullUrl($item->path),
