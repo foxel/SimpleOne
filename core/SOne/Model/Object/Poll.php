@@ -7,6 +7,11 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
     const QUESTION_TYPE_BOOLEAN = 3;
 
     /**
+     * @var array
+     */
+    protected $aclEditActionsList = array('edit', 'save', 'stat');
+
+    /**
      * @param  array $init
      */
     public function __construct(array $init = array())
@@ -25,10 +30,6 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
         $node = new FVISNode('SONE_OBJECT_POLL', 0, $env->get('VIS'));
         $data =& $this->pool['data'];
 
-        $curAnswers = (isset($data['answers'][$env->get('user')->id]))
-            ? $data['answers'][$env->get('user')->id]
-            : array();
-
         switch ($this->actionState) {
             case 'stat':
                 $pollItemVisClass = 'SONE_OBJECT_POLL_ITEM_STAT';
@@ -39,6 +40,25 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
             default:
                 $pollItemVisClass = 'SONE_OBJECT_POLL_ITEM';
         }
+
+        $statAnswers = array();
+        foreach ($data['answers'] as &$uAnswers) {
+            foreach ($uAnswers as $qId => $aId) {
+                if (!isset($statAnswers[$qId])) {
+                    $statAnswers[$qId] = array(
+                        $aId  => 1,
+                    );
+                } elseif (!isset($statAnswers[$qId][$aId])) {
+                    $statAnswers[$qId][$aId] = 1;
+                } else {
+                    $statAnswers[$qId][$aId]+= 1;
+                }
+            }
+        }
+
+        $curAnswers = (isset($data['answers'][$env->get('user')->id]))
+            ? $data['answers'][$env->get('user')->id]
+            : array();
 
         $pollLocked = true;
 
@@ -61,6 +81,7 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
                     'title'    => $valueTitle,
                     'selected' => ($valueVariant == $answerValue) ? 1 : null,
                     'locked'   => ($questionLocked) ? 1 : null,
+                    'statVal'  => isset($statAnswers[$qId][$valueVariant]) ? $statAnswers[$qId][$valueVariant] : 0,
                 ));
             }
         }

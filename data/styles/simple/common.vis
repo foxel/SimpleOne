@@ -24,6 +24,17 @@
   /* ]]> CSS ends here */
   </style>
   {ENDIF}
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-10421094-5']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
 </head>
 <body>
 {IN_JS_BLOCKS}
@@ -268,23 +279,33 @@
  <a href="#" onclick="var c = $(this).closest('form.pollEditor').find('div.pollEditQuestionTemplateContainer').find('div.pollEditQuestion').last().clone(); var i = c.find('input').val(''); var r = (new Date).getTime()+Math.random(); i.each(function() {$(this).attr('name', $(this).attr('name').replace(/\{id\}/, r));}); $(this).closest('form.pollEditor').find('div.pollEditQuestionsContainer').append(c); return false;">[Добавить вопрос]</a>
  <button type="submit">{L_EDITOR_SUBMIT_SAVE}</button>
 </form>
+{ELSEIF:IN_actionState="stat"}
+{IF:IN_canEdit}<div style="float: right;">
+ <a href="{FULLURL:IN_PATH}?edit">[Править]</a>
+</div>{/IF}
+<h2>{!IN_CAPTION}</h2>
+<div class="htmlcontent">{IN_DESCRIPTION}</div>
+<div>
+ {IN_question_items}
+</div>
 {ELSE}
 {IF:IN_canEdit}<div style="float: right;">
-    <a href="{FULLURL:IN_PATH}?edit">[Править]</a>
+ <a href="{FULLURL:IN_PATH}?edit">[Править]</a>
+ <a href="{FULLURL:IN_PATH}?stat">[Отчет]</a>
 </div>{/IF}
 <h2>{!IN_CAPTION}</h2>
 <div class="htmlcontent">{IN_DESCRIPTION}</div>
 <form action="{FULLURL:IN_PATH}?fill" method="POST">
- <div>
+<div>
  {IN_question_items}
- </div>
- <hr />
- {IF:IN_ASK_FOR_LOGIN}
+</div>
+<hr />
+{IF:IN_ASK_FOR_LOGIN}
  <span>Авторизируйтесь, чтобы сохранить ответы.</span>
- {ELSE}
+{ELSE}
  <button type="submit"{IF:IN_LOCKED} disabled="disabled" title="Вы уже ответили на все вопросы данной анкеты"{/IF}>{L_EDITOR_SUBMIT_FILL}</button>
  {IF:IN_LOCKED}<span title="Вы уже ответили на все вопросы данной анкеты">*</span>{/IF}
- {/IF}
+{/IF}
 </form>
 {/IF}
 <<- 'SONE_OBJECT_POLL'>>
@@ -292,7 +313,7 @@
 <<+ 'SONE_OBJECT_POLL_ITEM'>>
 <fieldset>
 <legend>
- {!IN_CAPTION}:
+ {!IN_CAPTION}
  {IF:IN_LOCKED}<span title="вы уже ответили на этот вопрос">*</span>{/IF}
 </legend>
 <div class="pollQuestionAnswersContainer">
@@ -300,6 +321,17 @@
 </div>
 </fieldset>
 <<- 'SONE_OBJECT_POLL_ITEM'>>
+
+<<+ 'SONE_OBJECT_POLL_ITEM_STAT'>>
+<fieldset>
+<legend>
+ {!IN_CAPTION}
+</legend>
+<div class="pollQuestionAnswersContainer">
+ {IN_variants}
+</div>
+</fieldset>
+<<- 'SONE_OBJECT_POLL_ITEM_STAT'>>
 
 <<+ 'SONE_OBJECT_POLL_ITEM_EDIT'>>
 <div class="pollEditQuestion">
@@ -330,9 +362,16 @@
 </div>
 <<- 'SONE_OBJECT_POLL_ITEM_VALUEVARIANT'>>
 
+<<+ 'SONE_OBJECT_POLL_ITEM_STAT_VALUEVARIANT'>>
+<div class="pollQuestionAnswer" style="margin: 5px 0;">
+  {!IN_title} - {IN_statVal} чел.{IF:IN_selected} (включая вас){/IF}
+</div>
+<<- 'SONE_OBJECT_POLL_ITEM_STAT_VALUEVARIANT'>>
+
 <<+ 'SONE_OBJECT_POLL_ITEM_EDIT_VALUEVARIANT'>>
 <div class="pollEditQuestionAnswer">
  <input name="questions[{!IN_QID}][variants][{!IN_VALUE}]" value="{!IN_TITLE}" style="width: 600px;" />
+ <strong>( {IN_statVal} )</strong>
  <a href="#" onclick="if ($(this).closest('div.pollEditQuestionAnswersContainer').find('div.pollEditQuestionAnswer').length > 2) { $(this).closest('div.pollEditQuestionAnswer').remove(); } return false;">-</a>
 </div>
 <<- 'SONE_OBJECT_POLL_ITEM_EDIT_VALUEVARIANT'>>
