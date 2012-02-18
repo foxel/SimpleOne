@@ -75,6 +75,7 @@ class SOne_Application extends K3_Application
                     }
                 } else {
                     $tipObject = new SOne_Model_Object_Page403(array('path' => $this->request->path));
+                    $this->getResponse()->setStatusCode(403);
                 }
             }
         } else {
