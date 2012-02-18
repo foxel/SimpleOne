@@ -7,6 +7,7 @@ class SOne_Application extends K3_Application
     protected $request = null;
     protected $VIS     = null;
     protected $objects = null; // objects repository
+    protected $lang    = null;
 
     public function __construct(K3_Environment $env = null)
     {
@@ -44,11 +45,15 @@ class SOne_Application extends K3_Application
 
         $this->objects = SOne_Repository_Object::getInstance($this->db);
 
+        $this->lang = F()->LNG;
+        $this->lang->addAutoLoadDir(F_DATA_ROOT.DIRECTORY_SEPARATOR.'lang/ru');
+
         // putting to environment
         $this->env
             ->put('db',   $this->db)
             ->put('VIS',  $this->VIS)
             ->put('user', $this->bootstrapUser())
+            ->put('lang', $this->lang)
             ->put('app',  $this);
 
         return $this;

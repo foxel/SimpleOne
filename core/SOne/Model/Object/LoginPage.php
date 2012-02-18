@@ -41,17 +41,17 @@ class SOne_Model_Object_LoginPage extends SOne_Model_Object
             $errors = array();
             $nameLen = FStr::strLen($username);
             if ($nameLen < 3 || $nameLen > 16) {
-                $errors[] = F()->LNG->lang('SONE_REGISTER_ERROR_NAME_INCORRECT');
+                $errors[] = $env->get('lang')->lang('SONE_REGISTER_ERROR_NAME_INCORRECT');
             } elseif ($users->loadOne(array('nick' => $username))) {
-                $errors[] = F()->LNG->lang('SONE_REGISTER_ERROR_NAME_USED');
+                $errors[] = $env->get('lang')->lang('SONE_REGISTER_ERROR_NAME_USED');
             }
             if (!preg_match('#\w{3,16}#', $login)) {
-                $errors[] = F()->LNG->lang('SONE_REGISTER_ERROR_LOGIN_INCORRECT');
+                $errors[] = $env->get('lang')->lang('SONE_REGISTER_ERROR_LOGIN_INCORRECT');
             } elseif ($users->loadOne(array('login' => $login))) {
-                $errors[] = F()->LNG->lang('SONE_REGISTER_ERROR_LOGIN_USED');
+                $errors[] = $env->get('lang')->lang('SONE_REGISTER_ERROR_LOGIN_USED');
             }
             if (FStr::strLen($password) < 8) {
-                $errors[] = F()->LNG->lang('SONE_REGISTER_ERROR_PASSWORD_SHORT');
+                $errors[] = $env->get('lang')->lang('SONE_REGISTER_ERROR_PASSWORD_SHORT');
             }
 
             if (empty($errors)) {
@@ -67,11 +67,11 @@ class SOne_Model_Object_LoginPage extends SOne_Model_Object
                 $env->put('user', $user);
                 $this->pool['actionState'] = 'redirect';
             } else {
-                $this->pool['errors'] = implode(', <br />', $errors);
+                $this->pool['errors'] = '<ul><li>'.implode('</li><li>', $errors).'</li></ul>';
                 $this->pool['refills'] = array(
                     'reg_login'    => $login,
                     'reg_password' => $password,
-                    'reg_name'     => $iusername,
+                    'reg_name'     => $username,
                 );
             }
         }

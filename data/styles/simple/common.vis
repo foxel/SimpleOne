@@ -113,10 +113,11 @@
    <!--Page-Stats-->
   </div>
   <div id="mp_staticons">
+   Powered by <strong>QuickFox Simple One Alpha</strong> (<a href="http://k3.quickfox.ru">Kernel 3</a> based)<br />
    {IN_FOOTSTAT}
-   <a href="http://validator.w3.org/check?uri=referer">
+   <!-- <a href="http://validator.w3.org/check?uri=referer">
     <img src="http://www.w3.org/Icons/valid-xhtml10-blue.png" alt="Valid XHTML 1.0 Strict" style="height: 31px; width: 88px;" />
-   </a>
+   </a> -->
   </div>
   <div class="clearfloats invisible">&nbsp;</div>
  </div>
@@ -189,28 +190,32 @@
 
 <<+ 'SONE_OBJECT_COMMENTS'>>
 <h3>Комментарии:</h3>
-{IF:IN_actionState="addComment"}
+<div style="margin: 10px;">
+{IF:IN_ALLOW_ADD}
+<span{IF:IN_actionState="addComment"} style="display: none;"{/IF}><a href="{FULLURL:IN_PATH}?addComment" onclick="$(this).closest('span').hide().parent().find('div.objectCommentsFormContainer').show(); return false;">[Добавить комментарий]</a></span>
+<div class="objectCommentsFormContainer"{!IF:IN_actionState="addComment"} style="display: none;"{/IF}>
 {VIS:SONE_OBJECT_COMMENTS_FORM|PATH=IN_PATH}
-{ELSEIF:IN_ALLOW_ADD}
-<a href="{FULLURL:IN_PATH}?addComment">Добавить комментарий</a>
+</div>
 {ELSE}
 <span>Авторизируйтесь, чтобы добавить комментарий.</span>
 {/IF}
-<div style="margin: 5px 2px;">
+</div>
+<div style="margin: 5px 0;">
 {IN_COMMENTS}
 </div>
 <<- 'SONE_OBJECT_COMMENTS'>>
 
 <<+ 'SONE_OBJECT_COMMENTS_FORM'>>
 <form action="{FULLURL:IN_PATH}?saveComment" method="post">
- <textarea class="" name="commentText" style="width: 450px; height: 70px;"></textarea>
+ <textarea class="" name="commentText" style="width: 450px; height: 50px;"></textarea>
  <button type="submit">{L_EDITOR_SUBMIT_ADDCOMMENT}</button>
 </form>
 <<- 'SONE_OBJECT_COMMENTS_FORM'>>
 
 <<+ 'SONE_OBJECT_COMMENTS_ITEM'>>
-<div>
-<strong>{IF:IN_author_name}{!IN_author_name} @ {/IF}{FTIME:IN_TIME}:</strong> {!IN_TEXT}
+<div style="margin: 5px; 0;">
+<strong style="font-size: 85%">{IF:IN_author_name}{!IN_author_name} @ {/IF}{FTIME:IN_TIME}:</strong>
+ <div style="padding-left: 10px;">{!IN_TEXT}</div>
 </div>
 <<- 'SONE_OBJECT_COMMENTS_ITEM'>>
 
