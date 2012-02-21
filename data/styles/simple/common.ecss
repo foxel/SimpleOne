@@ -1,7 +1,7 @@
 {VARS}
 
 {outer_bg}=#b8becf
-{head_bg}=transparent url("/static/images/head1.jpg") no-repeat center top
+{head_bg}=transparent no-repeat center top
 {page_bg}=#dadfef
 {page_brd}=#515480
 {content_bg}=#efefff
@@ -26,7 +26,7 @@ div { border: 0 solid {page_brd}; margin: 0; padding: 0; }
 hr { border-width: 1px 0 0 0; border-style: solid; border-color: {page_brd}; }
 div#mp_outer { width: 1000px; margin: 0 auto 5px; }
 div#mp_border { border-width: 0 1px 1px; background: {page_bg}; border-radius: 0 0 5px 5px; }
-div#mp_head { height: 150px; border-bottom-width: 1px; background: {head_bg}; }
+div#mp_head { height: 200px; border-bottom-width: 1px; background: {head_bg}; }
 div#mp_sidebar { float: left; width: 200px; min-height: 300px; border-width: 0 1px 0 0; }
 div#mp_mainpage { position: relative; margin: 0 0 0 200px !important;  border-width: 0 0 0 1px; background: {content_bg}; }
 div#mp_footer { border-width: 1px 0 0 0; padding: 5px; }
