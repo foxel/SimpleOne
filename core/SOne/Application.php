@@ -50,6 +50,7 @@ class SOne_Application extends K3_Application
 
         $this->lang = F()->LNG;
         $this->lang->addAutoLoadDir(F_DATA_ROOT.DIRECTORY_SEPARATOR.'lang/ru');
+        $this->lang->timeZone = 7;
 
         // putting to environment
         $this->env
