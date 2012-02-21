@@ -368,7 +368,7 @@
 
 <<+ 'SONE_OBJECT_POLL_ITEM_STAT_VALUEVARIANT'>>
 <div class="pollQuestionAnswer" style="margin: 5px 0;">
-  {!IN_title} - {IN_statVal} чел.{IF:IN_selected} (включая вас){/IF}
+  {!IN_title} - <span title="{IN_statUsers}">{IN_statVal} чел.{IF:IN_selected}</span> (включая вас){/IF}
 </div>
 <<- 'SONE_OBJECT_POLL_ITEM_STAT_VALUEVARIANT'>>
 

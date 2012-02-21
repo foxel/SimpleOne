@@ -30,9 +30,11 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
         $node = new FVISNode('SONE_OBJECT_POLL', 0, $env->get('VIS'));
         $data =& $this->pool['data'];
 
+        $statUsers = array();
         switch ($this->actionState) {
             case 'stat':
                 $pollItemVisClass = 'SONE_OBJECT_POLL_ITEM_STAT';
+                $statUsers = !empty($data['answers']) ? SOne_Repository_User::getInstance($env->get('db'))->loadAll(array('id' => array_keys($data['answers']))) : array();
                 break;
             case 'edit':
                 $pollItemVisClass = 'SONE_OBJECT_POLL_ITEM_EDIT';
@@ -42,16 +44,17 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
         }
 
         $statAnswers = array();
-        foreach ($data['answers'] as &$uAnswers) {
+        foreach ($data['answers'] as $uId => &$uAnswers) {
             foreach ($uAnswers as $qId => $aId) {
+                $uName = isset($statUsers[$uId]) ? $statUsers[$uId]->name : $uId;
                 if (!isset($statAnswers[$qId])) {
                     $statAnswers[$qId] = array(
-                        $aId  => 1,
+                        $aId  => array($uName),
                     );
                 } elseif (!isset($statAnswers[$qId][$aId])) {
-                    $statAnswers[$qId][$aId] = 1;
+                    $statAnswers[$qId][$aId] = array($uName);
                 } else {
-                    $statAnswers[$qId][$aId]+= 1;
+                    $statAnswers[$qId][$aId][] = $uName;
                 }
             }
         }
@@ -76,12 +79,13 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
             foreach ($question['valueVariants'] as $valueVariant => $valueTitle) {
                 $item->appendChild('variants', $variantItem = new FVISNode($pollItemVisClass.'_VALUEVARIANT', 0, $env->get('VIS')));
                 $variantItem->addDataArray(array(
-                    'qId'      => $qId,
-                    'value'    => $valueVariant,
-                    'title'    => $valueTitle,
-                    'selected' => ($valueVariant == $answerValue) ? 1 : null,
-                    'locked'   => ($questionLocked) ? 1 : null,
-                    'statVal'  => isset($statAnswers[$qId][$valueVariant]) ? $statAnswers[$qId][$valueVariant] : 0,
+                    'qId'       => $qId,
+                    'value'     => $valueVariant,
+                    'title'     => $valueTitle,
+                    'selected'  => ($valueVariant == $answerValue) ? 1 : null,
+                    'locked'    => ($questionLocked) ? 1 : null,
+                    'statVal'   => isset($statAnswers[$qId][$valueVariant]) ? count($statAnswers[$qId][$valueVariant]) : 0,
+                    'statUsers' => isset($statAnswers[$qId][$valueVariant]) ? implode(', ', $statAnswers[$qId][$valueVariant]) : null,
                 ));
             }
         }
