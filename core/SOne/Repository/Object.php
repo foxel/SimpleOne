@@ -74,8 +74,8 @@ class SOne_Repository_Object extends SOne_Repository
         $navis = $this->loadNavigationByPath($path);
 
         $ids = array_keys($navis);
-        $select = $this->db->select('objects', 'o')
-            ->join('objects_navi', array('id' => 'o.id'), 'n', array('path', 'path_hash'))
+        $select = $this->db->select('objects', 'o', self::$dbMap)
+            ->join('objects_navi', array('id' => 'o.id'), 'n', self::$dbMapNavi)
             ->where('o.id', $ids)
             ->order('o.order_id');
 
@@ -89,7 +89,7 @@ class SOne_Repository_Object extends SOne_Repository
 
         $tree = $select->fetchAll();
 
-        $tree = F2DArray::tree($tree, 'id', 'parent_id', 0, 't_level');
+        $tree = F2DArray::tree($tree, 'id', 'parentId', 0, 't_level');
 
         $tree = array_map(array('SOne_Model_Object', 'construct'), $tree);
 
