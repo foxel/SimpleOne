@@ -333,7 +333,7 @@
   <strong title="вы не можете изменить ответ на этот вопрос">*</strong>
  {ELSEIF:IN_ANSWERED}
   <strong style="color: darkgreen;" title="вы уже ответили на этот вопрос">*</strong>
-  <a href="#" onclick="$(this).closest('fieldset').find('div.pollQuestionAnswer input').removeAttr('disabled'); $(this).closest('form').find('button[type=submit]').removeAttr('disabled'); $(this).remove(); return false;">[Изменить ответ]</a>
+  <a href="#" onclick="$(this).closest('fieldset').find('div.pollQuestionAnswer:not(.locked) input').removeAttr('disabled'); $(this).closest('form').find('button[type=submit]').removeAttr('disabled'); $(this).remove(); return false;">[Изменить ответ]</a>
  {/IF}
 </legend>
 <div class="pollQuestionAnswersContainer">
@@ -377,9 +377,9 @@
 <<- 'SONE_OBJECT_POLL_ITEM_EDIT'>>
 
 <<+ 'SONE_OBJECT_POLL_ITEM_VALUEVARIANT'>>
-<div class="pollQuestionAnswer">
+<div class="pollQuestionAnswer{IF:IN_LOCKED} locked{/IF}">
  <label>
-  <input type="radio" name="question_{!IN_QID}_answer" value="{!IN_value}"{IF:IN_selected} checked="checked"{/IF}{IF:IN_ANSWERED} disabled="disabled"{/IF} />
+  <input type="radio" name="question_{!IN_QID}_answer" value="{!IN_value}"{IF:IN_selected} checked="checked"{/IF}{IF:IN_ANSWERED} disabled="disabled"{ELSEIF:IN_LOCKED} disabled="disabled"{/IF} />
   {!IN_title} {IF:IN_available}(осталось {IN_available}){/IF}
  </label>
 </div>
@@ -387,7 +387,8 @@
 
 <<+ 'SONE_OBJECT_POLL_ITEM_STAT_VALUEVARIANT'>>
 <div class="pollQuestionAnswer" style="margin: 5px 0;">
-  {!IN_title} - <span title="{IN_statUsers}">{IN_statVal} чел.{IF:IN_selected}</span> (включая вас){/IF}
+  {!IN_title} - <span title="{IN_statUsers}">{IN_statVal} чел.{IF:IN_selected}, включая вас{/IF}</span>
+  {IF:IN_available} (осталось {IN_available}){/IF}
 </div>
 <<- 'SONE_OBJECT_POLL_ITEM_STAT_VALUEVARIANT'>>
 

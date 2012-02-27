@@ -43,22 +43,7 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
                 $pollItemVisClass = 'SONE_OBJECT_POLL_ITEM';
         }
 
-        $statAnswers = array();
-        foreach ($data['answers'] as $uId => &$uAnswers) {
-            foreach ($uAnswers as $qId => $aId) {
-                $uName = isset($statUsers[$uId]) ? $statUsers[$uId]->name : $uId;
-                if (!isset($statAnswers[$qId])) {
-                    $statAnswers[$qId] = array(
-                        $aId  => array($uName),
-                    );
-                } elseif (!isset($statAnswers[$qId][$aId])) {
-                    $statAnswers[$qId][$aId] = array($uName);
-                } else {
-                    $statAnswers[$qId][$aId][] = $uName;
-                }
-            }
-        }
-
+        $statAnswers = $this->genAnswersStats($statUsers);
         $curAnswers = (isset($data['answers'][$env->get('user')->id]))
             ? $data['answers'][$env->get('user')->id]
             : array();
@@ -133,6 +118,7 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
         $data =& $this->pool['data'];
 
         if ($action == 'fill' && !empty($data['questions']) && $env->get('user')->id) {
+            $statAnswers = $this->genAnswersStats();
             $curAnswers = isset($data['answers'][$env->get('user')->id])
                 ? $data['answers'][$env->get('user')->id]
                 : array();
@@ -143,11 +129,29 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
                 }
 
                 $answerValue = $env->request->getString('question_'.$qId.'_answer', K3_Request::POST);
+
+                // available count
+                if (isset($question['valueLimits'][$answerValue])) {
+                    $valueLimit = $question['valueLimits'][$answerValue];
+                    $available  = isset($statAnswers[$qId][$answerValue])
+                        ? $valueLimit - count($statAnswers[$qId][$answerValue])
+                        : $valueLimit;
+
+                    if (isset($curAnswers[$qId]) && $curAnswers[$qId] == $answerValue) {
+                        $available++;
+                    }
+                    // no available
+                    if ($available <= 0) {
+                        continue;
+                    }
+                }
+                // storing answer
                 if (isset($question['valueVariants'][$answerValue])) {
                     $curAnswers[$qId] = $answerValue;
                 }
-                $data['answers'][$env->get('user')->id] = $curAnswers;
             }
+
+            $data['answers'][$env->get('user')->id] = $curAnswers;
 
             $updated = true;
         }
@@ -209,5 +213,28 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
 
             $updated = true;
         }
+    }
+
+    protected function genAnswersStats(array $statUsers = array())
+    {
+        $data =& $this->pool['data'];
+
+        $statAnswers = array();
+        foreach ($data['answers'] as $uId => &$uAnswers) {
+            foreach ($uAnswers as $qId => $aId) {
+                $uName = isset($statUsers[$uId]) ? $statUsers[$uId]->name : $uId;
+                if (!isset($statAnswers[$qId])) {
+                    $statAnswers[$qId] = array(
+                        $aId  => array($uName),
+                    );
+                } elseif (!isset($statAnswers[$qId][$aId])) {
+                    $statAnswers[$qId][$aId] = array($uName);
+                } else {
+                    $statAnswers[$qId][$aId][] = $uName;
+                }
+            }
+        }
+
+        return $statAnswers;
     }
 }
