@@ -318,8 +318,8 @@
 {IF:IN_ASK_FOR_LOGIN}
  <div style="color: darkred;">Авторизируйтесь, чтобы сохранить ответы.</div>
 {ELSE}
- <button type="submit"{IF:IN_LOCKED} disabled="disabled" title="Вы уже ответили на все вопросы данной анкеты"{/IF}>{L_EDITOR_SUBMIT_FILL}</button>
- {IF:IN_LOCKED}<span title="Вы уже ответили на все вопросы данной анкеты">*</span>{/IF}
+ <button type="submit"{IF:IN_ANSWERED} disabled="disabled" title="Вы уже ответили на все вопросы данной анкеты"{/IF}>{L_EDITOR_SUBMIT_FILL}</button>
+ {IF:IN_ANSWERED}<span title="Вы уже ответили на все вопросы данной анкеты">*</span>{/IF}
 {/IF}
 </form>
 {/IF}
@@ -329,7 +329,12 @@
 <fieldset>
 <legend>
  {!IN_CAPTION}
- {IF:IN_LOCKED}<span title="вы уже ответили на этот вопрос">*</span>{/IF}
+ {IF:IN_LOCKED}
+  <strong title="вы не можете изменить ответ на этот вопрос">*</strong>
+ {ELSEIF:IN_ANSWERED}
+  <strong style="color: darkgreen;" title="вы уже ответили на этот вопрос">*</strong>
+  <a href="#" onclick="$(this).closest('fieldset').find('div.pollQuestionAnswer input').removeAttr('disabled'); $(this).closest('form').find('button[type=submit]').removeAttr('disabled'); $(this).remove(); return false;">[Изменить ответ]</a>
+ {/IF}
 </legend>
 <div class="pollQuestionAnswersContainer">
  {IN_variants}
@@ -364,6 +369,9 @@
  {VIS:SONE_OBJECT_POLL_ITEM_EDIT_VALUEVARIANT|QID=IN_ID}
  {/IF}
 </div>
+<div>
+ <label><input type="checkbox" name="questions[{!IN_ID}][lockAnswers]" value="1"{IF:IN_lockAnswers} checked="checked"{/IF} /> запретить изменение ответа</label>
+</div>
 <hr />
 </div>
 <<- 'SONE_OBJECT_POLL_ITEM_EDIT'>>
@@ -371,8 +379,8 @@
 <<+ 'SONE_OBJECT_POLL_ITEM_VALUEVARIANT'>>
 <div class="pollQuestionAnswer">
  <label>
-  <input type="radio" name="question_{!IN_QID}_answer" value="{!IN_value}"{IF:IN_selected} checked="checked"{/IF}{IF:IN_LOCKED} disabled="disabled"{/IF} />
-  {!IN_title}
+  <input type="radio" name="question_{!IN_QID}_answer" value="{!IN_value}"{IF:IN_selected} checked="checked"{/IF}{IF:IN_ANSWERED} disabled="disabled"{/IF} />
+  {!IN_title} {IF:IN_available}(осталось {IN_available}){/IF}
  </label>
 </div>
 <<- 'SONE_OBJECT_POLL_ITEM_VALUEVARIANT'>>
@@ -386,6 +394,7 @@
 <<+ 'SONE_OBJECT_POLL_ITEM_EDIT_VALUEVARIANT'>>
 <div class="pollEditQuestionAnswer">
  <input name="questions[{!IN_QID}][variants][{!IN_VALUE}]" value="{!IN_TITLE}" style="width: 600px;" />
+ <input name="questions[{!IN_QID}][limits][{!IN_VALUE}]" value="{!IN_LIMIT}" style="width: 30px;" title="Максимальное количество таких ответов" />
  <strong>( {IN_statVal} )</strong>
  <a href="#" onclick="if ($(this).closest('div.pollEditQuestionAnswersContainer').find('div.pollEditQuestionAnswer').length > 2) { $(this).closest('div.pollEditQuestionAnswer').remove(); } return false;">-</a>
 </div>

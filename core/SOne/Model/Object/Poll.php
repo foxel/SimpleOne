@@ -63,7 +63,8 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
             ? $data['answers'][$env->get('user')->id]
             : array();
 
-        $pollLocked = true;
+        $pollLocked   = true;
+        $pollAnswered = true;
 
         foreach($data['questions'] as $qId => &$question) {
             $answerValue = isset($curAnswers[$qId])
@@ -72,19 +73,31 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
 
             $node->appendChild('question_items', $item = new FVISNode($pollItemVisClass, 0, $env->get('VIS')));
             $item->addDataArray(array(
-                'id'     => $qId,
-                'locked' => ($questionLocked = $data['lockAnswers'] && isset($question['valueVariants'][$answerValue])) ? 1 : $pollLocked = null,
+                'id'       => $qId,
+                'answered' => ($questionAnswered = isset($question['valueVariants'][$answerValue])) ? 1 : $pollAnswered = null,
+                'locked'   => ($questionLocked = $question['lockAnswers'] && $questionAnswered) ? 1 : $pollLocked = null,
             ) + (array) $question);
             // TODO: other types of answers
             foreach ($question['valueVariants'] as $valueVariant => $valueTitle) {
+                $valueLimit  = isset($question['valueLimits'][$valueVariant])
+                    ? (int) $question['valueLimits'][$valueVariant]
+                    : null;
+                $valueCount  = isset($statAnswers[$qId][$valueVariant])
+                    ? count($statAnswers[$qId][$valueVariant])
+                    : 0;
+                $valueLocked = ($questionLocked) || ($valueLimit && ($valueVariant != $answerValue) && $valueCount >= $valueLimit);
+
                 $item->appendChild('variants', $variantItem = new FVISNode($pollItemVisClass.'_VALUEVARIANT', 0, $env->get('VIS')));
                 $variantItem->addDataArray(array(
                     'qId'       => $qId,
                     'value'     => $valueVariant,
                     'title'     => $valueTitle,
+                    'limit'     => $valueLimit,
+                    'available' => $valueLimit ? ($valueLimit - $valueCount) : null,
                     'selected'  => ($valueVariant == $answerValue) ? 1 : null,
-                    'locked'    => ($questionLocked) ? 1 : null,
-                    'statVal'   => isset($statAnswers[$qId][$valueVariant]) ? count($statAnswers[$qId][$valueVariant]) : 0,
+                    'answered'  => $questionAnswered ? 1 : null,
+                    'locked'    => $valueLocked ? 1 : null,
+                    'statVal'   => $valueCount,
                     'statUsers' => isset($statAnswers[$qId][$valueVariant]) ? implode(', ', $statAnswers[$qId][$valueVariant]) : null,
                 ));
             }
@@ -92,6 +105,7 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
 
         $node->addDataArray($this->pool + array(
             'locked'        => $pollLocked,
+            'answered'      => $pollAnswered,
             'ask_for_login' => $env->get('user')->id ? null : 1,
             'canEdit'       => $this->isActionAllowed('edit', $env->get('user')) ? 1 : null,
         ));
@@ -124,7 +138,7 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
                 : array();
 
             foreach($data['questions'] as $qId => &$question) {
-                if ($data['lockAnswers'] && isset($curAnswers[$qId]) && isset($question['valueVariants'][$curAnswers[$qId]])) {
+                if ($question['lockAnswers'] && isset($curAnswers[$qId]) && isset($question['valueVariants'][$curAnswers[$qId]])) {
                     continue;
                 }
 
@@ -146,7 +160,11 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
                 $newVariantsRaw = isset($newQuestionRaw['variants'])
                     ? (array) $newQuestionRaw['variants']
                     : array();
+                $newLimitsRaw = isset($newQuestionRaw['limits'])
+                    ? (array) $newQuestionRaw['limits']
+                    : array();
                 $newVariants = array();
+                $newLimits   = array();
 
                 if (empty($newVariantsRaw)
                     || !isset($newQuestionRaw['caption'])  || empty($newQuestionRaw['caption'])
@@ -155,25 +173,33 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
                 }
 
                 if (isset($oldQuestions[$qId])) {
-                    $oldVariants = $oldQuestions[$qId]['valueVariants'];
+                    $oldVariants = (array) $oldQuestions[$qId]['valueVariants'];
+                    $oldLimits   = (array) $oldQuestions[$qId]['valueLimits'];
                 } else {
                     $oldVariants = array();
+                    $oldLimits   = array();
                     $qId = FStr::shortUID();
                 }
 
-                foreach ($newVariantsRaw as $aId => $aTitle) {
+                foreach ($newVariantsRaw as $aIdRaw => $aTitle) {
                     if (!strlen($aTitle)) {
                         continue;
                     }
-                    if (!isset($oldVariants[$aId])) {
-                        $aId = FStr::shortUID();
-                    }
+                    $aId = isset($oldVariants[$aIdRaw])
+                        ? $aIdRaw
+                        : FStr::shortUID();
+
                     $newVariants[$aId] = $aTitle;
+                    if (isset($newLimitsRaw[$aIdRaw]) && $newLimitsRaw[$aIdRaw]) {
+                        $newLimits[$aId] = (int) $newLimitsRaw[$aIdRaw];
+                    }
                 }
 
                 $newQuestions[$qId] = array(
-                    'caption' => $newQuestionRaw['caption'],
+                    'caption'       => $newQuestionRaw['caption'],
+                    'lockAnswers'   => isset($newQuestionRaw['lockAnswers']) && $newQuestionRaw['lockAnswers'] ? true : false,
                     'valueVariants' => $newVariants,
+                    'valueLimits'   => $newLimits,
                 );
             }
 
