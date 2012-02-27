@@ -1,11 +1,28 @@
 <?php
 
-abstract class SOne_Model_Object extends FBaseClass
+abstract class SOne_Model_Object extends SOne_Model
 {
     /**
      * @var array
      */
     protected $aclEditActionsList = array('edit', 'save');
+
+    /**
+     * @var array
+     */
+    protected static $classNamespaces = array(__CLASS__);
+
+    /**
+     * adds new namespace for object classes lookup
+     * @param  string $namespace
+     */
+    public static function addNamespace($namespace)
+    {
+        $namespace = (string) $namespace;
+        if (!in_array($namespace, self::$classNamespaces)) {
+            self::$classNamespaces[] = $namespace;
+        }
+    }
 
     /**
      * @param  array $init
@@ -14,13 +31,15 @@ abstract class SOne_Model_Object extends FBaseClass
     public static function construct(array $init)
     {
         if (!isset($init['class'])) {
-            return null;
+            throw new FException('SOne object construct without class specified');
         }
 
-        $className = __CLASS__.'_'.ucfirst($init['class']);
+        foreach (self::$classNamespaces as &$namespace) {
+            $className = $namespace.'_'.ucfirst($init['class']);
 
-        if (class_exists($className, true)) {
-            return new $className($init);
+            if (class_exists($className, true)) {
+                return new $className($init);
+            }
         }
 
         return new SOne_Model_Object_Common($init);
@@ -32,19 +51,21 @@ abstract class SOne_Model_Object extends FBaseClass
     public function __construct(array $init = array())
     {
         $this->pool = array(
-            'id'          => isset($init['id'])          ? (int) $init['id']           : null,
-            'parentId'    => isset($init['parent_id'])   ? (int) $init['parent_id']    : null,
-            'className'   => isset($init['class'])       ? (string) $init['class']     : lcfirst(strtr(get_class($this), array(__CLASS__ => ''))),
-            'caption'     => isset($init['caption'])     ? (string) $init['caption']   : '',
-            'ownerId'     => isset($init['owner_id'])    ? (int) $init['owner_id']     : null,
-            'createTime'  => isset($init['create_time']) ? (int) $init['create_time']  : time(),
-            'updateTime'  => isset($init['update_time']) ? (int) $init['update_time']  : time(),
-            'accessLevel' => isset($init['acc_lvl'])     ? (int) $init['acc_lvl']      : 0,
-            'editLevel'   => isset($init['edit_lvl'])    ? (int) $init['edit_lvl']     : 3,
-            'path'        => isset($init['path'])        ? (string) $init['path']      : '',
-            'pathHash'    => isset($init['path_hash'])   ? (string) $init['path_hash'] : md5(isset($init['path']) ? (string) $init['path'] : ''),
-            'orderId'     => isset($init['order_id'])    ? (int) $init['order_id']     : 0,
-            'data'        => isset($init['data'])        ? unserialize($init['data'])  : null,
+            'id'          => isset($init['id'])          ?  (int)    $init['id']          : null,
+            'parentId'    => isset($init['parentId'])    ?  (int)    $init['parentId']    : null,
+            'class'       => isset($init['class'])       ?  (string) $init['class']       : lcfirst(strtr(get_class($this), array(__CLASS__ => ''))),
+            'caption'     => isset($init['caption'])     ?  (string) $init['caption']     : '',
+            'ownerId'     => isset($init['ownerId'])     ?  (int)    $init['ownerId']     : null,
+            'createTime'  => isset($init['createTime'])  ?  (int)    $init['createTime']  : time(),
+            'updateTime'  => isset($init['updateTime'])  ?  (int)    $init['updateTime']  : time(),
+            'accessLevel' => isset($init['accessLevel']) ?  (int)    $init['accessLevel'] : 0,
+            'editLevel'   => isset($init['editLevel'])   ?  (int)    $init['editLevel']   : 3,
+            'orderId'     => isset($init['orderId'])     ?  (int)    $init['orderId']     : 0,
+
+            'path'        => isset($init['path'])        ?  (string) $init['path']        : '',
+            'pathHash'    => isset($init['pathHash'])    ?  (string) $init['pathHash']    : md5(isset($init['path']) ? (string) $init['path'] : ''),
+
+            'data'        => isset($init['data'])        ? $init['data']                  : null,
             'actionState' => null,
         );
 

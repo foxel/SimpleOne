@@ -19,21 +19,12 @@ class SOne_Model_Object_HTMLPage extends SOne_Model_Object_Commentable
         }
         $node = new FVISNode('SONE_OBJECT_HTMLPAGE', 0, $env->get('VIS'));
         $data = $this->pool;
-        if ($data['comments']) {
-            $comments = $data['comments'];
-            $uIds = F2DArray::cols($comments, 'author_id');
-            $users = SOne_Repository_User::getInstance($env->get('db'))->loadAll(array('id' => $uIds));
-            foreach ($comments as &$comment) {
-                $comment['author_name'] = isset($users[$comment['author_id']]) ? $users[$comment['author_id']]->name : null;
-            }
-
-            $node->appendChild('comments', $commentsNode = new FVISNode('SONE_OBJECT_COMMENTS_ITEM', FVISNode::VISNODE_ARRAY, $env->get('VIS')));
-            $commentsNode->addDataArray($comments);
-            unset($data['comments']);
+        if ($this->commentsAllowed) {
+            $node->appendChild('commentsBlock', $this->visualizeComments($env, (bool) $env->get('user')->id));
         }
+        unset($data['comments']);
         $node->addDataArray($data + array(
             'canEdit'       => $this->isActionAllowed('edit', $env->get('user')) ? 1 : null,
-            'canAddComment' => $env->get('user')->id ? 1 : null,
         ));
         return $node;
     }

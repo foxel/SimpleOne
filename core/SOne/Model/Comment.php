@@ -1,6 +1,6 @@
 <?php
 
-class SOne_Model_Comment 
+class SOne_Model_Comment extends SOne_Model
 {
     public $id        = null;
     public $answerTo  = null;

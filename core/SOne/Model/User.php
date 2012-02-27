@@ -1,29 +1,29 @@
 <?php
 
-class SOne_Model_User extends FBaseClass
+class SOne_Model_User extends SOne_Model
 {
     public function __construct(array $init = array())
     {
         $this->pool = array(
-            'id'              => isset($init['id'])          ? (int) $init['id']             : null,
-            'name'            => isset($init['nick'])        ? (string) $init['nick']        : '',
-            'email'           => isset($init['email'])       ? (string) $init['email']       : '',
-            'accessLevel'     => isset($init['level'])       ? (int) $init['level']          : 0,
-            'modLevel'        => isset($init['mod_lvl'])     ? (int) $init['mod_lvl']        : 0,
-            'adminLevel'      => isset($init['adm_lvl'])     ? (int) $init['adm_lvl']        : 0,
-            'frozen'          => isset($init['frozen'])      ? (bool) $init['frozen']        : false,
-            'readonly'        => isset($init['readonly'])    ? (bool) $init['readonly']      : false,
-            'avatar'          => isset($init['avatar'])      ? (string) $init['avatar']      : null,
-            'registerTime'    => isset($init['regtime'])     ? (int) $init['regtime']        : time(),
-            'lastSeen'        => isset($init['lastseen'])    ? (int) $init['lastseen']       : time(),
-            'lastUrl'         => isset($init['last_url'])    ? (string) $init['last_url']    : '',
-            'lastUserAgent'   => isset($init['last_uagent']) ? (string) $init['last_uagent'] : '',
-            'lastIP'          => isset($init['last_ip'])     ? (int) $init['last_ip']        : 0,
-            'lastSID'         => isset($init['last_sid'])    ? (string) $init['last_sid']    : '',
+            'id'              => isset($init['id'])              ?  (int)    $init['id']              : null,
+            'name'            => isset($init['name'])            ?  (string) $init['name']            : '',
+            'email'           => isset($init['email'])           ?  (string) $init['email']           : '',
+            'accessLevel'     => isset($init['accessLevel'])     ?  (int)    $init['accessLevel']     : 0,
+            'modLevel'        => isset($init['modLevel'])        ?  (int)    $init['modLevel']        : 0,
+            'adminLevel'      => isset($init['adminLevel'])      ?  (int)    $init['adminLevel']      : 0,
+            'frozen'          => isset($init['frozen'])          ?  (bool)   $init['frozen']          : false,
+            'readonly'        => isset($init['readonly'])        ?  (bool)   $init['readonly']        : false,
+            'avatar'          => isset($init['avatar'])          ?  (string) $init['avatar']          : null,
+            'registerTime'    => isset($init['registerTime'])    ?  (int)    $init['registerTime']    : time   () ,
+            'lastSeen'        => isset($init['lastSeen'])        ?  (int)    $init['lastSeen']        : time   () ,
+            'lastUrl'         => isset($init['lastUrl'])         ?  (string) $init['lastUrl']         : '',
+            'lastUserAgent'   => isset($init['lastUserAgent'])   ?  (string) $init['lastUserAgent']   : '',
+            'lastIP'          => isset($init['lastIP'])          ?  (int)    $init['lastIP']          : 0,
+            'lastSID'         => isset($init['lastSID'])         ?  (string) $init['lastSID']         : '',
 
-            'login'           => isset($init['login'])       ? (string) $init['login']       : null,
-            'cryptedPassword' => isset($init['pass_crypt'])  ? (string) $init['pass_crypt']  : null,
-            'lastAuth'        => isset($init['last_auth'])   ? (int) $init['last_auth']      : null,
+            'login'           => isset($init['login'])           ?  (string) $init['login']           : null,
+            'cryptedPassword' => isset($init['cryptedPassword']) ?  (string) $init['cryptedPassword'] : null,
+            'lastAuth'        => isset($init['lastAuth'])        ?  (int)    $init['lastAuth']        : null,
         );
 
         $this->pool['authUpdated'] = !$this->pool['id'];

@@ -203,9 +203,9 @@
 </div>{/IF}
 <h2>{IN_CAPTION}</h2>
 <div class="htmlpage">{IN_CONTENT}</div>
-{IF:IN_commentsAllowed}
+{IF:IN_commentsBlock}
  <hr />
- {VIS:SONE_OBJECT_COMMENTS|ACTIONSTATE=IN_actionState|COMMENTS=IN_COMMENTS|PATH=IN_PATH|ALLOW_ADD=IN_canAddComment}
+ {IN_commentsBlock}
 {/IF}
 {/IF}
 <<- 'SONE_OBJECT_HTMLPAGE'>>
@@ -213,7 +213,7 @@
 <<+ 'SONE_OBJECT_COMMENTS'>>
 <h3>Комментарии:</h3>
 <div style="margin: 10px;">
-{IF:IN_ALLOW_ADD}
+{IF:IN_allowAdd}
 <span{IF:IN_actionState="addComment"} style="display: none;"{/IF}><a href="{FULLURL:IN_PATH}?addComment" onclick="$(this).closest('span').hide().parent().find('div.objectCommentsFormContainer').show(); return false;">[Добавить комментарий]</a></span>
 <div class="objectCommentsFormContainer"{!IF:IN_actionState="addComment"} style="display: none;"{/IF}>
 {VIS:SONE_OBJECT_COMMENTS_FORM|PATH=IN_PATH}

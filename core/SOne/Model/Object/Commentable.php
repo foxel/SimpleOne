@@ -77,6 +77,31 @@ abstract class SOne_Model_Object_Commentable extends SOne_Model_Object implement
         $this->pool['comments'] = F2DArray::tree($comments, 'id', 'answer_to');
     }
 
+    public function visualizeComments(K3_Environment $env, $allowAddComment = true)
+    {
+        $node = new FVISNode('SONE_OBJECT_COMMENTS', 0, $env->get('VIS'));
+        $node->addDataArray(array(
+            'actionState' => $this->actionState,
+            'path'        => $this->path,
+            'allowAdd'    => $allowAddComment && $this->commentsAllowed ? 1 : null,
+        ));
+        if ($this->comments) {
+            $comments = $this->comments;
+
+            $uIds = array_unique(F2DArray::cols($comments, 'author_id'));
+            $userNames = SOne_Repository_User::getInstance($env->get('db'))->loadNames(array('id' => $uIds));
+            foreach ($comments as &$comment) {
+                $comment['author_name'] = isset($userNames[$comment['author_id']]) ? $userNames[$comment['author_id']] : null;
+            }
+
+            $node->appendChild('comments', $commentsNode = new FVISNode('SONE_OBJECT_COMMENTS_ITEM', FVISNode::VISNODE_ARRAY, $env->get('VIS')));
+            $commentsNode->addDataArray($comments);
+            unset($data['comments']);
+        }
+
+        return $node;
+    }
+
     public function loadExtraData(FDataBase $db)
     {
         if (!$this->pool['id']) {

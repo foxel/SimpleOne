@@ -4,7 +4,7 @@ abstract class SOne_Repository
 {
     protected $db    = null;
     protected $cache = array();
-    public static $instances = array();
+    protected static $instances = array();
 
     public function __construct(FDataBase $db)
     {
@@ -38,6 +38,19 @@ abstract class SOne_Repository
         $objects = $this->loadAll($filter);
 
         return reset($objects);
+    }
+
+    public static function mapModelToDb(SOne_Model $model, array $map, $exclude = null)
+    {
+        $exclude = (array) $exclude;
+        $res = array();
+        foreach ($map as $modelField => $dbField) {
+            if (in_array($modelField, $exclude)) {
+                continue;
+            }
+            $res[$dbField] = $model->$modelField;
+        }
+        return $res;
     }
 }
 

@@ -2,11 +2,34 @@
 
 class SOne_Repository_User extends SOne_Repository
 {
+    protected static $dbMap = array(
+        'id'              => 'id',
+        'name'            => 'nick',
+        'email'           => 'email',
+        'accessLevel'     => 'level',
+        'modLevel'        => 'mod_lvl',
+        'adminLevel'      => 'adm_lvl',
+        'frozen'          => 'frozen',
+        'readonly'        => 'readonly',
+        'avatar'          => 'avatar',
+        'registerTime'    => 'regtime',
+        'lastSeen'        => 'lastseen',
+        'lastUrl'         => 'last_url',
+        'lastUserAgent'   => 'last_uagent',
+        'lastIP'          => 'last_ip',
+        'lastSID'         => 'last_sid',
+    );
+
+    protected static $dbMapAuth = array(
+        'login'           => 'login',
+        'cryptedPassword' => 'pass_crypt',
+        'lastAuth'        => 'last_auth',
+    );
 
     public function loadAll(array $filters = array())
     {
-        $select = $this->db->select('users', 'u')
-            ->joinLeft('users_auth', array('uid' => 'u.id'), 'a', array('login', 'pass_crypt'))
+        $select = $this->db->select('users', 'u', self::$dbMap)
+            ->joinLeft('users_auth', array('uid' => 'u.id'), 'a', self::$dbMapAuth)
             ->order('u.id');
 
         foreach ($filters as $key => $filter) {
@@ -24,41 +47,40 @@ class SOne_Repository_User extends SOne_Repository
         return $objects;
     }
 
+    public function loadNames(array $filters = array())
+    {
+        $select = $this->db->select('users', 'u', array('id', 'nick'))
+            ->order('u.id');
+
+        foreach ($filters as $key => $filter) {
+            $select->where($key, $filter);
+        }
+
+        $rows = $select->fetchAll();
+
+        $names = array();
+        foreach ($rows as $row) {
+            $names[$row['id']] = $row['nick'];
+        }
+
+        return $names;
+    }
+
     public function save(SOne_Model_User $object)
     {
-        $userData = array(
-            'nick'        => $object->name,
-            'email'       => $object->email,
-            'level'       => $object->accessLevel,
-            'mod_lvl'     => $object->modLevel,
-            'adm_lvl'     => $object->adminLevel,
-            'frozen'      => $object->frozen,
-            'readonly'    => $object->readonly,
-            'avatar'      => $object->avatar,
-            'regtime'     => $object->registerTime,
-            'lastseen'    => $object->lastSeen,
-            'last_url'    => $object->lastUrl,
-            'last_uagent' => $object->lastUserAgent,
-            'last_ip'     => $object->lastIP,
-            'last_sid'    => $object->lastSID,
-        );
+        $userData = self::mapModelToDb($object, self::$dbMap, 'id');
 
         if ($object->id) {
             $this->db->doUpdate('users', $userData, array('id' => $object->id));
         } else {
             $object->id = $this->db->doInsert('users', $userData);
         }
-        
+
         if ($object->authUpdated) {
             if (!empty($object->login)) {
-                $authData = array(
-                    'uid'        => $object->id,
-                    'login'      => $object->login,
-                    'pass_crypt' => $object->cryptedPassword,
-                    'last_auth'  => $object->lastAuth,
-                );
+                $authData = self::mapModelToDb($object, self::$dbMapAuth);
 
-                $this->db->doInsert('users_auth', $authData, true);
+                $this->db->doInsert('users_auth', $authData + array('uid' => $object->id), true);
             } else {
                 $this->db->doDelete('users_auth', array('uid' => $object->id));
             }
