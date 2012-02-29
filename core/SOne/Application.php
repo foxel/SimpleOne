@@ -21,7 +21,7 @@ class SOne_Application extends K3_Application
 
     public function bootstrap()
     {
-        $this->config = FMisc::loadDatafile(F_DATA_ROOT.DIRECTORY_SEPARATOR.'sone.qfc.php', FMisc::DF_SLINE);
+        $this->config = new FDataPool($c = (array) FMisc::loadDatafile(F_DATA_ROOT.DIRECTORY_SEPARATOR.'sone.qfc.php', FMisc::DF_SLINE));
 
         // preparing DB
         $this->db = F()->DBase; //new FDataBase('mysql');
@@ -104,6 +104,7 @@ class SOne_Application extends K3_Application
         }
 
         $pageNode->appendChild('page_cont', $objectNode);
+        $pageNode->addData('site_name', $this->config['site.name']);
         $pageNode->addData('page_title', $pageObject->caption);
         //$pageNode->addData('page_cont', '<pre>'.print_r(get_included_files(), true).'</pre>');
         //$pageNode->addData('page_cont', '<pre>'.print_r($this->db->history, true).'</pre>');
