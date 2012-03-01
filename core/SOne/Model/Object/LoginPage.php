@@ -5,7 +5,7 @@ class SOne_Model_Object_LoginPage extends SOne_Model_Object
     public function visualize(K3_Environment $env)
     {
         if ($this->actionState == 'redirect') {
-            $env->response->sendRedirect('/');
+            $env->response->sendRedirect($this->path);
         }
         $node = new FVISNode('SONE_OBJECT_LOGINPAGE', 0, $env->get('VIS'));
         $user = $env->get('user');
@@ -60,14 +60,14 @@ class SOne_Model_Object_LoginPage extends SOne_Model_Object
 
             if (empty($errors)) {
                 $user = new SOne_Model_User(array(
-                    'login' => $login,
-                    'nick'  => $username,
-                    'email' => $email,
-                    'level' => 1,
-                    'regtime' => time(),
+                    'login'        => $login,
+                    'name'         => $username,
+                    'email'        => $email,
+                    'accessLevel'  => 1,
+                    'registerTime' => time(),
                 ));
                 $user->password = $password;
-                $users->save($user);
+                $users->save($user->updateLastSeen($env));
                 $env->session->userId = $user->id;
                 $env->put('user', $user);
                 $this->pool['actionState'] = 'redirect';

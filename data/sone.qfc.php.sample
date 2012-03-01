@@ -3,9 +3,12 @@
 db.host => localhost
 db.database => dev.simpleone
 db.username => developer
-db.password => pass
+db.password => 
 db.prefix => qfso_
 
-site.name => Сибфурренция
+site.name => site name
+
+vk.appId => 100
+vk.appSecret => XxxX
 
 */

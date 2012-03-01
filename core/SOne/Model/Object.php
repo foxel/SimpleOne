@@ -173,6 +173,10 @@ abstract class SOne_Model_Object extends SOne_Model
     public function doAction($action, K3_Environment $env, &$objectUpdated = false)
     {
         $this->pool['actionState'] = $action;
+        $actionMethod = $action.'Action';
+        if (method_exists($this, $actionMethod)) {
+            $this->$actionMethod($env, $objectUpdated);
+        }
     }
 
     /**
