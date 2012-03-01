@@ -1,0 +1,8 @@
+<<+ 'SONE_OBJECT_LOGINPAGE_VKAUTH'>>
+{VIS:SONE_OBJECT_LOGINPAGE|_}
+<hr />
+{!IF:IN_LOGGED_AS}
+<a href="{IN_vkAuthLink}">Войти, используя аккаунт ВКонтакте</a>
+{/IF}
+<<- 'SONE_OBJECT_LOGINPAGE_VKAUTH'>>
+
