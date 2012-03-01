@@ -74,6 +74,7 @@ class SOne_Model_Object_LoginPage_VKAuth extends SOne_Model_Object_LoginPage
                 'accessLevel'  => 1,
                 'registerTime' => time(),
             ));
+            $env->session->open();
             $users->save($user->updateLastSeen($env));
             $db->doInsert('vk_users', array(
                 'token' => $tokenData->access_token,
