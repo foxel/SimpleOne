@@ -23,14 +23,10 @@ class SOne_Model_Object_LoginPage extends SOne_Model_Object
             $users = SOne_Repository_User::getInstance($env->get('db'));
             $user = $users->loadOne(array('login' => $env->request->getString('login', K3_Request::POST, FStr::WORD)));
             if ($user && $user->checkPassword($env->request->getString('password', K3_Request::POST, FStr::LINE))) {
-                $env->session->userId = $user->id;
-                $users->save($user->updateLastSeen($env));
-                $env->put('user', $user);
-                $this->pool['actionState'] = 'redirect';
+                $env->get('app')->setAuthUser($user);
             }
         } elseif ($action == 'logout') {
-            $env->session->drop('userId');
-            $env->put('user', new SOne_Model_User());
+            $env->get('app')->dropAuthUser();
             $this->pool['actionState'] = 'redirect';
         } elseif ($action == 'register') {
             $users    = SOne_Repository_User::getInstance($env->get('db'));
@@ -67,9 +63,8 @@ class SOne_Model_Object_LoginPage extends SOne_Model_Object
                     'registerTime' => time(),
                 ));
                 $user->password = $password;
-                $users->save($user->updateLastSeen($env));
-                $env->session->userId = $user->id;
-                $env->put('user', $user);
+                $users->save($user);
+                $env->get('app')->setAuthUser($user);
                 $this->pool['actionState'] = 'redirect';
             } else {
                 $this->pool['errors'] = '<ul><li>'.implode('</li><li>', $errors).'</li></ul>';
@@ -82,5 +77,6 @@ class SOne_Model_Object_LoginPage extends SOne_Model_Object
             }
         }
     }
+
 
 }

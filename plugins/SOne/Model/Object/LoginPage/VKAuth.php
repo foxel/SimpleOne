@@ -14,7 +14,10 @@ class SOne_Model_Object_LoginPage_VKAuth extends SOne_Model_Object_LoginPage
             'response_type' => 'code',
         );
         $node->setType('SONE_OBJECT_LOGINPAGE_VKAUTH')
-            ->addData('vkAuthLink', 'http://oauth.vk.com/authorize?'.http_build_query($request, '_', '&amp;'));
+            ->addDataArray(array(
+                'vkAuthLink' => 'http://oauth.vk.com/authorize?'.http_build_query($request, '_', '&amp;'),
+                'vkAppId'    => $config['vk.appId'],
+            ));
 
         return $node;
     }
@@ -48,9 +51,7 @@ class SOne_Model_Object_LoginPage_VKAuth extends SOne_Model_Object_LoginPage
         if ($userId = $db->doSelect('vk_users', 'uid', array('vk_id' => $tokenData->user_id))) {
             $db->doUpdate('vk_users', array('token' => $tokenData->access_token), array('vk_id' => $tokenData->user_id));
             $user = $users->loadOne(array('id' => $userId));
-            $env->session->userId = $user->id;
-            $users->save($user->updateLastSeen($env));
-            $env->put('user', $user);
+            $env->get('app')->setAuthUser($user);
             $this->pool['actionState'] = 'redirect';
         } else {
             $infoRequest = array(
@@ -74,16 +75,79 @@ class SOne_Model_Object_LoginPage_VKAuth extends SOne_Model_Object_LoginPage
                 'accessLevel'  => 1,
                 'registerTime' => time(),
             ));
-            $env->session->open();
-            $users->save($user->updateLastSeen($env));
+            $users->save($user);
             $db->doInsert('vk_users', array(
                 'token' => $tokenData->access_token,
                 'vk_id' => $tokenData->user_id,
                 'uid'   => $user->id,
             ));
-            $env->session->userId = $user->id;
-            $env->put('user', $user);
+            $env->get('app')->setAuthUser($user);
             $this->pool['actionState'] = 'redirect';
         }
+    }
+
+    protected function vkauthcookieAction(K3_Environment $env, &$updated = false)
+    {
+        $this->pool['actionState'] = 'redirect';
+        $config = $env->get('app')->config;
+        $cookieName = 'vk_app_'.$config['vk.appId'];
+        $cookieValue = $env->getCookie($cookieName, false);
+
+        $vkUserId = $this->checkVkCookie($cookieValue, $config['vk.appSecret']);
+        if (!$vkUserId) {
+            return;
+        }
+
+        $db = $env->get('db');
+        if ($userId = $db->doSelect('vk_users', 'uid', array('vk_id' => $vkUserId))) {
+            $users    = SOne_Repository_User::getInstance($env->get('db'));
+            $user = $users->loadOne(array('id' => $userId));
+            $env->get('app')->setAuthUser($user);
+            $this->pool['actionState'] = 'redirect';
+        } else {
+            $request = array(
+                'client_id' => $config['vk.appId'],
+                'scope' => 'notify,offline',
+                'redirect_uri' => FStr::fullUrl($this->path.'?vkauth'),
+                'response_type' => 'code',
+            );
+            $env->response->sendRedirect('http://oauth.vk.com/authorize?'.http_build_query($request, '_', '&amp;'));
+        }
+    }
+
+    protected function logoutAction(K3_Environment $env, &$updated = false)
+    {
+        $this->pool['actionState'] = 'redirect';
+        $config = $env->get('app')->config;
+        $cookieName = 'vk_app_'.$config['vk.appId'];
+        $env->setCookie($cookieName, false, false, false, false);
+    }
+
+    protected function checkVkCookie($cookieValue, $appSecret)
+    {
+        static $hashParams = array('expire', 'mid', 'secret', 'sid');
+        $params = array();
+        parse_str($cookieValue, $params);
+
+        if (!isset($params['expire']) || !isset($params['sig']) || $params['expire'] < time()) {
+            return false;
+        }
+
+        $stringToHash = '';
+        foreach ($hashParams as $pName) {
+            if (!isset($params[$pName])) {
+                return false;
+            }
+
+            $stringToHash.= $pName.'='.$params[$pName];
+        }
+        $stringToHash.= $appSecret;
+        $hash = md5($stringToHash);
+
+        if ($params['sig'] != $hash) {
+            return false;
+        }
+
+        return (int) $params['mid'];
     }
 }

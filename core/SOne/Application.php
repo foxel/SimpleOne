@@ -160,4 +160,19 @@ class SOne_Application extends K3_Application
 
         return $user;
     }
+
+    public function setAuthUser(SOne_Model_User $user)
+    {
+        $users = SOne_Repository_User::getInstance($this->db);
+        $this->env->session->open();
+        $users->save($user->updateLastSeen($this->env));
+        $this->env->session->userId = $user->id;
+        $this->env->put('user', $user);
+    }
+
+    public function dropAuthUser()
+    {
+        $this->env->session->drop('userId');
+        $this->env->put('user', new SOne_Model_User());
+    }
 }

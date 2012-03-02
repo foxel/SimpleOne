@@ -2,7 +2,25 @@
 {VIS:SONE_OBJECT_LOGINPAGE|_}
 <hr />
 {!IF:IN_LOGGED_AS}
-<a href="{IN_vkAuthLink}">Войти, используя аккаунт ВКонтакте</a>
+<script src="http://vkontakte.ru/js/api/openapi.js" type="text/javascript"></script>
+<script type="text/javascript">
+  VK.init({apiId: '{IN_vkAppId}'});
+  $(function() {
+    function checkLogin(r) {
+      if (r.session) {
+        window.location.href="{FULLURL:IN_PATH}?vkauthcookie";
+      } else {
+        window.location.href=$('a.vkAuthLogin').attr('href');
+      }
+      console.log(r);
+    }
+    $('a.vkAuthLogin').click(function() {
+      VK.Auth.getLoginStatus(checkLogin);
+      return false;
+    });
+  });
+</script>
+<a href="{IN_vkAuthLink}" class="vkAuthLogin" >Войти, используя аккаунт ВКонтакте</a>
 {/IF}
 <<- 'SONE_OBJECT_LOGINPAGE_VKAUTH'>>
 
