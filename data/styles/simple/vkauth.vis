@@ -14,13 +14,14 @@
       }
       console.log(r);
     }
-    $('a.vkAuthLogin').click(function() {
+    $('#vkAuthLoginButton').click(function() {
       VK.Auth.getLoginStatus(checkLogin);
       return false;
     });
+    VK.UI.button($('#vkAuthLoginButton')[0]);
   });
 </script>
-<a href="{IN_vkAuthLink}" class="vkAuthLogin" >Войти, используя аккаунт ВКонтакте</a>
+<a href="{IN_vkAuthLink}" id="vkAuthLoginButton" >Войти, используя аккаунт ВКонтакте</a>
 {/IF}
 <<- 'SONE_OBJECT_LOGINPAGE_VKAUTH'>>
 
