@@ -10,7 +10,7 @@
       if (r.session) {
         window.location.href="{FULLURL:IN_PATH}?vkauthcookie";
       } else {
-        window.location.href=$('a.vkAuthLogin').attr('href');
+        window.location.href=$('#vkAuthLoginButton').attr('href');
       }
       console.log(r);
     }
