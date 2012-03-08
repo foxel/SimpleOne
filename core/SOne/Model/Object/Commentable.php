@@ -96,7 +96,6 @@ abstract class SOne_Model_Object_Commentable extends SOne_Model_Object implement
 
             $node->appendChild('comments', $commentsNode = new FVISNode('SONE_OBJECT_COMMENTS_ITEM', FVISNode::VISNODE_ARRAY, $env->get('VIS')));
             $commentsNode->addDataArray($comments);
-            unset($data['comments']);
         }
 
         return $node;
