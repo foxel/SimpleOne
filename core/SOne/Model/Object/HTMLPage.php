@@ -52,15 +52,13 @@ class SOne_Model_Object_HTMLPage extends SOne_Model_Object_Commentable
         return $allowed;
     }
 
-    public function doAction($action, K3_Environment $env, &$updated = false)
+    protected function saveAction(K3_Environment $env, &$updated = false)
     {
-        parent::doAction($action, $env, $updated);
-        if ($action == 'save') {
-            $this->content = $env->request->getString('content', K3_Request::POST);
-            $this->pool['commentsAllowed'] = $env->request->getBinary('commentsAllowed', K3_Request::POST);
-            $this->pool['updateTime'] = time();
-            $updated = true;
-        }
+        parent::saveAction($env, $updated);
+        $this->content = $env->request->getString('content', K3_Request::POST);
+        $this->pool['commentsAllowed'] = $env->request->getBinary('commentsAllowed', K3_Request::POST);
+        $this->pool['updateTime'] = time();
+        $updated = true;
     }
 
     protected function setData(array $data)

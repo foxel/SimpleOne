@@ -180,6 +180,20 @@ abstract class SOne_Model_Object extends SOne_Model
     }
 
     /**
+     * saves caption
+     * @param  K3_Environment $env
+     * @param  boolean &$objectUpdated
+     */
+    protected function saveAction(K3_Environment $env, &$objectUpdated = false)
+    {
+        $newCaption = $env->request->getString('caption', K3_Request::POST, FStr::LINE);
+        if ($newCaption) {
+            $this->pool['caption'] = $newCaption;
+            $objectUpdated = true;
+        }
+    }
+
+    /**
      * @param  K3_Environment $env
      * @return FVISNode
      */

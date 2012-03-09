@@ -170,6 +170,17 @@
 <pre>{IN_DATA}</pre>
 <<- 'SONE_OBJECT_COMMON'>>
 
+<<+ 'SONE_OBJECT_EDITFORM'>>
+<form action="{FULLURL:IN_PATH}?{IF:IN_saveAction}{!IN_saveAction}{ELSE}save{/IF}" method="post"{IF:IN_formClass} class="{IN_formClass}"{/IF} >
+ <label>{L_EDITOR_OBJECT_CAPTION}: <input type="text" name="caption" value="{IN_caption}" /></label>
+ <hr />
+ {IN_formElements}
+ <hr />
+ {IN_formButtons}
+ <button type="submit">{L_EDITOR_SUBMIT_SAVE}</button>
+</form>
+<<- 'SONE_OBJECT_EDITFORM'>>
+
 <<+ 'SONE_PAGE_404'>>
 <h1>404</h1>
 <<- 'SONE_PAGE_404'>>
@@ -180,12 +191,11 @@
 
 <<+ 'SONE_OBJECT_HTMLPAGE'>>
 {IF:IN_actionState="edit"}
-<form action="{FULLURL:IN_PATH}?save" method="post">
+ {!WRITE:formElements}
  <textarea class="htmleditor" name="content" style="width: 100%; height: 450px;">{!IN_CONTENT}</textarea>
  <label><input type="checkbox" name="commentsAllowed"{IF:IN_commentsAllowed} checked="checked"{/IF} /> разрешить комментарии</label>
- <hr />
- <button type="submit">{L_EDITOR_SUBMIT_SAVE}</button>
-</form>
+ {WRITE}
+ {VIS:SONE_OBJECT_EDITFORM|formElements=formElements|_}
 {ELSE}
 {IF:IN_canEdit}<div style="float: right;">
     <a href="{FULLURL:IN_PATH}?edit">[Править]</a>
@@ -266,9 +276,8 @@
 
 <<+ 'SONE_OBJECT_POLL'>>
 {IF:IN_actionState="edit"}
-<form action="{FULLURL:IN_PATH}?save" method="POST" class="pollEditor">
+ {!WRITE:formElements}
  <textarea class="htmleditor" name="description" style="width: 100%; height: 450px;">{!IN_DESCRIPTION}</textarea>
- <hr />
  <div class="pollEditQuestionsContainer">
  {IF:IN_question_items}{IN_question_items}{ELSE}
  {VIS:SONE_OBJECT_POLL_ITEM_EDIT|ID="0"}
@@ -277,9 +286,10 @@
  <div class="pollEditQuestionTemplateContainer" style="display: none;">
  {VIS:SONE_OBJECT_POLL_ITEM_EDIT|ID="{id}"}
  </div>
+ {!WRITE:formButtons}
  <a href="#" onclick="var c = $(this).closest('form.pollEditor').find('div.pollEditQuestionTemplateContainer').find('div.pollEditQuestion').last().clone(); var i = c.find('input').val(''); var r = (new Date).getTime()+Math.random(); i.each(function() {$(this).attr('name', $(this).attr('name').replace(/\{id\}/, r));}); $(this).closest('form.pollEditor').find('div.pollEditQuestionsContainer').append(c); return false;">[Добавить вопрос]</a>
- <button type="submit">{L_EDITOR_SUBMIT_SAVE}</button>
-</form>
+ {WRITE}
+ {VIS:SONE_OBJECT_EDITFORM|formElements=formElements|formButtons=formButtons|formClass="pollEditor"|_}
 {ELSEIF:IN_actionState="stat"}
 {IF:IN_canEdit}<div style="float: right;">
  <a href="{FULLURL:IN_PATH}?edit">[Править]</a>
@@ -344,6 +354,7 @@
 
 <<+ 'SONE_OBJECT_POLL_ITEM_EDIT'>>
 <div class="pollEditQuestion">
+<hr />
 <label>
  Вопрос: <input name="questions[{!IN_ID}][caption]" value="{!IN_CAPTION}" style="width: 600px;" />
 </label>
@@ -361,7 +372,6 @@
 <div>
  <label><input type="checkbox" name="questions[{!IN_ID}][lockAnswers]" value="1"{IF:IN_lockAnswers} checked="checked"{/IF} /> запретить изменение ответа</label>
 </div>
-<hr />
 </div>
 <<- 'SONE_OBJECT_POLL_ITEM_EDIT'>>
 
