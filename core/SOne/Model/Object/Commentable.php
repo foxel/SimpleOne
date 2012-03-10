@@ -88,14 +88,6 @@ abstract class SOne_Model_Object_Commentable extends SOne_Model_Object implement
         if ($this->comments) {
             $comments = $this->comments;
 
-            $uIds = array_unique(F2DArray::cols($comments, 'author_id'));
-            $userNames = SOne_Repository_User::getInstance($env->get('db'))->loadNames(array('id' => $uIds));
-            foreach ($comments as &$comment) {
-                $comment['author_name'] = isset($userNames[$comment['author_id']]) ? $userNames[$comment['author_id']] : null;
-            }
-
-            $node->appendChild('comments', $commentsNode = new FVISNode('SONE_OBJECT_COMMENTS_ITEM', FVISNode::VISNODE_ARRAY, $env->get('VIS')));
-
             if ($commentsPerPage) {
                 $totalPages = ceil(count($comments)/$commentsPerPage);
                 if ($totalPages > 1) {
@@ -115,6 +107,14 @@ abstract class SOne_Model_Object_Commentable extends SOne_Model_Object implement
                     $pagesNode->addDataArray($pages);
                 }
             }
+
+            $uIds = array_unique(F2DArray::cols($comments, 'author_id'));
+            $userNames = SOne_Repository_User::getInstance($env->get('db'))->loadNames(array('id' => $uIds));
+            foreach ($comments as &$comment) {
+                $comment['author_name'] = isset($userNames[$comment['author_id']]) ? $userNames[$comment['author_id']] : null;
+            }
+
+            $node->appendChild('comments', $commentsNode = new FVISNode('SONE_OBJECT_COMMENTS_ITEM', FVISNode::VISNODE_ARRAY, $env->get('VIS')));
 
             $commentsNode->addDataArray($comments);
         }
