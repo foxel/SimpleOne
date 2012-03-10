@@ -20,7 +20,7 @@ class SOne_Model_Object_HTMLPage extends SOne_Model_Object_Commentable
         $node = new FVISNode('SONE_OBJECT_HTMLPAGE', 0, $env->get('VIS'));
         $data = $this->pool;
         if ($this->commentsAllowed) {
-            $node->appendChild('commentsBlock', $this->visualizeComments($env, (bool) $env->get('user')->id));
+            $node->appendChild('commentsBlock', $this->visualizeComments($env, (bool) $env->get('user')->id, 15));
         }
         unset($data['comments']);
         $node->addDataArray($data + array(

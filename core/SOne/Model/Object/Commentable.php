@@ -77,7 +77,7 @@ abstract class SOne_Model_Object_Commentable extends SOne_Model_Object implement
         $this->pool['comments'] = F2DArray::tree($comments, 'id', 'answer_to');
     }
 
-    public function visualizeComments(K3_Environment $env, $allowAddComment = true)
+    public function visualizeComments(K3_Environment $env, $allowAddComment = true, $commentsPerPage = false)
     {
         $node = new FVISNode('SONE_OBJECT_COMMENTS', 0, $env->get('VIS'));
         $node->addDataArray(array(
@@ -95,6 +95,27 @@ abstract class SOne_Model_Object_Commentable extends SOne_Model_Object implement
             }
 
             $node->appendChild('comments', $commentsNode = new FVISNode('SONE_OBJECT_COMMENTS_ITEM', FVISNode::VISNODE_ARRAY, $env->get('VIS')));
+
+            if ($commentsPerPage) {
+                $totalPages = ceil(count($comments)/$commentsPerPage);
+                if ($totalPages > 1) {
+                    $curPage = (int) $env->request->getNumber('commentsPage');
+                    $curPage = max(1, min($curPage, $totalPages));
+                    $comments = array_slice($comments, $commentsPerPage*($curPage - 1), $commentsPerPage);
+                    $node->appendChild('pages', $pagesNode = new FVISNode('SONE_OBJECT_COMMENTS_PAGE', FVISNode::VISNODE_ARRAY, $env->get('VIS')));
+                    $pages = array();
+                    for ($i = 1; $i <= $totalPages; $i++) {
+                        $pages[] = array(
+                            'path' => $this->path,
+                            'actionState' => $this->actionState,
+                            'page' => $i,
+                            'current' => ($i == $curPage) ? 1 : null,
+                        );
+                    }
+                    $pagesNode->addDataArray($pages);
+                }
+            }
+
             $commentsNode->addDataArray($comments);
         }
 

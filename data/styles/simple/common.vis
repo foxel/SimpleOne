@@ -210,7 +210,7 @@
 <<- 'SONE_OBJECT_HTMLPAGE'>>
 
 <<+ 'SONE_OBJECT_COMMENTS'>>
-<h3>Комментарии:</h3>
+<h3 id="pageComments">Комментарии:</h3>
 <div style="margin: 10px;">
 {IF:IN_allowAdd}
 <span{IF:IN_actionState="addComment"} style="display: none;"{/IF}><a href="{FULLURL:IN_PATH}?addComment" onclick="$(this).closest('span').hide().parent().find('div.objectCommentsFormContainer').show(); return false;">[Добавить комментарий]</a></span>
@@ -221,10 +221,22 @@
 <span>Авторизируйтесь, чтобы добавить комментарий.</span>
 {/IF}
 </div>
+{IF:in_pages}
+<div style="text-align: center; font-weight: bold;">[{in_pages}]</div>
+<hr />
+{/IF}
 <div style="margin: 5px 0;">
 {IN_COMMENTS}
 </div>
+{IF:in_pages}
+<hr />
+<div style="text-align: center; font-weight: bold;">[{in_pages}]</div>
+{/IF}
 <<- 'SONE_OBJECT_COMMENTS'>>
+
+<<+ 'SONE_OBJECT_COMMENTS_PAGE'>>
+{IF:IN_current}<strong>-{IN_page}-</strong>{ELSE}&nbsp;<a href="{in_path}?{IF:IN_actionState}{IN_actionState}&amp;{/IF}commentsPage={IN_page}#pageComments">{IN_page}</a>&nbsp;{/IF}
+<<- 'SONE_OBJECT_COMMENTS_PAGE'>>
 
 <<+ 'SONE_OBJECT_COMMENTS_FORM'>>
 <form action="{FULLURL:IN_PATH}?saveComment" method="post">
