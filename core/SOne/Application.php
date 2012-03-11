@@ -39,6 +39,7 @@ class SOne_Application extends K3_Application
 
         if ($this->config['app.useTransaction']) {
             $this->db->beginTransaction();
+            $this->getResponse()->addEventHandler('closeAndExit', array($this, 'commitOnResponseSent'));
         }
 
         $this->env->session->setDBase($this->db, 'sessions');
@@ -70,6 +71,13 @@ class SOne_Application extends K3_Application
         return $this;
     }
 
+    public function commitOnResponseSent()
+    {
+        if ($this->db->inTransaction) {
+            $this->db->commit();
+        }
+    }
+
     public function run()
     {
         $object = $this->routeRequest($this->request, true);
@@ -77,10 +85,6 @@ class SOne_Application extends K3_Application
         F()->Timer->logEvent('App Action end');
 
         $response = $this->renderPage($object);
-
-        if ($this->db->inTransaction) {
-            $this->db->commit();
-        }
 
         $this->getResponse()->clearBuffer()
             ->write($response)
