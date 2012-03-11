@@ -21,6 +21,8 @@ class SOne_Application extends K3_Application
 
     public function bootstrap()
     {
+        F()->Timer->logEvent('App Bootstrap start');
+
         $this->config = new FDataPool($c = (array) FMisc::loadDatafile(F_DATA_ROOT.DIRECTORY_SEPARATOR.'sone.qfc.php', FMisc::DF_SLINE));
 
         // preparing DB
@@ -34,7 +36,10 @@ class SOne_Application extends K3_Application
             $this->config['db.password'],
             $this->config['db.prefix']
         );
-        //$this->db->beginTransaction(); // TODO: add transaction autocommit
+
+        if ($this->config['app.useTransaction']) {
+            $this->db->beginTransaction();
+        }
 
         $this->env->session->setDBase($this->db, 'sessions');
 
@@ -60,34 +65,52 @@ class SOne_Application extends K3_Application
             ->put('lang', $this->lang)
             ->put('app',  $this);
 
+        F()->Timer->logEvent('App Bootstrap end');
+
         return $this;
     }
 
     public function run()
     {
-        $navis = $this->objects->loadNavigationByPath($this->request->path);
+        $object = $this->routeRequest($this->request, true);
+
+        F()->Timer->logEvent('App Action end');
+
+        $response = $this->renderPage($object);
+
+        if ($this->db->inTransaction) {
+            $this->db->commit();
+        }
+
+        $this->getResponse()->clearBuffer()
+            ->write($response)
+            ->sendBuffer();
+    }
+
+    public function routeRequest(SOne_Request $request, $performAction = true)
+    {
+        $navis = $this->objects->loadNavigationByPath($request->path);
         $tipObject = end($navis);
-        if (trim($tipObject['path'], '/') == $this->request->path) {
+
+        if (trim($tipObject['path'], '/') == $request->path) {
             $tipObject = $this->objects->loadOne($tipObject['id']);
             // performing action
-            if ($this->request->action) {
-                if ($tipObject->isActionAllowed($this->request->action, $this->env->get('user'))) {
-                    $tipObject->doAction($this->request->action, $this->env, $objectUpdated);
+            if ($performAction && $request->action) {
+                if ($tipObject->isActionAllowed($request->action, $this->env->get('user'))) {
+                    $tipObject->doAction($request->action, $this->env, $objectUpdated);
                     // TODO: think about deleting
                     if ($objectUpdated) {
                         $this->objects->save($tipObject);
                     }
                 } else {
-                    $tipObject = new SOne_Model_Object_Page403(array('path' => $this->request->path));
-                    $this->getResponse()->setStatusCode(403);
+                    $tipObject = new SOne_Model_Object_Page403(array('path' => $request->path));
                 }
             }
         } else {
-            $tipObject = new SOne_Model_Object_Page404(array('path' => $this->request->path));
-            $this->getResponse()->setStatusCode(404);
+            $tipObject = new SOne_Model_Object_Page404(array('path' => $request->path));
         }
 
-        $this->renderPage($tipObject);
+        return $tipObject;
     }
 
     protected function renderPage(SOne_Model_Object $pageObject)
@@ -98,9 +121,7 @@ class SOne_Application extends K3_Application
         $objectNode = $pageObject->visualize($this->env);
 
         if ($this->env->request->isAjax) {
-            $this->getResponse()->clearBuffer()
-                ->write($objectNode->parse())
-                ->sendBuffer();
+            return $objectNode->parse();
         }
 
         $pageNode->appendChild('page_cont', $objectNode);
@@ -111,9 +132,9 @@ class SOne_Application extends K3_Application
 
         $pageNode->appendChild('navigator', $this->renderDefaultNavigator($this->objects->loadObjectsTreeByPath($pageObject->path, true)));
 
-        $this->getResponse()->clearBuffer()
-            ->write($this->VIS->makeHTML())
-            ->sendBuffer();
+        F()->Timer->logEvent('App Page Construct complete');
+
+        return $this->VIS->makeHTML();
     }
 
     protected function renderDefaultNavigator($tree)
@@ -147,7 +168,7 @@ class SOne_Application extends K3_Application
         if ($uid = $this->env->session->userId) {
             $users = SOne_Repository_User::getInstance($this->db);
             if ($user = $users->loadOne(array('id' => (int) $uid, 'last_sid' => $this->env->session->getSID()))) {
-                //$users->save($user->updateLastSeen($this->env));
+                $users->save($user->updateLastSeen($this->env));
             } else {
                 $this->env->session->drop('userId');
             }
