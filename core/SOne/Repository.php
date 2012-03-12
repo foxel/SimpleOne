@@ -4,6 +4,10 @@ abstract class SOne_Repository
 {
     protected $db    = null;
     protected $cache = array();
+
+    /**
+     * @var SOne_Repository[]
+     */
     protected static $instances = array();
 
     public function __construct(FDataBase $db)
@@ -11,6 +15,11 @@ abstract class SOne_Repository
         $this->db = $db;
     }
 
+    /**
+     * @static
+     * @param FDataBase $db
+     * @return SOne_Repository
+     */
     public static function getInstance(FDataBase $db)
     {
         $class = get_called_class();
@@ -39,6 +48,7 @@ abstract class SOne_Repository
 
         return reset($objects);
     }
+
 
     public static function mapModelToDb(SOne_Model $model, array $map, $exclude = null)
     {

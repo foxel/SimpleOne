@@ -1,16 +1,22 @@
 <?php
 
+/**
+ * Special Sone Request class
+ */
 class SOne_Request extends FBaseClass
 {
+    /**
+     * @param K3_Environment $env
+     */
     public function __construct(K3_Environment $env)
     {
         list ($path) = explode('?', preg_replace('#^index\.php/?#i', '', $env->requestUrl), 2);
-        $query = $env->request->getURLParams();
+        $query = $env->getRequest()->getURLParams();
         $action = null;
         if (reset($query) === '') { // for queries like foo/bar?edit
             $action = FStr::cast(key($query), FStr::WORD);
         } else {
-            $action = $env->request->getString('action', K3_Request::POST, FStr::WORD);
+            $action = $env->getRequest()->getString('action', K3_Request::POST, FStr::WORD);
         }
 
         $this->pool = array(

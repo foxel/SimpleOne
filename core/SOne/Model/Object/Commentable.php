@@ -109,7 +109,9 @@ abstract class SOne_Model_Object_Commentable extends SOne_Model_Object implement
             }
 
             $uIds = array_unique(F2DArray::cols($comments, 'author_id'));
-            $userNames = SOne_Repository_User::getInstance($env->get('db'))->loadNames(array('id' => $uIds));
+            /* @var SOne_Repository_User $users */
+            $users = SOne_Repository_User::getInstance($env->get('db'));
+            $userNames = $users->loadNames(array('id' => $uIds));
             foreach ($comments as &$comment) {
                 $comment['author_name'] = isset($userNames[$comment['author_id']]) ? $userNames[$comment['author_id']] : null;
             }
@@ -125,7 +127,7 @@ abstract class SOne_Model_Object_Commentable extends SOne_Model_Object implement
     public function loadExtraData(FDataBase $db)
     {
         if (!$this->pool['id']) {
-            return false;
+            return;
         }
 
         $this->setComments(SOne_Repository_Comment::getInstance($db)->loadAll(array('object_id' => $this->pool['id'])));
@@ -134,9 +136,10 @@ abstract class SOne_Model_Object_Commentable extends SOne_Model_Object implement
     public function saveExtraData(FDataBase $db)
     {
         if (!$this->pool['id']) {
-            return false;
+            return;
         }
 
+        /* @var SOne_Repository_Comment $repo */
         $repo = SOne_Repository_Comment::getInstance($db);
         foreach ($this->pool['comments'] as &$comment) {
             $comment['object_id'] = $this->pool['id'];

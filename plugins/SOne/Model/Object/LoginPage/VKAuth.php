@@ -25,6 +25,9 @@ class SOne_Model_Object_LoginPage_VKAuth extends SOne_Model_Object_LoginPage
     protected function vkauthAction(K3_Environment $env, &$updated = false)
     {
         $config = $env->get('app')->config;
+        /* @var SOne_Application $app */
+        $app = $env->get('app');
+
         $code = $env->request->getString('code', K3_Request::GET, FStr::LINE);
         if (!$code) {
             $this->pool['actionState'] = 'redirect';
@@ -45,13 +48,16 @@ class SOne_Model_Object_LoginPage_VKAuth extends SOne_Model_Object_LoginPage
             return;
         }
 
+        /* @var SOne_Repository_User $users */
         $users = SOne_Repository_User::getInstance($env->get('db'));
+
         // TODO: move to repository
+        /* @var FDataBase $db */
         $db = $env->get('db');
         if ($userId = $db->doSelect('vk_users', 'uid', array('vk_id' => $tokenData->user_id))) {
             $db->doUpdate('vk_users', array('token' => $tokenData->access_token), array('vk_id' => $tokenData->user_id));
             $user = $users->loadOne(array('id' => $userId));
-            $env->get('app')->setAuthUser($user);
+            $app->setAuthUser($user);
             $this->pool['actionState'] = 'redirect';
         } else {
             $infoRequest = array(
@@ -81,13 +87,16 @@ class SOne_Model_Object_LoginPage_VKAuth extends SOne_Model_Object_LoginPage
                 'vk_id' => $tokenData->user_id,
                 'uid'   => $user->id,
             ));
-            $env->get('app')->setAuthUser($user);
+            $app->setAuthUser($user);
             $this->pool['actionState'] = 'redirect';
         }
     }
 
     protected function vkauthcookieAction(K3_Environment $env, &$updated = false)
     {
+        /* @var SOne_Application $app */
+        $app = $env->get('app');
+
         $this->pool['actionState'] = 'redirect';
         $config = $env->get('app')->config;
         $cookieName = 'vk_app_'.$config['vk.appId'];
@@ -98,11 +107,15 @@ class SOne_Model_Object_LoginPage_VKAuth extends SOne_Model_Object_LoginPage
             return;
         }
 
+        /* @var SOne_Repository_User $users */
+        $users = SOne_Repository_User::getInstance($env->get('db'));
+
+        // TODO: move to repository
+        /* @var FDataBase $db */
         $db = $env->get('db');
         if ($userId = $db->doSelect('vk_users', 'uid', array('vk_id' => $vkUserId))) {
-            $users    = SOne_Repository_User::getInstance($env->get('db'));
             $user = $users->loadOne(array('id' => $userId));
-            $env->get('app')->setAuthUser($user);
+            $app->setAuthUser($user);
             $this->pool['actionState'] = 'redirect';
         } else {
             $request = array(

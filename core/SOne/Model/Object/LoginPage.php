@@ -19,39 +19,46 @@ class SOne_Model_Object_LoginPage extends SOne_Model_Object
     public function doAction($action, K3_Environment $env, &$updated = false)
     {
         parent::doAction($action, $env, $updated);
+
+        /* @var SOne_Application $app */
+        $app = $env->get('app');
+        /* @var SOne_Repository_User $users */
+        $users = SOne_Repository_User::getInstance($env->get('db'));
+
         if ($action == 'login') {
-            $users = SOne_Repository_User::getInstance($env->get('db'));
             $user = $users->loadOne(array('login' => $env->request->getString('login', K3_Request::POST, FStr::WORD)));
             if ($user && $user->checkPassword($env->request->getString('password', K3_Request::POST, FStr::LINE))) {
-                $env->get('app')->setAuthUser($user);
+                $app->setAuthUser($user);
             }
         } elseif ($action == 'logout') {
-            $env->get('app')->dropAuthUser();
+            $app->dropAuthUser();
             $this->pool['actionState'] = 'redirect';
         } elseif ($action == 'register') {
-            $users    = SOne_Repository_User::getInstance($env->get('db'));
             $login    = $env->request->getString('reg_login', K3_Request::POST, FStr::LINE);
             $password = $env->request->getString('reg_password', K3_Request::POST, FStr::LINE);
             $username = $env->request->getString('reg_name', K3_Request::POST, FStr::LINE);
             $email    = $env->request->getString('reg_email', K3_Request::POST, FStr::LINE);
 
+            /* @var FLNGData $lang */
+            $lang = $env->get('lang');
+
             $errors = array();
             $nameLen = FStr::strLen($username);
             if ($nameLen < 3 || $nameLen > 16) {
-                $errors[] = $env->get('lang')->lang('SONE_REGISTER_ERROR_NAME_INCORRECT');
+                $errors[] = $lang->lang('SONE_REGISTER_ERROR_NAME_INCORRECT');
             } elseif ($users->loadOne(array('nick' => $username))) {
-                $errors[] = $env->get('lang')->lang('SONE_REGISTER_ERROR_NAME_USED');
+                $errors[] = $lang->lang('SONE_REGISTER_ERROR_NAME_USED');
             }
             if (!preg_match('#\w{3,16}#', $login)) {
-                $errors[] = $env->get('lang')->lang('SONE_REGISTER_ERROR_LOGIN_INCORRECT');
+                $errors[] = $lang->lang('SONE_REGISTER_ERROR_LOGIN_INCORRECT');
             } elseif ($users->loadOne(array('login' => $login))) {
-                $errors[] = $env->get('lang')->lang('SONE_REGISTER_ERROR_LOGIN_USED');
+                $errors[] = $lang->lang('SONE_REGISTER_ERROR_LOGIN_USED');
             }
             if (FStr::strLen($password) < 8) {
-                $errors[] = $env->get('lang')->lang('SONE_REGISTER_ERROR_PASSWORD_SHORT');
+                $errors[] = $lang->lang('SONE_REGISTER_ERROR_PASSWORD_SHORT');
             }
             if (!FStr::isEmail($email, true)) {
-                $errors[] = $env->get('lang')->lang('SONE_REGISTER_ERROR_EMAIL_INCORRECT');
+                $errors[] = $lang->lang('SONE_REGISTER_ERROR_EMAIL_INCORRECT');
             }
 
             if (empty($errors)) {
@@ -64,7 +71,7 @@ class SOne_Model_Object_LoginPage extends SOne_Model_Object
                 ));
                 $user->password = $password;
                 $users->save($user);
-                $env->get('app')->setAuthUser($user);
+                $app->setAuthUser($user);
                 $this->pool['actionState'] = 'redirect';
             } else {
                 $this->pool['errors'] = '<ul><li>'.implode('</li><li>', $errors).'</li></ul>';

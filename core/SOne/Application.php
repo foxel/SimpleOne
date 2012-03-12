@@ -3,10 +3,31 @@
 class SOne_Application extends K3_Application
 {
     protected $config  = array();
+
+    /**
+     * @var FDataBase
+     */
     protected $db      = null;
+
+    /**
+     * @var SOne_Request
+     */
     protected $request = null;
+
+    /**
+     * @var FVISInterface
+     */
     protected $VIS     = null;
+
+    /**
+     * Objects repository
+     * @var SOne_Repository_Object
+     */
     protected $objects = null; // objects repository
+
+    /**
+     * @var FLNGData
+     */
     protected $lang    = null;
 
     public function __construct(K3_Environment $env = null)
@@ -170,6 +191,7 @@ class SOne_Application extends K3_Application
     {
         $user = null;
         if ($uid = $this->env->session->userId) {
+            /* @var SOne_Repository_User $users */
             $users = SOne_Repository_User::getInstance($this->db);
             if ($user = $users->loadOne(array('id' => (int) $uid, 'last_sid' => $this->env->session->getSID()))) {
                 $users->save($user->updateLastSeen($this->env));
@@ -188,7 +210,9 @@ class SOne_Application extends K3_Application
 
     public function setAuthUser(SOne_Model_User $user)
     {
+        /* @var SOne_Repository_User $users */
         $users = SOne_Repository_User::getInstance($this->db);
+
         $this->env->session->open();
         $users->save($user->updateLastSeen($this->env));
         $this->env->session->userId = $user->id;

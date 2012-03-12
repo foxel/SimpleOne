@@ -56,12 +56,16 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
                 ? $curAnswers[$qId]
                 : null;
 
+            $questionAnswered = isset($question['valueVariants'][$answerValue]);
+            $questionLocked   = $question['lockAnswers'] && $questionAnswered;
+
             $node->appendChild('question_items', $item = new FVISNode($pollItemVisClass, 0, $env->get('VIS')));
             $item->addDataArray(array(
                 'id'       => $qId,
-                'answered' => ($questionAnswered = isset($question['valueVariants'][$answerValue])) ? 1 : $pollAnswered = null,
-                'locked'   => ($questionLocked = $question['lockAnswers'] && $questionAnswered) ? 1 : $pollLocked = null,
+                'answered' => $questionAnswered ? 1 : $pollAnswered = null,
+                'locked'   => $questionLocked   ? 1 : $pollLocked = null,
             ) + (array) $question);
+
             // TODO: other types of answers
             foreach ($question['valueVariants'] as $valueVariant => $valueTitle) {
                 $valueLimit  = isset($question['valueLimits'][$valueVariant])
