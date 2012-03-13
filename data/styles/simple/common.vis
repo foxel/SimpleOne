@@ -156,7 +156,7 @@
 
 <<+ 'NAVIGATOR_ITEM'>>
 <li class="mp_navigator_item">
- <a class="mp_navigator_item_a{IF:IN_ISCURRENT} current{/IF}" href="{IN_HREF}">{!IN_SCAPTION}</a>
+ <a class="mp_navigator_item_a{IF:IN_ISCURRENT} current{/IF}" href="{IN_HREF}" title="{IN_caption}">{!IN_shortCaption}</a>
  {IF:IN_SUBS}
   <ul class="mp_navigator_item_subs">
    {IN_SUBS}

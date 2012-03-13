@@ -163,7 +163,7 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
         if ($action == 'save') {
             $newQuestionsRaw = (array) $env->request->get('questions');
             $newQuestions = array();
-            $oldQuestions = $this->pool['questions'];
+            $oldQuestions = (array) $this->pool['questions'];
             foreach ($newQuestionsRaw as $qId => $newQuestionRaw) {
                 $newVariantsRaw = isset($newQuestionRaw['variants'])
                     ? (array) $newQuestionRaw['variants']
@@ -182,10 +182,8 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
 
                 if (isset($oldQuestions[$qId])) {
                     $oldVariants = (array) $oldQuestions[$qId]['valueVariants'];
-                    $oldLimits   = (array) $oldQuestions[$qId]['valueLimits'];
                 } else {
                     $oldVariants = array();
-                    $oldLimits   = array();
                     $qId = FStr::shortUID();
                 }
 

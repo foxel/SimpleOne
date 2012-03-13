@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @property array $refills
+ * @property array $errors
+ */
 class SOne_Model_Object_LoginPage extends SOne_Model_Object
 {
     public function visualize(K3_Environment $env)

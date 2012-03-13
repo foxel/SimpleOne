@@ -1,5 +1,25 @@
 <?php
 
+/**
+ * @property int    $id
+ * @property int    $parentId
+ * @property string $class
+ * @property string $caption
+ * @property int    $ownerId
+ * @property int    $createTime
+ * @property int    $updateTime
+ * @property int    $accessLevel
+ * @property int    $editLevel
+ * @property int    $orderId
+ *
+ * @property string $path
+ * @property string $pathHash
+ *
+ * @property mixed  $data
+ * @property string $actionState
+ *
+ * @property int|null $treeLevel
+ */
 abstract class SOne_Model_Object extends SOne_Model
 {
     /**
@@ -165,7 +185,7 @@ abstract class SOne_Model_Object extends SOne_Model
     }
 
     /**
-     * This should be introduced in clild classes
+     * This should be introduced in child classes
      * @param  string $action
      * @param  K3_Environment $env
      * @param  boolean &$objectUpdated

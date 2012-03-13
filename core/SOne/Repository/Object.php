@@ -115,9 +115,11 @@ class SOne_Repository_Object extends SOne_Repository
 
             $object = SOne_Model_Object::construct($row);
             if ($object instanceof SOne_Interface_Object_WithExtraData) {
+                /** @var SOne_Interface_Object_WithExtraData $object */
                 $object->loadExtraData($this->db);
             }
             if ($object instanceof SOne_Interface_Object_WithSubObjects) {
+                /** @var SOne_Interface_Object_WithSubObjects $object */
                 $object->setSubObjects($this->loadAll($object->getSubObjectsFilter()));
             }
             $objects[$object->id] = $object;
@@ -156,9 +158,11 @@ class SOne_Repository_Object extends SOne_Repository
         }
 
         if ($object instanceof SOne_Interface_Object_WithExtraData) {
+            /** @var SOne_Interface_Object_WithExtraData $object */
             $object->saveExtraData($this->db);
         }
         if ($object instanceof SOne_Interface_Object_WithSubObjects) {
+            /** @var SOne_Interface_Object_WithSubObjects $object */
             $this->saveAll($object->getSubObjects());
         }
     }

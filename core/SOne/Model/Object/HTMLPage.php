@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @property string $content
+ */
 class SOne_Model_Object_HTMLPage extends SOne_Model_Object_Commentable
 {
     /**

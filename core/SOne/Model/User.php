@@ -1,5 +1,28 @@
 <?php
 
+/**
+ * @property int    $id
+ * @property string $name
+ * @property string $email
+ * @property int    $accessLevel
+ * @property int    $modLevel
+ * @property int    $adminLevel
+ * @property bool   $frozen
+ * @property bool   $readonly
+ * @property string $avatar
+ * @property int    $registerTime
+ * @property int    $lastSeen
+ * @property string $lastUrl
+ * @property string $lastUserAgent
+ * @property int    $lastIP
+ * @property string $lastSID
+ *
+ * @property string $login
+ * @property string $cryptedPassword
+ * @property int    $lastAuth
+ *
+ * @property bool   $authUpdated
+ */
 class SOne_Model_User extends SOne_Model
 {
     public function __construct(array $init = array())

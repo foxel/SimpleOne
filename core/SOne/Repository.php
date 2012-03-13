@@ -18,7 +18,7 @@ abstract class SOne_Repository
     /**
      * @static
      * @param FDataBase $db
-     * @return SOne_Repository
+     * @return static
      */
     public static function getInstance(FDataBase $db)
     {
@@ -35,6 +35,11 @@ abstract class SOne_Repository
         return $instance;
     }
 
+    /**
+     * @abstract
+     * @param array $filters
+     * @return array
+     */
     abstract public function loadAll(array $filters = array());
 
     public function loadOne($filter) {

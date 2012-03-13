@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @property boolean $commentsAllowed
+ * @property array   $comments
+ */
 abstract class SOne_Model_Object_Commentable extends SOne_Model_Object implements SOne_Interface_Object_WithExtraData
 {
     public function __construct(array $init = array())

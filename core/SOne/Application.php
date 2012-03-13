@@ -176,7 +176,8 @@ class SOne_Application extends K3_Application
             $node = new FVISNode('NAVIGATOR_ITEM', 0, $this->VIS);
             $node->addDataArray(array(
                 'href' => FStr::fullUrl($item->path),
-                'scaption' => FStr::smartTrim($item->caption, 23 - $item->treeLevel),
+                'caption' => $item->caption,
+                'shortCaption' => FStr::smartTrim($item->caption, 23 - $item->treeLevel),
                 'isCurrent' => (trim($item->path, '/') == $this->request->path) ? 1 : null,
             ));
             $parents[$item->treeLevel]->appendChild('subs', $node);
@@ -190,7 +191,7 @@ class SOne_Application extends K3_Application
     protected function bootstrapUser()
     {
         $user = null;
-        if ($uid = $this->env->session->userId) {
+        if ($uid = $this->env->session->get('userId')) {
             /* @var SOne_Repository_User $users */
             $users = SOne_Repository_User::getInstance($this->db);
             if ($user = $users->loadOne(array('id' => (int) $uid, 'last_sid' => $this->env->session->getSID()))) {
@@ -215,7 +216,7 @@ class SOne_Application extends K3_Application
 
         $this->env->session->open();
         $users->save($user->updateLastSeen($this->env));
-        $this->env->session->userId = $user->id;
+        $this->env->session->set('userId', $user->id);
         $this->env->put('user', $user);
     }
 
@@ -225,3 +226,4 @@ class SOne_Application extends K3_Application
         $this->env->put('user', new SOne_Model_User());
     }
 }
+

@@ -1,7 +1,10 @@
 <?php
 
 /**
- * Special Sone Request class
+ * Special SOne Request class
+ * @property K3_Request request
+ * @property string path
+ * @property string|null action
  */
 class SOne_Request extends FBaseClass
 {
