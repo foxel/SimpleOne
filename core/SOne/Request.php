@@ -13,7 +13,7 @@ class SOne_Request extends FBaseClass
      */
     public function __construct(K3_Environment $env)
     {
-        list ($path) = explode('?', preg_replace('#^index\.php/?#i', '', $env->requestUrl), 2);
+        list ($path) = explode('?', preg_replace('#^index\.php/?#i', '', $env->request->url), 2);
         $query = $env->getRequest()->getURLParams();
         $action = null;
         if (reset($query) === '') { // for queries like foo/bar?edit

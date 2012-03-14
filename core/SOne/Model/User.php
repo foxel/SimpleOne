@@ -79,7 +79,7 @@ class SOne_Model_User extends SOne_Model
         $this->pool['lastSeen'] = time();
         $this->pool['lastIP']   = $env->clientIPInteger;
         $this->pool['lastSID']  = $env->session->getSID();
-        $this->pool['lastUrl']  = $env->requestUrl;
+        $this->pool['lastUrl']  = $env->request->url;
         return $this;
     }
 
