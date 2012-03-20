@@ -117,22 +117,29 @@ class SOne_Application extends K3_Application
         $navis = $this->objects->loadNavigationByPath($request->path);
         $tipObject = end($navis);
 
-        if (trim($tipObject['path'], '/') == $request->path) {
-            $tipObject = $this->objects->loadOne($tipObject['id']);
-            // performing action
-            if ($performAction && $request->action) {
-                if ($tipObject->isActionAllowed($request->action, $this->env->get('user'))) {
-                    $tipObject->doAction($request->action, $this->env, $objectUpdated);
-                    // TODO: think about deleting
-                    if ($objectUpdated) {
-                        $this->objects->save($tipObject);
-                    }
-                } else {
-                    $tipObject = new SOne_Model_Object_Page403(array('path' => $request->path));
-                }
-            }
+        /** @var $tipObject SOne_Model_Object */
+        $tipObject = $this->objects->loadOne($tipObject['id']);
+        if (trim($tipObject->path, '/') == $request->path) {
+            // Routed OK
+        } elseif ($tipObject instanceof SOne_Interface_Object_WithSubRoute) {
+            /** @var $tipObject SOne_Interface_Object_WithSubRoute */
+            $subPath = preg_replace('#'.preg_quote(trim($tipObject->path, '/').'/', '#').'#i', '', $request->path);
+            $tipObject = $tipObject->routeSubPath($subPath, $request, $this->env);
         } else {
             $tipObject = new SOne_Model_Object_Page404(array('path' => $request->path));
+        }
+
+        // performing action
+        if ($performAction && $request->action) {
+            if ($tipObject->isActionAllowed($request->action, $this->env->get('user'))) {
+                $tipObject->doAction($request->action, $this->env, $objectUpdated);
+                // TODO: think about deleting
+                if ($objectUpdated) {
+                    $this->objects->save($tipObject);
+                }
+            } else {
+                $tipObject = new SOne_Model_Object_Page403(array('path' => $request->path));
+            }
         }
 
         return $tipObject;
@@ -155,14 +162,14 @@ class SOne_Application extends K3_Application
         //$pageNode->addData('page_cont', '<pre>'.print_r(get_included_files(), true).'</pre>');
         //$pageNode->addData('page_cont', '<pre>'.print_r($this->db->history, true).'</pre>');
 
-        $pageNode->appendChild('navigator', $this->renderDefaultNavigator($this->objects->loadObjectsTreeByPath($pageObject->path, true)));
+        $pageNode->appendChild('navigator', $this->renderDefaultNavigator($this->objects->loadObjectsTreeByPath($pageObject->path, true), $pageObject->path));
 
         F()->Timer->logEvent('App Page Construct complete');
 
         return $this->VIS->makeHTML();
     }
 
-    protected function renderDefaultNavigator($tree)
+    protected function renderDefaultNavigator($tree, $currentPath)
     {
         $container = new FVISNode('NAVIGATOR_BLOCK', 0, $this->VIS);
         $parents = Array($container, $container);
@@ -178,7 +185,7 @@ class SOne_Application extends K3_Application
                 'href' => FStr::fullUrl($item->path),
                 'caption' => $item->caption,
                 'shortCaption' => FStr::smartTrim($item->caption, 23 - $item->treeLevel),
-                'isCurrent' => (trim($item->path, '/') == $this->request->path) ? 1 : null,
+                'isCurrent' => (trim($item->path, '/') == trim($currentPath, '/')) ? 1 : null,
             ));
             $parents[$item->treeLevel]->appendChild('subs', $node);
             $parents[$item->treeLevel+1] = $node;

@@ -52,43 +52,45 @@
   document.styleSheets[0].addRule('img', 'behavior: url("{RURL:fox2_htc_data|"ie_png"}")');
  }
 
- $().ready(function() {
-  $('textarea.htmleditor').tinymce({
-   // Location of TinyMCE script
-   script_url : '/static/jscripts/tiny_mce/tiny_mce.js',
 
-   // General options
-   language : "ru",
-   theme : "advanced",
-   plugins : "autolink,lists,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,advlist",
+function updateHtmlEditors() {
+    $('textarea.htmleditor').tinymce({
+        // Location of TinyMCE script
+        script_url : '/static/jscripts/tiny_mce/tiny_mce.js',
 
-   // Theme options
-   theme_advanced_buttons1 : "cut,copy,paste,pastetext,pasteword,|,search,replace,|,undo,redo,|,cleanup,code,|,anchor,charmap,insertdate,inserttime,|,preview,iespell",
-   theme_advanced_buttons2 : "formatselect,fontselect,fontsizeselect,|,bold,italic,underline,strikethrough,|,sub,sup,|,justifyleft,justifycenter,justifyright,justifyfull,|,bullist,numlist,|,outdent,indent,blockquote",
-   theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,link,unlink,image,emotions,media,|,styleprops,|,forecolor,backcolor",
-   //theme_advanced_buttons4 : "insertlayer,moveforward,movebackward,absolute,|,styleprops,|,cite,abbr,acronym,del,ins,attribs,|,visualchars,nonbreaking,template,pagebreak",
-   theme_advanced_toolbar_location : "top",
-   theme_advanced_toolbar_align : "left",
-   theme_advanced_statusbar_location : "bottom",
-   theme_advanced_resizing : true,
-   theme_advanced_resize_horizontal : false,
+        // General options
+        language : "ru",
+        theme : "advanced",
+        plugins : "autolink,lists,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,advlist",
 
-   // Example content CSS (should be your site CSS)
-   content_css : "css/content.css",
+        // Theme options
+        theme_advanced_buttons1 : "cut,copy,paste,pastetext,pasteword,|,search,replace,|,undo,redo,|,cleanup,code,|,anchor,charmap,insertdate,inserttime,|,preview,iespell",
+        theme_advanced_buttons2 : "formatselect,fontselect,fontsizeselect,|,bold,italic,underline,strikethrough,|,sub,sup,|,justifyleft,justifycenter,justifyright,justifyfull,|,bullist,numlist,|,outdent,indent,blockquote",
+        theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,link,unlink,image,emotions,media,|,styleprops,|,forecolor,backcolor",
+        //theme_advanced_buttons4 : "insertlayer,moveforward,movebackward,absolute,|,styleprops,|,cite,abbr,acronym,del,ins,attribs,|,visualchars,nonbreaking,template,pagebreak",
+        theme_advanced_toolbar_location : "top",
+        theme_advanced_toolbar_align : "left",
+        theme_advanced_statusbar_location : "bottom",
+        theme_advanced_resizing : true,
+        theme_advanced_resize_horizontal : false,
 
-   // Drop lists for link/image/media/template dialogs
-   template_external_list_url : "lists/template_list.js",
-   external_link_list_url : "lists/link_list.js",
-   external_image_list_url : "lists/image_list.js",
-   media_external_list_url : "lists/media_list.js",
+        // Example content CSS (should be your site CSS)
+        content_css : "css/content.css",
 
-   // Replace values for the template plugin
-   template_replace_values : {
-    username : "Some User",
-    staffid : "991234"
-   }
-  });
- });
+        // Drop lists for link/image/media/template dialogs
+        template_external_list_url : "lists/template_list.js",
+        external_link_list_url : "lists/link_list.js",
+        external_image_list_url : "lists/image_list.js",
+        media_external_list_url : "lists/media_list.js",
+
+        // Replace values for the template plugin
+        template_replace_values : {
+            username : "Some User",
+            staffid : "991234"
+        }
+    });
+}
+ $().ready(updateHtmlEditors);
 
  {IN_JS}
 
@@ -411,3 +413,45 @@
  <a href="#" onclick="if ($(this).closest('div.pollEditQuestionAnswersContainer').find('div.pollEditQuestionAnswer').length > 2) { $(this).closest('div.pollEditQuestionAnswer').remove(); } return false;">-</a>
 </div>
 <<- 'SONE_OBJECT_POLL_ITEM_EDIT_VALUEVARIANT'>>
+
+<<+ 'SONE_OBJECT_CONSTRUCTOR'>>
+<h2>{IN_CAPTION}</h2>
+<form id="constructorForm" action="{IN_PATH}?prepare" method="POST">
+ <fieldset>
+  <legend>Параметры объекта:</legend>
+  <label>Класс: <select name="class">
+   <option value="HTMLPage">HTML-страница</option>
+   <option value="Poll">Опрос/Анкета</option>
+  </select></label><br />
+  <label>Путь: <select name="parentPath">
+   {IN_PATHOPTIONS}
+  </select></label><strong>/</strong><input name="path" />
+ </fieldset>
+ <button type="submit">Создать</button>
+</form>
+
+<hr />
+<div id="constructorObjectContainer"></div>
+
+<script type="text/javascript">
+    $('input, select', '#constructorForm').change(function(){
+        $('#constructorObjectContainer').empty();
+    });
+    $('#constructorForm').submit(function() {
+        $('#constructorObjectContainer').text('Загрузка ...').load(this.action+'&'+$(this).serialize(), updateHtmlEditors);
+        return false;
+    });
+</script>
+<<- 'SONE_OBJECT_CONSTRUCTOR'>>
+
+<<+ 'SONE_OBJECT_CONSTRUCTOR_FRAME'>>
+{!IF:IN_hideCaption}<h2>{IN_CAPTION}</h2>{/IF}
+{IF:IN_ERRORS}<div style="border: 1px solid red; padding: 5px;">
+    {IN_ERRORS}
+</div>{/IF}
+{IN_CONTENT}
+<<- 'SONE_OBJECT_CONSTRUCTOR_FRAME'>>
+
+<<+ 'SONE_OBJECT_CONSTRUCTOR_PATHOPTION'>>
+<option value="{IN_PATH}">{IN_PATH} ({IN_caption})</option>
+<<- 'SONE_OBJECT_CONSTRUCTOR_PATHOPTION'>>

@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @method SOne_Repository_Object getInstance static
+ */
 class SOne_Repository_Object extends SOne_Repository
 {
     protected static $dbMap = array(
@@ -74,17 +77,31 @@ class SOne_Repository_Object extends SOne_Repository
         $navis = $this->loadNavigationByPath($path);
 
         $ids = array_keys($navis);
+
+        return $this->loadObjectsTree($ids, $withChilds, $withData);
+    }
+
+    /**
+     * @param array|null $ids
+     * @param bool $withChilds
+     * @param bool $withData
+     * @return SOne_Model_Object[]|null
+     */
+    public function loadObjectsTree(array $ids = null, $withChilds = false, $withData = false)
+    {
         $select = $this->db->select('objects', 'o', self::$dbMap)
             ->join('objects_navi', array('id' => 'o.id'), 'n', self::$dbMapNavi)
-            ->where('o.id', $ids)
             ->order('o.order_id');
 
         if ($withData) {
             $select->joinLeft('objects_data', array('o_id' => 'o.id'), 'd', array('data'));
         }
 
-        if ($withChilds) {
-            $select->whereOr('o.parent_id', $ids);
+        if (!is_null($ids)) {
+            $select->where('o.id', $ids);
+            if ($withChilds) {
+                $select->whereOr('o.parent_id', $ids);
+            }
         }
 
         $tree = $select->fetchAll();

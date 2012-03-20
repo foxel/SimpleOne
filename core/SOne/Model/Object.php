@@ -121,12 +121,12 @@ abstract class SOne_Model_Object extends SOne_Model
     public function setPath($path)
     {
         if (is_string($path)) {
-            $path = '/'.FStr::cast($path, FStr::PATH);
+            $path = FStr::cast('/'.$path, FStr::PATH);
             $this->pool['path'] = $path;
             $this->pool['pathHash'] = md5($path);
-            $this->pool['parent_id'] = null; // object with null path can't have parent
         } else {
             $this->pool['path'] = $this->pool['pathHash'] = null;
+            $this->pool['parent_id'] = null; // object with null path can't have parent
         }
         return $this;
     }
