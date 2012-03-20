@@ -6,7 +6,7 @@ db.username => developer
 db.password => 
 db.prefix => qfso_
 
-site.name => site name
+site.name => SimpleOne site
 
 vk.appId => 100
 vk.appSecret => XxxX
