@@ -2,6 +2,7 @@
 
 /**
  * @method SOne_Repository_Object getInstance static
+ * @method SOne_Model_Object loadOne
  */
 class SOne_Repository_Object extends SOne_Repository
 {

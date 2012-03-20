@@ -35,10 +35,12 @@ class SOne_Model_Object_Constructor extends SOne_Model_Object implements SOne_In
             $uid = md5($this->path.$path);
 
             $object = SOne_Model_Object::construct(array(
-                'class'    => $class,
-                'path'     => $this->path.'/'.$uid,
-                'parentId' => $parentObject->id,
-                'ownerId'  => $env->get('user')->id,
+                'class'       => $class,
+                'path'        => $this->path.'/'.$uid,
+                'parentId'    => $parentObject->id,
+                'accessLevel' => $parentObject->accessLevel,
+                'editLevel'   => $parentObject->editLevel,
+                'ownerId'     => $env->get('user')->id,
             ));
 
             $env->session->set('constructor'.$uid, array($object, $path));

@@ -129,6 +129,10 @@ class SOne_Application extends K3_Application
             $tipObject = new SOne_Model_Object_Page404(array('path' => $request->path));
         }
 
+        if ($tipObject->accessLevel > $this->env->get('user')->accessLevel) {
+            $tipObject = new SOne_Model_Object_Page403(array('path' => $request->path));
+        }
+
         // performing action
         if ($performAction && $request->action) {
             if ($tipObject->isActionAllowed($request->action, $this->env->get('user'))) {
