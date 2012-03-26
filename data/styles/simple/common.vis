@@ -40,7 +40,7 @@
 <body>
 {IN_JS_BLOCKS}
 <!-- Load jQuery -->
-<script type="text/javascript" src="/js/jquery-1.7.1.js" ></script>
+<script type="text/javascript" src="/static/jscripts/jquery-1.7.1.min.js" ></script>
 <script type="text/javascript" src="/static/jscripts/tiny_mce/jquery.tinymce.js"></script>
 <script type="text/javascript">
 // JavaScript Starts Here <![CDATA[

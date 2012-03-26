@@ -164,7 +164,7 @@ class SOne_Application extends K3_Application
         $pageNode->addData('site_name', $this->config['site.name']);
         $pageNode->addData('page_title', $pageObject->caption);
         //$pageNode->addData('page_cont', '<pre>'.print_r(get_included_files(), true).'</pre>');
-        //$pageNode->addData('page_cont', '<pre>'.print_r($this->db->history, true).'</pre>');
+        //$pageNode->addData('page_cont', '<pre>'.print_r($this->env, true).'</pre>');
 
         $pageNode->appendChild('navigator', $this->renderDefaultNavigator($this->objects->loadObjectsTreeByPath($pageObject->path, true), $pageObject->path));
 
@@ -186,7 +186,7 @@ class SOne_Application extends K3_Application
 
             $node = new FVISNode('NAVIGATOR_ITEM', 0, $this->VIS);
             $node->addDataArray(array(
-                'href' => FStr::fullUrl($item->path),
+                'href' => FStr::fullUrl(ltrim($item->path, '/')),
                 'caption' => $item->caption,
                 'shortCaption' => FStr::smartTrim($item->caption, 23 - $item->treeLevel),
                 'isCurrent' => (trim($item->path, '/') == trim($currentPath, '/')) ? 1 : null,
