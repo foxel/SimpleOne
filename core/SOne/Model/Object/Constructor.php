@@ -30,25 +30,32 @@ class SOne_Model_Object_Constructor extends SOne_Model_Object implements SOne_In
             return;
         }
 
-        if ($parentObject = SOne_Repository_Object::getInstance($env->get('db'))->loadOne(array('pathHash' => md5($parentPath)))) {
-            $path = FStr::cast('/'.$parentPath.'/'.$path, FStr::PATH);
-            $uid = md5($this->path.$path);
-
-            $object = SOne_Model_Object::construct(array(
-                'class'       => $class,
-                'path'        => $this->path.'/'.$uid,
-                'parentId'    => $parentObject->id,
-                'accessLevel' => $parentObject->accessLevel,
-                'editLevel'   => $parentObject->editLevel,
-                'ownerId'     => $env->get('user')->id,
-            ));
-
-            $env->session->set('constructor'.$uid, array($object, $path));
-
-            $this->pool['object'] = $object;
-
-            $this->pool['actionState'] = 'redirect';
+        $parentObject = null;
+        if ($parentPath) {
+            $path = FStr::cast($parentPath.'/'.$path, FStr::PATH);
+            $parentObject = SOne_Repository_Object::getInstance($env->get('db'))->loadOne(array('pathHash' => md5($parentPath)));
+            if (!$parentObject) {
+                $this->pool['errors'] = 'Невозможно загрузить указанный родительсвий объект';
+                return;
+            }
         }
+
+        $uid = md5($this->path.$path);
+
+        $object = SOne_Model_Object::construct(array(
+            'class'       => $class,
+            'path'        => $this->path.'/'.$uid,
+            'parentId'    => $parentObject ? $parentObject->id : null,
+            'accessLevel' => $parentObject ? $parentObject->accessLevel : SOne_Model_Object::DEFAULT_ACCESS_LEVEL,
+            'editLevel'   => $parentObject ? $parentObject->editLevel   : SOne_Model_Object::DEFAULT_EDIT_LEVEL,
+            'ownerId'     => $env->get('user')->id,
+        ));
+
+        $env->session->set('constructor'.$uid, array($object, $path));
+
+        $this->pool['object'] = $object;
+
+        $this->pool['actionState'] = 'redirect';
     }
 
     /**

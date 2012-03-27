@@ -22,6 +22,9 @@
  */
 abstract class SOne_Model_Object extends SOne_Model
 {
+    const DEFAULT_ACCESS_LEVEL = 0;
+    const DEFAULT_EDIT_LEVEL = 0;
+
     /**
      * @var array
      */
@@ -78,8 +81,8 @@ abstract class SOne_Model_Object extends SOne_Model
             'ownerId'     => isset($init['ownerId'])     ?  (int)    $init['ownerId']     : null,
             'createTime'  => isset($init['createTime'])  ?  (int)    $init['createTime']  : time(),
             'updateTime'  => isset($init['updateTime'])  ?  (int)    $init['updateTime']  : time(),
-            'accessLevel' => isset($init['accessLevel']) ?  (int)    $init['accessLevel'] : 0,
-            'editLevel'   => isset($init['editLevel'])   ?  (int)    $init['editLevel']   : 3,
+            'accessLevel' => isset($init['accessLevel']) ?  (int)    $init['accessLevel'] : self::DEFAULT_ACCESS_LEVEL,
+            'editLevel'   => isset($init['editLevel'])   ?  (int)    $init['editLevel']   : self::DEFAULT_EDIT_LEVEL,
             'orderId'     => isset($init['orderId'])     ?  (int)    $init['orderId']     : 0,
 
             'path'        => isset($init['path'])        ?  (string) $init['path']        : '',
@@ -121,7 +124,7 @@ abstract class SOne_Model_Object extends SOne_Model
     public function setPath($path)
     {
         if (is_string($path)) {
-            $path = FStr::cast('/'.$path, FStr::PATH);
+            $path = FStr::cast(trim($path, '/'), FStr::PATH);
             $this->pool['path'] = $path;
             $this->pool['pathHash'] = md5($path);
         } else {

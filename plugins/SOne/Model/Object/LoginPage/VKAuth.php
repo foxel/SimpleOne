@@ -3,25 +3,43 @@
 class SOne_Model_Object_LoginPage_VKAuth extends SOne_Model_Object_LoginPage
 {
 
+    /**
+     * @param K3_Environment $env
+     * @return FVISNode
+     */
     public function visualize(K3_Environment $env)
     {
         $node = parent::visualize($env);
+        $node->setType('SONE_OBJECT_LOGINPAGE_VKAUTH');
+
         $config = $env->get('app')->config;
-        $request = array(
-            'client_id' => $config['vk.appId'],
-            'scope' => 'notify,offline',
-            'redirect_uri' => FStr::fullUrl($this->path.'?vkauth'),
-            'response_type' => 'code',
-        );
-        $node->setType('SONE_OBJECT_LOGINPAGE_VKAUTH')
-            ->addDataArray(array(
+
+        if (($baseDomain = $config['vk.baseDomain']) && !preg_match('#([\w\.]+\.)?'.preg_quote($baseDomain, '#').'$#i', $env->serverName)) {
+            $node->addDataArray(array(
+                'vkMoveToLogin' => 'http://'.$baseDomain.'/'.($env->rootPath ? $env->rootPath.'/' : '').$this->path,
+            ));
+        } else {
+            $request = array(
+                'client_id'     => $config['vk.appId'],
+                'scope'         => 'notify,offline',
+                'redirect_uri'  => FStr::fullUrl($this->path.'?vkauth'),
+                'response_type' => 'code',
+            );
+
+            $node->addDataArray(array(
                 'vkAuthLink' => 'http://oauth.vk.com/authorize?'.http_build_query($request, '_', '&amp;'),
                 'vkAppId'    => $config['vk.appId'],
             ));
+        }
 
         return $node;
     }
 
+    /**
+     * @param K3_Environment $env
+     * @param bool $updated
+     * @return mixed
+     */
     protected function vkauthAction(K3_Environment $env, &$updated = false)
     {
         $config = $env->get('app')->config;
@@ -65,8 +83,8 @@ class SOne_Model_Object_LoginPage_VKAuth extends SOne_Model_Object_LoginPage
                 'uids'         => $tokenData->user_id,
                 'fields'       => 'nickname',
             );
-            $userInfo = file_get_contents('https://api.vk.com/method/users.get?'.http_build_query($infoRequest, '_', '&'));
-            $userInfo = json_decode($userInfo);
+            $userInfo    = file_get_contents('https://api.vk.com/method/users.get?'.http_build_query($infoRequest, '_', '&'));
+            $userInfo    = json_decode($userInfo);
             if (empty($userInfo) || !$userInfo->response) {
                 $this->pool['actionState'] = 'redirect';
                 return;
@@ -92,14 +110,20 @@ class SOne_Model_Object_LoginPage_VKAuth extends SOne_Model_Object_LoginPage
         }
     }
 
+    /**
+     * @param K3_Environment $env
+     * @param bool $updated
+     * @return mixed
+     */
     protected function vkauthcookieAction(K3_Environment $env, &$updated = false)
     {
         /* @var SOne_Application $app */
         $app = $env->get('app');
 
         $this->pool['actionState'] = 'redirect';
-        $config = $env->get('app')->config;
-        $cookieName = 'vk_app_'.$config['vk.appId'];
+
+        $config      = $env->get('app')->config;
+        $cookieName  = 'vk_app_'.$config['vk.appId'];
         $cookieValue = $env->getCookie($cookieName, false);
 
         $vkUserId = $this->checkVkCookie($cookieValue, $config['vk.appSecret']);
@@ -119,23 +143,33 @@ class SOne_Model_Object_LoginPage_VKAuth extends SOne_Model_Object_LoginPage
             $this->pool['actionState'] = 'redirect';
         } else {
             $request = array(
-                'client_id' => $config['vk.appId'],
-                'scope' => 'notify,offline',
-                'redirect_uri' => FStr::fullUrl($this->path.'?vkauth'),
+                'client_id'     => $config['vk.appId'],
+                'scope'         => 'notify,offline',
+                'redirect_uri'  => FStr::fullUrl($this->path.'?vkauth'),
                 'response_type' => 'code',
             );
             $env->response->sendRedirect('http://oauth.vk.com/authorize?'.http_build_query($request, '_', '&amp;'));
         }
     }
 
+    /**
+     * @param K3_Environment $env
+     * @param bool $updated
+     */
     protected function logoutAction(K3_Environment $env, &$updated = false)
     {
         $this->pool['actionState'] = 'redirect';
-        $config = $env->get('app')->config;
+
+        $config     = $env->get('app')->config;
         $cookieName = 'vk_app_'.$config['vk.appId'];
         $env->setCookie($cookieName, false, false, false, false);
     }
 
+    /**
+     * @param $cookieValue
+     * @param $appSecret
+     * @return bool|int
+     */
     protected function checkVkCookie($cookieValue, $appSecret)
     {
         static $hashParams = array('expire', 'mid', 'secret', 'sid');
@@ -152,9 +186,9 @@ class SOne_Model_Object_LoginPage_VKAuth extends SOne_Model_Object_LoginPage
                 return false;
             }
 
-            $stringToHash.= $pName.'='.$params[$pName];
+            $stringToHash .= $pName.'='.$params[$pName];
         }
-        $stringToHash.= $appSecret;
+        $stringToHash .= $appSecret;
         $hash = md5($stringToHash);
 
         if ($params['sig'] != $hash) {

@@ -10,8 +10,9 @@ class SOne_Request extends FBaseClass
 {
     /**
      * @param K3_Environment $env
+     * @param FDataPool $config
      */
-    public function __construct(K3_Environment $env)
+    public function __construct(K3_Environment $env, FDataPool $config)
     {
         list ($path) = explode('?', preg_replace('#^index\.php/?#i', '', $env->request->url), 2);
         $query = $env->getRequest()->getURLParams();
@@ -20,6 +21,10 @@ class SOne_Request extends FBaseClass
             $action = FStr::cast(key($query), FStr::WORD);
         } else {
             $action = $env->getRequest()->getString('action', K3_Request::POST, FStr::WORD);
+        }
+        
+        if (!$path) {
+            $path = (string) $config['site.indexPath'];
         }
 
         $this->pool = array(

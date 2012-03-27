@@ -65,7 +65,7 @@ class SOne_Application extends K3_Application
 
         $this->env->session->setDBase($this->db, 'sessions');
 
-        $this->request = new SOne_Request($this->env);
+        $this->request = new SOne_Request($this->env, $this->config);
 
         $this->VIS = new FVISInterface($this->env);
         $this->VIS->addAutoLoadDir(F_DATA_ROOT.'/styles/simple')
@@ -115,11 +115,12 @@ class SOne_Application extends K3_Application
     public function routeRequest(SOne_Request $request, $performAction = true)
     {
         $navis = $this->objects->loadNavigationByPath($request->path);
-        $tipObject = end($navis);
+        $tipObject = !empty($navis) ? end($navis) : null;
 
         /** @var $tipObject SOne_Model_Object */
-        $tipObject = $this->objects->loadOne($tipObject['id']);
-        if (trim($tipObject->path, '/') == $request->path) {
+        $tipObject = $tipObject ? $this->objects->loadOne($tipObject['id']) : null;
+        
+        if (($tipObject instanceof SOne_Model_Object) && (trim($tipObject->path, '/') == $request->path)) {
             // Routed OK
         } elseif ($tipObject instanceof SOne_Interface_Object_WithSubRoute) {
             /** @var $tipObject SOne_Interface_Object_WithSubRoute */
@@ -176,23 +177,25 @@ class SOne_Application extends K3_Application
     protected function renderDefaultNavigator($tree, $currentPath)
     {
         $container = new FVISNode('NAVIGATOR_BLOCK', 0, $this->VIS);
-        $parents = Array($container, $container);
+        $parents = array($container, $container);
 
-        foreach ($tree as $item) {
-            if ($item->accessLevel > $this->env->get('user')->accessLevel || !$parents[$item->treeLevel]) {
-                $parents[$item->treeLevel+1] = null;
-                continue;
+        if (is_array($tree)) {
+            foreach ($tree as $item) {
+                if ($item->accessLevel > $this->env->get('user')->accessLevel || !$parents[$item->treeLevel]) {
+                    $parents[$item->treeLevel+1] = null;
+                    continue;
+                }
+
+                $node = new FVISNode('NAVIGATOR_ITEM', 0, $this->VIS);
+                $node->addDataArray(array(
+                    'href' => FStr::fullUrl(ltrim($item->path, '/')),
+                    'caption' => $item->caption,
+                    'shortCaption' => FStr::smartTrim($item->caption, 23 - $item->treeLevel),
+                    'isCurrent' => (trim($item->path, '/') == trim($currentPath, '/')) ? 1 : null,
+                ));
+                $parents[$item->treeLevel]->appendChild('subs', $node);
+                $parents[$item->treeLevel+1] = $node;
             }
-
-            $node = new FVISNode('NAVIGATOR_ITEM', 0, $this->VIS);
-            $node->addDataArray(array(
-                'href' => FStr::fullUrl(ltrim($item->path, '/')),
-                'caption' => $item->caption,
-                'shortCaption' => FStr::smartTrim($item->caption, 23 - $item->treeLevel),
-                'isCurrent' => (trim($item->path, '/') == trim($currentPath, '/')) ? 1 : null,
-            ));
-            $parents[$item->treeLevel]->appendChild('subs', $node);
-            $parents[$item->treeLevel+1] = $node;
         }
 
         return $container;

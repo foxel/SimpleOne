@@ -10,6 +10,9 @@ abstract class SOne_Repository
      */
     protected static $instances = array();
 
+    /**
+     * @param FDataBase $db
+     */
     public function __construct(FDataBase $db)
     {
         $this->db = $db;
@@ -42,6 +45,10 @@ abstract class SOne_Repository
      */
     abstract public function loadAll(array $filters = array());
 
+    /**
+     * @param mixed $filter
+     * @return mixed
+     */
     public function loadOne($filter) {
         if (!is_array($filter)) {
             $filter = array(
@@ -54,7 +61,13 @@ abstract class SOne_Repository
         return reset($objects);
     }
 
-
+    /**
+     * @static
+     * @param SOne_Model $model
+     * @param array $map
+     * @param null $exclude
+     * @return array
+     */
     public static function mapModelToDb(SOne_Model $model, array $map, $exclude = null)
     {
         $exclude = (array) $exclude;
@@ -64,6 +77,24 @@ abstract class SOne_Repository
                 continue;
             }
             $res[$dbField] = $model->$modelField;
+        }
+        return $res;
+    }
+
+    /**
+     * @static
+     * @param array $filters
+     * @param array $map
+     * @param string $dbFieldPrefix
+     * @return array
+     */
+    public static function mapFilters(array $filters, array $map, $dbFieldPrefix = '')
+    {
+        $res = array();
+        foreach ($map as $modelField => $dbField) {
+            if (isset($filters[$modelField])) {
+                $res[$dbFieldPrefix.$dbField] = $filters[$modelField];
+            }
         }
         return $res;
     }

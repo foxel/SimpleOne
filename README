@@ -1,10 +1,10 @@
 
 Installation:
 
-* use dev.simpleone.sql to setup MySQL database
+* use sql/*.sql to setup MySQL database
 * run bash setup_kernel.sh [{path/to/download/kernel3}]
 * copy /data/sone.qfc.php.sample to /data/sone.qfc.php
-* edit /data/sone.qfc.php.sample to connect database
+* edit /data/sone.qfc.php to connect database
 * configure apache host and navigate to nearly configured host
 * login with admin/password
 

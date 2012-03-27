@@ -64,45 +64,62 @@ class SOne_Repository_Object extends SOne_Repository
 
     protected function parsePath($path)
     {
-        $path = explode('/', $path);
-
-        if (reset($path) !== '') {
-            array_unshift($path, '');
-        }
+        $path = explode('/', trim($path, '/'));
 
         return preg_replace('#\W+#', '_', $path);
     }
 
-    public function loadObjectsTreeByPath($path, $withChilds = false, $withData = false)
+    public function loadObjectsTreeByPath($path, $withChildsAndSiblings = false, $withData = false)
     {
         $navis = $this->loadNavigationByPath($path);
 
         $ids = array_keys($navis);
 
-        return $this->loadObjectsTree($ids, $withChilds, $withData);
+        return $this->loadObjectsTree(array('id' => $ids), $withChildsAndSiblings, $withData);
     }
 
     /**
-     * @param array|null $ids
-     * @param bool $withChilds
+     * @param array $filters
+     * @param bool $withChildsAndSiblings
      * @param bool $withData
      * @return SOne_Model_Object[]|null
      */
-    public function loadObjectsTree(array $ids = null, $withChilds = false, $withData = false)
+    public function loadObjectsTree(array $filters = array(), $withChildsAndSiblings = false, $withData = false)
     {
-        $select = $this->db->select('objects', 'o', self::$dbMap)
-            ->join('objects_navi', array('id' => 'o.id'), 'n', self::$dbMapNavi)
-            ->order('o.order_id');
+        if (!empty($filters) && $withChildsAndSiblings) {
+            $select = $this->db->select('objects', 'of', array());
+
+            foreach (self::mapFilters($filters, self::$dbMap) as $key => $filter) {
+                $select->where($key, $filter, 'of');
+            }
+            if ($naviFilters = self::mapFilters($filters, self::$dbMapNavi)) {
+                $select->join('objects_navi', array('id' => 'of.id'), 'nf', array());
+                foreach ($naviFilters as $key => $filter) {
+                    $select->where($key, $filter, 'nf');
+                }
+            }
+
+            $select
+                ->join('objects', 'o.id = of.id OR o.parent_id IN (of.id, of.parent_id) OR (of.parent_id IS NULL AND o.parent_id IS NULL)', 'o', self::$dbMap)
+                ->join('objects_navi', array('id' => 'o.id'), 'n', self::$dbMapNavi)
+                ->order('o.order_id');
+
+            $filters = array();
+        } else {
+            $select = $this->db->select('objects', 'o', self::$dbMap)
+                ->join('objects_navi', array('id' => 'o.id'), 'n', self::$dbMapNavi)
+                ->order('o.order_id');
+        }
 
         if ($withData) {
             $select->joinLeft('objects_data', array('o_id' => 'o.id'), 'd', array('data'));
         }
 
-        if (!is_null($ids)) {
-            $select->where('o.id', $ids);
-            if ($withChilds) {
-                $select->whereOr('o.parent_id', $ids);
-            }
+        foreach (self::mapFilters($filters, self::$dbMap) as $key => $filter) {
+            $select->where($key, $filter, 'o');
+        }
+        foreach (self::mapFilters($filters, self::$dbMapNavi) as $key => $filter) {
+            $select->where($key, $filter, 'n');
         }
 
         $tree = $select->fetchAll();
