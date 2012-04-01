@@ -10,6 +10,10 @@ class SOne_Model_Object_LoginPage_VKAuth extends SOne_Model_Object_LoginPage
     public function visualize(K3_Environment $env)
     {
         $node = parent::visualize($env);
+        if (!ini_get('allow_url_fopen') || !extension_loaded('openssl')) {
+            return $node;
+        }
+
         $node->setType('SONE_OBJECT_LOGINPAGE_VKAUTH');
 
         $config = $env->get('app')->config;
