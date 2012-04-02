@@ -301,7 +301,7 @@ function updateHtmlEditors() {
  {VIS:SONE_OBJECT_POLL_ITEM_EDIT|ID="{id}"}
  </div>
  {!WRITE:formButtons}
- <a href="#" onclick="var c = $(this).closest('form.pollEditor').find('div.pollEditQuestionTemplateContainer').find('div.pollEditQuestion').last().clone(); var i = c.find('input').val(''); var r = (new Date).getTime()+Math.random(); i.each(function() {$(this).attr('name', $(this).attr('name').replace(/\{id\}/, r));}); $(this).closest('form.pollEditor').find('div.pollEditQuestionsContainer').append(c); return false;">[Добавить вопрос]</a>
+ <a href="#" onclick="var c = $(this).closest('form.pollEditor').find('div.pollEditQuestionTemplateContainer').find('div.pollEditQuestion').last().clone(); var i = c.find('input, select').val(''); var r = (new Date).getTime()+Math.random(); i.each(function() {$(this).attr('name', $(this).attr('name').replace(/\{id\}/, r));}); $(this).closest('form.pollEditor').find('div.pollEditQuestionsContainer').append(c); return false;">[Добавить вопрос]</a>
  {WRITE}
  {VIS:SONE_OBJECT_EDITFORM|formElements=formElements|formButtons=formButtons|formClass="pollEditor"|_}
 {ELSEIF:IN_actionState="stat"}
@@ -346,11 +346,18 @@ function updateHtmlEditors() {
   <strong title="вы не можете изменить ответ на этот вопрос">*</strong>
  {ELSEIF:IN_ANSWERED}
   <strong style="color: darkgreen;" title="вы уже ответили на этот вопрос">*</strong>
-  <a href="#" onclick="$(this).closest('fieldset').find('div.pollQuestionAnswer:not(.locked) input').removeAttr('disabled'); $(this).closest('form').find('button[type=submit]').removeAttr('disabled'); $(this).remove(); return false;">[Изменить ответ]</a>
+  <a href="#" onclick="$(this).closest('fieldset').find('div.pollQuestionAnswer:not(.locked) input').removeAttr('disabled'); $(this).closest('fieldset').find('input[type=&quot;hidden&quot;], textarea').removeAttr('disabled').removeAttr('readonly'); $(this).closest('form').find('button[type=submit]').removeAttr('disabled'); $(this).remove(); return false;">[Изменить ответ]</a>
  {/IF}
 </legend>
 <div class="pollQuestionAnswersContainer">
- {IN_variants}
+ {if:IN_type=4}
+  <input type="text" name="question_{!IN_ID}_answer"{IF:IN_ANSWERED} readonly="readonly"{ELSEIF:IN_LOCKED} readonly="readonly"{/IF} style="width: 95%;" value="{!in_answerValue}" />
+ {elseif:IN_type=3}
+  <textarea name="question_{!IN_ID}_answer"{IF:IN_ANSWERED} readonly="readonly"{ELSEIF:IN_LOCKED} readonly="readonly"{/IF}>{!in_answerValue}</textarea>
+ {else}
+  {IN_variants}
+ {/if}
+ <input type="hidden" name="question_{!IN_ID}_active" value="1"{IF:IN_ANSWERED} disabled="disabled"{ELSEIF:IN_LOCKED} disabled="disabled"{/IF} />
 </div>
 </fieldset>
 <<- 'SONE_OBJECT_POLL_ITEM'>>
@@ -360,6 +367,7 @@ function updateHtmlEditors() {
 <legend>
  {!IN_CAPTION}
 </legend>
+ {IF:IN_statVal}Ответил(и) <span title="{IN_statUsers}">{IN_statVal} чел.{IF:IN_ANSWERED}, включая вас{/IF}</span>{/if}
 <div class="pollQuestionAnswersContainer">
  {IN_variants}
 </div>
@@ -375,14 +383,26 @@ function updateHtmlEditors() {
  <a href="#" onclick="if ($(this).closest('div.pollEditQuestionsContainer').find('div.pollEditQuestion').length > 1 ) { $(this).closest('div.pollEditQuestion').remove(); } return false;">-</a>
 <br />
 <label>
+ Тип:
+ <select name="questions[{!IN_ID}][type]" onchange="var t = $(this).val(); var c = $(this).closest('div.pollEditQuestion').find('.pollEditQuestionAnswersFieldset'); if (t == 1 || t == 2) c.show(); else c.hide();">
+  <option value="1"{IF:IN_type=1} selected="selected"{/IF}>Один из набора</option>
+  <option value="2"{IF:IN_type=2} selected="selected"{/IF}>Несколько из набора</option>
+  <option value="3"{IF:IN_type=3} selected="selected"{/IF}>Текст</option>
+  <option value="4"{IF:IN_type=4} selected="selected"{/IF}>Строка</option>
+ </select>
+</label>
+<br />
+<fieldset class="pollEditQuestionAnswersFieldset"{if:IN_type=4} style="display: none;"{elseif:IN_type=3} style="display: none;"{/if}>
+<legend>
  Ответы: <a href="#" onclick="var c = $(this).closest('div.pollEditQuestion').find('div.pollEditQuestionAnswersContainer').find('div.pollEditQuestionAnswer').last().clone(); var i = c.find('input').val(''); i.attr('name', i.attr('name').replace(/\[\w+\]$/, '[]')); $(this).closest('div.pollEditQuestion').find('div.pollEditQuestionAnswersContainer').append(c); return false;">+</a>
-</label><br />
+</legend>
 <div class="pollEditQuestionAnswersContainer">
  {IF:IN_variants}{IN_variants}{ELSE}
  {VIS:SONE_OBJECT_POLL_ITEM_EDIT_VALUEVARIANT|QID=IN_ID}
  {VIS:SONE_OBJECT_POLL_ITEM_EDIT_VALUEVARIANT|QID=IN_ID}
  {/IF}
 </div>
+</fieldset>
 <div>
  <label><input type="checkbox" name="questions[{!IN_ID}][lockAnswers]" value="1"{IF:IN_lockAnswers} checked="checked"{/IF} /> запретить изменение ответа</label>
 </div>
@@ -392,7 +412,7 @@ function updateHtmlEditors() {
 <<+ 'SONE_OBJECT_POLL_ITEM_VALUEVARIANT'>>
 <div class="pollQuestionAnswer{IF:IN_LOCKED} locked{/IF}">
  <label>
-  <input type="radio" name="question_{!IN_QID}_answer" value="{!IN_value}"{IF:IN_selected} checked="checked"{/IF}{IF:IN_ANSWERED} disabled="disabled"{ELSEIF:IN_LOCKED} disabled="disabled"{/IF} />
+  <input type="{IF:IN_isCheckbox}checkbox{ELSE}radio{/IF}" name="question_{!IN_QID}_answer{IF:IN_isCheckbox}[]{/IF}" value="{!IN_value}"{IF:IN_selected} checked="checked"{/IF}{IF:IN_ANSWERED} disabled="disabled"{ELSEIF:IN_LOCKED} disabled="disabled"{/IF} />
   {!IN_title} {IF:IN_available}(осталось {IN_available}){/IF}
  </label>
 </div>

@@ -50,7 +50,7 @@ th { font-size: 110%; }
 h2 { margin: 15px 5px 10px 30px; }
 h3 { margin: 15px 5px 5px; }
 p { margin: 5px 0; }
-textarea { display: block; }
+textarea { display: block; width: 95%; resize: vertical; min-height: 100px; }
 
 div#mp_pagecont { padding: 15px 10px; }
 div.clearfloats { clear: both !important; }
