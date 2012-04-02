@@ -249,6 +249,8 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
 
     protected function saveAction(K3_Environment $env, &$updated = false)
     {
+        parent::saveAction($env, $updated);
+
         $newQuestionsRaw = (array) $env->request->get('questions');
         $newQuestions = array();
         $oldQuestions = (array) $this->pool['questions'];
