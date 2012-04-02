@@ -3,7 +3,7 @@
 {outer_bg}=#b8becf
 {head_bg}=transparent no-repeat center top
 {page_bg}=#dadfef
-{page_brd}=#515480
+{page_brd}=#8184a0
 {content_bg}=#efefff
 
 {controls}=#e3ecea
@@ -58,7 +58,7 @@ div.invisible { border: 0 !important; margin: 0 !important; padding: 0 !importan
 
 ul#mp_navigator { display: block; padding: 0; margin: 0; overflow: hidden; }
 li.mp_navigator_item { display: block; }
-a.mp_navigator_item_a { display: block; padding: 2px 5px 2px 155px; margin-left: -150px; border-width: 0 0 1px 0; border-color: {page_brd}; border-style: solid; }
+a.mp_navigator_item_a { display: block; padding: 5px 5px 5px 155px; margin-left: -150px; border-width: 0 0 1px 0; border-color: {page_brd}; border-style: solid; }
 a.mp_navigator_item_a.current { background-color: {content_bg}; }
 a.mp_navigator_item_a:hover { background-color: #cacfdf; }
 ul.mp_navigator_item_subs { margin: 0 0 0 10px; padding: 0; }
