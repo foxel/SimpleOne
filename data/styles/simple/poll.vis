@@ -152,3 +152,9 @@
        onclick="if ($(this).closest('div.pollEditQuestionAnswersContainer').find('div.pollEditQuestionAnswer').length > 2) { $(this).closest('div.pollEditQuestionAnswer').remove(); } return false;">-</a>
 </div>
 <<- 'SONE_OBJECT_POLL_ITEM_EDIT_VALUEVARIANT'>>
+
+<<+ 'SONE_OBJECT_POLL_ITEM_STAT_TEXTANSWER'>>
+<div style="margin: 3px 0;">
+    <strong>{!IN_userName}</strong>: {!in_answerValue}
+</div>
+<<- 'SONE_OBJECT_POLL_ITEM_STAT_TEXTANSWER'>>

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @property-read string $description
+ * @property-read array[] $questions
+ * @property-read array[] $answers
+ */
 class SOne_Model_Object_Poll extends SOne_Model_Object
 {
     const QUESTION_TYPE_SELECT = 1;
@@ -17,7 +22,7 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
     /**
      * @var array
      */
-    protected $aclEditActionsList = array('edit', 'save', 'stat');
+    protected $aclEditActionsList = array('edit', 'save', 'stat', 'grid');
 
     /**
      * @param  array $init
@@ -29,10 +34,18 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
         $this->setData((array) $this->pool['data']);
     }
 
+    /**
+     * @param K3_Environment $env
+     * @return FVISNode
+     */
     public function visualize(K3_Environment $env)
     {
         if (in_array($this->actionState, array('save', 'fill'))) {
             $env->response->sendRedirect($this->path);
+        }
+
+        if ($this->actionState == 'grid') {
+            return $this->visualizeGrid($env);
         }
 
         $node = new FVISNode('SONE_OBJECT_POLL', 0, $env->get('VIS'));
@@ -51,7 +64,7 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
                 $pollItemVisClass = 'SONE_OBJECT_POLL_ITEM';
         }
 
-        $statAnswers = $this->genAnswersStats($statUsers);
+        $statAnswers = $this->_genAnswersStats($statUsers);
         $curAnswers = (isset($data['answers'][$env->get('user')->id]))
             ? $data['answers'][$env->get('user')->id]
             : array();
@@ -78,8 +91,8 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
                 case self::QUESTION_TYPE_SELECT:
                 default:
                     $questionAnswered = isset($question['valueVariants'][$answerValue]);
-
             }
+
             $questionLocked   = $question['lockAnswers'] && $questionAnswered;
 
             $node->appendChild('question_items', $item = new FVISNode($pollItemVisClass, 0, $env->get('VIS')));
@@ -94,10 +107,20 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
             switch ($questionType) {
                 case self::QUESTION_TYPE_TEXT:
                 case self::QUESTION_TYPE_STRING:
-                    $item->addDataArray(array(
-                        'statUsers' => isset($statAnswers[$qId]) ? implode(', ', $statAnswers[$qId]) : null,
-                        'statVal'   => isset($statAnswers[$qId]) ? count($statAnswers[$qId]) : 0,
-                    ));
+                    if (isset($statAnswers[$qId])) {
+                        $item->addDataArray(array(
+                            'statUsers' => implode(', ', array_keys($statAnswers[$qId])),
+                            'statVal'   => count($statAnswers[$qId]),
+                        ));
+                        $answers = array();
+                        foreach ($statAnswers[$qId] as $username => $answerValue) {
+                            $answers[] = array('userName' => $username, 'answerValue' => $answerValue);
+                        }
+                        $item->appendChild('variants', $answersItem = new FVISNode($pollItemVisClass.'_TEXTANSWER', FVISNode::VISNODE_ARRAY, $env->get('VIS')));
+                        $answersItem->addDataArray($answers);
+                    } else {
+                        $item->addData('statVal', 0);
+                    }
                     break;
                 case self::QUESTION_TYPE_MULTI:
                 case self::QUESTION_TYPE_SELECT:
@@ -140,28 +163,44 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
         return $node;
     }
 
+    /**
+     * @param K3_Environment $env
+     * @return FVISNode
+     */
+    public function visualizeGrid(K3_Environment $env)
+    {
+        return new FVISNode('SONE_OBJECT_POLL_GRID', 0, $env->get('VIS'));
+    }
+
+    /**
+     * @param array $data
+     * @return SOne_Model_Object_Poll
+     */
     public function setData(array $data)
     {
         $this->pool['data'] = $data + array(
             'description' => '',
             'questions'   => array(),
             'answers'     => array(),
-            'lockAnswers' => false,
         );
         $this->pool['description'] =& $this->pool['data']['description'];
         $this->pool['questions']   =& $this->pool['data']['questions'];
         $this->pool['answers']     =& $this->pool['data']['answers'];
-        $this->pool['lockAnswers'] =& $this->pool['data']['lockAnswers'];
         return $this;
     }
 
+    /**
+     * @param string $action
+     * @param K3_Environment $env
+     * @param bool $updated
+     */
     public function doAction($action, K3_Environment $env, &$updated = false)
     {
         parent::doAction($action, $env, $updated);
         $data =& $this->pool['data'];
 
         if ($action == 'fill' && !empty($data['questions']) && $env->get('user')->id) {
-            $statAnswers = $this->genAnswersStats();
+            $statAnswers = $this->_genAnswersStats();
             $curAnswers = isset($data['answers'][$env->get('user')->id])
                 ? $data['answers'][$env->get('user')->id]
                 : array();
@@ -247,6 +286,10 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
         }
     }
 
+    /**
+     * @param K3_Environment $env
+     * @param bool $updated
+     */
     protected function saveAction(K3_Environment $env, &$updated = false)
     {
         parent::saveAction($env, $updated);
@@ -324,7 +367,11 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
         $updated = true;
     }
 
-    protected function genAnswersStats(array $statUsers = array())
+    /**
+     * @param array $statUsers
+     * @return array
+     */
+    protected function _genAnswersStats(array $statUsers = array())
     {
         $answers   =& $this->pool['answers'];
         $questions =& $this->pool['questions'];
@@ -345,7 +392,7 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
                 switch ($questions[$qId]['type']) {
                     case self::QUESTION_TYPE_TEXT:
                     case self::QUESTION_TYPE_STRING:
-                        $statAnswers[$qId][] = $uName;
+                        $statAnswers[$qId][$uName] = $ansverValue;
                         break;
                     case self::QUESTION_TYPE_MULTI:
                     case self::QUESTION_TYPE_SELECT:
