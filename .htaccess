@@ -12,10 +12,6 @@ DirectoryIndex index.php index.html index.htm
  RewriteRule ^([^/\.]+)(\.html?|/(.*)|)$ index.php [L,QSA] #normal usage
 </IfModule>
 
-<IfModule mod_php4.c>
- php_value post_max_size 256M
- php_value upload_max_filesize 128M
-</IfModule>
 <IfModule mod_php5.c>
  php_value post_max_size 256M
  php_value upload_max_filesize 128M
