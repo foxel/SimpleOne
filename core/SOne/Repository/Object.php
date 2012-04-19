@@ -102,13 +102,15 @@ class SOne_Repository_Object extends SOne_Repository
             $select
                 ->join('objects', 'o.id = of.id OR o.parent_id IN (of.id, of.parent_id) OR (of.parent_id IS NULL AND o.parent_id IS NULL)', 'o', self::$dbMap)
                 ->join('objects_navi', array('id' => 'o.id'), 'n', self::$dbMapNavi)
-                ->order('o.order_id');
+                ->order('o.order_id')
+                ->order('o.id');
 
             $filters = array();
         } else {
             $select = $this->db->select('objects', 'o', self::$dbMap)
                 ->join('objects_navi', array('id' => 'o.id'), 'n', self::$dbMapNavi)
-                ->order('o.order_id');
+                ->order('o.order_id')
+                ->order('o.id');
         }
 
         if ($withData) {
