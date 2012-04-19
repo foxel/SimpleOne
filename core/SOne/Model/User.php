@@ -95,7 +95,7 @@ class SOne_Model_User extends SOne_Model
     public function updateLastSeen(K3_Environment $env)
     {
         $this->pool['lastSeen'] = time();
-        $this->pool['lastIP']   = $env->clientIPInteger;
+        $this->pool['lastIP']   = $env->client->IPInteger;
         $this->pool['lastSID']  = $env->session->getSID();
         $this->pool['lastUrl']  = $env->request->url;
         return $this;

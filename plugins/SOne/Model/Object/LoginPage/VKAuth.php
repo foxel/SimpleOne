@@ -36,9 +36,9 @@ class SOne_Model_Object_LoginPage_VKAuth extends SOne_Model_Object_LoginPage
 
         $config = $env->get('app')->config;
 
-        if (($baseDomain = $config['vk.baseDomain']) && !preg_match('#([\w\.]+\.)?'.preg_quote($baseDomain, '#').'$#i', $env->serverName)) {
+        if (($baseDomain = $config['vk.baseDomain']) && !preg_match('#([\w\.]+\.)?'.preg_quote($baseDomain, '#').'$#i', $env->server->domain)) {
             $node->addDataArray(array(
-                'vkMoveToLogin' => 'http://'.$baseDomain.'/'.($env->rootPath ? $env->rootPath.'/' : '').$this->path,
+                'vkMoveToLogin' => 'http://'.$baseDomain.'/'.($env->server->rootPath ? $env->server->rootPath.'/' : '').$this->path,
             ));
         } else {
             $request = array(
@@ -146,7 +146,7 @@ class SOne_Model_Object_LoginPage_VKAuth extends SOne_Model_Object_LoginPage
 
         $config      = $env->get('app')->config;
         $cookieName  = 'vk_app_'.$config['vk.appId'];
-        $cookieValue = $env->getCookie($cookieName, false);
+        $cookieValue = $env->client->getCookie($cookieName, false);
 
         $vkUserId = $this->checkVkCookie($cookieValue, $config['vk.appSecret']);
         if (!$vkUserId) {
@@ -184,7 +184,7 @@ class SOne_Model_Object_LoginPage_VKAuth extends SOne_Model_Object_LoginPage
 
         $config     = $env->get('app')->config;
         $cookieName = 'vk_app_'.$config['vk.appId'];
-        $env->setCookie($cookieName, false, false, false, false);
+        $env->client->setCookie($cookieName, false, false, false, false);
     }
 
     /**

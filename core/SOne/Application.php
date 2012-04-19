@@ -20,7 +20,10 @@
 
 class SOne_Application extends K3_Application
 {
-    protected $config  = array();
+    /**
+     * @var FDataPool
+     */
+    protected $config  = null;
 
     /**
      * @var FDataBase
@@ -234,7 +237,7 @@ class SOne_Application extends K3_Application
         }
         if (!$user) {
             $user = new SOne_Model_User(array(
-                'last_ip' => $this->env->clientIPInteger,
+                'last_ip' => $this->env->client->IPInteger,
             ));
         }
 

@@ -52,7 +52,7 @@ abstract class SOne_Model_Object_Commentable extends SOne_Model_Object implement
                     $env->request->getString('commentText', K3_Request::POST),
                     $env->request->getNumber('commentAnswerTo', K3_Request::POST),
                     array(
-                        'client_ip' => $env->clientIPInteger,
+                        'client_ip' => $env->client->IPInteger,
                         'author_id' => $env->get('user')->id,
                     )
                 );
