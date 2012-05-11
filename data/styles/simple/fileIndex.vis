@@ -1,0 +1,36 @@
+<<+ 'SONE_FILES_FILEINDEX'>>
+{IF:IN_actionState="edit"}
+{!WRITE:formElements}
+<label>
+    Базовый путь для обзора файлов:
+    <input type="text" name="basePath" value="{!IN_basePath}" style="width: 600px;" />
+</label>
+{WRITE}
+{VIS:SONE_OBJECT_EDITFORM|formElements=formElements|_}
+{ELSE}
+<h2>{IN_CAPTION}{IF:IN_curPath} :: {IN_curPath}{/IF}</h3>
+<table style="width: 100%;">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Size</th>
+    </tr>
+    </thead>
+    <tbody>
+        {IF:IN_upPath}
+            {VIS:SONE_FILES_FILEITEM|NAME=".."|TYPE="dir"|PATH=IN_upPath}
+        {/IF}
+        {IN_FILES}
+    </tbody>
+</table>
+{/IF}
+<<- 'SONE_FILES_FILEINDEX'>>
+
+<<+ 'SONE_FILES_FILEITEM'>>
+<tr>
+    <td><a href="/{IN_PATH}">{IN_NAME}</a></td>
+    <td>{IN_TYPE}</td>
+    <td>{IF:IN_TYPE="file"}{FBYTES:IN_SIZE}{ELSE}--{/IF}</td>
+</tr>
+<<- 'SONE_FILES_FILEITEM'>>

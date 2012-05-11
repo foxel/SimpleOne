@@ -192,7 +192,7 @@ function updateHtmlEditors() {
 <<- 'SONE_OBJECT_COMMON'>>
 
 <<+ 'SONE_OBJECT_EDITFORM'>>
-<form action="{FULLURL:IN_PATH}?{IF:IN_saveAction}{!IN_saveAction}{ELSE}save{/IF}" method="post"{IF:IN_formClass} class="{IN_formClass}"{/IF} >
+<form action="{FULLURL:IN_PATH}/?{IF:IN_saveAction}{!IN_saveAction}{ELSE}save{/IF}" method="post"{IF:IN_formClass} class="{IN_formClass}"{/IF} >
  <label>{L_EDITOR_OBJECT_CAPTION}: <input type="text" name="caption" value="{IN_caption}" /></label>
  <hr />
  {IN_formElements}
@@ -204,6 +204,9 @@ function updateHtmlEditors() {
 
 <<+ 'SONE_PAGE_404'>>
 <h1>404</h1>
+<p>
+    {IN_PATH}
+</p>
 <<- 'SONE_PAGE_404'>>
 
 <<+ 'SONE_PAGE_403'>>
@@ -260,7 +263,7 @@ function updateHtmlEditors() {
 <<- 'SONE_OBJECT_COMMENTS_PAGE'>>
 
 <<+ 'SONE_OBJECT_COMMENTS_FORM'>>
-<form action="{FULLURL:IN_PATH}?saveComment" method="post">
+<form action="{FULLURL:IN_PATH}/?saveComment" method="post">
  <textarea class="" name="commentText" style="width: 450px; height: 50px;"></textarea>
  <button type="submit">{L_EDITOR_SUBMIT_ADDCOMMENT}</button>
 </form>
@@ -285,7 +288,7 @@ function updateHtmlEditors() {
   <strong>Вход</strong> /
   <a href="#" onclick="$('#loginpageLogin').hide(); $('#loginpageRegister').show(); return false;">Регистрация</a>
  </legend>
- <form action="{FULLURL:IN_PATH}?login" method="post">
+ <form action="{FULLURL:IN_PATH}/?login" method="post">
   <label>Логин: <input type="text" name="login" value="" /></label><br />
   <label>Пароль: <input type="password" name="password" value="" /></label><br />
   <button type="submit">{L_EDITOR_SUBMIT_LOGIN}</button>
@@ -296,7 +299,7 @@ function updateHtmlEditors() {
   <a href="#" onclick="$('#loginpageRegister').hide(); $('#loginpageLogin').show(); return false;">Вход</a>
   / <strong>Регистрация</strong>
  </legend>
- <form action="{FULLURL:IN_PATH}?register" method="post">
+ <form action="{FULLURL:IN_PATH}/?register" method="post">
   <label>Имя/ник: <input type="text" name="reg_name" value="{IN_REG_NAME}" autocomplete="off" /></label><br />
   <label>Логин: <input type="text" name="reg_login" value="{IN_REG_LOGIN}" autocomplete="off" /></label><br />
   <label>Пароль: <input type="password" name="reg_password" value="{IN_REG_PASSWORD}" autocomplete="off" /></label><br />
@@ -309,12 +312,13 @@ function updateHtmlEditors() {
 
 <<+ 'SONE_OBJECT_CONSTRUCTOR'>>
 <h2>{IN_CAPTION}</h2>
-<form id="constructorForm" action="{IN_PATH}?prepare" method="POST">
+<form id="constructorForm" action="{IN_PATH}/?prepare" method="POST">
  <fieldset>
   <legend>Параметры объекта:</legend>
   <label>Класс: <select name="class">
    <option value="HTMLPage">HTML-страница</option>
    <option value="Poll">Опрос/Анкета</option>
+   <option value="FileIndex">Обзор файлов</option>
   </select></label>
   <br />
   <label>Путь: <select name="parentPath">

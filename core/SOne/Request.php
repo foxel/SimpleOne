@@ -43,6 +43,8 @@ class SOne_Request extends FBaseClass
         
         if (!$path) {
             $path = (string) $config['site.indexPath'];
+        } else {
+            $path = rawurldecode($path);
         }
 
         $this->pool = array(

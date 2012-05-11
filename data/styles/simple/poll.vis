@@ -53,7 +53,7 @@
     {/IF}
     <h2>{!IN_CAPTION}</h2>
     <div class="htmlcontent">{IN_DESCRIPTION}</div>
-    <form action="{FULLURL:IN_PATH}?fill" method="POST">
+    <form action="{FULLURL:IN_PATH}/?fill" method="POST">
         {IF:IN_ASK_FOR_LOGIN}
             <div style="color: darkred;">Авторизируйтесь, чтобы сохранить ответы.</div>
         {/IF}
