@@ -27,7 +27,7 @@
 {WRITE}
 {VIS:SONE_OBJECT_EDITFORM|formElements=formElements|_}
 {ELSE}
-<h2>{IN_CAPTION}{IF:IN_curPath} :: {IN_curPath}{/IF}</h3>
+<h3>{IN_CAPTION}{IF:IN_curPath} :: {IN_curPath}{/IF}</h3>
 <table style="width: 100%;">
     <thead>
     <tr>
