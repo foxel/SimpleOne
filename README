@@ -8,5 +8,9 @@ Installation:
 * configure apache host and navigate to nearly configured host
 * login with admin/password
 
+Updating:
 
+* use sql/*.sql to setup MySQL database
+* run bash setup_kernel.sh
+* login with admin/password or any user you already created
 
