@@ -40,7 +40,7 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
     /**
      * @var array
      */
-    protected $aclEditActionsList = array('edit', 'save', 'stat', 'grid');
+    protected $aclEditActionsList = array('edit', 'save', 'stat', 'drop', 'grid');
 
     /**
      * @param  array $init
@@ -58,7 +58,7 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
      */
     public function visualize(K3_Environment $env)
     {
-        if (in_array($this->actionState, array('save', 'fill'))) {
+        if (in_array($this->actionState, array('save', 'fill', 'drop'))) {
             $env->response->sendRedirect($this->path);
         }
 
@@ -383,6 +383,18 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
         $this->pool['updateTime']  = time();
 
         $updated = true;
+    }
+
+    protected function dropAction(K3_Environment $env, &$updated = false)
+    {
+        $data =& $this->pool['data'];
+
+        $userId = $env->request->getNumber('userId');
+
+        if (isset($data['answers'][$userId])) {
+            unset($data['answers'][$userId]);
+            $updated = true;
+        }
     }
 
     /**
