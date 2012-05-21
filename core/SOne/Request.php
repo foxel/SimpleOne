@@ -28,9 +28,9 @@ class SOne_Request extends FBaseClass
 {
     /**
      * @param K3_Environment $env
-     * @param FDataPool $config
+     * @param K3_Config $config
      */
-    public function __construct(K3_Environment $env, FDataPool $config)
+    public function __construct(K3_Environment $env, K3_Config $config)
     {
         list ($path) = explode('?', preg_replace('#^index\.php/?#i', '', $env->request->url), 2);
         $query = $env->getRequest()->getURLParams();
@@ -42,7 +42,7 @@ class SOne_Request extends FBaseClass
         }
         
         if (!$path) {
-            $path = (string) $config['site.indexPath'];
+            $path = (string) $config->site->indexPath;
         } else {
             $path = rawurldecode($path);
         }

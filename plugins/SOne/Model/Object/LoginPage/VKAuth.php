@@ -34,15 +34,15 @@ class SOne_Model_Object_LoginPage_VKAuth extends SOne_Model_Object_LoginPage
 
         $node->setType('SONE_OBJECT_LOGINPAGE_VKAUTH');
 
-        $config = $env->get('app')->config;
+        $config = $env->get('app')->config->vk;
 
-        if (($baseDomain = $config['vk.baseDomain']) && !preg_match('#([\w\.]+\.)?'.preg_quote($baseDomain, '#').'$#i', $env->server->domain)) {
+        if (($baseDomain = $config->baseDomain) && !preg_match('#([\w\.]+\.)?'.preg_quote($baseDomain, '#').'$#i', $env->server->domain)) {
             $node->addDataArray(array(
                 'vkMoveToLogin' => 'http://'.$baseDomain.'/'.($env->server->rootPath ? $env->server->rootPath.'/' : '').$this->path,
             ));
         } else {
             $request = array(
-                'client_id'     => $config['vk.appId'],
+                'client_id'     => $config->appId,
                 'scope'         => 'notify,offline',
                 'redirect_uri'  => FStr::fullUrl($this->path.'?vkauth'),
                 'response_type' => 'code',
@@ -50,7 +50,7 @@ class SOne_Model_Object_LoginPage_VKAuth extends SOne_Model_Object_LoginPage
 
             $node->addDataArray(array(
                 'vkAuthLink' => 'http://oauth.vk.com/authorize?'.http_build_query($request, '_', '&amp;'),
-                'vkAppId'    => $config['vk.appId'],
+                'vkAppId'    => $config->appId,
             ));
         }
 
@@ -64,7 +64,7 @@ class SOne_Model_Object_LoginPage_VKAuth extends SOne_Model_Object_LoginPage
      */
     protected function vkauthAction(K3_Environment $env, &$updated = false)
     {
-        $config = $env->get('app')->config;
+        $config = $env->get('app')->config->vk;
         /* @var SOne_Application $app */
         $app = $env->get('app');
 
@@ -76,8 +76,8 @@ class SOne_Model_Object_LoginPage_VKAuth extends SOne_Model_Object_LoginPage
 
         // code ok
         $tokenRequest = array(
-            'client_id'     => $config['vk.appId'],
-            'client_secret' => $config['vk.appSecret'],
+            'client_id'     => $config->appId,
+            'client_secret' => $config->appSecret,
             'code'          => $code,
         );
 
@@ -144,11 +144,11 @@ class SOne_Model_Object_LoginPage_VKAuth extends SOne_Model_Object_LoginPage
 
         $this->pool['actionState'] = 'redirect';
 
-        $config      = $env->get('app')->config;
-        $cookieName  = 'vk_app_'.$config['vk.appId'];
+        $config      = $env->get('app')->config->vk;
+        $cookieName  = 'vk_app_'.$config->appId;
         $cookieValue = $env->client->getCookie($cookieName, false);
 
-        $vkUserId = $this->checkVkCookie($cookieValue, $config['vk.appSecret']);
+        $vkUserId = $this->checkVkCookie($cookieValue, $config->appSecret);
         if (!$vkUserId) {
             return;
         }
@@ -165,7 +165,7 @@ class SOne_Model_Object_LoginPage_VKAuth extends SOne_Model_Object_LoginPage
             $this->pool['actionState'] = 'redirect';
         } else {
             $request = array(
-                'client_id'     => $config['vk.appId'],
+                'client_id'     => $config->appId,
                 'scope'         => 'notify,offline',
                 'redirect_uri'  => FStr::fullUrl($this->path.'?vkauth'),
                 'response_type' => 'code',
@@ -182,8 +182,8 @@ class SOne_Model_Object_LoginPage_VKAuth extends SOne_Model_Object_LoginPage
     {
         $this->pool['actionState'] = 'redirect';
 
-        $config     = $env->get('app')->config;
-        $cookieName = 'vk_app_'.$config['vk.appId'];
+        $config     = $env->get('app')->config->vk;
+        $cookieName = 'vk_app_'.$config->appId;
         $env->client->setCookie($cookieName, false, false, false, false);
     }
 

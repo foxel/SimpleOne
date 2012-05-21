@@ -21,7 +21,7 @@
 class SOne_Application extends K3_Application
 {
     /**
-     * @var FDataPool
+     * @var K3_Config
      */
     protected $config  = null;
 
@@ -65,21 +65,13 @@ class SOne_Application extends K3_Application
     {
         F()->Timer->logEvent('App Bootstrap start');
 
-        $this->config = new FDataPool($c = (array) FMisc::loadDatafile(F_DATA_ROOT.DIRECTORY_SEPARATOR.'sone.qfc.php', FMisc::DF_SLINE));
+        $this->config = new K3_Config($c = (array) FMisc::loadDatafile(F_DATA_ROOT.DIRECTORY_SEPARATOR.'sone.qfc.php', FMisc::DF_SLINE));
 
         // preparing DB
         $this->db = F()->DBase; //new FDataBase('mysql');
-        $this->db->connect(
-            array(
-                'dbname' => $this->config['db.database'],
-                'host'   => $this->config['db.host'],
-            ),
-            $this->config['db.username'],
-            $this->config['db.password'],
-            $this->config['db.prefix']
-        );
+        $this->db->connect($this->config->db);
 
-        if ($this->config['app.useTransaction']) {
+        if ($this->config->app->useTransaction) {
             $this->db->beginTransaction();
             $this->getResponse()->addEventHandler('closeAndExit', array($this, 'commitOnResponseSent'));
         }
@@ -183,7 +175,7 @@ class SOne_Application extends K3_Application
         }
 
         $pageNode->appendChild('page_cont', $objectNode);
-        $pageNode->addData('site_name', $this->config['site.name']);
+        $pageNode->addData('site_name', $this->config->site->name);
         $pageNode->addData('page_title', $pageObject->caption);
         //$pageNode->addData('page_cont', '<pre>'.print_r(get_included_files(), true).'</pre>');
         //$pageNode->addData('page_cont', '<pre>'.print_r($this->env, true).'</pre>');
