@@ -1,7 +1,7 @@
 <?php /*
 
-db.host => localhost
-db.database => dev.simpleone
+db.dataSource.host => localhost
+db.dataSource.dbname => dev.simpleone
 db.username => developer
 db.password => 
 db.prefix => qfso_
