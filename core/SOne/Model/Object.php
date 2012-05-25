@@ -61,12 +61,13 @@ abstract class SOne_Model_Object extends SOne_Model
     {
         $namespace = (string) $namespace;
         if (!in_array($namespace, self::$classNamespaces)) {
-            self::$classNamespaces[] = $namespace;
+            array_unshift(self::$classNamespaces, $namespace);
         }
     }
 
     /**
      * @param  array $init
+     * @throws FException
      * @return SOne_Model_Object
      */
     public static function construct(array $init)
@@ -198,7 +199,7 @@ abstract class SOne_Model_Object extends SOne_Model
      */
     public function isActionAllowed($action, SOne_Model_User $user)
     {
-        if (in_array($action, $this->aclEditActionsList)) {
+        if (in_array($action, $this->aclEditActionsList) && (!$user->id || $user->id != $this->ownerId)) {
             return $this->pool['editLevel'] <= $user->accessLevel;
         }
 

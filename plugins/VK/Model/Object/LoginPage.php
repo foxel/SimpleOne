@@ -18,9 +18,8 @@
  * along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
  */
 
-class SOne_Model_Object_LoginPage_VKAuth extends SOne_Model_Object_LoginPage
+class VK_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
 {
-
     /**
      * @param K3_Environment $env
      * @return FVISNode

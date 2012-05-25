@@ -18,8 +18,8 @@
  * along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
  */
 
-F()->Autoloader->registerClassPath(dirname(__FILE__));
-F()->Autoloader->registerClassPath(F_SITE_ROOT.DIRECTORY_SEPARATOR.'plugins');
+F()->Autoloader->registerClassPath(dirname(__FILE__).DIRECTORY_SEPARATOR.'SOne', 'SOne');
+//F()->Autoloader->registerClassPath(F_SITE_ROOT.DIRECTORY_SEPARATOR.'plugins');
 
 if (F_DEBUG) {
     FCache::clear();

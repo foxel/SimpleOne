@@ -20,6 +20,8 @@
 
 class SOne_Application extends K3_Application
 {
+    const DEFAULT_PLUGINS_SUBDIR = 'plugins';
+
     /**
      * @var K3_Config
      */
@@ -99,6 +101,8 @@ class SOne_Application extends K3_Application
             ->put('user', $this->bootstrapUser())
             ->put('lang', $this->lang)
             ->put('app',  $this);
+
+        $this->bootstrapPlugins();
 
         F()->Timer->logEvent('App Bootstrap end');
 
@@ -214,6 +218,26 @@ class SOne_Application extends K3_Application
         return $container;
     }
 
+    protected function bootstrapPlugins()
+    {
+        $pluginsDir = isset($this->config->pluginsDir)
+            ? $this->config->pluginsDir
+            : F_SITE_ROOT.DIRECTORY_SEPARATOR.self::DEFAULT_PLUGINS_SUBDIR;
+
+        if ($this->config->plugins instanceof Traversable) {
+            foreach ($this->config->plugins as $pluginName => $pluginConfig) {
+                if (is_dir($pluginsDir.DIRECTORY_SEPARATOR.$pluginName)) {
+                    F()->Autoloader->registerClassPath($pluginsDir.DIRECTORY_SEPARATOR.$pluginName, $pluginName);
+                    $pluginBootstrapClass = ($pluginConfig instanceof K3_Config) && isset($pluginConfig->bootstrapClass)
+                        ? $pluginConfig->bootstrapClass
+                        : $pluginName.'_Bootstrap';
+                    if (class_exists($pluginBootstrapClass, true)) {
+                        $pluginBootstrapClass::bootstrap($this, $pluginConfig);
+                    }
+                }
+            }
+        }
+    }
 
     protected function bootstrapUser()
     {

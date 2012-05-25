@@ -31,7 +31,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `qfso_objects` WRITE;
 /*!40000 ALTER TABLE `qfso_objects` DISABLE KEYS */;
-INSERT INTO `qfso_objects` VALUES (1,NULL,'HTMLPage',1,1263078668,1332254884,0,0,3,'SimpleOne',0),(2,NULL,'Constructor',1,0,0,6,0,3,'Конструктор',1000),(3,NULL,'LoginPage_VKAuth',1,0,0,0,0,3,'Вход / Регистрация',5),(4,NULL,'Poll',1,1332255216,1332257955,0,0,3,'Анкета',0);
+INSERT INTO `qfso_objects` VALUES (1,NULL,'HTMLPage',1,1263078668,1332254884,0,0,3,'SimpleOne',0),(2,NULL,'Constructor',1,0,0,6,0,3,'Конструктор',1000),(3,NULL,'LoginPage',1,0,0,0,0,3,'Вход / Регистрация',5),(4,NULL,'Poll',1,1332255216,1332257955,0,0,3,'Анкета',0);
 /*!40000 ALTER TABLE `qfso_objects` ENABLE KEYS */;
 UNLOCK TABLES;
 
