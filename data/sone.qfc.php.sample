@@ -9,6 +9,8 @@ db.prefix => qfso_
 site.name => SimpleOne site
 site.indexPath => index
 
+plugins.VK => 1
+
 vk.appId => 100
 vk.appSecret => XxxX
 vk.baseDomain => simple.one
