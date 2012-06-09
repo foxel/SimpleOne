@@ -89,13 +89,13 @@ class SOne_Repository_Object extends SOne_Repository
         if (!empty($filters) && $withChildsAndSiblings) {
             $select = $this->db->select('objects', 'of', array());
 
-            foreach (self::mapFilters($filters, self::$dbMap) as $key => $filter) {
-                $select->where($key, $filter, 'of');
+            foreach (self::mapFilters($filters, self::$dbMap, 'of') as $key => $filter) {
+                $select->where($key, $filter);
             }
-            if ($naviFilters = self::mapFilters($filters, self::$dbMapNavi)) {
+            if ($naviFilters = self::mapFilters($filters, self::$dbMapNavi, 'nf')) {
                 $select->join('objects_navi', array('id' => 'of.id'), 'nf', array());
                 foreach ($naviFilters as $key => $filter) {
-                    $select->where($key, $filter, 'nf');
+                    $select->where($key, $filter);
                 }
             }
 
@@ -117,11 +117,11 @@ class SOne_Repository_Object extends SOne_Repository
             $select->joinLeft('objects_data', array('o_id' => 'o.id'), 'd', array('data'));
         }
 
-        foreach (self::mapFilters($filters, self::$dbMap) as $key => $filter) {
-            $select->where($key, $filter, 'o');
+        foreach (self::mapFilters($filters, self::$dbMap, 'o') as $key => $filter) {
+            $select->where($key, $filter);
         }
-        foreach (self::mapFilters($filters, self::$dbMapNavi) as $key => $filter) {
-            $select->where($key, $filter, 'n');
+        foreach (self::mapFilters($filters, self::$dbMapNavi, 'n') as $key => $filter) {
+            $select->where($key, $filter);
         }
 
         $tree = $select->fetchAll();
@@ -133,15 +133,30 @@ class SOne_Repository_Object extends SOne_Repository
         return $tree;
     }
 
-    public function loadAll(array $filters = array())
+    /**
+     * @param array $filters
+     * @param string|array|bool $order
+     * @param int|bool $limit
+     * @param int|bool $offset
+     * @return SOne_Model_Object[]
+     */
+    public function loadAll(array $filters = array(), $order = false, $limit = false, $offset = false)
     {
         $select = $this->db->select('objects', 'o', self::$dbMap)
             ->joinLeft('objects_navi', array('id' => 'o.id'), 'n', self::$dbMapNavi)
             ->joinLeft('objects_data', array('o_id' => 'o.id'), 'd', array('data'))
             ->order('o.order_id');
 
-        foreach ($filters as $key => $filter) {
+        foreach (self::mapFilters($filters, self::$dbMap, 'o') as $key => $filter) {
             $select->where($key, $filter);
+        }
+        foreach (self::mapFilters($filters, self::$dbMapNavi, 'n') as $key => $filter) {
+            $select->where($key, $filter);
+        }
+
+        if ($limit) {
+            $select->calculateRows()
+                ->limit($limit, $offset);
         }
 
         $rows = $select->fetchAll();

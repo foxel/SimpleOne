@@ -109,9 +109,35 @@ abstract class SOne_Repository
     public static function mapFilters(array $filters, array $map, $dbFieldPrefix = '')
     {
         $res = array();
-        foreach ($map as $modelField => $dbField) {
-            if (isset($filters[$modelField])) {
-                $res[$dbFieldPrefix.$dbField] = $filters[$modelField];
+        foreach ($filters as $filterKey => $filterValue) {
+            if (preg_match('#^(\w+)(!?=|>=?|<=?|~|)$#', $filterKey, $matches) && isset($map[$matches[1]])) {
+                $dbField   = $map[$matches[1]];
+                if ($dbFieldPrefix) {
+                    $dbField = $dbFieldPrefix.'.'.$dbField;
+                }
+                $operand   = $matches[2];
+
+                if ($operand == '~') {
+                    $operand = 'ILIKE';
+                }
+
+                if (!$operand || $operand == '=') {
+                    $res[$dbField] = $filterValue;
+                } else {
+                    switch (gettype($filterValue)) {
+                        case 'NULL':
+                            $operand = ($operand == '=') ? 'IS' : 'IS NOT';
+                            $res[$dbField.' '.$operand.' NULL'] = true;
+                            break;
+                        case 'array':
+                            $operand = ($operand == '=') ? 'IN' : 'NOT IN';
+                            $res[$dbField.' '.$operand.' (?)'] = $filterValue;
+                            break;
+                        default:
+                            $res[$dbField.' '.$operand.' ?'] = $filterValue;
+                            break;
+                    }
+                }
             }
         }
         return $res;
