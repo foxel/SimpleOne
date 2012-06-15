@@ -194,8 +194,10 @@ function updateHtmlEditors() {
 <<+ 'SONE_OBJECT_EDITFORM'>>
 <form action="{FULLURL:IN_PATH}/?{IF:IN_saveAction}{!IN_saveAction}{ELSE}save{/IF}" method="post"{IF:IN_formClass} class="{IN_formClass}"{/IF} >
  <label>{L_EDITOR_OBJECT_CAPTION}: <input type="text" name="caption" value="{IN_caption}" /></label>
- <hr />
- {IN_formElements}
+ {IF:IN_formElements}
+  <hr />
+  {IN_formElements}
+ {/IF}
  <hr />
  {IN_formButtons}
  <button type="submit">{L_EDITOR_SUBMIT_SAVE}</button>
@@ -319,6 +321,7 @@ function updateHtmlEditors() {
    <option value="HTMLPage">HTML-страница</option>
    <option value="Poll">Опрос/Анкета</option>
    <option value="FileIndex">Обзор файлов</option>
+   <option value="BlogRoot">Блог</option>
   </select></label>
   <br />
   <label>Путь: <select name="parentPath">

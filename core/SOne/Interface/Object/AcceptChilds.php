@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
  *
@@ -19,21 +18,4 @@
  * along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * @property string $content
- */
-class SOne_Model_Object_HTMLPage extends SOne_Model_Object_PlainPage
-    implements SOne_Interface_Object_AcceptChilds
-{
-    /**
-     * @param K3_Environment $env
-     * @return FVISNode
-     */
-    public function visualize(K3_Environment $env)
-    {
-        $node = parent::visualize($env);
-        $node->setType('SONE_OBJECT_HTMLPAGE');
-        return $node;
-    }
-
-}
+interface SOne_Interface_Object_AcceptChilds { }

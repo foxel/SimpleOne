@@ -33,14 +33,20 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
      */
     public function visualize(K3_Environment $env)
     {
-        $node = new FVISNode('SONE_BLOG_LIST', 0, $env->get('VIS'));
+        $node = new FVISNode('SONE_OBJECT_BLOG_LIST', 0, $env->get('VIS'));
 
         $node->addDataArray($this->pool + (array) $this->_filterParams);
 
-        $items = $this->_loadListItems($env);
+        if ($this->id && !in_array($this->actionState, array('new', 'edit'))) {
+            $items = $this->_loadListItems($env);
 
-        foreach ($items as $item) {
-            $node->appendChild('items', $item->visualizeForList($env));
+            foreach ($items as $item) {
+                $node->appendChild('items', $item->visualizeForList($env));
+            }
+        }
+
+        if ($this->actionState == 'new') {
+            $node->addData('newPath', $this->path.'/'.FStr::shortUID());
         }
 
         return $node;
@@ -52,6 +58,10 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
      */
     protected function _loadListItems(K3_Environment $env)
     {
+        if (!$this->id) {
+            //return array();
+        }
+
         $repo = new SOne_Repository_Object($this->_db);
         $filter = array(
             'parentId' => $this->id,
@@ -111,6 +121,20 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
      */
     public function routeSubPath($subPath, SOne_Request $request, K3_Environment $env)
     {
+        if ($request->action == 'save' && preg_match('#^[0-9a-z]+$#', $subPath)) {
+            $object = SOne_Model_Object::construct(array(
+                'class'       => 'BlogItem',
+                'parentId'    => $this->id,
+                'accessLevel' => $this->accessLevel,
+                'editLevel'   => $this->editLevel,
+                'ownerId'     => $env->get('user')->id,
+                'path'        => $this->path.'/'.$subPath,
+            ));
+            return $object;
+        } else {
+            $this->pool['actionState'] = '';
+        }
+
         $this->_filterParams = FStr::getZendStyleURLParams($subPath);
         return $this;
     }

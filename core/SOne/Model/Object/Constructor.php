@@ -62,6 +62,11 @@ class SOne_Model_Object_Constructor extends SOne_Model_Object implements SOne_In
                 $this->pool['errors'] = 'Невозможно загрузить указанный родительсвий объект';
                 return;
             }
+            $collidedObject = SOne_Repository_Object::getInstance($env->get('db'))->loadOne(array('pathHash' => md5($path)));
+            if ($collidedObject) {
+                $this->pool['errors'] = 'Объект с заданным путем уже существует';
+                return;
+            }
         }
 
         $uid = md5($this->path.$path);
@@ -91,7 +96,7 @@ class SOne_Model_Object_Constructor extends SOne_Model_Object implements SOne_In
         $node = new FVISNode($this->actionState ? 'SONE_OBJECT_CONSTRUCTOR_FRAME' : 'SONE_OBJECT_CONSTRUCTOR', 0, $env->get('VIS'));
         if ($this->object) {
             if ($this->actionState == 'redirect') {
-                return $env->response->sendRedirect($this->object->path.'?edit');
+                $env->response->sendRedirect($this->object->path.'?edit');
             } else {
                 $node->appendChild('content', $this->object->visualize($env));
             }
@@ -99,7 +104,7 @@ class SOne_Model_Object_Constructor extends SOne_Model_Object implements SOne_In
             $tree = SOne_Repository_Object::getInstance($env->get('db'))->loadObjectsTree();
             $pathOptions = array();
             foreach ($tree as $item) {
-                if ($item instanceof SOne_Interface_Object_WithSubRoute) {
+                if (!$item instanceof SOne_Interface_Object_AcceptChilds) {
                     continue;
                 }
                 $pathOptions[] = array(

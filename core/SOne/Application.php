@@ -191,6 +191,11 @@ class SOne_Application extends K3_Application
         return $this->VIS->makeHTML();
     }
 
+    /**
+     * @param SOne_Model_Object[] $tree
+     * @param string $currentPath
+     * @return FVISNode
+     */
     protected function renderDefaultNavigator($tree, $currentPath)
     {
         $container = new FVISNode('NAVIGATOR_BLOCK', 0, $this->VIS);

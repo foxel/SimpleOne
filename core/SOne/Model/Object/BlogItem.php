@@ -19,8 +19,8 @@
  * along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
  */
 
-class SOne_Model_Object_BlogItem extends SOne_Model_Object_HTMLPage
-        implements SOne_Interface_Object_WithExtraData
+class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
+    implements SOne_Interface_Object_WithExtraData
 {
     /**
      * @param  array $init
@@ -39,7 +39,7 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_HTMLPage
     {
         $node = parent::visualize($env);
 
-        $node->setType('SONE_BLOG_ITEM');
+        $node->setType('SONE_OBJECT_BLOG_ITEM');
 
         return $node;
     }
@@ -50,11 +50,12 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_HTMLPage
      */
     public function visualizeForList(K3_Environment $env)
     {
-        $node = new FVISNode('SONE_BLOG_LISTITEM', 0, $env->get('VIS'));
+        $node = new FVISNode('SONE_OBJECT_BLOG_LISTITEM', 0, $env->get('VIS'));
         $data = $this->pool;
         unset($data['comments']);
         $node->addDataArray($data + array(
             'canEdit'       => $this->isActionAllowed('edit', $env->get('user')) ? 1 : null,
+            'parentPath' => preg_replace('#/[^/]+$#', '', $this->path),
         ));
 
         return $node;

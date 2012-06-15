@@ -145,7 +145,8 @@ class SOne_Repository_Object extends SOne_Repository
         $select = $this->db->select('objects', 'o', self::$dbMap)
             ->joinLeft('objects_navi', array('id' => 'o.id'), 'n', self::$dbMapNavi)
             ->joinLeft('objects_data', array('o_id' => 'o.id'), 'd', array('data'))
-            ->order('o.order_id');
+            ->order('o.order_id')
+            ->order('o.create_time', true);
 
         foreach (self::mapFilters($filters, self::$dbMap, 'o') as $key => $filter) {
             $select->where($key, $filter);

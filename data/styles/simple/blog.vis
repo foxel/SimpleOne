@@ -1,0 +1,101 @@
+<!--
+ Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+
+ This file is part of QuickFox SimpleOne.
+
+ SimpleOne is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ SimpleOne is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<<+ 'SONE_OBJECT_BLOG_ITEM'>>
+{IF:IN_actionState="edit"}
+ {!WRITE:formElements}
+ <textarea class="htmleditor" name="content" style="width: 100%; height: 450px;">{!IN_CONTENT}</textarea>
+ <label>Метки (через запятую): <input type="text" name="tags" value="{IN_tags}" style="width: 70%;" /></label><br />
+ <label><input type="checkbox" name="commentsAllowed"{IF:IN_commentsAllowed} checked="checked"{/IF} /> разрешить комментарии</label>
+ {WRITE}
+ {VIS:SONE_OBJECT_EDITFORM|formElements=formElements|_}
+{ELSE}
+{IF:IN_canEdit}<div style="float: right;">
+    <a href="{FULLURL:IN_PATH}?edit">[Править]</a>
+</div>{/IF}
+<h2>{IN_CAPTION}</h2>
+<div class="htmlpage">{IN_CONTENT}</div>
+{IF:IN_commentsBlock}
+ <hr />
+ {IN_commentsBlock}
+{/IF}
+{/IF}
+<<- 'SONE_OBJECT_BLOG_ITEM'>>
+
+<<+ 'SONE_OBJECT_BLOG_LIST'>>
+{IF:IN_actionState="edit"}
+{VIS:SONE_OBJECT_EDITFORM|_}
+{ELSEIF:IN_actionState="new"}
+<h2>{IN_CAPTION}</h2>
+<h3>Создание новой записи</h3>
+    {VIS:SONE_OBJECT_BLOG_ITEM|actionState="edit"|path=IN_newPath|commentsAllowed="1"}
+{ELSE}
+<div style="float: right;">
+    <a href="{FULLURL:IN_PATH}?new">[Новая запись]</a>
+</div>
+<h2>{IN_CAPTION}</h2>
+{if:in_date}
+    <h3>Записи за {in_date} <a href="{FULLURL:in_path}">[X]</a></h3>
+{else}
+    <h3>Последние 10 записей</h3>
+{/if}
+<div class="htmlpage">
+    {if:IN_items}
+    {IN_items}
+    {else}
+        Нет записей
+    {/if}
+</div>
+{/IF}
+<<- 'SONE_OBJECT_BLOG_LIST'>>
+
+<<+ 'SONE_OBJECT_BLOG_LISTITEM'>>
+<div class="blog-item">
+    <h3><a href="{FULLURL:IN_PATH}">{IN_CAPTION}</a></h3>
+    <div class="blog-date"><a href="{FULLURL:IN_PARENTPATH}/date/{FTIME:IN_createTime|"Y-m-d"|false|true}">{FTIME:IN_createTime}</a></div>
+    <div class="blog-item-preview">{IN_CONTENT}</div>
+</div>
+<<- 'SONE_OBJECT_BLOG_LISTITEM'>>
+
+<<+ 'CSS'>>
+.blog-item {
+    border: 1px solid black;
+    margin: 20px 0;
+    background: #EFEFFF;
+}
+.blog-item h3 {
+    display: block;
+    float: left;
+    margin: -0.7em 0 -0.5em 20px;
+    background: inherit;
+    padding: 0 5px;
+}
+.blog-item .blog-date {
+    display: block;
+    float: right;
+    margin: -0.7em 20px -0.5em 0;
+    background: inherit;
+    padding: 0 5px;
+}
+.blog-item-preview {
+    max-height: 250px;
+    overflow-y: auto;
+    padding: 5px 0;
+}
+<<- 'CSS'>>

@@ -95,7 +95,7 @@ abstract class SOne_Model_Object extends SOne_Model
         $this->pool = array(
             'id'          => isset($init['id'])          ?  (int)    $init['id']          : null,
             'parentId'    => isset($init['parentId'])    ?  (int)    $init['parentId']    : null,
-            'class'       => isset($init['class'])       ?  (string) $init['class']       : lcfirst(strtr(get_class($this), array(__CLASS__ => ''))),
+            'class'       => isset($init['class'])       ?  (string) $init['class']       : lcfirst(strtr(get_class($this), array(__CLASS__.'_' => ''))),
             'caption'     => isset($init['caption'])     ?  (string) $init['caption']     : '',
             'ownerId'     => isset($init['ownerId'])     ?  (int)    $init['ownerId']     : null,
             'createTime'  => isset($init['createTime'])  ?  (int)    $init['createTime']  : time(),
@@ -240,4 +240,9 @@ abstract class SOne_Model_Object extends SOne_Model
      * @return FVISNode
      */
     abstract public function visualize(K3_Environment $env);
+
+    public function __sleep()
+    {
+        return array('pool');
+    }
 }
