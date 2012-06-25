@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
  *
