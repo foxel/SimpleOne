@@ -69,24 +69,25 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
         );
         /** @var $lang FLNGData */
         $lang = $env->get('lang');
-        foreach ($this->_filterParams as $filterType => $filterValue) {
-
-            switch ($filterType) {
-                case 'date':
-                    if (preg_match('#^\d{4}(-\d{2}){0,2}$#', $filterValue)) {
-                        $dateParts = explode('-', $filterValue);
-                        if (count($dateParts) == 3) {
-                            $filter['createTime>='] = gmmktime(0, 0, 0, $dateParts[1], $dateParts[2], $dateParts[0]) - $lang->timeZone*3600;
-                            $filter['createTime<='] = gmmktime(23, 59, 59, $dateParts[1], $dateParts[2], $dateParts[0]) - $lang->timeZone*3600;
-                        } elseif (count($dateParts) == 2) {
-                            $filter['createTime>='] = gmmktime(0, 0, 0, $dateParts[1], 1, $dateParts[0]) - $lang->timeZone*3600;
-                            $filter['createTime<='] = gmmktime(23, 59, 59, $dateParts[1]+1, 0, $dateParts[0]) - $lang->timeZone*3600;
-                        } else {
-                            $filter['createTime>='] = gmmktime(0, 0, 0, 1, 1, $dateParts[0]) - $lang->timeZone*3600;
-                            $filter['createTime<='] = gmmktime(23, 59, 59, 12, 31, $dateParts[0]) - $lang->timeZone*3600;
+        if ($this->_filterParams) {
+            foreach ($this->_filterParams as $filterType => $filterValue) {
+                switch ($filterType) {
+                    case 'date':
+                        if (preg_match('#^\d{4}(-\d{2}){0,2}$#', $filterValue)) {
+                            $dateParts = explode('-', $filterValue);
+                            if (count($dateParts) == 3) {
+                                $filter['createTime>='] = gmmktime(0, 0, 0, $dateParts[1], $dateParts[2], $dateParts[0]) - $lang->timeZone*3600;
+                                $filter['createTime<='] = gmmktime(23, 59, 59, $dateParts[1], $dateParts[2], $dateParts[0]) - $lang->timeZone*3600;
+                            } elseif (count($dateParts) == 2) {
+                                $filter['createTime>='] = gmmktime(0, 0, 0, $dateParts[1], 1, $dateParts[0]) - $lang->timeZone*3600;
+                                $filter['createTime<='] = gmmktime(23, 59, 59, $dateParts[1]+1, 0, $dateParts[0]) - $lang->timeZone*3600;
+                            } else {
+                                $filter['createTime>='] = gmmktime(0, 0, 0, 1, 1, $dateParts[0]) - $lang->timeZone*3600;
+                                $filter['createTime<='] = gmmktime(23, 59, 59, 12, 31, $dateParts[0]) - $lang->timeZone*3600;
+                            }
                         }
-                    }
-                    break;
+                        break;
+                }
             }
         }
 
