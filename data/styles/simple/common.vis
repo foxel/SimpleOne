@@ -28,7 +28,7 @@
   <meta http-equiv="Content-Script-Type" content="text/javascript" />
   <meta name="Generator" content="QuickFox SimpleOne Alpha" />
   <link href="{FULLURL:"static/css/bootstrap.css"}" rel="stylesheet">
-  <link href="{FULLURL:"static/css/bootstrap-responsive.css"}" rel="stylesheet">
+  {if:IN_RESPONSIVE}<link href="{FULLURL:"static/css/bootstrap-responsive.css"}" rel="stylesheet">{/if}
   {IF:IN_META_DESCRIPTION}<meta name="Description" content="{!IN_META_DESCRIPTION}" />{ENDIF}
   {IF:IN_META_KEYWORDS}<meta name="Keywords" content="{!IN_META_KEYWORDS}" />{ENDIF}
   <!-- <meta http-equiv="MSThemeCompatible" content="no" /> -->
@@ -129,14 +129,16 @@ function updateHtmlEditors() {
 </script>
 
 <div id="mp_outer" class="container">
-    <div id="mp_head" class="row">
-        <!-- <div id="mp_head_site">{!IN_SITE_NAME}</div>
-        <div id="mp_head_title">{!IN_PAGE_TITLE}{IF:IN_PAGE_SUBTITLE} :: {!IN_PAGE_SUBTITLE}{ENDIF}</div>
-        {IF:IN_MENU_ITEMS}
-        <div id="mp_head_menu">
-        {IN_MENU_ITEMS}
+    <div class="row">
+        <div id="mp_head" class="span12">
+            <!-- <div id="mp_head_site">{!IN_SITE_NAME}</div>
+            <div id="mp_head_title">{!IN_PAGE_TITLE}{IF:IN_PAGE_SUBTITLE} :: {!IN_PAGE_SUBTITLE}{ENDIF}</div>
+            {IF:IN_MENU_ITEMS}
+            <div id="mp_head_menu">
+            {IN_MENU_ITEMS}
+            </div>
+            {ENDIF} -->
         </div>
-        {ENDIF} -->
     </div>
     <div class="row">
         <div id="mp_sidebar" class="span2">
