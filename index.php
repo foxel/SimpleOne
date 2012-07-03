@@ -20,6 +20,7 @@
 
 define ('STARTED', true);
 define ('F_DEBUG', (boolean) getenv('F_DEBUG'));
+define ('F_PROFILE', (boolean) getenv('F_PROFILE'));
 
 require_once 'kernel3/kernel3.php';
 require_once 'core/bootstrap.php';

@@ -21,13 +21,13 @@ EDITOR_OBJECT_CAPTION: Заголовок
 ---
 EDITOR_SUBMIT_SAVE: Сохранить
 ---
+EDITOR_CANCEL: Отмена
+---
 EDITOR_SUBMIT_ADDCOMMENT: Добавить комментарий
 ---
 EDITOR_SUBMIT_LOGIN: Вход
 ---
 EDITOR_SUBMIT_REGISTER: Регистрация
----
-EDITOR_SUBMIT_SAVE: Сохранить
 ---
 EDITOR_SUBMIT_FILL: Сохранить ответы
 ---

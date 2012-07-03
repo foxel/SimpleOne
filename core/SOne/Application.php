@@ -84,7 +84,8 @@ class SOne_Application extends K3_Application
 
         $this->VIS = new FVISInterface($this->env);
         $this->VIS->addAutoLoadDir(F_DATA_ROOT.'/styles/simple')
-            ->loadECSS(F_DATA_ROOT.'/styles/simple/common.ecss');
+        //    ->loadECSS(F_DATA_ROOT.'/styles/simple/common.ecss')
+        ;
         F()->Parser->initStdTags();
         $this->VIS->addFuncParser('BBPARSE', array(F()->Parser, 'parse'));
 

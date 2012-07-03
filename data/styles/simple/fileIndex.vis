@@ -27,8 +27,11 @@
 {WRITE}
 {VIS:SONE_OBJECT_EDITFORM|formElements=formElements|_}
 {ELSE}
+    {IF:IN_canEdit}<div class="pull-right">
+        <a class="btn" href="{FULLURL:IN_PATH}?edit"><i class="icon-pencil"></i> Править</a>
+    </div>{/IF}
 <h3>{IN_CAPTION}{IF:IN_curPath} :: {IN_curPath}{/IF}</h3>
-<table style="width: 100%;">
+<table class="table table-striped">
     <thead>
     <tr>
         <th>Name</th>
