@@ -82,7 +82,7 @@
     {IF:IN_LOCKED}
         <strong title="вы не можете изменить ответ на этот вопрос"><i class="icon-lock"></i></strong>
         {ELSEIF:IN_ANSWERED}
-        <a class="btn" href="#" onclick="$(this).closest('fieldset').find('div.pollQuestionAnswer:not(.locked) input').removeAttr('disabled'); $(this).closest('fieldset').find('input[type=&quot;hidden&quot;], textarea').removeAttr('disabled').removeAttr('readonly'); $(this).closest('form').find('button[type=submit]').removeAttr('disabled'); $(this).remove(); return false;" title="вы уже ответили на этот вопрос">
+        <a class="btn" href="#" onclick="$(this).closest('fieldset').find('div.pollQuestionAnswersContainer:not(.locked) input').removeAttr('disabled').removeAttr('readonly'); $(this).closest('fieldset').find('input[type=&quot;hidden&quot;], textarea').removeAttr('disabled').removeAttr('readonly'); $(this).closest('form').find('button[type=submit]').removeAttr('disabled'); $(this).remove(); return false;" title="вы уже ответили на этот вопрос">
             <i class="icon-pencil"></i>
             Изменить ответ
         </a>
