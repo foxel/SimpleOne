@@ -5448,6 +5448,7 @@ textarea,
   display: none;
 }
 .ui-resizable-n {
+  background: #eeeeee;
   cursor: n-resize;
   height: 7px;
   width: 100%;
@@ -5455,6 +5456,7 @@ textarea,
   left: 0;
 }
 .ui-resizable-s {
+  background: #eeeeee;
   cursor: s-resize;
   height: 7px;
   width: 100%;
@@ -5462,6 +5464,7 @@ textarea,
   left: 0;
 }
 .ui-resizable-e {
+  background: #eeeeee;
   cursor: e-resize;
   width: 7px;
   right: -5px;
@@ -5469,6 +5472,7 @@ textarea,
   height: 100%;
 }
 .ui-resizable-w {
+  background: #eeeeee;
   cursor: w-resize;
   width: 7px;
   left: -5px;
