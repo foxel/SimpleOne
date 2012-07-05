@@ -16,8 +16,6 @@
 .rounded-7{-moz-border-radius:7px;-webkit-border-radius:7px;border-radius:7px}
 .rounded-left-3{-moz-border-radius-topleft:3px;-webkit-border-top-left-radius:3px;-moz-border-radius-bottomleft:3px;-webkit-border-bottom-left-radius:3px}
 .rounded-bottom-7{-moz-border-radius-bottomleft:7px;-moz-border-radius-bottomright:7px;-webkit-border-bottom-left-radius:7px;-webkit-border-bottom-right-radius:7px;border-bottom-left-radius:7px;border-bottom-right-radius:7px}
-.ui-widget{font-size:.9em}
-.ui-dialog .ui-dialog-buttonpane button{padding:.1em .6em .2em .6em}
 .el-colorpicker{width:16px;height:16px;border:1px solid #ccc;position:relative;cursor:default}
 .el-palette{width:182px;border:1px solid #ccc;background:#fff;padding:3px 2px 3px 3px;z-index:99000;position:absolute;top:16px;left:0}
 .el-palette .color{float:left;width:14px;height:14px;line-height:1px;border-top:1px solid #eee;border-left:1px solid #eee}
@@ -44,9 +42,9 @@
 .el-paddinginput{display:block;white-space:nowrap}
 .el-paddinginput input{margin:0 1px 0 0;border:1px solid #ccc}
 .el-paddinginput select{padding:0}
-.el-select{height:17px;width:110px;border:1px solid #ccc;cursor:default;position:relative}
+.el-select{width:110px;border:1px solid #ccc;cursor:default;position:relative}
 .el-select.hover{background-color:#eee}
-.el-select label{height:17px;line-height:17px;padding:0 5px;margin:0 12px 0 0;display:block;white-space:nowrap;overflow:hidden;background:#fff;border-right:1px solid #ccc}
+.el-select label{padding:4px 5px;margin:0 12px 0 0;display:block;white-space:nowrap;overflow:hidden;background:#fff;border-right:1px solid #ccc}
 .el-select .list{border:1px solid #ccc;display:block;position:absolute;overflow:auto;background:#fff;z-index:1000}
 .el-select .list div{position:relative;padding:3px 25px 3px 7px;border-bottom:1px solid #eee}
 .el-select .list .hover{background:#efefef}
@@ -144,16 +142,13 @@
 .el-rte-rtl .toolbar ul li div.color-indicator{margin:16px 2px 2px 0}
 .el-rte .toolbar .panel-format{z-index:10}
 .el-palette{top:20px}
-.el-dialogform,.el-dialogform td{font-size:.9em}
-.el-dialogform select{font-size:.9em}
 .ui-dialog .ui-dialog-buttonpane{padding:.4em,1em}
-.ui-dialog .ui-dialog-buttonpane button{margin:.3em .4em .1em 0;font-size:.9em}
 .ui-dialog .ui-dialog-titlebar{padding:.3em 1em .3em}
 .el-dialogform label{display:block}
 .el-dialogform label input{margin-right:2px}
 .el-dialogform iframe.el-rte-preview{width:100%;height:235px;margin:0;padding:0;outline:0;border:0}
 .el-dialogform fieldset{border:1px solid #ccc;padding:0}
-.el-dialogform fieldset legend{font-size:.9em;padding:.1em .5em;margin:0 0 5px 1em;border:1px solid #ccc;background-color:#eee}
+.el-dialogform fieldset legend{font-size:12px;line-height:1.2em;padding:.1em .5em;margin:0 0 5px 1em;border:1px solid #ccc;background-color:#eee;width:auto}
 .el-dialogform p{padding:.2em .3em}
 .el-dialogform h3{color:#555;padding:1.2em 0 0 0;margin:0;font-size:1.2em}
 .el-dialogform h4{color:#555;font-size:1em;padding:0;margin:3px 9px}
@@ -171,4 +166,7 @@ table.elrte-authors td{border-bottom:1px solid #eee}
 .el-rte-smiley{margin:5px}
 .elrte-image-src-fm .ui-state-default{float:right}
 .el-dialogform-rtl .elrte-image-src-fm .ui-state-default{float:left}
-.elrte-image-preview{font-size:.7em;overflow:auto;height:240px;width:480px}
+.elrte-image-preview{font-size:.7em;overflow:auto;height:240px;width:530px}
+.el-dialogform input,.el-palette input,.el-dialogform select,.el-palette select{width:auto;margin:2px 0;padding-left:0;padding-right:0}
+.el-paddinginput input,.el-borderselect input{width:3em}
+.elrte-image-preview img{max-width:none}

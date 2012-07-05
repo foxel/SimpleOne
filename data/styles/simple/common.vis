@@ -33,7 +33,7 @@
     <link rel="stylesheet" href="{FULLURL:"static/css/font-awesome-ie7.css"}">
   <![endif]-->
 
-  <link rel="stylesheet" href="{FULLURL:"static/css/smoothness/jquery-ui-1.8.13.custom.css"}" type="text/css" media="screen" charset="utf-8">
+  <link rel="stylesheet" href="{FULLURL:"static/css/jqui/jquery-ui-1.8.16.custom.css"}" type="text/css" media="screen" charset="utf-8">
   <link rel="stylesheet" href="{FULLURL:"static/css/elrte.min.css"}" type="text/css" media="screen" charset="utf-8">
 
   {IF:IN_META_DESCRIPTION}<meta name="Description" content="{!IN_META_DESCRIPTION}" />{ENDIF}
@@ -57,40 +57,6 @@
 
    .nav-list .nav-list {
        padding-right: 0;
-   }
-
-   /* elRTE with bootstrap fixes */
-   .el-dialogform input,
-   .el-palette input,
-   .el-dialogform select,
-   .el-palette select {
-       width: auto;
-       margin: 0;
-       padding: 2px 0;
-   }
-
-   .el-dialogform select,
-   .el-palette select {
-       height: 24px;
-   }
-
-   .el-dialogform fieldset legend {
-       width: auto;
-       line-height: 2em;
-   }
-
-   .el-paddinginput input,
-   .el-borderselect input {
-       width: 4em;
-   }
-
-   .el-select {
-       height: inherit;
-   }
-   .el-select label {
-       height: inherit;
-       line-height: inherit;
-       padding: 2px 5px;
    }
 
    {IN_CSS}
