@@ -100,6 +100,8 @@ function updateHtmlEditors() {
         styleWithCSS : false,
         height       : 400,
         toolbar      : 'maxi',
+        resizable    : true,
+        resizeHandle : 's',
         cssfiles     : ['{FULLURL:"static/css/bootstrap.css"}']
     };
     // create editor
