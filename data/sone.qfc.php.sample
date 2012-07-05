@@ -9,6 +9,8 @@ db.prefix => qfso_
 site.name => SimpleOne site
 site.indexPath => index
 
+markup.responsive => 1
+
 plugins.VK => 1
 
 vk.appId => 100

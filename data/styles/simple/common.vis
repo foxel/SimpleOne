@@ -27,6 +27,11 @@
   <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta http-equiv="Content-Script-Type" content="text/javascript" />
   <meta name="Generator" content="QuickFox SimpleOne Alpha" />
+  <link href="{FULLURL:"static/css/bootstrap.css"}" rel="stylesheet">
+  {if:IN_RESPONSIVE}<link href="{FULLURL:"static/css/bootstrap-responsive.css"}" rel="stylesheet">{/if}
+  <!--[if IE 7]>
+    <link rel="stylesheet" href="static/css/font-awesome-ie7.css">
+  <![endif]-->
   {IF:IN_META_DESCRIPTION}<meta name="Description" content="{!IN_META_DESCRIPTION}" />{ENDIF}
   {IF:IN_META_KEYWORDS}<meta name="Keywords" content="{!IN_META_KEYWORDS}" />{ENDIF}
   <!-- <meta http-equiv="MSThemeCompatible" content="no" /> -->
@@ -39,6 +44,16 @@
   <style type="text/css">
   /* CSS starts here <![CDATA[ */
    script { display: none; }
+
+   #mp_footer {
+       margin-top: 45px;
+       padding: 35px 0 36px;
+       border-top: 1px solid #E5E5E5;
+   }
+
+   .nav-list .nav-list {
+       padding-right: 0;
+   }
    {IN_CSS}
   /* ]]> CSS ends here */
   </style>
@@ -94,7 +109,7 @@ function updateHtmlEditors() {
         theme_advanced_resize_horizontal : false,
 
         // Example content CSS (should be your site CSS)
-        content_css : "css/content.css",
+        content_css : "{FULLURL:"static/css/bootstrap.css"}",
 
         // Drop lists for link/image/media/template dialogs
         template_external_list_url : "lists/template_list.js",
@@ -116,51 +131,54 @@ function updateHtmlEditors() {
 //]]> JavaScript ends here
 </script>
 
-<div id="mp_outer"><div id="mp_outer1"><div id="mp_border">
- <div id="mp_head">
-  <!-- <div id="mp_head_site">{!IN_SITE_NAME}</div>
-  <div id="mp_head_title">{!IN_PAGE_TITLE}{IF:IN_PAGE_SUBTITLE} :: {!IN_PAGE_SUBTITLE}{ENDIF}</div>
-  {IF:IN_MENU_ITEMS}
-  <div id="mp_head_menu">
-   {IN_MENU_ITEMS}
-  </div>
-  {ENDIF} -->
- </div>
- <div id="mp_sidebar">
-  {IN_NAVIGATOR}
- </div>
- <div id="mp_mainpage">
-  <div class="invisible">&nbsp;</div>
-  {IF:IN_PATH_ITEMS}
-  <div id="mp_page_pathline">
-   {IN_PATH_ITEMS}
-  </div>
-  {ENDIF}
-  <div id="mp_pagecont">
-   {IN_PAGE_CONT}
-  </div>
-  <div class="clearfloats invisible">&nbsp;</div>
- </div>
- <div id="mp_footer">
-  <div id="mp_genstats">
-   <!--Page-Stats-->
-  </div>
-  <div id="mp_staticons">
-   Powered by <a href="https://github.com/foxel/SimpleOne">QuickFox Simple One Alpha</a> (<a href="http://k3.quickfox.ru">Kernel 3</a> based)<br />
-   {IN_FOOTSTAT}
-   <!-- <a href="http://validator.w3.org/check?uri=referer">
-    <img src="http://www.w3.org/Icons/valid-xhtml10-blue.png" alt="Valid XHTML 1.0 Strict" style="height: 31px; width: 88px;" />
-   </a> -->
-  </div>
-  <div class="clearfloats invisible">&nbsp;</div>
- </div>
-</div></div></div>
+<div id="mp_outer" class="container">
+    <div class="row">
+        <div id="mp_head" class="span12">
+            <!-- <div id="mp_head_site">{!IN_SITE_NAME}</div>
+            <div id="mp_head_title">{!IN_PAGE_TITLE}{IF:IN_PAGE_SUBTITLE} :: {!IN_PAGE_SUBTITLE}{ENDIF}</div>
+            {IF:IN_MENU_ITEMS}
+            <div id="mp_head_menu">
+            {IN_MENU_ITEMS}
+            </div>
+            {ENDIF} -->
+        </div>
+    </div>
+    <div class="row">
+        <div id="mp_sidebar" class="span2">
+            {IN_NAVIGATOR}
+        </div>
+        <div id="mp_mainpage" class="span10">
+            {IF:IN_PATH_ITEMS}
+            <div id="mp_page_pathline">
+                {IN_PATH_ITEMS}
+            </div>
+            {ENDIF}
+            <div id="mp_pagecont">
+                {IN_PAGE_CONT}
+            </div>
+        </div>
+    </div>
+    <div id="mp_footer" class="footer">
+        <div id="mp_genstats">
+            <!--Page-Stats-->
+        </div>
+        <div id="mp_staticons">
+            Powered by <a href="https://github.com/foxel/SimpleOne">QuickFox Simple One Alpha</a> (<a
+                href="http://k3.quickfox.ru">Kernel 3</a> based)<br/>
+            {IN_FOOTSTAT}
+            <!-- <a href="http://validator.w3.org/check?uri=referer">
+            <img src="http://www.w3.org/Icons/valid-xhtml10-blue.png" alt="Valid XHTML 1.0 Strict" style="height: 31px; width: 88px;" />
+           </a> -->
+        </div>
+        <div class="clearfloats invisible">&nbsp;</div>
+    </div>
+</div>
 
 {IF:IN_BOTT_JS}
 <script type="text/javascript">
-// JavaScript Starts Here (bottom section) <![CDATA[
- {IN_BOTT_JS}
-//]]> JavaScript ends here
+    // JavaScript Starts Here (bottom section) <![CDATA[
+        {IN_BOTT_JS}
+    //]]> JavaScript ends here
 </script>
 {ENDIF}
 </body>
@@ -169,17 +187,17 @@ function updateHtmlEditors() {
 
 <<+ 'NAVIGATOR_BLOCK'>>
 <div id="mp_navigator_container">
- <ul id="mp_navigator">
+ <ul id="mp_navigator" class="nav nav-list">
   {IN_SUBS}
  </ul>
 </div>
 <<- 'NAVIGATOR_BLOCK'>>
 
 <<+ 'NAVIGATOR_ITEM'>>
-<li class="mp_navigator_item">
- <a class="mp_navigator_item_a{IF:IN_ISCURRENT} current{/IF}" href="{IN_HREF}" title="{IN_caption}">{!IN_shortCaption}</a>
+<li class="mp_navigator_item{IF:IN_ISCURRENT} active{/IF}">
+ <a class="mp_navigator_item_a" href="{IN_HREF}" title="{IN_caption}">{!IN_shortCaption}</a>
  {IF:IN_SUBS}
-  <ul class="mp_navigator_item_subs">
+  <ul class="mp_navigator_item_subs nav nav-list">
    {IN_SUBS}
   </ul>
  {/IF}
@@ -198,9 +216,11 @@ function updateHtmlEditors() {
   <hr />
   {IN_formElements}
  {/IF}
- <hr />
- {IN_formButtons}
- <button type="submit">{L_EDITOR_SUBMIT_SAVE}</button>
+ <div class="form-actions">
+   {IN_formButtons}
+   <button class="btn btn-primary" type="submit"><i class="icon-ok"></i> {L_EDITOR_SUBMIT_SAVE}</button>
+   <a href="{FULLURL:IN_PATH}" class="btn"><i class="icon-remove"></i> {L_EDITOR_CANCEL}</a>
+ </div>
 </form>
 <<- 'SONE_OBJECT_EDITFORM'>>
 
@@ -218,13 +238,13 @@ function updateHtmlEditors() {
 <<+ 'SONE_OBJECT_HTMLPAGE'>>
 {IF:IN_actionState="edit"}
  {!WRITE:formElements}
- <textarea class="htmleditor" name="content" style="width: 100%; height: 450px;">{!IN_CONTENT}</textarea>
+ <label><textarea class="htmleditor span10" name="content" style="height: 450px;">{!IN_CONTENT}</textarea></label>
  <label><input type="checkbox" name="commentsAllowed"{IF:IN_commentsAllowed} checked="checked"{/IF} /> разрешить комментарии</label>
  {WRITE}
  {VIS:SONE_OBJECT_EDITFORM|formElements=formElements|_}
 {ELSE}
-{IF:IN_canEdit}<div style="float: right;">
-    <a href="{FULLURL:IN_PATH}?edit">[Править]</a>
+{IF:IN_canEdit}<div class="pull-right">
+    <a class="btn" href="{FULLURL:IN_PATH}?edit"><i class="icon-pencil"></i> Править</a>
 </div>{/IF}
 <h2>{IN_CAPTION}</h2>
 <div class="htmlpage">{IN_CONTENT}</div>
@@ -237,49 +257,51 @@ function updateHtmlEditors() {
 
 <<+ 'SONE_OBJECT_COMMENTS'>>
 <h3 id="pageComments">Комментарии:</h3>
-<div style="margin: 10px;">
+<div style="margin-top: 10px;">
 {IF:IN_allowAdd}
-<span{IF:IN_actionState="addComment"} style="display: none;"{/IF}><a href="{FULLURL:IN_PATH}?addComment" onclick="$(this).closest('span').hide().parent().find('div.objectCommentsFormContainer').show('fast'); return false;">[Добавить комментарий]</a></span>
-<div class="objectCommentsFormContainer"{!IF:IN_actionState="addComment"} style="display: none;"{/IF}>
+<span{IF:IN_actionState="addComment"} style="display: none;"{/IF}>
+    <a class="btn" href="{FULLURL:IN_PATH}?addComment" onclick="$(this).closest('span').hide().parent().find('div.objectCommentsFormContainer').show('fast'); return false;">
+        <i class="icon-plus"></i>
+        Добавить комментарий
+    </a>
+</span>
+<div class="well well-small objectCommentsFormContainer"{!IF:IN_actionState="addComment"} style="display: none;"{/IF}>
 {VIS:SONE_OBJECT_COMMENTS_FORM|PATH=IN_PATH}
 </div>
 {ELSE}
 <span>Авторизируйтесь, чтобы добавить комментарий.</span>
 {/IF}
 </div>
-{IF:in_pages}
-<div style="text-align: center; font-weight: bold;">[{in_pages}]</div>
-<hr />
-{/IF}
 <div style="margin: 5px 0;">
 {IN_COMMENTS}
 </div>
 {IF:in_pages}
-<hr />
-<div style="text-align: center; font-weight: bold;">[{in_pages}]</div>
+<div class="pagination pagination-centered btn-small"><ul>{in_pages}</ul></div>
 {/IF}
 <<- 'SONE_OBJECT_COMMENTS'>>
 
 <<+ 'SONE_OBJECT_COMMENTS_PAGE'>>
-{IF:IN_current}<strong>-{IN_page}-</strong>{ELSE}&nbsp;<a href="{in_path}?{IF:IN_actionState}{IN_actionState}&amp;{/IF}commentsPage={IN_page}#pageComments">{IN_page}</a>&nbsp;{/IF}
+<li {IF:IN_current}class="active"{/IF}><a href="{in_path}?{IF:IN_actionState}{IN_actionState}&amp;{/IF}commentsPage={IN_page}#pageComments">{IN_page}</a></li>
 <<- 'SONE_OBJECT_COMMENTS_PAGE'>>
 
 <<+ 'SONE_OBJECT_COMMENTS_FORM'>>
 <form action="{FULLURL:IN_PATH}/?saveComment" method="post">
- <textarea class="" name="commentText" style="width: 450px; height: 50px;"></textarea>
- <button type="submit">{L_EDITOR_SUBMIT_ADDCOMMENT}</button>
+ <label>
+     <textarea class="span7" name="commentText" style="height: 100px;"></textarea>
+ </label>
+ <button class="btn btn-primary" type="submit"><i class="icon-ok"></i> {L_EDITOR_SUBMIT_ADDCOMMENT}</button>
 </form>
 <<- 'SONE_OBJECT_COMMENTS_FORM'>>
 
 <<+ 'SONE_OBJECT_COMMENTS_ITEM'>>
-<div style="margin: 5px; 0;">
+<div class="well well-small">
 <strong style="font-size: 85%">{IF:IN_author_name}{!IN_author_name} @ {/IF}{FTIME:IN_TIME}:</strong>
  <div style="padding-left: 10px;">{BBPARSE:IN_TEXT}</div>
 </div>
 <<- 'SONE_OBJECT_COMMENTS_ITEM'>>
 
 <<+ 'SONE_OBJECT_LOGINPAGE'>>
-{IF:IN_ERRORS}<div style="border: 1px solid red; padding: 5px;">
+{IF:IN_ERRORS}<div class="alert alert-error">
  {IN_ERRORS}
 </div>{/IF}
 {IF:IN_LOGGED_AS}
@@ -291,9 +313,9 @@ function updateHtmlEditors() {
   <a href="#" onclick="$('#loginpageLogin').hide(); $('#loginpageRegister').show(); return false;">Регистрация</a>
  </legend>
  <form action="{FULLURL:IN_PATH}/?login" method="post">
-  <label>Логин: <input type="text" name="login" value="" /></label><br />
-  <label>Пароль: <input type="password" name="password" value="" /></label><br />
-  <button type="submit">{L_EDITOR_SUBMIT_LOGIN}</button>
+  <label>Логин: <br/><input type="text" name="login" value="" /></label>
+  <label>Пароль: <br/><input type="password" name="password" value="" /></label>
+  <button class="btn btn-primary" type="submit">{L_EDITOR_SUBMIT_LOGIN}</button>
  </form>
 </fieldset>
 <fieldset id="loginpageRegister"{!IF:IN_actionState="register"} style="display: none;"{/IF}>
@@ -302,11 +324,11 @@ function updateHtmlEditors() {
   / <strong>Регистрация</strong>
  </legend>
  <form action="{FULLURL:IN_PATH}/?register" method="post">
-  <label>Имя/ник: <input type="text" name="reg_name" value="{IN_REG_NAME}" autocomplete="off" /></label><br />
-  <label>Логин: <input type="text" name="reg_login" value="{IN_REG_LOGIN}" autocomplete="off" /></label><br />
-  <label>Пароль: <input type="password" name="reg_password" value="{IN_REG_PASSWORD}" autocomplete="off" /></label><br />
-  <label>e-Mail: <input type="text" name="reg_email" value="{IN_REG_EMAIL}" autocomplete="off" /></label><br />
-  <button type="submit">{L_EDITOR_SUBMIT_REGISTER}</button>
+  <label>Имя/ник: <br/><input type="text" name="reg_name" value="{IN_REG_NAME}" autocomplete="off" /></label>
+  <label>Логин: <br/><input type="text" name="reg_login" value="{IN_REG_LOGIN}" autocomplete="off" /></label>
+  <label>Пароль: <br/><input type="password" name="reg_password" value="{IN_REG_PASSWORD}" autocomplete="off" /></label>
+  <label>e-Mail: <br/><input type="text" name="reg_email" value="{IN_REG_EMAIL}" autocomplete="off" /></label>
+  <button class="btn btn-primary" type="submit">{L_EDITOR_SUBMIT_REGISTER}</button>
  </form>
 </fieldset>
 {/IF}
@@ -315,32 +337,47 @@ function updateHtmlEditors() {
 <<+ 'SONE_OBJECT_CONSTRUCTOR'>>
 <h2>{IN_CAPTION}</h2>
 <form id="constructorForm" action="{IN_PATH}/?prepare" method="POST">
- <fieldset>
-  <legend>Параметры объекта:</legend>
-  <label>Класс: <select name="class">
-   <option value="HTMLPage">HTML-страница</option>
-   <option value="Poll">Опрос/Анкета</option>
-   <option value="FileIndex">Обзор файлов</option>
-   <option value="BlogRoot">Блог</option>
-  </select></label>
-  <br />
-  <label>Путь: <select name="parentPath">
-   <option value=""> --- </option>
-   {IN_PATHOPTIONS}
-  </select></label><strong>/</strong><input name="path" />
- </fieldset>
- <button type="submit">Создать</button>
+    <fieldset>
+        <legend>Параметры объекта:</legend>
+        <label>Класс:
+            <select name="class">
+                <option value="HTMLPage">HTML-страница</option>
+                <option value="Poll">Опрос/Анкета</option>
+                <option value="FileIndex">Обзор файлов</option>
+                <option value="BlogRoot">Блог</option>
+            </select>
+        </label>
+        <label>
+            Родитель:
+            <select name="parentPath">
+                <option value=""> ---</option>
+                {IN_PATHOPTIONS}
+            </select>
+        </label>
+        <label>
+            Путь:
+            <span class="input-prepend">
+                <span class="add-on" id="constructorForm-parentPath">/</span><input class="span3" type="text" name="path" />
+            </span>
+        </label>
+    </fieldset>
+    <div class="form-actions">
+        <button class="btn btn-primary" type="submit">Создать</button>
+    </div>
 </form>
 
-<hr />
+<hr/>
 <div id="constructorObjectContainer"></div>
 
 <script type="text/javascript">
-    $('input, select', '#constructorForm').change(function(){
+    $('input, select', '#constructorForm').change(function () {
         $('#constructorObjectContainer').empty();
     });
-    $('#constructorForm').submit(function() {
-        $('#constructorObjectContainer').text('Загрузка ...').load(this.action+'&'+$(this).serialize(), updateHtmlEditors);
+    $('select[name="parentPath"]', '#constructorForm').change(function () {
+        $('#constructorForm-parentPath').text('/'+$(this).val());
+    });
+    $('#constructorForm').submit(function () {
+        $('#constructorObjectContainer').text('Загрузка ...').load(this.action + '&' + $(this).serialize(), updateHtmlEditors);
         return false;
     });
 </script>
@@ -348,12 +385,12 @@ function updateHtmlEditors() {
 
 <<+ 'SONE_OBJECT_CONSTRUCTOR_FRAME'>>
 {!IF:IN_hideCaption}<h2>{IN_CAPTION}</h2>{/IF}
-{IF:IN_ERRORS}<div style="border: 1px solid red; padding: 5px;">
+{IF:IN_ERRORS}<div class="alert alert-error">
     {IN_ERRORS}
 </div>{/IF}
 {IN_CONTENT}
 <<- 'SONE_OBJECT_CONSTRUCTOR_FRAME'>>
 
 <<+ 'SONE_OBJECT_CONSTRUCTOR_PATHOPTION'>>
-<option value="{IN_PATH}">{IN_PATH} ({IN_caption})</option>
+<option value="{IN_PATH}/">{IN_PATH} ({IN_caption})</option>
 <<- 'SONE_OBJECT_CONSTRUCTOR_PATHOPTION'>>

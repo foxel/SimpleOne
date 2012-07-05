@@ -59,20 +59,22 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object implements SOne_Inte
         } else {
             $node = new FVISNode('SONE_FILES_FILEINDEX', 0, $env->get('VIS'));
             $node->addDataArray($this->pool)->addData('curPath', $this->_subPath);
-            $dir = new DirectoryIterator($realPath ?: '.');
             $contents = array();
-            foreach ($dir as $file) {
-                /** @var $file DirectoryIterator */
-                if ($file->isDot()) {
-                    continue;
-                }
+            if (is_dir($realPath)) {
+                $dir = new DirectoryIterator($realPath ?: '.');
+                foreach ($dir as $file) {
+                    /** @var $file DirectoryIterator */
+                    if ($file->isDot()) {
+                        continue;
+                    }
 
-                $contents[$file->getFilename()] = array(
-                    'name' => $file->getFilename(),
-                    'type' => $file->getType(),
-                    'size' => $file->getSize(),
-                    'path' => $this->path.'/'.($this->_subPath ? $this->_subPath.'/' : '').$file->getFilename(),
-                );
+                    $contents[$file->getFilename()] = array(
+                        'name' => $file->getFilename(),
+                        'type' => $file->getType(),
+                        'size' => $file->getSize(),
+                        'path' => $this->path.'/'.($this->_subPath ? $this->_subPath.'/' : '').$file->getFilename(),
+                    );
+                }
             }
             if (!empty($contents)) {
                 uksort($contents, 'strcasecmp');
@@ -82,6 +84,8 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object implements SOne_Inte
             if ($this->_subPath) {
                 $node->addData('upPath', $this->path.'/'.implode('/', array_slice(explode('/', trim($this->_subPath, '/')), 0, -1)));
             }
+
+            $node->addData('canEdit', $this->isActionAllowed('edit', $env->get('user')) ? 1 : null);
 
             return $node;
         }

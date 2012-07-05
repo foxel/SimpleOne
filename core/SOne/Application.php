@@ -84,7 +84,8 @@ class SOne_Application extends K3_Application
 
         $this->VIS = new FVISInterface($this->env);
         $this->VIS->addAutoLoadDir(F_DATA_ROOT.'/styles/simple')
-            ->loadECSS(F_DATA_ROOT.'/styles/simple/common.ecss');
+        //    ->loadECSS(F_DATA_ROOT.'/styles/simple/common.ecss')
+        ;
         F()->Parser->initStdTags();
         $this->VIS->addFuncParser('BBPARSE', array(F()->Parser, 'parse'));
 
@@ -180,6 +181,7 @@ class SOne_Application extends K3_Application
 
         $pageNode->appendChild('page_cont', $objectNode);
         $pageNode->addData('site_name', $this->config->site->name);
+        $pageNode->addData('responsive', $this->config->markup->responsive ? 1 : null);
         $pageNode->addData('page_title', $pageObject->caption);
         //$pageNode->addData('page_cont', '<pre>'.print_r(get_included_files(), true).'</pre>');
         //$pageNode->addData('page_cont', '<pre>'.print_r($this->env, true).'</pre>');
