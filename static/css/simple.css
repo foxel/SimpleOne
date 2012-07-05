@@ -4685,6 +4685,13 @@ a {
 .ui-widget :active {
   outline: none;
 }
+.ui-selected,
+.ui-selected .ui-state-default,
+.ui-selected .ui-state-hover,
+.ui-selected .ui-state-active {
+  color: #ffffff;
+  background-color: #0044a0;
+}
 /* Interaction Cues
 ----------------------------------*/
 .ui-state-highlight p,
@@ -6755,4 +6762,14 @@ input.ui-button { padding: .4em 1em; }
   right: 0;
   top: 0;
   z-index: 10000;
+}
+.ui-dialog,
+.dialogelfinder {
+  -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+.elfinder-dialog input,
+.elfinder-dialog select {
+  width: auto;
 }

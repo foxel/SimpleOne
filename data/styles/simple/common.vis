@@ -34,6 +34,7 @@
   <![endif]-->
 
   <link rel="stylesheet" href="{FULLURL:"static/css/elrte.min.css"}" type="text/css" media="screen" charset="utf-8">
+  <link rel="stylesheet" href="{FULLURL:"static/css/elfinder.min.css"}" type="text/css" media="screen" charset="utf-8">
 
   {IF:IN_META_DESCRIPTION}<meta name="Description" content="{!IN_META_DESCRIPTION}" />{ENDIF}
   {IF:IN_META_KEYWORDS}<meta name="Keywords" content="{!IN_META_KEYWORDS}" />{ENDIF}
@@ -82,6 +83,8 @@
 <script type="text/javascript" src="/static/jscripts/jquery-ui-1.8.21.custom.min.js" charset="utf-8"></script>
 <script type="text/javascript" src="/static/jscripts/elrte.min.js" charset="utf-8"></script>
 <script type="text/javascript" src="/static/jscripts/i18n/elrte.ru.js" charset="utf-8"></script>
+<script type="text/javascript" src="/static/jscripts/elfinder.min.js"></script>
+<script type="text/javascript" src="/static/jscripts/i18n/elfinder.ru.js" charset="utf-8"></script>
 <!-- <script type="text/javascript" src="/static/jscripts/tiny_mce/jquery.tinymce.js"></script> -->
 <script type="text/javascript">
 // JavaScript Starts Here <![CDATA[
@@ -102,7 +105,21 @@ function updateHtmlEditors() {
         toolbar      : 'maxi',
         resizable    : true,
         resizeHandle : 's',
-        cssfiles     : ['{FULLURL:"static/css/bootstrap.css"}']
+        cssfiles     : ['{FULLURL:"static/css/bootstrap.css"}'],
+        fmOpen       : function (callback) {
+            $('<div />').dialogelfinder({
+                lang:'ru',
+                url:'{FULLURL:"lib/elFinder/connector.php"}',
+                commandsOptions: {
+                    getfile: {
+                        oncomplete:'destroy'
+                    }
+                },
+                getFileCallback: function (object) {
+                    callback(object.url);
+                }
+            });
+        }
     };
     // create editor
     $('textarea.htmleditor').elrte(opts);

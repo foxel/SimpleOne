@@ -187,7 +187,7 @@ a { outline : none !important; }
 
 .ui-state-active,
 .ui-widget-content .ui-state-active,
-.ui-widget-header .ui-state-active { 
+.ui-widget-header .ui-state-active {
   border: 1px solid @ui-grayLight5;
   font-weight: normal; 
   color: @grayDarker; 
@@ -199,6 +199,14 @@ a { outline : none !important; }
   }
 }
 .ui-widget :active { outline: none; }
+
+.ui-selected,
+.ui-selected .ui-state-default,
+.ui-selected .ui-state-hover,
+.ui-selected .ui-state-active {
+    color: @white;
+    background-color: @linkColor;
+}
 
 /* Interaction Cues
 ----------------------------------*/
@@ -305,3 +313,4 @@ textarea,
   border: 1px solid @ui-grayLight5;
   .border-radius( 3px );
 }
+
