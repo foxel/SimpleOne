@@ -21,6 +21,10 @@
 class SOne_Model_Object_BlogRoot extends SOne_Model_Object
         implements SOne_Interface_Object_WithExtraData, SOne_Interface_Object_WithSubRoute
 {
+    /**
+     * @var array
+     */
+    protected $aclEditActionsList = array('edit', 'save', 'new');
 
     /** @var FDataBase */
     protected $_db;
@@ -34,7 +38,9 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
     {
         $node = new FVISNode('SONE_OBJECT_BLOG_LIST', 0, $env->get('VIS'));
 
-        $node->addDataArray($this->pool + (array) $this->_filterParams);
+        $node->addDataArray($this->pool + (array) $this->_filterParams + array(
+            'canAddItem' => $this->isActionAllowed('new', $env->get('user')) ? 1 : null,
+        ));
 
         if ($this->id && !in_array($this->actionState, array('new', 'edit'))) {
             $items = $this->_loadListItems($env);

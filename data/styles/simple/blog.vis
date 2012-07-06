@@ -46,9 +46,11 @@
 <h3>Создание новой записи</h3>
     {VIS:SONE_OBJECT_BLOG_ITEM|actionState="edit"|path=IN_newPath|commentsAllowed="1"}
 {ELSE}
-    <div class="pull-right">
-        <a class="btn" href="{FULLURL:IN_PATH}?new"><i class="icon-plus"></i> Новая запись</a>
-    </div>
+{if:in_canAddItem}
+<div class="pull-right">
+    <a class="btn" href="{FULLURL:IN_PATH}?new"><i class="icon-plus"></i> Новая запись</a>
+</div>
+{/if}
 <h2>{IN_CAPTION}</h2>
 {if:in_date}
     <h3>Записи за {in_date} <a href="{FULLURL:in_path}">[X]</a></h3>
