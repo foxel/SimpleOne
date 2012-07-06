@@ -105,7 +105,7 @@ function updateHtmlEditors() {
         toolbar      : 'maxi',
         resizable    : true,
         resizeHandle : 's',
-        cssfiles     : ['{FULLURL:"static/css/bootstrap.css"}'],
+        cssfiles     : ['{FULLURL:"static/css/bootstrap.css"}', '{FULLURL:"static/css/elrte.inner.css"}'],
         fmOpen       : function (callback) {
             $('<div />').dialogelfinder({
                 lang:'ru',
