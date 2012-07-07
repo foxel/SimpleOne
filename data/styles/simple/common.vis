@@ -109,7 +109,7 @@ function updateHtmlEditors() {
         fmOpen       : function (callback) {
             $('<div />').dialogelfinder({
                 lang:'ru',
-                url:'{FULLURL:"lib/elFinder/connector.php"}',
+                url:'{FULLURL:"uploader"}',
                 commandsOptions: {
                     getfile: {
                         oncomplete:'destroy'
