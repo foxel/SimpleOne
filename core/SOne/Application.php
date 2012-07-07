@@ -146,6 +146,7 @@ class SOne_Application extends K3_Application
                         );
                     } else {
                         $data['path'] = $route;
+                        $data['isStatic'] = true;
                     }
                     $tipObject = SOne_Model_Object::construct($data);
                 }

@@ -17,11 +17,23 @@ plugins.ElFinder => 1
 staticRoutes.uploader.class => ElFinderConnector
 staticRoutes.uploader.accessLevel => 1
 staticRoutes.uploader.data.roots.0.driver      => LocalFileSystem
+staticRoutes.uploader.data.roots.0.alias       => Uploads
 staticRoutes.uploader.data.roots.0.path        => {F_SITE_ROOT}/static/files/
 staticRoutes.uploader.data.roots.0.startPath   => {F_SITE_ROOT}/static/files/
 staticRoutes.uploader.data.roots.0.URL         => /static/files/
 staticRoutes.uploader.data.roots.0.uploadAllow => image,application/x-shockwave-flash,video,audio
 staticRoutes.uploader.data.roots.0.uploadOrder => allow,deny
+
+# sample access controlled uploads
+# this is for elfinder - replase corresponding lines above
+staticRoutes.uploader.data.roots.0.path        => {F_DATA_ROOT}/uploads/
+staticRoutes.uploader.data.roots.0.startPath   => {F_DATA_ROOT}/uploads/
+staticRoutes.uploader.data.roots.0.URL         => /uploads/
+
+staticRoutes.uploads.class => FileIndex
+staticRoutes.uploads.caption => Uploaded Files
+staticRoutes.uploads.data.basePath => {F_DATA_ROOT}/uploads/
+staticRoutes.uploads.data.disposition => inline
 
 vk.appId => 100
 vk.appSecret => XxxX

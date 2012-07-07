@@ -51,6 +51,7 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object implements SOne_Inte
         }
 
         if (is_file($realPath)) {
+            // TODO: improve this
             $fInfo = new finfo(FILEINFO_MIME_TYPE);
             $params = array(
                 'contentType' => $fInfo->file($realPath),
@@ -134,6 +135,7 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object implements SOne_Inte
     {
         $this->pool['data'] = $data + array(
             'basePath' => F_SITE_ROOT,
+            'disposition' => 'attachment',
         );
 
         $this->pool['basePath'] =& $this->pool['data']['basePath'];

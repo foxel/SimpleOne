@@ -89,11 +89,14 @@ class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
             ->sendBuffer('', array('contentType' => 'application/json'));
     }
 
+    /**
+     * @param array $config
+     * @return array
+     */
     protected function _prepareConfig(array $config)
     {
         $rootDefaults = array(
             'treeDeep'        => 3,
-            'alias'           => 'File system',
             'mimeDetect'      => 'internal',
             'tmbPath'         => '.tmb',
             'utf8fix'         => true,

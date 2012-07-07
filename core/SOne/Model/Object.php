@@ -206,7 +206,7 @@ abstract class SOne_Model_Object extends SOne_Model
     public function isActionAllowed($action, SOne_Model_User $user)
     {
         if (in_array($action, $this->aclEditActionsList) && (!$user->id || $user->id != $this->ownerId)) {
-            return $this->pool['editLevel'] <= $user->accessLevel;
+            return !$this->isStatic && $this->pool['editLevel'] <= $user->accessLevel;
         }
 
         return $this->pool['accessLevel'] <= $user->accessLevel;
