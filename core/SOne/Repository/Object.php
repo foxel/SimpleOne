@@ -22,6 +22,7 @@ class SOne_Repository_Object extends SOne_Repository
     protected static $dbMapNavi = array(
         'path'        => 'path',
         'pathHash'    => 'path_hash',
+        'hideInTree'  => 'hide_in_tree',
     );
 
     public function loadNavigationByPath($path)
@@ -75,7 +76,13 @@ class SOne_Repository_Object extends SOne_Repository
 
         $ids = array_keys($navis);
 
-        return $this->loadObjectsTree(array('id' => $ids), $withChildsAndSiblings, $withData);
+        IF (!empty($ids)) {
+            return $this->loadObjectsTree(array('id' => $ids), $withChildsAndSiblings, $withData);
+        } elseif ($withChildsAndSiblings) {
+            return $this->loadObjectsTree(array('parentId' => null), false, $withData);
+        } else {
+            return array();
+        }
     }
 
     /**

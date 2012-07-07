@@ -25,7 +25,7 @@ class SOne_Application extends K3_Application
     /**
      * @var K3_Config
      */
-    protected $config  = null;
+    protected $_config  = null;
 
     /**
      * @var FDataBase
@@ -59,7 +59,7 @@ class SOne_Application extends K3_Application
 
         $this->pool = array(
             'environment' => &$this->env,
-            'config'      => &$this->config,
+            'config'      => &$this->_config,
         );
     }
 
@@ -67,20 +67,20 @@ class SOne_Application extends K3_Application
     {
         F()->Timer->logEvent('App Bootstrap start');
 
-        $this->config = new K3_Config($c = (array) FMisc::loadDatafile(F_DATA_ROOT.DIRECTORY_SEPARATOR.'sone.qfc.php', FMisc::DF_SLINE));
+        $this->_config = new K3_Config($c = $this->_parseConfigLines((array) FMisc::loadDatafile(F_DATA_ROOT.DIRECTORY_SEPARATOR.'sone.qfc.php', FMisc::DF_SLINE)));
 
         // preparing DB
         $this->db = F()->DBase; //new FDataBase('mysql');
-        $this->db->connect($this->config->db);
+        $this->db->connect($this->_config->db);
 
-        if ($this->config->app->useTransaction) {
+        if ($this->_config->app->useTransaction) {
             $this->db->beginTransaction();
             $this->getResponse()->addEventHandler('closeAndExit', array($this, 'commitOnResponseSent'));
         }
 
         $this->env->session->setDBase($this->db, 'sessions');
 
-        $this->request = new SOne_Request($this->env, $this->config);
+        $this->request = new SOne_Request($this->env, $this->_config);
 
         $this->VIS = new FVISInterface($this->env);
         $this->VIS->addAutoLoadDir(F_DATA_ROOT.'/styles/simple')
@@ -132,12 +132,33 @@ class SOne_Application extends K3_Application
 
     public function routeRequest(SOne_Request $request, $performAction = true)
     {
-        $navis = $this->objects->loadNavigationByPath($request->path);
-        $tipObject = !empty($navis) ? end($navis) : null;
-
         /** @var $tipObject SOne_Model_Object */
-        $tipObject = $tipObject ? $this->objects->loadOne($tipObject['id']) : null;
-        
+        $tipObject = null;
+        if ($staticRoutes = $this->_config->staticRoutes) {
+            $staticRoutes = $staticRoutes->toArray();
+            foreach ($staticRoutes as $route => $data) {
+                if ($request->path == $route || strpos($request->path, $route.'/') === 0) {
+                    if (!is_array($data)) {
+                        $data = array(
+                            'isStatic' => true,
+                            'class'    => $data,
+                            'path'     => $route,
+                        );
+                    } else {
+                        $data['path'] = $route;
+                    }
+                    $tipObject = SOne_Model_Object::construct($data);
+                }
+            }
+        }
+
+        if (!$tipObject) {
+            $navis = $this->objects->loadNavigationByPath($request->path);
+            $tipObjectNavi = !empty($navis) ? end($navis) : null;
+            $tipObject = $tipObjectNavi ? $this->objects->loadOne($tipObjectNavi['id']) : null;
+        }
+
+
         if (($tipObject instanceof SOne_Model_Object) && (trim($tipObject->path, '/') == $request->path)) {
             // Routed OK
         } elseif ($tipObject instanceof SOne_Interface_Object_WithSubRoute) {
@@ -157,7 +178,8 @@ class SOne_Application extends K3_Application
             if ($tipObject->isActionAllowed($request->action, $this->env->get('user'))) {
                 $tipObject->doAction($request->action, $this->env, $objectUpdated);
                 // TODO: think about deleting
-                if ($objectUpdated) {
+                // NOTE: static objects are not for save
+                if ($objectUpdated && !$tipObject->isStatic) {
                     $this->objects->save($tipObject);
                 }
             } else {
@@ -180,8 +202,8 @@ class SOne_Application extends K3_Application
         }
 
         $pageNode->appendChild('page_cont', $objectNode);
-        $pageNode->addData('site_name', $this->config->site->name);
-        $pageNode->addData('responsive', $this->config->markup->responsive ? 1 : null);
+        $pageNode->addData('site_name', $this->_config->site->name);
+        $pageNode->addData('responsive', $this->_config->markup->responsive ? 1 : null);
         $pageNode->addData('page_title', $pageObject->caption);
         //$pageNode->addData('page_cont', '<pre>'.print_r(get_included_files(), true).'</pre>');
         //$pageNode->addData('page_cont', '<pre>'.print_r($this->env, true).'</pre>');
@@ -201,23 +223,28 @@ class SOne_Application extends K3_Application
     protected function renderDefaultNavigator($tree, $currentPath)
     {
         $container = new FVISNode('NAVIGATOR_BLOCK', 0, $this->VIS);
+        /** @var $parents FVISNode[] */
         $parents = array($container, $container);
 
         if (is_array($tree)) {
             foreach ($tree as $item) {
-                if ($item->accessLevel > $this->env->get('user')->accessLevel || !$parents[$item->treeLevel]) {
+                if ($item->hideInTree || $item->accessLevel > $this->env->get('user')->accessLevel || !$parents[$item->treeLevel]) {
                     $parents[$item->treeLevel+1] = null;
                     continue;
                 }
 
                 $node = new FVISNode('NAVIGATOR_ITEM', 0, $this->VIS);
+                $parentNode = $parents[$item->treeLevel];
+                if ($isActive = (strpos(trim($currentPath, '/').'/', trim($item->path, '/').'/') === 0)) {
+                    $parentNode->addData('isCurrent', null, true);
+                }
                 $node->addDataArray(array(
                     'href' => FStr::fullUrl(ltrim($item->path, '/')),
                     'caption' => $item->caption,
                     'shortCaption' => FStr::smartTrim($item->caption, 23 - $item->treeLevel),
-                    'isCurrent' => (trim($item->path, '/') == trim($currentPath, '/')) ? 1 : null,
+                    'isCurrent' => $isActive ? 1 : null,
                 ));
-                $parents[$item->treeLevel]->appendChild('subs', $node);
+                $parentNode->appendChild('subs', $node);
                 $parents[$item->treeLevel+1] = $node;
             }
         }
@@ -227,12 +254,12 @@ class SOne_Application extends K3_Application
 
     protected function bootstrapPlugins()
     {
-        $pluginsDir = isset($this->config->pluginsDir)
-            ? $this->config->pluginsDir
+        $pluginsDir = isset($this->_config->pluginsDir)
+            ? $this->_config->pluginsDir
             : F_SITE_ROOT.DIRECTORY_SEPARATOR.self::DEFAULT_PLUGINS_SUBDIR;
 
-        if ($this->config->plugins instanceof Traversable) {
-            foreach ($this->config->plugins as $pluginName => $pluginConfig) {
+        if ($this->_config->plugins instanceof Traversable) {
+            foreach ($this->_config->plugins as $pluginName => $pluginConfig) {
                 if (is_dir($pluginsDir.DIRECTORY_SEPARATOR.$pluginName)) {
                     F()->Autoloader->registerClassPath($pluginsDir.DIRECTORY_SEPARATOR.$pluginName, $pluginName);
                     $pluginBootstrapClass = ($pluginConfig instanceof K3_Config) && isset($pluginConfig->bootstrapClass)
@@ -244,6 +271,21 @@ class SOne_Application extends K3_Application
                 }
             }
         }
+    }
+
+    protected function _parseConfigLines(array $lines)
+    {
+        $constants = get_defined_constants(false);
+        $replaces = array();
+        foreach ($constants as $name => $value) {
+            $replaces['{'.$name.'}'] = $value;
+        }
+
+        foreach ($lines as &$line) {
+            $line = strtr($line, $replaces);
+        }
+
+        return $lines;
     }
 
     protected function bootstrapUser()
@@ -282,6 +324,14 @@ class SOne_Application extends K3_Application
     {
         $this->env->session->drop('userId');
         $this->env->put('user', new SOne_Model_User());
+    }
+
+    /**
+     * @return \K3_Config
+     */
+    public function getConfig()
+    {
+        return $this->_config;
     }
 }
 

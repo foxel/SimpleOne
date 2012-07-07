@@ -135,6 +135,7 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
                 'editLevel'   => $this->editLevel,
                 'ownerId'     => $env->get('user')->id,
                 'path'        => $this->path.'/'.$subPath,
+                'hideInTree'  => true,
             ));
             return $object;
         } else {
