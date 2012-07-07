@@ -110,6 +110,8 @@ function updateHtmlEditors() {
             $('<div />').dialogelfinder({
                 lang:'ru',
                 url:'{FULLURL:"uploader"}',
+                width: $(window).width()-200,
+                height: Math.max(400, $(window).height()-80),
                 commandsOptions: {
                     getfile: {
                         oncomplete:'destroy'
