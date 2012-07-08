@@ -34,6 +34,7 @@ staticRoutes.uploads.class => FileIndex
 staticRoutes.uploads.caption => Uploaded Files
 staticRoutes.uploads.data.basePath => {F_DATA_ROOT}/uploads/
 staticRoutes.uploads.data.disposition => inline
+staticRoutes.uploads.data.xAccelLocation => /_uploads/
 
 vk.appId => 100
 vk.appSecret => XxxX
