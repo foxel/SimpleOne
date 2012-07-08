@@ -21,6 +21,16 @@
 class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
 {
     /**
+     * @param  array $init
+     */
+    public function __construct(array $init = array())
+    {
+        // connector is always hidden
+        $init['hideInTree'] = true;
+        parent::__construct($init);
+    }
+
+    /**
      * @param K3_Environment $env
      * @return FVISNode
      */

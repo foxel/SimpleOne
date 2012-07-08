@@ -117,8 +117,8 @@ abstract class SOne_Model_Object extends SOne_Model
             'isStatic'    => isset($init['isStatic'])    ? (bool) $init['isStatic']      : false,
         );
 
-        if (isset($init['t_level'])) {
-            $this->pool['treeLevel'] = (int) $init['t_level'];
+        if (isset($init['treeLevel'])) {
+            $this->pool['treeLevel'] = (int) $init['treeLevel'];
         }
     }
 

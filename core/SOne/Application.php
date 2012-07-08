@@ -209,7 +209,7 @@ class SOne_Application extends K3_Application
         //$pageNode->addData('page_cont', '<pre>'.print_r(get_included_files(), true).'</pre>');
         //$pageNode->addData('page_cont', '<pre>'.print_r($this->env, true).'</pre>');
 
-        $pageNode->appendChild('navigator', $this->renderDefaultNavigator($this->objects->loadObjectsTreeByPath($pageObject->path, true), $pageObject->path));
+        $pageNode->appendChild('navigator', $this->renderDefaultNavigator($pageObject->path));
 
         F()->Timer->logEvent('App Page Construct complete');
 
@@ -217,12 +217,33 @@ class SOne_Application extends K3_Application
     }
 
     /**
-     * @param SOne_Model_Object[] $tree
      * @param string $currentPath
      * @return FVISNode
      */
-    protected function renderDefaultNavigator($tree, $currentPath)
+    protected function renderDefaultNavigator($currentPath)
     {
+        $tree = $this->objects->loadObjectsTreeByPath($currentPath, true);
+        // loading static routes
+        if ($staticRoutes = $this->_config->staticRoutes) {
+            $staticRoutes = $staticRoutes->toArray();
+            foreach ($staticRoutes as $path => $data) {
+                // nodes with no caption or hidden nodes is not included
+                if (!is_array($data) || !isset($data['caption']) || (isset($data['hideInTree']) && $data['hideInTree'])) {
+                    continue;
+                }
+
+                // sub nodes are hidden for now
+                if (substr_count($path, '/')) {
+                    continue;
+                }
+
+                $data['path']      = $path;
+                $data['isStatic']  = true;
+                $data['treeLevel'] = 1;
+                $tree[] = SOne_Model_Object::construct($data);
+            }
+        }
+
         $container = new FVISNode('NAVIGATOR_BLOCK', 0, $this->VIS);
         /** @var $parents FVISNode[] */
         $parents = array($container, $container);
