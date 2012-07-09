@@ -67,6 +67,8 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object implements SOne_Inte
             } else {
                 $env->response->sendFile($realPath, $params);
             }
+
+            return null;
         } else {
             $node = new FVISNode('SONE_FILES_FILEINDEX', 0, $env->get('VIS'));
             $node->addDataArray($this->pool)->addData('curPath', $this->_subPath);
