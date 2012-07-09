@@ -79,6 +79,10 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object implements SOne_Inte
                         continue;
                     }
 
+                    if (strpos($file->getFilename(), '.') === 0) {
+                        continue;
+                    }
+
                     $contents[$file->getFilename()] = array(
                         'name' => $file->getFilename(),
                         'type' => $file->getType(),
