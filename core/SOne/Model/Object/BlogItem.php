@@ -52,6 +52,13 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
         $node = new FVISNode('SONE_OBJECT_BLOG_LISTITEM', 0, $env->get('VIS'));
         $data = $this->pool;
         unset($data['comments']);
+
+        if (preg_match('#<!--\s*pagebreak\s*-->#', $data['content'])) {
+            $data['content'] = preg_replace('#(<\w+>)*<!--\s*pagebreak\s*-->.*$#', '', $data['content']);
+            $data['content'] = F()->Parser->XMLCheck($data['content']);
+            $data['showReadMore'] = 1;
+        }
+
         $node->addDataArray($data + array(
             'canEdit'       => $this->isActionAllowed('edit', $env->get('user')) ? 1 : null,
             'parentPath' => preg_replace('#/[^/]+$#', '', $this->path),

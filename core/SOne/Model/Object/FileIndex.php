@@ -20,6 +20,7 @@
 
 /**
  * @property-read string $basePath
+ * @property-read string $xAccelLocation
  */
 class SOne_Model_Object_FileIndex extends SOne_Model_Object implements SOne_Interface_Object_WithSubRoute
 {
@@ -51,11 +52,21 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object implements SOne_Inte
         }
 
         if (is_file($realPath)) {
+            // TODO: improve this
             $fInfo = new finfo(FILEINFO_MIME_TYPE);
             $params = array(
                 'contentType' => $fInfo->file($realPath),
             );
-            $env->response->sendFile($realPath, $params);
+            if ($this->xAccelLocation) {
+                $accelRedirectPath = $this->xAccelLocation.'/'.$this->_subPath;
+                $params['filename'] = FStr::basename($realPath);
+                $env->getResponse()
+                    ->write('nGinx redirected to '.$accelRedirectPath)
+                    ->setHeader('X-Accel-Redirect', $accelRedirectPath)
+                    ->sendBuffer('', $params);
+            } else {
+                $env->response->sendFile($realPath, $params);
+            }
         } else {
             $node = new FVISNode('SONE_FILES_FILEINDEX', 0, $env->get('VIS'));
             $node->addDataArray($this->pool)->addData('curPath', $this->_subPath);
@@ -65,6 +76,10 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object implements SOne_Inte
                 foreach ($dir as $file) {
                     /** @var $file DirectoryIterator */
                     if ($file->isDot()) {
+                        continue;
+                    }
+
+                    if (strpos($file->getFilename(), '.') === 0) {
                         continue;
                     }
 
@@ -134,10 +149,13 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object implements SOne_Inte
     {
         $this->pool['data'] = $data + array(
             'basePath' => F_SITE_ROOT,
+            'disposition' => 'attachment',
+            'xAccelLocation' => false,
         );
 
         $this->pool['basePath'] =& $this->pool['data']['basePath'];
-        
+        $this->pool['xAccelLocation'] =& $this->pool['data']['xAccelLocation'];
+
         return $this;
     }
 }

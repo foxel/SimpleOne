@@ -35,6 +35,9 @@
  *
  * @property mixed  $data
  * @property string $actionState
+ * @property bool   $hideInTree
+ *
+ * @property bool   $isStatic
  *
  * @property int|null $treeLevel
  */
@@ -93,26 +96,29 @@ abstract class SOne_Model_Object extends SOne_Model
     public function __construct(array $init = array())
     {
         $this->pool = array(
-            'id'          => isset($init['id'])          ?  (int)    $init['id']          : null,
-            'parentId'    => isset($init['parentId'])    ?  (int)    $init['parentId']    : null,
-            'class'       => isset($init['class'])       ?  (string) $init['class']       : lcfirst(strtr(get_class($this), array(__CLASS__.'_' => ''))),
-            'caption'     => isset($init['caption'])     ?  (string) $init['caption']     : '',
-            'ownerId'     => isset($init['ownerId'])     ?  (int)    $init['ownerId']     : null,
-            'createTime'  => isset($init['createTime'])  ?  (int)    $init['createTime']  : time(),
-            'updateTime'  => isset($init['updateTime'])  ?  (int)    $init['updateTime']  : time(),
-            'accessLevel' => isset($init['accessLevel']) ?  (int)    $init['accessLevel'] : self::DEFAULT_ACCESS_LEVEL,
-            'editLevel'   => isset($init['editLevel'])   ?  (int)    $init['editLevel']   : self::DEFAULT_EDIT_LEVEL,
-            'orderId'     => isset($init['orderId'])     ?  (int)    $init['orderId']     : 0,
+            'id'          => isset($init['id'])          ? (int)    $init['id']          : null,
+            'parentId'    => isset($init['parentId'])    ? (int)    $init['parentId']    : null,
+            'class'       => isset($init['class'])       ? (string) $init['class']       : lcfirst(strtr(get_class($this), array(__CLASS__.'_' => ''))),
+            'caption'     => isset($init['caption'])     ? (string) $init['caption']     : '',
+            'ownerId'     => isset($init['ownerId'])     ? (int)    $init['ownerId']     : null,
+            'createTime'  => isset($init['createTime'])  ? (int)    $init['createTime']  : time(),
+            'updateTime'  => isset($init['updateTime'])  ? (int)    $init['updateTime']  : time(),
+            'accessLevel' => isset($init['accessLevel']) ? (int)    $init['accessLevel'] : self::DEFAULT_ACCESS_LEVEL,
+            'editLevel'   => isset($init['editLevel'])   ? (int)    $init['editLevel']   : self::DEFAULT_EDIT_LEVEL,
+            'orderId'     => isset($init['orderId'])     ? (int)    $init['orderId']     : 0,
 
-            'path'        => isset($init['path'])        ?  (string) $init['path']        : '',
-            'pathHash'    => isset($init['pathHash'])    ?  (string) $init['pathHash']    : md5(isset($init['path']) ? (string) $init['path'] : ''),
+            'path'        => isset($init['path'])        ? (string) $init['path']        : '',
+            'pathHash'    => isset($init['pathHash'])    ? (string) $init['pathHash']    : md5(isset($init['path']) ? (string) $init['path'] : ''),
+            'hideInTree'  => isset($init['hideInTree'])  ? (bool)   $init['hideInTree']  : false,
 
-            'data'        => isset($init['data'])        ? $init['data']                  : null,
+            'data'        => isset($init['data'])        ? $init['data']                 : null,
             'actionState' => null,
+
+            'isStatic'    => isset($init['isStatic'])    ? (bool) $init['isStatic']      : false,
         );
 
-        if (isset($init['t_level'])) {
-            $this->pool['treeLevel'] = (int) $init['t_level'];
+        if (isset($init['treeLevel'])) {
+            $this->pool['treeLevel'] = (int) $init['treeLevel'];
         }
     }
 
@@ -200,7 +206,7 @@ abstract class SOne_Model_Object extends SOne_Model
     public function isActionAllowed($action, SOne_Model_User $user)
     {
         if (in_array($action, $this->aclEditActionsList) && (!$user->id || $user->id != $this->ownerId)) {
-            return $this->pool['editLevel'] <= $user->accessLevel;
+            return !$this->isStatic && $this->pool['editLevel'] <= $user->accessLevel;
         }
 
         return $this->pool['accessLevel'] <= $user->accessLevel;
