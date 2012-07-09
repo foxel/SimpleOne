@@ -39,6 +39,21 @@ class SOne_Model_Object_Constructor extends SOne_Model_Object implements SOne_In
     }
 
     /**
+     * @param string $action
+     * @param SOne_Model_User $user
+     * @return bool
+     */
+    public function isActionAllowed($action, SOne_Model_User $user)
+    {
+        if ($this->object) {
+            return $this->object->isActionAllowed($action, $user);
+        }
+
+        return parent::isActionAllowed($action, $user);
+    }
+
+
+    /**
      * @param K3_Environment $env
      * @param bool $objectUpdated
      * @return void
