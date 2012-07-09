@@ -330,6 +330,7 @@
                 <option value="Poll">Опрос/Анкета</option>
                 <option value="FileIndex">Обзор файлов</option>
                 <option value="BlogRoot">Блог</option>
+                <option value="Redirector">Внешняя ссылка</option>
             </select>
         </label>
         <label>
@@ -379,3 +380,22 @@
 <<+ 'SONE_OBJECT_CONSTRUCTOR_PATHOPTION'>>
 <option value="{IN_PATH}/">{IN_PATH} ({IN_caption})</option>
 <<- 'SONE_OBJECT_CONSTRUCTOR_PATHOPTION'>>
+
+
+<<+ 'SONE_OBJECT_REDIRECTOR'>>
+{IF:IN_actionState="edit"}
+    {!WRITE:formElements}
+    <label>
+        Ссылка для перехода:
+        <input type="text" name="redirectUrl" value="{!IN_redirectUrl}" style="width: 600px;" />
+    </label>
+    {WRITE}
+    {VIS:SONE_OBJECT_EDITFORM|formElements=formElements|_}
+{ELSE}
+    {IF:IN_canEdit}<div class="pull-right">
+        <a class="btn" href="{FULLURL:IN_PATH}?edit"><i class="icon-pencil"></i> Править</a>
+    </div>{/IF}
+    <h3>{IN_CAPTION}</h3>
+    <a href="{!FULLURL:IN_redirectUrl}">{!IN_redirectUrl}</a>
+{/IF}
+<<- 'SONE_OBJECT_REDIRECTOR'>>
