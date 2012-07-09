@@ -73,7 +73,10 @@
     <h3><a href="{FULLURL:IN_PATH}">{IN_CAPTION}</a>
         <small></small>
     </h3>
-    <div class="blog-item-preview">{IN_CONTENT}</div>
+    <div class="blog-item-preview">
+        {IN_CONTENT}
+        {IF:IN_showReadMore}<a href="{FULLURL:IN_PATH}">Читать дальше...</a>{/IF}
+    </div>
 </div>
 <<- 'SONE_OBJECT_BLOG_LISTITEM'>>
 
