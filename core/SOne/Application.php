@@ -21,6 +21,7 @@
 class SOne_Application extends K3_Application
 {
     const DEFAULT_PLUGINS_SUBDIR = 'plugins';
+    const EVENT_PAGE_RENDER = 'pageRender';
 
     /**
      * @var K3_Config
@@ -30,35 +31,35 @@ class SOne_Application extends K3_Application
     /**
      * @var FDataBase
      */
-    protected $db      = null;
+    protected $_db      = null;
 
     /**
      * @var SOne_Request
      */
-    protected $request = null;
+    protected $_request = null;
 
     /**
      * @var FVISInterface
      */
-    protected $VIS     = null;
+    protected $_VIS     = null;
 
     /**
      * Objects repository
      * @var SOne_Repository_Object
      */
-    protected $objects = null; // objects repository
+    protected $_objects = null; // objects repository
 
     /**
      * @var FLNGData
      */
-    protected $lang    = null;
+    protected $_lang    = null;
 
     public function __construct(K3_Environment $env = null)
     {
-        $this->env = is_null($env) ? F()->appEnv : $env;
+        $this->_env = is_null($env) ? F()->appEnv : $env;
 
         $this->pool = array(
-            'environment' => &$this->env,
+            'environment' => &$this->_env,
             'config'      => &$this->_config,
         );
     }
@@ -70,37 +71,37 @@ class SOne_Application extends K3_Application
         $this->_config = new K3_Config($c = $this->_parseConfigLines((array) FMisc::loadDatafile(F_DATA_ROOT.DIRECTORY_SEPARATOR.'sone.qfc.php', FMisc::DF_SLINE)));
 
         // preparing DB
-        $this->db = F()->DBase; //new FDataBase('mysql');
-        $this->db->connect($this->_config->db);
+        $this->_db = F()->DBase; //new FDataBase('mysql');
+        $this->_db->connect($this->_config->db);
 
         if ($this->_config->app->useTransaction) {
-            $this->db->beginTransaction();
+            $this->_db->beginTransaction();
             $this->getResponse()->addEventHandler('closeAndExit', array($this, 'commitOnResponseSent'));
         }
 
-        $this->env->session->setDBase($this->db, 'sessions');
+        $this->_env->session->setDBase($this->_db, 'sessions');
 
-        $this->request = new SOne_Request($this->env, $this->_config);
+        $this->_request = new SOne_Request($this->_env, $this->_config);
 
-        $this->VIS = new FVISInterface($this->env);
-        $this->VIS->addAutoLoadDir(F_DATA_ROOT.'/styles/simple')
+        $this->_VIS = new FVISInterface($this->_env);
+        $this->_VIS->addAutoLoadDir(F_DATA_ROOT.'/styles/simple')
         //    ->loadECSS(F_DATA_ROOT.'/styles/simple/common.ecss')
         ;
         F()->Parser->initStdTags();
-        $this->VIS->addFuncParser('BBPARSE', array(F()->Parser, 'parse'));
+        $this->_VIS->addFuncParser('BBPARSE', array(F()->Parser, 'parse'));
 
-        $this->objects = SOne_Repository_Object::getInstance($this->db);
+        $this->_objects = SOne_Repository_Object::getInstance($this->_db);
 
-        $this->lang = F()->LNG;
-        $this->lang->addAutoLoadDir(F_DATA_ROOT.DIRECTORY_SEPARATOR.'lang/ru');
-        $this->lang->timeZone = 7;
+        $this->_lang = F()->LNG;
+        $this->_lang->addAutoLoadDir(F_DATA_ROOT.DIRECTORY_SEPARATOR.'lang/ru');
+        $this->_lang->timeZone = 7;
 
         // putting to environment
-        $this->env
-            ->put('db',   $this->db)
-            ->put('VIS',  $this->VIS)
-            ->put('user', $this->bootstrapUser())
-            ->put('lang', $this->lang)
+        $this->_env
+            ->put('db',   $this->_db)
+            ->put('VIS',  $this->_VIS)
+            ->put('user', $this->_bootstrapUser())
+            ->put('lang', $this->_lang)
             ->put('app',  $this);
 
         $this->bootstrapPlugins();
@@ -112,14 +113,14 @@ class SOne_Application extends K3_Application
 
     public function commitOnResponseSent()
     {
-        if ($this->db->inTransaction) {
-            $this->db->commit();
+        if ($this->_db->inTransaction) {
+            $this->_db->commit();
         }
     }
 
     public function run()
     {
-        $object = $this->routeRequest($this->request, true);
+        $object = $this->routeRequest($this->_request, true);
 
         F()->Timer->logEvent('App Action end');
 
@@ -154,9 +155,9 @@ class SOne_Application extends K3_Application
         }
 
         if (!$tipObject) {
-            $navis = $this->objects->loadNavigationByPath($request->path);
+            $navis = $this->_objects->loadNavigationByPath($request->path);
             $tipObjectNavi = !empty($navis) ? end($navis) : null;
-            $tipObject = $tipObjectNavi ? $this->objects->loadOne($tipObjectNavi['id']) : null;
+            $tipObject = $tipObjectNavi ? $this->_objects->loadOne($tipObjectNavi['id']) : null;
         }
 
 
@@ -165,23 +166,23 @@ class SOne_Application extends K3_Application
         } elseif ($tipObject instanceof SOne_Interface_Object_WithSubRoute) {
             /** @var $tipObject SOne_Interface_Object_WithSubRoute */
             $subPath = preg_replace('#'.preg_quote(trim($tipObject->path, '/').'/', '#').'#i', '', $request->path);
-            $tipObject = $tipObject->routeSubPath($subPath, $request, $this->env);
+            $tipObject = $tipObject->routeSubPath($subPath, $request, $this->_env);
         } else {
             $tipObject = new SOne_Model_Object_Page404(array('path' => $request->path));
         }
 
-        if ($tipObject->accessLevel > $this->env->get('user')->accessLevel) {
+        if ($tipObject->accessLevel > $this->_env->get('user')->accessLevel) {
             $tipObject = new SOne_Model_Object_Page403(array('path' => $request->path));
         }
 
         // performing action
         if ($performAction && $request->action) {
-            if ($tipObject->isActionAllowed($request->action, $this->env->get('user'))) {
-                $tipObject->doAction($request->action, $this->env, $objectUpdated);
+            if ($tipObject->isActionAllowed($request->action, $this->_env->get('user'))) {
+                $tipObject->doAction($request->action, $this->_env, $objectUpdated);
                 // TODO: think about deleting
                 // NOTE: static objects are not for save
                 if ($objectUpdated && !$tipObject->isStatic) {
-                    $this->objects->save($tipObject);
+                    $this->_objects->save($tipObject);
                 }
             } else {
                 $tipObject = new SOne_Model_Object_Page403(array('path' => $request->path));
@@ -193,12 +194,12 @@ class SOne_Application extends K3_Application
 
     protected function renderPage(SOne_Model_Object $pageObject)
     {
-        $pageNode = new FVISNode('GLOBAL_HTMLPAGE', 0, $this->VIS);
-        $this->VIS->setRootNode($pageNode);
+        $pageNode = new FVISNode('GLOBAL_HTMLPAGE', 0, $this->_VIS);
+        $this->_VIS->setRootNode($pageNode);
 
-        $objectNode = $pageObject->visualize($this->env);
+        $objectNode = $pageObject->visualize($this->_env);
 
-        if ($this->env->request->isAjax) {
+        if ($this->_env->request->isAjax) {
             return $objectNode->parse();
         }
 
@@ -211,9 +212,11 @@ class SOne_Application extends K3_Application
 
         $pageNode->appendChild('navigator', $this->renderDefaultNavigator($pageObject->path));
 
+        $this->throwEvent(self::EVENT_PAGE_RENDER, $this->_VIS->getRootNode());
+
         F()->Timer->logEvent('App Page Construct complete');
 
-        return $this->VIS->makeHTML();
+        return $this->_VIS->makeHTML();
     }
 
     /**
@@ -222,7 +225,7 @@ class SOne_Application extends K3_Application
      */
     protected function renderDefaultNavigator($currentPath)
     {
-        $tree = $this->objects->loadObjectsTreeByPath($currentPath, true);
+        $tree = $this->_objects->loadObjectsTreeByPath($currentPath, true);
         // loading static routes
         if ($staticRoutes = $this->_config->staticRoutes) {
             $staticRoutes = $staticRoutes->toArray();
@@ -244,18 +247,18 @@ class SOne_Application extends K3_Application
             }
         }
 
-        $container = new FVISNode('NAVIGATOR_BLOCK', 0, $this->VIS);
+        $container = new FVISNode('NAVIGATOR_BLOCK', 0, $this->_VIS);
         /** @var $parents FVISNode[] */
         $parents = array($container, $container);
 
         if (is_array($tree)) {
             foreach ($tree as $item) {
-                if ($item->hideInTree || $item->accessLevel > $this->env->get('user')->accessLevel || !$parents[$item->treeLevel]) {
+                if ($item->hideInTree || $item->accessLevel > $this->_env->get('user')->accessLevel || !$parents[$item->treeLevel]) {
                     $parents[$item->treeLevel+1] = null;
                     continue;
                 }
 
-                $node = new FVISNode('NAVIGATOR_ITEM', 0, $this->VIS);
+                $node = new FVISNode('NAVIGATOR_ITEM', 0, $this->_VIS);
                 $parentNode = $parents[$item->treeLevel];
                 if ($isActive = (strpos(trim($currentPath, '/').'/', trim($item->path, '/').'/') === 0)) {
                     $parentNode->addData('isCurrent', null, true);
@@ -288,7 +291,7 @@ class SOne_Application extends K3_Application
                         ? $pluginConfig->bootstrapClass
                         : $pluginName.'_Bootstrap';
                     if (class_exists($pluginBootstrapClass, true)) {
-                        $pluginBootstrapClass::bootstrap($this, $pluginConfig);
+                        $pluginBootstrapClass::bootstrap($this, ($pluginConfig instanceof K3_Config) ? $pluginConfig : new K3_Config((array) $pluginConfig));
                     }
                 }
             }
@@ -310,21 +313,21 @@ class SOne_Application extends K3_Application
         return $lines;
     }
 
-    protected function bootstrapUser()
+    protected function _bootstrapUser()
     {
         $user = null;
-        if ($uid = $this->env->session->get('userId')) {
+        if ($uid = $this->_env->session->get('userId')) {
             /* @var SOne_Repository_User $users */
-            $users = SOne_Repository_User::getInstance($this->db);
-            if ($user = $users->loadOne(array('id' => (int) $uid, 'last_sid' => $this->env->session->getSID()))) {
-                $users->save($user->updateLastSeen($this->env));
+            $users = SOne_Repository_User::getInstance($this->_db);
+            if ($user = $users->loadOne(array('id' => (int) $uid, 'last_sid' => $this->_env->session->getSID()))) {
+                $users->save($user->updateLastSeen($this->_env));
             } else {
-                $this->env->session->drop('userId');
+                $this->_env->session->drop('userId');
             }
         }
         if (!$user) {
             $user = new SOne_Model_User(array(
-                'last_ip' => $this->env->client->IPInteger,
+                'last_ip' => $this->_env->client->IPInteger,
             ));
         }
 
@@ -334,18 +337,18 @@ class SOne_Application extends K3_Application
     public function setAuthUser(SOne_Model_User $user)
     {
         /* @var SOne_Repository_User $users */
-        $users = SOne_Repository_User::getInstance($this->db);
+        $users = SOne_Repository_User::getInstance($this->_db);
 
-        $this->env->session->open();
-        $users->save($user->updateLastSeen($this->env));
-        $this->env->session->set('userId', $user->id);
-        $this->env->put('user', $user);
+        $this->_env->session->open();
+        $users->save($user->updateLastSeen($this->_env));
+        $this->_env->session->set('userId', $user->id);
+        $this->_env->put('user', $user);
     }
 
     public function dropAuthUser()
     {
-        $this->env->session->drop('userId');
-        $this->env->put('user', new SOne_Model_User());
+        $this->_env->session->drop('userId');
+        $this->_env->put('user', new SOne_Model_User());
     }
 
     /**
@@ -354,6 +357,14 @@ class SOne_Application extends K3_Application
     public function getConfig()
     {
         return $this->_config;
+    }
+
+    /**
+     * @return \FLNGData
+     */
+    public function getLang()
+    {
+        return $this->_lang;
     }
 }
 

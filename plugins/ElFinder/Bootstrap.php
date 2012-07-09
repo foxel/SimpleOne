@@ -22,7 +22,10 @@ define ('ELFINDER_PLUGIN_PATH', F_SITE_ROOT.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_
 
 class ElFinder_Bootstrap implements SOne_Interface_PluginBootstrap
 {
-    public static function bootstrap(SOne_Application $app, $config)
+    /** @var ElFinder_Plugin */
+    protected static $_pluginInstance;
+
+    public static function bootstrap(SOne_Application $app, K3_Config $config)
     {
         SOne_Model_Object::addNamespace('ElFinder_Model_Object');
         F()->Autoloader
@@ -31,5 +34,8 @@ class ElFinder_Bootstrap implements SOne_Interface_PluginBootstrap
             ->registerClassFile('elFinderVolumeLocalFileSystem', ELFINDER_PLUGIN_PATH.DIRECTORY_SEPARATOR.'elFinderVolumeLocalFileSystem.class.php')
             ->registerClassFile('elFinderVolumeMySQL', ELFINDER_PLUGIN_PATH.DIRECTORY_SEPARATOR.'elFinderVolumeMySQL.class.php')
             ->registerClassFile('elFinderVolumeFTP', ELFINDER_PLUGIN_PATH.DIRECTORY_SEPARATOR.'elFinderVolumeFTP.class.php');
+
+        self::$_pluginInstance = new ElFinder_Plugin($app, $config);
     }
+
 }
