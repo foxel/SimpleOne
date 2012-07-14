@@ -18,6 +18,9 @@
  * along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * @property array $tags
+ */
 class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
     implements SOne_Interface_Object_WithExtraData
 {
@@ -39,6 +42,7 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
         $node = parent::visualize($env);
 
         $node->setType('SONE_OBJECT_BLOG_ITEM');
+        $node->addData('tags', implode(', ', $this->pool['tags']), true);
 
         return $node;
     }
@@ -79,12 +83,26 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
     }
 
     /**
+     * @param K3_Environment $env
+     * @param bool $updated
+     */
+    protected function saveAction(K3_Environment $env, &$updated = false)
+    {
+        parent::saveAction($env, $updated);
+        $this->pool['tags'] = array_unique(array_map('trim', explode(',', $env->request->getString('tags', K3_Request::POST, FStr::LINE))));
+    }
+
+
+    /**
      * @param FDataBase $db
      */
     public function loadExtraData(FDataBase $db)
     {
         parent::loadExtraData($db);
-        // todo: load tags
+
+        /** @var $tagsRepo SOne_Repository_Tag */
+        $tagsRepo = SOne_Repository_Tag::getInstance($db);
+        $this->setTags($tagsRepo->getObjectTags($this->id));
     }
 
     /**
@@ -93,7 +111,10 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
     public function saveExtraData(FDataBase $db)
     {
         parent::saveExtraData($db);
-        // todo: save tags
+
+        /** @var $tagsRepo SOne_Repository_Tag */
+        $tagsRepo = SOne_Repository_Tag::getInstance($db);
+        $tagsRepo->setObjectTags($this->id, $this->tags);
     }
 
 }

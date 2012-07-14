@@ -21,7 +21,7 @@
 {IF:IN_actionState="edit"}
  {!WRITE:formElements}
  <label><textarea class="htmleditor span10" name="content" style="height: 450px;">{!IN_CONTENT}</textarea></label>
- <label>Метки (через запятую): <input type="text" name="tags" value="{IN_tags}" style="width: 70%;" /></label>
+ <label>Метки (через запятую): <input type="text" name="tags" value="{!IN_tags}" style="width: 70%;" /></label>
  <label><input type="checkbox" name="commentsAllowed"{IF:IN_commentsAllowed} checked="checked"{/IF} /> разрешить комментарии</label>
  {WRITE}
  {VIS:SONE_OBJECT_EDITFORM|formElements=formElements|_}
@@ -31,6 +31,13 @@
     </div>{/IF}
 <h2>{IN_CAPTION}</h2>
 <div class="htmlpage">{IN_CONTENT}</div>
+{IF:IN_tags}
+ <hr />
+ <div style="text-align: right;">
+  <strong>Метки:</strong>
+  {IN_tags}
+ </div>
+{/IF}
 {IF:IN_commentsBlock}
  <hr />
  {IN_commentsBlock}
