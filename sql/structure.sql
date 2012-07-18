@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.1.61, for debian-linux-gnu (x86_64)
+-- MySQL dump 10.13  Distrib 5.5.24, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: dev.simpleone
 -- ------------------------------------------------------
--- Server version	5.1.61-0ubuntu0.11.10.1
+-- Server version	5.5.24-0ubuntu0.12.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -39,7 +39,7 @@ CREATE TABLE `qfso_comments` (
   CONSTRAINT `qfso_comments_ibfk_10` FOREIGN KEY (`answer_to`) REFERENCES `qfso_comments` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `qfso_comments_ibfk_11` FOREIGN KEY (`author_id`) REFERENCES `qfso_users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `qfso_comments_ibfk_2` FOREIGN KEY (`object_id`) REFERENCES `qfso_objects` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -73,7 +73,7 @@ CREATE TABLE `qfso_objects` (
   KEY `order_id` (`order_id`),
   CONSTRAINT `qfso_objects_ibfk_8` FOREIGN KEY (`parent_id`) REFERENCES `qfso_objects` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `qfso_objects_ibfk_9` FOREIGN KEY (`owner_id`) REFERENCES `qfso_users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -198,7 +198,7 @@ CREATE TABLE `qfso_users` (
   KEY `acc_state` (`frozen`,`readonly`),
   KEY `acc_group` (`acc_group`),
   KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -237,6 +237,43 @@ CREATE TABLE `qfso_vk_users` (
   CONSTRAINT `qfso_vk_users_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `qfso_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `qfso_tag`
+--
+
+DROP TABLE IF EXISTS `qfso_tag`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `qfso_tag` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(128) NOT NULL,
+  `time` int(10) unsigned NOT NULL,
+  `user_id` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`),
+  KEY `user_id` (`user_id`),
+  KEY `time` (`time`),
+  CONSTRAINT `qfso_tag_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `qfso_users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `qfso_tag_object`
+--
+
+DROP TABLE IF EXISTS `qfso_tag_object`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `qfso_tag_object` (
+  `tag_id` int(10) unsigned NOT NULL,
+  `object_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`tag_id`,`object_id`),
+  KEY `object_id` (`object_id`),
+  CONSTRAINT `qfso_tag_object_ibfk_1` FOREIGN KEY (`tag_id`) REFERENCES `qfso_tag` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `qfso_tag_object_ibfk_2` FOREIGN KEY (`object_id`) REFERENCES `qfso_objects` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -247,4 +284,4 @@ CREATE TABLE `qfso_vk_users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-03-27 14:44:51
+-- Dump completed on 2012-07-18 12:18:14
