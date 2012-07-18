@@ -120,20 +120,17 @@
     <div class="row">
         <div id="mp_head" class="span12">
             <!-- <div id="mp_head_site">{!IN_SITE_NAME}</div>
-            <div id="mp_head_title">{!IN_PAGE_TITLE}{IF:IN_PAGE_SUBTITLE} :: {!IN_PAGE_SUBTITLE}{ENDIF}</div>
-            {IF:IN_MENU_ITEMS}
-            <div id="mp_head_menu">
-            {IN_MENU_ITEMS}
-            </div>
-            {ENDIF} -->
+            <div id="mp_head_title">{!IN_PAGE_TITLE}{IF:IN_PAGE_SUBTITLE} :: {!IN_PAGE_SUBTITLE}{ENDIF}</div> -->
+            {IN_head_widgets}
         </div>
     </div>
     <div class="row">
+        {IF:IN_sidebar_widgets}
         <div id="mp_sidebar" class="span2">
-            {IN_NAVIGATOR}
             {IN_sidebar_widgets}
         </div>
-        <div id="mp_mainpage" class="span10">
+        {/IF}
+        <div id="mp_mainpage" class="{IF:IN_sidebar_widgets}{IF:IN_sidebar2_widgets}span8{ELSE}span10{/IF}{ELSEIF:IN_sidebar2_widgets}span10{ELSE}span12{/IF}">
             {IF:IN_PATH_ITEMS}
             <div id="mp_page_pathline">
                 {IN_PATH_ITEMS}
@@ -143,7 +140,19 @@
                 {IN_PAGE_CONT}
             </div>
         </div>
+        {IF:IN_sidebar2_widgets}
+            <div id="mp_sidebar2" class="span2">
+                {IN_sidebar2_widgets}
+            </div>
+        {/IF}
     </div>
+    {IF:IN_footer_widgets}
+        <div class="row">
+            <div id="mp_footer_widgets" class="span12">
+                {IN_footer_widgets}
+            </div>
+        </div>
+    {/IF}
     <div id="mp_footer" class="footer">
         <div id="mp_genstats">
             <!--Page-Stats-->

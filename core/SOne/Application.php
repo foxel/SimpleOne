@@ -224,71 +224,11 @@ class SOne_Application extends K3_Application
             }
         }
 
-        $pageNode->appendChild('navigator', $this->renderDefaultNavigator($pageObject->path));
-
         $this->throwEvent(self::EVENT_PAGE_RENDER, $this->_VIS->getRootNode());
 
         F()->Timer->logEvent('App Page Construct complete');
 
         return $this->_VIS->makeHTML();
-    }
-
-    /**
-     * @param string $currentPath
-     * @return FVISNode
-     */
-    protected function renderDefaultNavigator($currentPath)
-    {
-        $tree = $this->_objects->loadObjectsTreeByPath($currentPath, true);
-        // loading static routes
-        if ($staticRoutes = $this->_config->staticRoutes) {
-            $staticRoutes = $staticRoutes->toArray();
-            foreach ($staticRoutes as $path => $data) {
-                // nodes with no caption or hidden nodes is not included
-                if (!is_array($data) || !isset($data['caption']) || (isset($data['hideInTree']) && $data['hideInTree'])) {
-                    continue;
-                }
-
-                // sub nodes are hidden for now
-                if (substr_count($path, '/')) {
-                    continue;
-                }
-
-                $data['path']      = $path;
-                $data['isStatic']  = true;
-                $data['treeLevel'] = 1;
-                $tree[] = SOne_Model_Object::construct($data);
-            }
-        }
-
-        $container = new FVISNode('NAVIGATOR_BLOCK', 0, $this->_VIS);
-        /** @var $parents FVISNode[] */
-        $parents = array($container, $container);
-
-        if (is_array($tree)) {
-            foreach ($tree as $item) {
-                if ($item->hideInTree || $item->accessLevel > $this->_env->get('user')->accessLevel || !$parents[$item->treeLevel]) {
-                    $parents[$item->treeLevel+1] = null;
-                    continue;
-                }
-
-                $node = new FVISNode('NAVIGATOR_ITEM', 0, $this->_VIS);
-                $parentNode = $parents[$item->treeLevel];
-                if ($isActive = (strpos(trim($currentPath, '/').'/', trim($item->path, '/').'/') === 0)) {
-                    $parentNode->addData('isCurrent', null, true);
-                }
-                $node->addDataArray(array(
-                    'href' => FStr::fullUrl(ltrim($item->path, '/')),
-                    'caption' => $item->caption,
-                    'shortCaption' => FStr::smartTrim($item->caption, 23 - $item->treeLevel),
-                    'isCurrent' => $isActive ? 1 : null,
-                ));
-                $parentNode->appendChild('subs', $node);
-                $parents[$item->treeLevel+1] = $node;
-            }
-        }
-
-        return $container;
     }
 
     protected function bootstrapPlugins()
@@ -398,5 +338,15 @@ class SOne_Application extends K3_Application
     {
         return $this->_lang;
     }
+
+    /**
+     * @return \SOne_Repository_Object
+     */
+    public function getObjects()
+    {
+        return $this->_objects;
+    }
+
+
 }
 
