@@ -64,31 +64,32 @@ abstract class SOne_Model_Object_Commentable extends SOne_Model_Object implement
     public function addComment($text, $answerTo = null, array $params = array())
     {
         $tmpId = '_'.count($this->pool['comments']);
+        if ($text) {
+            $newComment = array(
+                'id'        => $tmpId,
+                'answer_to' => null,
+                'time'      => isset($params['time']) ? (int) $params['time'] : time(),
+                'client_ip' => isset($params['client_ip']) ? (int) $params['client_ip'] : null,
+                'author_id' => isset($params['author_id']) ? (int) $params['author_id'] : null,
+                'text'      => $text,
+                't_level'   => 0,
+            );
 
-        $newComment = array(
-            'id'        => $tmpId,
-            'answer_to' => null,
-            'time'      => isset($params['time']) ? (int) $params['time'] : time(),
-            'client_ip' => isset($params['client_ip']) ? (int) $params['client_ip'] : null,
-            'author_id' => isset($params['author_id']) ? (int) $params['author_id'] : null,
-            'text'      => $text,
-            't_level'   => 0,
-        );
+            if (!is_null($answerTo) && isset($this->pool['comments'][$answerTo])) {
+                $newComment['answer_to'] = $answerTo;
+                $newComment['t_level']   = $this->pool['comments'][$answerTo]['t_level'] + 1;
 
-        if (!is_null($answerTo) && isset($this->pool['comments'][$answerTo])) {
-            $newComment['answer_to'] = $answerTo;
-            $newComment['t_level']   = $this->pool['comments'][$answerTo]['t_level'] + 1;
-
-            $oldTree = $this->pool['comments'];
-            $this->pool['comments'] = array();
-            foreach ($oldTree as $key => &$comment) {
-                $this->pool['comments'][$key] =& $comment;
-                if ($key == $answerTo) {
-                    $this->pool['comments'][$tmpId] =& $newComment;
+                $oldTree = $this->pool['comments'];
+                $this->pool['comments'] = array();
+                foreach ($oldTree as $key => &$comment) {
+                    $this->pool['comments'][$key] =& $comment;
+                    if ($key == $answerTo) {
+                        $this->pool['comments'][$tmpId] =& $newComment;
+                    }
                 }
+            } else {
+                $this->pool['comments'] = array($tmpId => $newComment) + $this->pool['comments'];
             }
-        } else {
-            $this->pool['comments'] = array($tmpId => $newComment) + $this->pool['comments'];
         }
 
         return $this;
