@@ -29,6 +29,7 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
     /** @var FDataBase */
     protected $_db;
     protected $_filterParams = null;
+    protected $_itemPerPage  = 10;
 
     /**
      * @param  K3_Environment $env
@@ -43,10 +44,35 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
         ));
 
         if ($this->id && !in_array($this->actionState, array('new', 'edit'))) {
-            $items = $this->_loadListItems($env);
+            $curPage = max((int) $env->request->getNumber('page'), 1);
+            $items   = $this->_loadListItems($env, $this->_itemPerPage, $curPage - 1, $totalItems);
 
             foreach ($items as $item) {
                 $node->appendChild('items', $item->visualizeForList($env));
+            }
+            $node->addData('totalItems', $totalItems, true)
+                ->addData('itemsCount', count($items));
+
+            $totalPages = ceil($totalItems/$this->_itemPerPage);
+            if ($totalPages > 1) {
+                $node->appendChild('pages', $pagesNode = new FVISNode('SONE_OBJECT_BLOG_PAGE', FVISNode::VISNODE_ARRAY, $env->get('VIS')));
+                $pages = array();
+                $pagesPath = $this->path;
+                if ($this->_filterParams) {
+                    foreach ($this->_filterParams as $key => $param) {
+                        $pagesPath.= '/'.urlencode($key).'/'.urlencode($param);
+                    }
+                }
+
+                for ($i = 1; $i <= $totalPages; $i++) {
+                    $pages[] = array(
+                        'path' => $pagesPath,
+                        'actionState' => $this->actionState,
+                        'page' => $i,
+                        'current' => ($i == $curPage) ? 1 : null,
+                    );
+                }
+                $pagesNode->addDataArray($pages);
             }
         }
 
@@ -61,9 +87,12 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
 
     /**
      * @param K3_Environment $env
+     * @param int $perPage
+     * @param int $pageOffset
+     * @param null $totalItems
      * @return \SOne_Model_Object_BlogItem[]
      */
-    protected function _loadListItems(K3_Environment $env)
+    protected function _loadListItems(K3_Environment $env, $perPage = 10, $pageOffset = 0, &$totalItems = null)
     {
         if (!$this->id) {
             //return array();
@@ -101,7 +130,7 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
             }
         }
 
-        $items = $repo->loadAll($filter, false, 10);
+        $items = $repo->loadAll($filter, false, $perPage, $pageOffset*$perPage, $totalItems);
 
         return $items;
     }

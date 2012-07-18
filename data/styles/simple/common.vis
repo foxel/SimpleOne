@@ -266,7 +266,7 @@
 <<- 'SONE_OBJECT_COMMENTS'>>
 
 <<+ 'SONE_OBJECT_COMMENTS_PAGE'>>
-<li {IF:IN_current}class="active"{/IF}><a href="{in_path}?{IF:IN_actionState}{IN_actionState}&amp;{/IF}commentsPage={IN_page}#pageComments">{IN_page}</a></li>
+<li {IF:IN_current}class="active"{/IF}><a href="{FULLURL:in_path}?{IF:IN_actionState}{IN_actionState}&amp;{/IF}commentsPage={IN_page}#pageComments">{IN_page}</a></li>
 <<- 'SONE_OBJECT_COMMENTS_PAGE'>>
 
 <<+ 'SONE_OBJECT_COMMENTS_FORM'>>

@@ -163,9 +163,10 @@ class SOne_Repository_Object extends SOne_Repository
      * @param string|array|bool $order
      * @param int|bool $limit
      * @param int|bool $offset
+     * @param null $rowsCount
      * @return SOne_Model_Object[]
      */
-    public function loadAll(array $filters = array(), $order = false, $limit = false, $offset = false)
+    public function loadAll(array $filters = array(), $order = false, $limit = false, $offset = false, &$rowsCount = null)
     {
         $select = $this->db->select('objects', 'o', self::$dbMap)
             ->joinLeft('objects_navi', array('id' => 'o.id'), 'n', self::$dbMapNavi)
@@ -186,6 +187,10 @@ class SOne_Repository_Object extends SOne_Repository
         }
 
         $rows = $select->fetchAll();
+
+        if ($limit) {
+            $rowsCount = $this->db->lastSelectRowsCount;
+        }
 
         $objects = array();
         foreach ($rows as $row) {

@@ -106,8 +106,6 @@
     <h3><i class="icon-time"></i> Записи за {in_date} <a class="btn btn-mini" href="{FULLURL:in_path}"><i class="icon-remove"></i></a></h3>
 {elseif:in_tag}
     <h3><i class="icon-tag"></i> Записи с меткой "{in_tag}" <a class="btn btn-mini" href="{FULLURL:in_path}"><i class="icon-remove"></i></a></h3>
-{else}
-    <h3>Последние 10 записей</h3>
 {/if}
 <div class="htmlpage">
     {if:IN_items}
@@ -115,6 +113,9 @@
     {else}
         Нет записей
     {/if}
+    {IF:in_pages}
+        <div class="pagination pagination-centered btn-small"><ul>{in_pages}</ul></div>
+    {/IF}
 </div>
 {/IF}
 <<- 'SONE_OBJECT_BLOG_LIST'>>
@@ -138,3 +139,7 @@
 <<+ 'SONE_OBJECT_BLOG_TAG'>>
 <a href="{FULLURL:IN_PARENTPATH}/tag/{URLENCODE:IN_name}"><i class="icon-tag"></i> {IN_name}</a>{!IF:IN__IS_LAST}, {/IF}
 <<- 'SONE_OBJECT_BLOG_TAG'>>
+
+<<+ 'SONE_OBJECT_BLOG_PAGE'>>
+<li {IF:IN_current}class="active"{/IF}><a href="{FULLURL:in_path}?{IF:IN_actionState}{IN_actionState}&amp;{/IF}page={IN_page}">{IN_page}</a></li>
+<<- 'SONE_OBJECT_BLOG_PAGE'>>
