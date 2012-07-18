@@ -64,6 +64,22 @@ class SOne_Repository_Tag extends SOne_Repository
     }
 
     /**
+     * @param array|string $tags
+     * @param bool $noExecute
+     * @return array|FDBSelect
+     */
+    public function getObjectIdsByTags($tags, $noExecute = false)
+    {
+        $select = $this->db->select('tag', 't', array())
+            ->joinLeft('tag_object', array('tag_id' => 't.id'), 'to', array('object_id'))
+            ->where('t.name', $tags);
+
+        return $noExecute
+            ? $select
+            : $select->fetchAll();
+    }
+
+    /**
      * @param $objectId
      * @param array $tags
      */

@@ -61,6 +61,8 @@
 <h2>{IN_CAPTION}</h2>
 {if:in_date}
     <h3>Записи за {in_date} <a href="{FULLURL:in_path}">[X]</a></h3>
+{elseif:in_tag}
+    <h3>Записи с меткой "{in_tag}" <a href="{FULLURL:in_path}">[X]</a></h3>
 {else}
     <h3>Последние 10 записей</h3>
 {/if}
@@ -76,7 +78,10 @@
 
 <<+ 'SONE_OBJECT_BLOG_LISTITEM'>>
 <div class="blog-item well">
-    <div class="pull-right"><a href="{FULLURL:IN_PARENTPATH}/date/{FTIME:IN_createTime|"Y-m-d"|false|true}">{FTIME:IN_createTime}</a></div>
+    <div class="pull-right" style="text-align: right;">
+        <a href="{FULLURL:IN_PARENTPATH}/date/{FTIME:IN_createTime|"Y-m-d"|false|true}">{FTIME:IN_createTime}</a>
+        {IF:IN_tags}<div>{IN_tags}</div>{/IF}
+    </div>
     <h3><a href="{FULLURL:IN_PATH}">{IN_CAPTION}</a>
         <small></small>
     </h3>
@@ -87,3 +92,6 @@
 </div>
 <<- 'SONE_OBJECT_BLOG_LISTITEM'>>
 
+<<+ 'SONE_OBJECT_BLOG_TAG'>>
+<a href="{FULLURL:IN_PARENTPATH}/tag/{URLENCODE:IN_name}">{IN_name}</a>{!IF:IN__IS_LAST}, {/IF}
+<<- 'SONE_OBJECT_BLOG_TAG'>>

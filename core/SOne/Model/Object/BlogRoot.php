@@ -92,6 +92,9 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
                             }
                         }
                         break;
+                    case 'tag':
+                        $filter['id='] = SOne_Repository_Tag::getInstance($this->_db)->getObjectIdsByTags($filterValue, true);
+                        break;
                 }
             }
         }

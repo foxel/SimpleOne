@@ -40,9 +40,23 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
     public function visualize(K3_Environment $env)
     {
         $node = parent::visualize($env);
+        $parentPath = preg_replace('#/[^/]+$#', '', $this->path);
 
-        $node->setType('SONE_OBJECT_BLOG_ITEM');
-        $node->addData('tags', implode(', ', $this->pool['tags']), true);
+        $node->setType('SONE_OBJECT_BLOG_ITEM')
+            ->addData('parentPath', $parentPath, true);
+
+        if ($this->pool['tags']) {
+            $tags = array();
+            foreach ($this->pool['tags'] as $tag) {
+                $tags[] = array(
+                    'name' => $tag,
+                    'parentPath' => $parentPath,
+                );
+            }
+            $tagsNode = new FVISNode('SONE_OBJECT_BLOG_TAG', FVISNode::VISNODE_ARRAY, $env->get('VIS'));
+            $tagsNode->addDataArray($tags);
+            $node->appendChild('tags', $tagsNode, true);
+        }
 
         return $node;
     }
@@ -55,6 +69,8 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
     {
         $node = new FVISNode('SONE_OBJECT_BLOG_LISTITEM', 0, $env->get('VIS'));
         $data = $this->pool;
+        $parentPath = preg_replace('#/[^/]+$#', '', $this->path);
+
         unset($data['comments']);
 
         if (preg_match('#<!--\s*pagebreak\s*-->#', $data['content'])) {
@@ -64,9 +80,22 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
         }
 
         $node->addDataArray($data + array(
-            'canEdit'       => $this->isActionAllowed('edit', $env->get('user')) ? 1 : null,
-            'parentPath' => preg_replace('#/[^/]+$#', '', $this->path),
+            'canEdit'    => $this->isActionAllowed('edit', $env->get('user')) ? 1 : null,
+            'parentPath' => $parentPath,
         ));
+
+        if ($this->pool['tags']) {
+            $tags = array();
+            foreach ($this->pool['tags'] as $tag) {
+                $tags[] = array(
+                    'name' => $tag,
+                    'parentPath' => $parentPath,
+                );
+            }
+            $tagsNode = new FVISNode('SONE_OBJECT_BLOG_TAG', FVISNode::VISNODE_ARRAY, $env->get('VIS'));
+            $tagsNode->addDataArray($tags);
+            $node->appendChild('tags', $tagsNode, true);
+        }
 
         return $node;
     }
