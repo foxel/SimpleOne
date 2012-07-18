@@ -131,6 +131,7 @@
     <div class="row">
         <div id="mp_sidebar" class="span2">
             {IN_NAVIGATOR}
+            {IN_sidebar_widgets}
         </div>
         <div id="mp_mainpage" class="span10">
             {IF:IN_PATH_ITEMS}
@@ -399,3 +400,11 @@
     <a href="{!FULLURL:IN_redirectUrl}">{!IN_redirectUrl}</a>
 {/IF}
 <<- 'SONE_OBJECT_REDIRECTOR'>>
+
+<<+ 'SONE_WIDGET_PANEL'>>
+<div class="well well-small">{IN_content}</div>
+<<- 'SONE_WIDGET_PANEL'>>
+
+<<+ 'SONE_WIDGET_CONTAINER'>>
+<div id="mp_widget_{IN_widgetId}">{IN_body}</div>
+<<- 'SONE_WIDGET_CONTAINER'>>

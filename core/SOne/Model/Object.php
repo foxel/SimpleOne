@@ -54,7 +54,7 @@ abstract class SOne_Model_Object extends SOne_Model
     /**
      * @var array
      */
-    protected static $classNamespaces = array(__CLASS__);
+    protected static $_classNamespaces = array(__CLASS__);
 
     /**
      * adds new namespace for object classes lookup
@@ -63,8 +63,8 @@ abstract class SOne_Model_Object extends SOne_Model
     public static function addNamespace($namespace)
     {
         $namespace = (string) $namespace;
-        if (!in_array($namespace, self::$classNamespaces)) {
-            array_unshift(self::$classNamespaces, $namespace);
+        if (!in_array($namespace, self::$_classNamespaces)) {
+            array_unshift(self::$_classNamespaces, $namespace);
         }
     }
 
@@ -79,7 +79,7 @@ abstract class SOne_Model_Object extends SOne_Model
             throw new FException('SOne object construct without class specified');
         }
 
-        foreach (self::$classNamespaces as &$namespace) {
+        foreach (self::$_classNamespaces as &$namespace) {
             $className = $namespace.'_'.ucfirst($init['class']);
 
             if (class_exists($className, true)) {

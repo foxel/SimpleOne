@@ -22,6 +22,7 @@ class SOne_Application extends K3_Application
 {
     const DEFAULT_PLUGINS_SUBDIR = 'plugins';
     const EVENT_PAGE_RENDER = 'pageRender';
+    const EVENT_WIDGETS_BOOTSTRAP = 'widgetsBootstrap';
 
     /**
      * @var K3_Config
@@ -210,6 +211,19 @@ class SOne_Application extends K3_Application
         //$pageNode->addData('page_cont', '<pre>'.print_r(get_included_files(), true).'</pre>');
         //$pageNode->addData('page_cont', '<pre>'.print_r($this->env, true).'</pre>');
 
+        $widgets = $this->bootstrapWidgets();
+        foreach ($widgets as $widgetId => $widget) {
+            if ($widget instanceof SOne_Model_Widget) {
+                /** @var $widget SOne_Model_Widget */
+                if ($widget->block && $visNode = $widget->visualize($this->_env, $pageObject)) {
+                    $widgetContainer = new FVISNode('SONE_WIDGET_CONTAINER', 0, $this->_VIS);
+                    $widgetContainer->appendChild('body', $visNode)
+                        ->addData('widgetId', $widgetId);
+                    $pageNode->appendChild($widget->block.'_widgets', $widgetContainer);
+                }
+            }
+        }
+
         $pageNode->appendChild('navigator', $this->renderDefaultNavigator($pageObject->path));
 
         $this->throwEvent(self::EVENT_PAGE_RENDER, $this->_VIS->getRootNode());
@@ -296,6 +310,24 @@ class SOne_Application extends K3_Application
                 }
             }
         }
+    }
+
+    /**
+     * @return SOne_Model_Widget[]
+     */
+    protected function bootstrapWidgets()
+    {
+        $widgets = array();
+
+        if ($this->_config->widgets instanceof Traversable) {
+            foreach ($this->_config->widgets as $widgetName => $widgetConfig) {
+                $widgets[$widgetName] = SOne_Model_Widget::construct(($widgetConfig instanceof K3_Config) ? $widgetConfig->toArray() : (array) $widgetConfig);
+            }
+        }
+
+        $this->throwEventRef(self::EVENT_WIDGETS_BOOTSTRAP, $widgets);
+
+        return (array) $widgets;
     }
 
     protected function _parseConfigLines(array $lines)
