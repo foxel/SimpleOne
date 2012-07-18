@@ -60,15 +60,15 @@
 {/if}
 <h2>{IN_CAPTION}</h2>
 {if:in_date}
-    <h3>Записи за {in_date} <a href="{FULLURL:in_path}">[X]</a></h3>
+    <h3><i class="icon-time"></i> Записи за {in_date} <a class="btn btn-mini" href="{FULLURL:in_path}"><i class="icon-remove"></i></a></h3>
 {elseif:in_tag}
-    <h3>Записи с меткой "{in_tag}" <a href="{FULLURL:in_path}">[X]</a></h3>
+    <h3><i class="icon-tag"></i> Записи с меткой "{in_tag}" <a class="btn btn-mini" href="{FULLURL:in_path}"><i class="icon-remove"></i></a></h3>
 {else}
     <h3>Последние 10 записей</h3>
 {/if}
 <div class="htmlpage">
     {if:IN_items}
-    {IN_items}
+        {IN_items}
     {else}
         Нет записей
     {/if}
@@ -79,7 +79,7 @@
 <<+ 'SONE_OBJECT_BLOG_LISTITEM'>>
 <div class="blog-item well">
     <div class="pull-right" style="text-align: right;">
-        <a href="{FULLURL:IN_PARENTPATH}/date/{FTIME:IN_createTime|"Y-m-d"|false|true}">{FTIME:IN_createTime}</a>
+        <a href="{FULLURL:IN_PARENTPATH}/date/{FTIME:IN_createTime|"Y-m-d"|false|true}"><i class="icon-time"></i> {FTIME:IN_createTime}</a>
         {IF:IN_tags}<div>{IN_tags}</div>{/IF}
     </div>
     <h3><a href="{FULLURL:IN_PATH}">{IN_CAPTION}</a>
@@ -93,5 +93,5 @@
 <<- 'SONE_OBJECT_BLOG_LISTITEM'>>
 
 <<+ 'SONE_OBJECT_BLOG_TAG'>>
-<a href="{FULLURL:IN_PARENTPATH}/tag/{URLENCODE:IN_name}">{IN_name}</a>{!IF:IN__IS_LAST}, {/IF}
+<a href="{FULLURL:IN_PARENTPATH}/tag/{URLENCODE:IN_name}"><i class="icon-tag"></i> {IN_name}</a>{!IF:IN__IS_LAST}, {/IF}
 <<- 'SONE_OBJECT_BLOG_TAG'>>
