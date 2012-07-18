@@ -21,10 +21,53 @@
 {IF:IN_actionState="edit"}
  {!WRITE:formElements}
  <label><textarea class="htmleditor span10" name="content" style="height: 450px;">{!IN_CONTENT}</textarea></label>
- <label>Метки (через запятую): <input type="text" name="tags" value="{!IN_tags}" style="width: 70%;" /></label>
+ <label>Метки (через запятую): <input class="blogTags" type="text" name="tags" value="{!IN_tags}" style="width: 70%;" /></label>
  <label><input type="checkbox" name="commentsAllowed"{IF:IN_commentsAllowed} checked="checked"{/IF} /> разрешить комментарии</label>
  {WRITE}
  {VIS:SONE_OBJECT_EDITFORM|formElements=formElements|_}
+{IF:IN_allTagsJson}<script type="text/javascript">
+    $(function() {
+        var availableTags = {IN_allTagsJson};
+        function split( val ) {
+            return val.split(/,\s*/);
+        }
+        function extractLast(term) {
+            return split(term).pop();
+        }
+
+        $('input.blogTags')
+            .bind( 'keydown', function(event) {
+                if (event.keyCode === $.ui.keyCode.TAB &&
+                        $(this).data('autocomplete').menu.active) {
+                    event.preventDefault();
+                }
+            })
+            .autocomplete({
+                minLength: 1,
+                source: function(request, response) {
+                    // delegate back to autocomplete, but extract the last term
+                    response($.ui.autocomplete.filter(
+                            availableTags, extractLast(request.term)
+                    ));
+                },
+                focus: function() {
+                    // prevent value inserted on focus
+                    return false;
+                },
+                select: function( event, ui ) {
+                    var terms = split( this.value );
+                    // remove the current input
+                    terms.pop();
+                    // add the selected item
+                    terms.push( ui.item.value );
+                    // add placeholder to get the comma-and-space at the end
+                    terms.push('');
+                    this.value = terms.join(', ');
+                    return false;
+                }
+            });
+    });
+</script>{/IF}
 {ELSE}
     {IF:IN_canEdit}<div class="pull-right">
         <a class="btn" href="{FULLURL:IN_PATH}?edit"><i class="icon-pencil"></i> Править</a>
@@ -51,7 +94,7 @@
 {ELSEIF:IN_actionState="new"}
 <h2>{IN_CAPTION}</h2>
 <h3>Создание новой записи</h3>
-    {VIS:SONE_OBJECT_BLOG_ITEM|actionState="edit"|path=IN_newPath|commentsAllowed="1"}
+    {VIS:SONE_OBJECT_BLOG_ITEM|actionState="edit"|path=IN_newPath|commentsAllowed="1"|allTagsJson=IN_allTagsJson}
 {ELSE}
 {if:in_canAddItem}
 <div class="pull-right">

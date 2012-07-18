@@ -24,6 +24,9 @@
 class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
     implements SOne_Interface_Object_WithExtraData
 {
+    /** @var SOne_Repository_Tag */
+    protected $_tagsRepo;
+    
     /**
      * @param  array $init
      */
@@ -46,16 +49,25 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
             ->addData('parentPath', $parentPath, true);
 
         if ($this->pool['tags']) {
-            $tags = array();
-            foreach ($this->pool['tags'] as $tag) {
-                $tags[] = array(
-                    'name' => $tag,
-                    'parentPath' => $parentPath,
-                );
+            if ($this->actionState == 'edit') {
+                $node->addData('tags', implode(', ', $this->pool['tags']), true);
+            } else {
+                $tags = array();
+                foreach ($this->pool['tags'] as $tag) {
+                    $tags[] = array(
+                        'name' => $tag,
+                        'parentPath' => $parentPath,
+                    );
+                }
+                $tagsNode = new FVISNode('SONE_OBJECT_BLOG_TAG', FVISNode::VISNODE_ARRAY, $env->get('VIS'));
+                $tagsNode->addDataArray($tags);
+                $node->appendChild('tags', $tagsNode, true);
             }
-            $tagsNode = new FVISNode('SONE_OBJECT_BLOG_TAG', FVISNode::VISNODE_ARRAY, $env->get('VIS'));
-            $tagsNode->addDataArray($tags);
-            $node->appendChild('tags', $tagsNode, true);
+        }
+
+        if ($this->actionState == 'edit') {
+            $allTags = $this->_tagsRepo->loadNames();
+            $node->addData('allTagsJson', json_encode($allTags));
         }
 
         return $node;
@@ -129,9 +141,8 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
     {
         parent::loadExtraData($db);
 
-        /** @var $tagsRepo SOne_Repository_Tag */
-        $tagsRepo = SOne_Repository_Tag::getInstance($db);
-        $this->setTags($tagsRepo->getObjectTags($this->id));
+        $this->_tagsRepo = SOne_Repository_Tag::getInstance($db);
+        $this->setTags($this->_tagsRepo->getObjectTags($this->id));
     }
 
     /**
@@ -141,9 +152,8 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
     {
         parent::saveExtraData($db);
 
-        /** @var $tagsRepo SOne_Repository_Tag */
-        $tagsRepo = SOne_Repository_Tag::getInstance($db);
-        $tagsRepo->setObjectTags($this->id, $this->tags);
+        $this->_tagsRepo = SOne_Repository_Tag::getInstance($db);
+        $this->_tagsRepo->setObjectTags($this->id, $this->tags);
     }
 
 }

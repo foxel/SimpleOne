@@ -41,6 +41,20 @@ class SOne_Repository_Tag extends SOne_Repository
         return $rows;
     }
 
+    public function loadNames(array $filters = array())
+    {
+        $select = $this->db->select('tag', 't', array('name' => self::$dbMap['name']))
+            ->order('t.name', 'ASC');
+
+        foreach (self::mapFilters($filters, self::$dbMap, 't') as $key => $filter) {
+            $select->where($key, $filter);
+        }
+
+        $rows = $select->fetchAll();
+
+        return $rows;
+    }
+
     /**
      * @param $objectId
      * @param array $filters
@@ -128,7 +142,7 @@ class SOne_Repository_Tag extends SOne_Repository
         if ($autoCreate) {
             $namesToCreate = array_udiff($tagNames, array_keys($out), array($this, 'compareTags'));
             foreach ($namesToCreate as $tagName) {
-                if ($tagId = $this->createNewTag($tagName)) {
+                if (($tagName = trim($tagName)) && ($tagId = $this->createNewTag($tagName))) {
                     $out[$tagName] = $tagId;
                 }
             }
