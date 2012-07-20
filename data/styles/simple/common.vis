@@ -205,6 +205,9 @@
 <<- 'SONE_OBJECT_COMMON'>>
 
 <<+ 'SONE_OBJECT_EDITFORM'>>
+{IF:IN_ERRORS}<div class="alert alert-error">
+    {IN_ERRORS}
+</div>{/IF}
 <form action="{FULLURL:IN_PATH}/?{IF:IN_saveAction}{!IN_saveAction}{ELSE}save{/IF}" method="post"{IF:IN_formClass} class="{IN_formClass}"{/IF} >
  <label>{L_EDITOR_OBJECT_CAPTION}: <input type="text" name="caption" value="{IN_caption}" /></label>
  {IF:IN_formElements}

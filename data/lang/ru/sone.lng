@@ -44,3 +44,7 @@ SONE_REGISTER_ERROR_PASSWORD_SHORT: Пароль слишком короткий
 SONE_REGISTER_ERROR_EMAIL_INCORRECT: e-Mail адрес задан неверно или не существует.
 ---
 
+SONE_OBJECT_ERROR_CAPTION_REQUIRED: Заголовок является обязательным полем.
+---
+SONE_OBJECT_ERROR_CONTENT_REQUIRED: Содержимое страницы не может быть пустым.
+---

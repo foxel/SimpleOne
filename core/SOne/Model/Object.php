@@ -49,7 +49,7 @@ abstract class SOne_Model_Object extends SOne_Model
     /**
      * @var array
      */
-    protected $aclEditActionsList = array('edit', 'save');
+    protected $aclEditActionsList = array('edit', 'save', 'delete');
 
     /**
      * @var array

@@ -42,8 +42,13 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
      */
     public function visualize(K3_Environment $env)
     {
-        $node = parent::visualize($env);
         $parentPath = preg_replace('#/[^/]+$#', '', $this->path);
+
+        if ($this->actionState == 'delete') {
+            $env->response->sendRedirect($parentPath);
+        }
+
+        $node = parent::visualize($env);
 
         $node->setType('SONE_OBJECT_BLOG_ITEM')
             ->addData('parentPath', $parentPath, true);
@@ -65,7 +70,7 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
             }
         }
 
-        if ($this->actionState == 'edit') {
+        if ($this->id && $this->actionState == 'edit') {
             $allTags = $this->_tagsRepo->loadNames();
             $node->addData('allTagsJson', json_encode($allTags));
         }
@@ -133,6 +138,18 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
         $this->pool['tags'] = array_unique(array_map('trim', explode(',', $env->request->getString('tags', K3_Request::POST, FStr::LINE))));
     }
 
+    /**
+     * @param K3_Environment $env
+     * @param bool $updated
+     */
+    protected function deleteAction(K3_Environment $env, &$updated = false)
+    {
+        /** @var $db FDataBase */
+        $db = $env->get('db');
+        $objects = SOne_Repository_Object::getInstance($db);
+        $objects->delete($this->id);
+        $updated = false;
+    }
 
     /**
      * @param FDataBase $db

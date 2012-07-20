@@ -250,6 +250,15 @@ class SOne_Repository_Object extends SOne_Repository
         }
     }
 
+    /**
+     * @param int $objectId
+     * @return int|null
+     */
+    public function delete($objectId)
+    {
+        return $this->db->doDelete('objects', array('id' => $objectId));
+    }
+
     public function saveAll(array $objects)
     {
         foreach ($objects as $object) {

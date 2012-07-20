@@ -91,7 +91,24 @@ abstract class SOne_Model_Object_PlainPage extends SOne_Model_Object_Commentable
         $this->content = $env->request->getString('content', K3_Request::POST);
         $this->pool['commentsAllowed'] = $env->request->getBinary('commentsAllowed', K3_Request::POST);
         $this->pool['updateTime'] = time();
-        $updated = true;
+
+
+        /* @var FLNGData $lang */
+        $lang = $env->get('lang');
+
+        if (!$this->caption) {
+            $this->pool['errors'][] = $lang->lang('SONE_OBJECT_ERROR_CAPTION_REQUIRED');
+        }
+        if (!$this->content) {
+            $this->pool['errors'][] = $lang->lang('SONE_OBJECT_ERROR_CONTENT_REQUIRED');
+        }
+
+        if (!empty($this->pool['errors'])) {
+            $this->pool['actionState'] = 'edit';
+            $this->pool['errors'] = '<ul><li>'.implode('</li><li>', $this->pool['errors']).'</li></ul>';
+        } else {
+            $updated = true;
+        }
     }
 
     /**

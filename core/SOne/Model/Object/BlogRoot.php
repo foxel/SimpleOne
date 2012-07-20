@@ -95,7 +95,7 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
     protected function _loadListItems(K3_Environment $env, $perPage = 10, $pageOffset = 0, &$totalItems = null)
     {
         if (!$this->id) {
-            //return array();
+            return array();
         }
 
         $repo = new SOne_Repository_Object($this->_db);
