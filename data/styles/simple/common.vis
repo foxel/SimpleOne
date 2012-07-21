@@ -49,9 +49,13 @@
    script { display: none; }
 
    #mp_footer {
-       margin-top: 45px;
-       padding: 35px 0 36px;
+       margin-top: 35px;
+       padding: 10px 0 35px;
        border-top: 1px solid #E5E5E5;
+   }
+
+   #mp_footer_widgets {
+       margin-bottom: 10px;
    }
 
    .nav-list .nav-list {
@@ -146,14 +150,12 @@
             </div>
         {/IF}
     </div>
-    {IF:IN_footer_widgets}
-        <div class="row">
-            <div id="mp_footer_widgets" class="span12">
+    <div id="mp_footer" class="footer">
+        {IF:IN_footer_widgets}
+            <div id="mp_footer_widgets">
                 {IN_footer_widgets}
             </div>
-        </div>
-    {/IF}
-    <div id="mp_footer" class="footer">
+        {/IF}
         <div id="mp_genstats">
             <!--Page-Stats-->
         </div>
