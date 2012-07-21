@@ -422,3 +422,28 @@
 <<+ 'SONE_WIDGET_CONTAINER'>>
 <div id="mp_widget_{IN_widgetId}">{IN_body}</div>
 <<- 'SONE_WIDGET_CONTAINER'>>
+
+<<+ 'SONE_WIDGET_NAVBAR'>>
+<div class="navbar {IF:IN_fixed="bottom"}navbar-fixed-bottom{ELSEIF:IN_fixed}navbar-fixed-top{/IF}">
+    <div class="navbar-inner">
+        <div class="container">
+            {IF:IN_brand}
+                <a class="brand" href="{FULLURL:""}">
+                    {IN_brand}
+                </a>
+            {/IF}
+            {IF:IN_links}
+                <ul class="nav">
+                    {IN_links}
+                </ul>
+            {/IF}
+        </div>
+    </div>
+</div>
+<<- 'SONE_WIDGET_NAVBAR'>>
+
+<<+ 'SONE_WIDGET_NAVBAR_LINK'>>
+<li {IF:IN_active}class="active"{/IF}>
+    <a href="{!FULLURL:IN_href}">{!IN_caption}</a>
+</li>
+<<- 'SONE_WIDGET_NAVBAR_LINK'>>
