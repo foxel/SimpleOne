@@ -249,7 +249,7 @@
     <a class="btn" href="{FULLURL:IN_PATH}?edit"><i class="icon-pencil"></i> Править</a>
 </div>{/IF}
 <h2>{IN_CAPTION}</h2>
-<div class="htmlpage">{IN_CONTENT}</div>
+<div class="htmlpage clearfix">{IN_CONTENT}</div>
 {IF:IN_commentsBlock}
  <hr />
  {IN_commentsBlock}

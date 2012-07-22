@@ -74,7 +74,7 @@
         <a class="btn btn-danger" href="{FULLURL:IN_PATH}?delete" onclick="return confirm('Вы уверены, что хотите удалить эту запись?');"><i class="icon-remove"></i> Удалить</a>
     </div>{/IF}
 <h2>{IN_CAPTION}</h2>
-<div class="htmlpage">{IN_CONTENT}</div>
+<div class="htmlpage clearfix">{IN_CONTENT}</div>
 {IF:IN_tags}
  <hr />
  <div style="text-align: right;">
@@ -136,7 +136,7 @@
     <h3><a href="{FULLURL:IN_PATH}">{IF:IN_caption}{IN_CAPTION}{ELSE}{IN_PATH}{/IF}</a>
         <small></small>
     </h3>
-    <div class="blog-item-preview">
+    <div class="blog-item-preview clearfix">
         {IN_CONTENT}
         {IF:IN_showReadMore}<a href="{FULLURL:IN_PATH}">Читать дальше...</a>{/IF}
     </div>
