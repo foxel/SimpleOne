@@ -206,7 +206,9 @@ class SOne_Application extends K3_Application
 
         $pageNode->appendChild('page_cont', $objectNode);
         $pageNode->addData('site_name', $this->_config->site->name);
-        $pageNode->addData('responsive', $this->_config->markup->responsive ? 1 : null);
+        if ($this->_config->markup instanceof K3_Config) {
+            $pageNode->addDataArray($this->_config->markup->toArray());
+        }
         $pageNode->addData('page_title', $pageObject->caption);
         //$pageNode->addData('page_cont', '<pre>'.print_r(get_included_files(), true).'</pre>');
         //$pageNode->addData('page_cont', '<pre>'.print_r($this->env, true).'</pre>');

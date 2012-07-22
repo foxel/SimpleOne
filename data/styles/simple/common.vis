@@ -156,17 +156,19 @@
                 {IN_footer_widgets}
             </div>
         {/IF}
-        <div id="mp_genstats">
-            <!--Page-Stats-->
-        </div>
-        <div id="mp_staticons">
-            Powered by <a href="https://github.com/foxel/SimpleOne">QuickFox Simple One Alpha</a> (<a
-                href="http://k3.quickfox.ru">Kernel 3</a> based)<br/>
-            {IN_FOOTSTAT}
-            <!-- <a href="http://validator.w3.org/check?uri=referer">
-            <img src="http://www.w3.org/Icons/valid-xhtml10-blue.png" alt="Valid XHTML 1.0 Strict" style="height: 31px; width: 88px;" />
-           </a> -->
-        </div>
+        {!IF:IN_hideDefaultFooter}
+            <div id="mp_genstats">
+                <!--Page-Stats-->
+            </div>
+            <div id="mp_staticons">
+                Powered by <a href="https://github.com/foxel/SimpleOne">QuickFox Simple One Alpha</a> (<a
+                    href="http://k3.quickfox.ru">Kernel 3</a> based)<br/>
+                {IN_FOOTSTAT}
+                <!-- <a href="http://validator.w3.org/check?uri=referer">
+                <img src="http://www.w3.org/Icons/valid-xhtml10-blue.png" alt="Valid XHTML 1.0 Strict" style="height: 31px; width: 88px;" />
+               </a> -->
+            </div>
+        {/IF}
         <div class="clearfloats invisible">&nbsp;</div>
     </div>
 </div>

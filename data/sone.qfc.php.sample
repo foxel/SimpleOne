@@ -10,6 +10,7 @@ site.name => SimpleOne site
 site.indexPath => index
 
 markup.responsive => 1
+#markup.hideDefaultFooter => 1
 
 plugins.VK => 1
 
