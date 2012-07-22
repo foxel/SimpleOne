@@ -76,10 +76,15 @@ class SOne_Model_Object_LoginPage extends SOne_Model_Object
         /* @var SOne_Repository_User $users */
         $users = SOne_Repository_User::getInstance($env->get('db'));
 
+        /* @var FLNGData $lang */
+        $lang = $env->get('lang');
+
         if ($action == 'login') {
             $user = $users->loadOne(array('login' => $env->request->getString('login', K3_Request::POST, FStr::WORD)));
             if ($user && $user->checkPassword($env->request->getString('password', K3_Request::POST, FStr::LINE))) {
                 $app->setAuthUser($user);
+            } else {
+                $this->pool['errors'] = '<ul><li>'.$lang->lang('SONE_LOGIN_ERROR_LOGIN_INCORRECT').'</li></ul>';
             }
         } elseif ($action == 'logout') {
             $app->dropAuthUser();
@@ -89,9 +94,6 @@ class SOne_Model_Object_LoginPage extends SOne_Model_Object
             $password = $env->request->getString('reg_password', K3_Request::POST, FStr::LINE);
             $username = $env->request->getString('reg_name', K3_Request::POST, FStr::LINE);
             $email    = $env->request->getString('reg_email', K3_Request::POST, FStr::LINE);
-
-            /* @var FLNGData $lang */
-            $lang = $env->get('lang');
 
             $errors = array();
             $nameLen = FStr::strLen($username);
