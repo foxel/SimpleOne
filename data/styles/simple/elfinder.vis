@@ -18,7 +18,7 @@
 -->
 
 <<+ 'ELFINDER_JS_BLOCK'>>
-<script>
+<script type="text/javascript">
 // JavaScript Starts Here <![CDATA[
     $.SOne.config.elRTE.fmOpen = function (callback) {
         $('<div />').dialogelfinder({

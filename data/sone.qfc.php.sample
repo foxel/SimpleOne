@@ -13,6 +13,7 @@ markup.responsive => 1
 #markup.hideDefaultFooter => 1
 
 plugins.VK => 1
+#plugins.Google.analyticsId => UA-XXXXXXXX-X
 
 # widgets
 # don't remove navigator widget if you have no other navigation
