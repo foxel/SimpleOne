@@ -444,6 +444,13 @@
         </div>
     </div>
 </div>
+{IF:IN_fixed}
+<style type="text/css">
+    body {
+        {IF:IN_fixed="bottom"}padding-bottom{ELSE}padding-top{/IF}: 40px;
+    }
+</style>
+{/IF}
 <<- 'SONE_WIDGET_NAVBAR'>>
 
 <<+ 'SONE_WIDGET_NAVBAR_LINK'>>
