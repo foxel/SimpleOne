@@ -91,20 +91,25 @@
         var SOne = {
             config: {
                 elRTE: {
-                    lang         : 'ru',
-                    styleWithCSS : false,
-                    height       : 400,
-                    toolbar      : 'maxi',
-                    resizable    : true,
-                    resizeHandle : 's',
-                    cssfiles     : ['{FULLURL:"static/css/bootstrap.css"}', '{FULLURL:"static/css/elrte.inner.css"}']
+                    lang: 'ru',
+                    styleWithCSS: false,
+                    allowTextNodes: false,
+                    height: 400,
+                    toolbar: 'maxi',
+                    resizable: true,
+                    resizeHandle: 's',
+                    cssfiles: ['{FULLURL:"static/css/bootstrap.css"}', '{FULLURL:"static/css/elrte.inner.css"}']
                 }
             },
             updateHtmlEditors: function() {
                 var opts = SOne.config.elRTE;
                 if (opts) {
                     // create editor
-                    $('textarea.htmleditor').elrte(opts);
+                    $('textarea.htmleditor').each(function() {
+                        if ($(this).val() == '') {
+                            $(this).val('<p>&nbsp;</p>');
+                        }
+                    }).elrte(opts);
                 }
             }
         };
