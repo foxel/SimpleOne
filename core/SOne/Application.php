@@ -262,9 +262,6 @@ class SOne_Application extends K3_Application
         if ($this->_config->widgets instanceof Traversable) {
             foreach ($this->_config->widgets as $widgetName => $widgetConfig) {
                 $init = ($widgetConfig instanceof K3_Config) ? $widgetConfig->toArray() : (array)$widgetConfig;
-                if (!isset($init['data'])) {
-                    $init['data'] = $init;
-                }
                 $widgets[$widgetName] = SOne_Model_Widget::construct($init);
             }
         }

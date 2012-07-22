@@ -83,6 +83,10 @@ abstract class SOne_Model_Widget extends SOne_Model
 
             'isStatic'    => isset($init['isStatic'])    ? (bool) $init['isStatic']      : false,
         );
+
+        if (!isset($init['data']) && $data = array_diff_key($init, $this->pool)) {
+            $this->pool['data'] = $data;
+        }
     }
 
     /**

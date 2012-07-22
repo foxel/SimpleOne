@@ -18,9 +18,19 @@ plugins.VK => 1
 widgets.navigator.class => Navigator
 widgets.navigator.block => sidebar
 
+# navbar
+#widgets.navbar.class => Navbar
+#widgets.navbar.block => head
+#widgets.navbar.brand => SimpleOne
+#widgets.navbar.fixed => bottom
+#widgets.navbar.links.data => foo bar
+#widgets.navbar.links.a.href => data/tag/tag
+#widgets.navbar.links.a.caption => #tag
+
 # sample static login page
 #staticRoutes.login.class => LoginPage
 #staticRoutes.login.caption => Login
+#staticRoutes.login.registerAllowed => 1
 
 # sample static constructor page
 #staticRoutes.constructor.class => Constructor
@@ -29,27 +39,27 @@ widgets.navigator.block => sidebar
 
 staticRoutes.uploader.class => ElFinderConnector
 staticRoutes.uploader.accessLevel => 1
-staticRoutes.uploader.data.roots.0.driver      => LocalFileSystem
-staticRoutes.uploader.data.roots.0.alias       => Uploads
-staticRoutes.uploader.data.roots.0.path        => {F_SITE_ROOT}/static/files/
-staticRoutes.uploader.data.roots.0.startPath   => {F_SITE_ROOT}/static/files/
-staticRoutes.uploader.data.roots.0.URL         => /static/files/
-staticRoutes.uploader.data.roots.0.uploadAllow => image,application/x-shockwave-flash,video,audio
-staticRoutes.uploader.data.roots.0.uploadOrder => allow,deny
+staticRoutes.uploader.roots.0.driver      => LocalFileSystem
+staticRoutes.uploader.roots.0.alias       => Uploads
+staticRoutes.uploader.roots.0.path        => {F_SITE_ROOT}/static/files/
+staticRoutes.uploader.roots.0.startPath   => {F_SITE_ROOT}/static/files/
+staticRoutes.uploader.roots.0.URL         => /static/files/
+staticRoutes.uploader.roots.0.uploadAllow => image,application/x-shockwave-flash,video,audio
+staticRoutes.uploader.roots.0.uploadOrder => allow,deny
 
 plugins.ElFinder.connectorUrl => uploader
 
 # sample access controlled uploads
 # this is for elfinder - replase corresponding lines above
-staticRoutes.uploader.data.roots.0.path        => {F_DATA_ROOT}/uploads/
-staticRoutes.uploader.data.roots.0.startPath   => {F_DATA_ROOT}/uploads/
-staticRoutes.uploader.data.roots.0.URL         => /uploads/
+staticRoutes.uploader.roots.0.path        => {F_DATA_ROOT}/uploads/
+staticRoutes.uploader.roots.0.startPath   => {F_DATA_ROOT}/uploads/
+staticRoutes.uploader.roots.0.URL         => /uploads/
 
 staticRoutes.uploads.class => FileIndex
 staticRoutes.uploads.caption => Uploaded Files
-staticRoutes.uploads.data.basePath => {F_DATA_ROOT}/uploads/
-staticRoutes.uploads.data.disposition => inline
-staticRoutes.uploads.data.xAccelLocation => /_uploads/
+staticRoutes.uploads.basePath => {F_DATA_ROOT}/uploads/
+staticRoutes.uploads.disposition => inline
+staticRoutes.uploads.xAccelLocation => /_uploads/
 
 vk.appId => 100
 vk.appSecret => XxxX

@@ -309,8 +309,8 @@
 {ELSE}
 <fieldset id="loginpageLogin"{IF:IN_actionState="register"} style="display: none;"{/IF}>
  <legend>
-  <strong>Вход</strong> /
-  <a href="#" onclick="$('#loginpageLogin').hide(); $('#loginpageRegister').show(); return false;">Регистрация</a>
+  <strong>Вход</strong>
+  {IF:IN_registerAllowed} / <a href="#" onclick="$('#loginpageLogin').hide(); $('#loginpageRegister').show(); return false;">Регистрация</a>{/IF}
  </legend>
  <form action="{FULLURL:IN_PATH}/?login" method="post">
   <label>Логин: <br/><input type="text" name="login" value="" /></label>
@@ -318,6 +318,7 @@
   <button class="btn btn-primary" type="submit">{L_EDITOR_SUBMIT_LOGIN}</button>
  </form>
 </fieldset>
+{IF:IN_registerAllowed}
 <fieldset id="loginpageRegister"{!IF:IN_actionState="register"} style="display: none;"{/IF}>
  <legend>
   <a href="#" onclick="$('#loginpageRegister').hide(); $('#loginpageLogin').show(); return false;">Вход</a>
@@ -331,6 +332,7 @@
   <button class="btn btn-primary" type="submit">{L_EDITOR_SUBMIT_REGISTER}</button>
  </form>
 </fieldset>
+{/IF}
 {/IF}
 <<- 'SONE_OBJECT_LOGINPAGE'>>
 

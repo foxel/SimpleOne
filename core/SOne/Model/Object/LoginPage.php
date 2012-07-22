@@ -19,11 +19,23 @@
  */
 
 /**
+ * @property bool  $registerAllowed
+ *
  * @property array $refills
  * @property array $errors
  */
 class SOne_Model_Object_LoginPage extends SOne_Model_Object
 {
+    /**
+     * @param  array $init
+     */
+    public function __construct(array $init = array())
+    {
+        parent::__construct($init);
+
+        $this->setData((array)$this->pool['data']);
+    }
+
     public function visualize(K3_Environment $env)
     {
         if ($this->actionState == 'redirect') {
@@ -36,6 +48,18 @@ class SOne_Model_Object_LoginPage extends SOne_Model_Object
         }
         $node->addDataArray($this->pool + (array) $this->refills);
         return $node;
+    }
+
+    /**
+     * @param string $action
+     * @param SOne_Model_User $user
+     * @return bool
+     */
+    public function isActionAllowed($action, SOne_Model_User $user)
+    {
+        return ($action == 'register')
+            ? $this->registerAllowed
+            : parent::isActionAllowed($action, $user);
     }
 
     /**
@@ -112,5 +136,16 @@ class SOne_Model_Object_LoginPage extends SOne_Model_Object
         }
     }
 
-
+    /**
+     * @param array $data
+     * @return SOne_Model_Object_HTMLPage
+     */
+    protected function setData(array $data)
+    {
+        $this->pool['data'] = $data + array(
+            'registerAllowed' => false,
+        );
+        $this->pool['registerAllowed'] =& $this->pool['data']['registerAllowed'];
+        return $this;
+    }
 }

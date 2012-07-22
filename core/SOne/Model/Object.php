@@ -120,6 +120,10 @@ abstract class SOne_Model_Object extends SOne_Model
         if (isset($init['treeLevel'])) {
             $this->pool['treeLevel'] = (int) $init['treeLevel'];
         }
+
+        if (!isset($init['data']) && $data = array_diff_key($init, $this->pool)) {
+            $this->pool['data'] = $data;
+        }
     }
 
     /**
