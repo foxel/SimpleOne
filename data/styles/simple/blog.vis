@@ -129,13 +129,15 @@
 
 <<+ 'SONE_OBJECT_BLOG_LISTITEM'>>
 <div class="blog-item well">
-    <div class="pull-right" style="text-align: right;">
-        <a href="{FULLURL:IN_PARENTPATH}/date/{FTIME:IN_createTime|"Y-m-d"|false|true}"><i class="icon-time"></i> {FTIME:IN_createTime}</a>
-        {IF:IN_tags}<div>{IN_tags}</div>{/IF}
+    <div class="clearfix">
+        <div class="pull-right" style="text-align: right;">
+            <a href="{FULLURL:IN_PARENTPATH}/date/{FTIME:IN_createTime|"Y-m-d"|false|true}"><i class="icon-time"></i> {FTIME:IN_createTime}</a>
+            {IF:IN_tags}<div>{IN_tags}</div>{/IF}
+        </div>
+        <h3><a href="{FULLURL:IN_PATH}">{IF:IN_caption}{IN_CAPTION}{ELSE}{IN_PATH}{/IF}</a>
+            <small></small>
+        </h3>
     </div>
-    <h3><a href="{FULLURL:IN_PATH}">{IF:IN_caption}{IN_CAPTION}{ELSE}{IN_PATH}{/IF}</a>
-        <small></small>
-    </h3>
     <div class="blog-item-preview clearfix">
         {IN_CONTENT}
         {IF:IN_showReadMore}<a href="{FULLURL:IN_PATH}">Читать дальше...</a>{/IF}
