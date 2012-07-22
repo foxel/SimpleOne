@@ -104,15 +104,21 @@
 {/if}
 <h2>{IN_CAPTION}</h2>
 {if:in_date}
-    <h3><i class="icon-time"></i> Записи за {in_date} <a class="btn btn-mini" href="{FULLURL:in_path}"><i class="icon-remove"></i></a></h3>
+    <div class="alert alert-info">
+        <i class="icon-time"></i> Записи за {in_date}
+        <a class="close" href="{FULLURL:in_path}"><i class="icon-remove"></i></a>
+    </div>
 {elseif:in_tag}
-    <h3><i class="icon-tag"></i> Записи с меткой "{in_tag}" <a class="btn btn-mini" href="{FULLURL:in_path}"><i class="icon-remove"></i></a></h3>
+    <div class="alert alert-info">
+        <i class="icon-tag"></i> Записи с меткой "{in_tag}"
+        <a class="close" href="{FULLURL:in_path}"><i class="icon-remove"></i></a>
+    </div>
 {/if}
 <div class="htmlpage">
     {if:IN_items}
         {IN_items}
     {else}
-        Нет записей
+        <div class="alert">Нет записей</div>
     {/if}
     {IF:in_pages}
         <div class="pagination pagination-centered btn-small"><ul>{in_pages}</ul></div>
