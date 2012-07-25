@@ -48,6 +48,8 @@ staticRoutes.uploader.roots.0.startPath   => {F_SITE_ROOT}/static/files/
 staticRoutes.uploader.roots.0.URL         => /static/files/
 staticRoutes.uploader.roots.0.uploadAllow => image,application/x-shockwave-flash,video,audio
 staticRoutes.uploader.roots.0.uploadOrder => allow,deny
+#staticRoutes.uploader.maxImageWidth  => 600
+#staticRoutes.uploader.maxImageHeight => 500
 
 plugins.ElFinder.connectorUrl => uploader
 

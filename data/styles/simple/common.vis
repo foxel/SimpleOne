@@ -62,6 +62,10 @@
        padding-right: 0;
    }
 
+   .elfinder-resize-preview img {
+       max-width: none;
+   }
+
    {IN_CSS}
   /* ]]> CSS ends here */
   </style>

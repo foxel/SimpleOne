@@ -20,6 +20,9 @@
 
 class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
 {
+    /** @var array */
+    protected $_config = array();
+
     /**
      * @param  array $init
      */
@@ -28,6 +31,8 @@ class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
         // connector is always hidden
         $init['hideInTree'] = true;
         parent::__construct($init);
+
+        $this->_config = $this->_prepareConfig((array) $this->pool['data']);
     }
 
     /**
@@ -36,10 +41,7 @@ class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
      */
     public function visualize(K3_Environment $env)
     {
-        $config = $this->_prepareConfig((array) $this->pool['data']);
-
-        //var_dump($config); die;
-        $finder = new elFinder($config);
+        $finder = new elFinder($this->_config);
 
         $isPost = $env->request->isPost;
         $src    = $isPost ? $_POST : $_GET;
@@ -136,6 +138,8 @@ class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
             }
         }
 
+        $config['bind'] = array('upload' => array($this, '_uploadHook'));
+
         return $config;
     }
 
@@ -151,7 +155,68 @@ class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
         return strpos(FStr::basename($path), '.') === 0 // if file/folder begins with '.' (dot)
             ? !($attr == 'read' || $attr == 'write') // set read+write to false, other (locked+hidden) set to true
             : null; // else elFinder decide it itself
-
     }
 
+    /**
+     * @param string $action
+     * @param array $result
+     * @param array $args
+     * @param elFinder $finder
+     */
+    public function _uploadHook($action, array &$result, array $args, elFinder $finder)
+    {
+        if ($action != 'upload' || !isset($result['added']) || !is_array($result['added'])) {
+            return;
+        }
+
+        $autoResize = $maxWidth = $maxHeight = null;
+        if (isset($this->_config['maxImageWidth']) || isset($this->_config['maxImageHeight'])) {
+            $autoResize = true;
+            $maxWidth = isset($this->_config['maxImageWidth']) && is_numeric($this->_config['maxImageWidth'])
+                ? (int) $this->_config['maxImageWidth']
+                : PHP_INT_MAX;
+            $maxHeight = isset($this->_config['maxImageHeight']) && is_numeric($this->_config['maxImageHeight'])
+                ? (int) $this->_config['maxImageHeight']
+                : PHP_INT_MAX;
+        }
+
+        foreach ($result['added'] as &$file) {
+            $name = $file['name'];
+            $path = $finder->realpath($file['hash']);
+
+            if ($autoResize && (strpos($file['mime'], 'image/') === 0) && ($iData = getimagesize($path))) {
+                if ($iData[0] > $maxWidth || $iData[1] > $maxHeight) {
+                    $s = min($maxWidth/$iData[0], $maxHeight/$iData[1]);
+                    if ($s > 0 && $s < 1) {
+                        $w = (int) $iData[0]*$s;
+                        $h = (int) $iData[1]*$s;
+                        $res = $finder->exec('resize', array(
+                            'target' => $file['hash'],
+                            'width'  => $w,
+                            'height' => $h,
+                            'x'      => false,
+                            'y'      => false,
+                            'mode'   => 'resize',
+                            'degree' => false
+                        ));
+
+                        if (isset($res['changed'])) {
+                            $file = array_shift($res['changed']);
+                        }
+                    }
+                }
+            }
+
+            if ($name != ($correctName = FStr::cast($name, FStr::PATH))) {
+                $res = $finder->exec('rename', array(
+                    'target' => $file['hash'],
+                    'name'   => $correctName
+                ));
+
+                if (isset($res['added'])) {
+                    $file = array_shift($res['added']);
+                }
+            }
+        }
+    }
 }
