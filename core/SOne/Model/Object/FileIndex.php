@@ -85,9 +85,16 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object implements SOne_Inte
                         continue;
                     }
 
+                    $fileType = $file->getType();
+                    // dereferencing type
+                    if ($fileType == 'link') {
+                        $fileType = is_dir($file->getRealPath())
+                            ? 'dir'
+                            : 'file';
+                    }
                     $contents[$file->getFilename()] = array(
                         'name' => $file->getFilename(),
-                        'type' => $file->getType(),
+                        'type' => $fileType,
                         'size' => $file->getSize(),
                         'path' => $this->path.'/'.($this->_subPath ? $this->_subPath.'/' : '').$file->getFilename(),
                     );
@@ -95,8 +102,9 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object implements SOne_Inte
             }
             if (!empty($contents)) {
                 uksort($contents, 'strcasecmp');
+                //F2DArray::sort($contents, 'type');
                 $node->appendChild('files', $contNode = new FVISNode('SONE_FILES_FILEITEM', FVISNode::VISNODE_ARRAY, $env->get('VIS')));
-                $contNode->addDataArray($contents);
+                $contNode->addDataArray($contents)->sort('type');
             }
             if ($this->_subPath) {
                 $node->addData('upPath', $this->path.'/'.implode('/', array_slice(explode('/', trim($this->_subPath, '/')), 0, -1)));
