@@ -94,6 +94,8 @@ class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
 
         $args['debug'] = isset($src['debug']) ? !!$src['debug'] : false;
 
+        $this->_filterCmd($cmd, $args);
+
         $response = $finder->exec($cmd, $args);
 
         $env->response
@@ -181,7 +183,6 @@ class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
         }
 
         foreach ($result['added'] as &$file) {
-            $name = $file['name'];
             $path = $finder->realpath($file['hash']);
 
             if ($autoResize && (strpos($file['mime'], 'image/') === 0) && ($iData = getimagesize($path))) {
@@ -206,17 +207,26 @@ class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
                     }
                 }
             }
-
-            if ($name != ($correctName = FStr::cast($name, FStr::PATH))) {
-                $res = $finder->exec('rename', array(
-                    'target' => $file['hash'],
-                    'name'   => $correctName
-                ));
-
-                if (isset($res['added'])) {
-                    $file = array_shift($res['added']);
-                }
-            }
         }
+    }
+
+    /**
+     * @param string $action
+     * @param array $args
+     */
+    protected function _filterCmd($action, array &$args)
+    {
+        switch ($action) {
+            case 'upload':
+                foreach ($args['FILES'] as &$file) {
+                    foreach ($file['name'] as &$name) {
+                        $name = FStr::cast($name, FStr::PATH);
+                    }
+                }
+                break;
+            case 'rename':
+                $args['name'] = FStr::cast($args['name'], FStr::PATH);
+                break;
+        };
     }
 }
