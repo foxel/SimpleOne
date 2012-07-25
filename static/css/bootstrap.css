@@ -2229,7 +2229,7 @@ ul.icons li .icon-large:before {
   position: absolute;
   top: 100%;
   left: 0;
-  z-index: 1000;
+  z-index: 700;
   display: none;
   float: left;
   min-width: 160px;
@@ -2281,7 +2281,7 @@ ul.icons li .icon-large:before {
   background-color: #0044a0;
 }
 .open {
-  *z-index: 1000;
+  *z-index: 700;
 }
 .open  > .dropdown-menu {
   display: block;
@@ -3404,7 +3404,7 @@ input[type="submit"].btn.btn-mini {
   position: fixed;
   right: 0;
   left: 0;
-  z-index: 1030;
+  z-index: 730;
   margin-bottom: 0;
 }
 .navbar-fixed-top .navbar-inner,
@@ -3740,16 +3740,16 @@ input[type="submit"].btn.btn-mini {
   cursor: default;
 }
 .modal-open .dropdown-menu {
-  z-index: 2050;
+  z-index: 1450;
 }
 .modal-open .dropdown.open {
-  *z-index: 2050;
+  *z-index: 1450;
 }
 .modal-open .popover {
-  z-index: 2060;
+  z-index: 1460;
 }
 .modal-open .tooltip {
-  z-index: 2070;
+  z-index: 1470;
 }
 .modal-backdrop {
   position: fixed;
@@ -3757,7 +3757,7 @@ input[type="submit"].btn.btn-mini {
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 1040;
+  z-index: 740;
   background-color: #000000;
 }
 .modal-backdrop.fade {
@@ -3772,7 +3772,7 @@ input[type="submit"].btn.btn-mini {
   position: fixed;
   top: 50%;
   left: 50%;
-  z-index: 1050;
+  z-index: 750;
   overflow: auto;
   width: 560px;
   margin: -250px 0 0 -280px;
@@ -3849,7 +3849,7 @@ input[type="submit"].btn.btn-mini {
 }
 .tooltip {
   position: absolute;
-  z-index: 1020;
+  z-index: 720;
   display: block;
   visibility: visible;
   padding: 5px;
@@ -3925,7 +3925,7 @@ input[type="submit"].btn.btn-mini {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 1010;
+  z-index: 710;
   display: none;
   padding: 5px;
 }
