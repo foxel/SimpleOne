@@ -20,6 +20,7 @@
 
 /**
  * @property array $tags
+ * @property string $thumbnailImage
  */
 class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
     implements SOne_Interface_Object_WithExtraData
@@ -136,6 +137,23 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
     {
         parent::saveAction($env, $updated);
         $this->pool['tags'] = array_unique(array_map('trim', explode(',', $env->request->getString('tags', K3_Request::POST, FStr::LINE))));
+
+        $imageSrc = '';
+        if (class_exists('DOMDocument', false)) {
+            $dom = new DOMDocument('4.0', F::INTERNAL_ENCODING);
+            if ($dom->loadHTML(mb_convert_encoding($this->content, 'HTML-ENTITIES', F::INTERNAL_ENCODING))) {
+                $dom->encoding = F::INTERNAL_ENCODING;
+                $images = $dom->getElementsByTagName('img');
+                if ($images->length && $image = $images->item(0)) {
+                    if ($imageSrc = $image->attributes->getNamedItem('src')) {
+                        $imageSrc = $imageSrc->nodeValue;
+                    }
+                }
+                $content = $dom->saveXML($dom->getElementsByTagName('body')->item(0));
+                $this->content = str_replace(array('<body>', '</body>', '&#13;'), '', $content);
+            }
+        }
+        $this->pool['thumbnailImage'] = (string) $imageSrc;
     }
 
     /**
@@ -149,6 +167,22 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
         $objects = SOne_Repository_Object::getInstance($db);
         $objects->delete($this->id);
         $updated = false;
+    }
+
+    /**
+     * @param array $data
+     * @return SOne_Model_Object_BlogItem
+     */
+    protected function setData(array $data)
+    {
+        parent::setData($data);
+        $this->pool['data']['thumbnailImage'] = isset($data['thumbnailImage'])
+            ? (string) $data['thumbnailImage']
+            : '';
+
+        $this->pool['thumbnailImage'] =& $this->pool['data']['thumbnailImage'];
+
+        return $this;
     }
 
     /**
