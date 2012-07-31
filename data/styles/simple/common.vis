@@ -34,6 +34,9 @@
   <![endif]-->
 
   <link rel="stylesheet" href="{FULLURL:"static/css/elrte.min.css"}" type="text/css" media="screen" charset="utf-8">
+  <!--[if IE 6]>
+  <link rel="stylesheet" href="{FULLURL:"static/css/bootstrap-ie6.css"}" type="text/css" media="screen" charset="utf-8">
+  <![endif]-->
   {IN_META}
 
   {IF:IN_META_DESCRIPTION}<meta name="Description" content="{!IN_META_DESCRIPTION}" />{ENDIF}
@@ -91,6 +94,7 @@
 <script type="text/javascript" src="/static/jscripts/i18n/elrte.ru.js" charset="utf-8"></script>
 <script type="text/javascript" src="/static/jscripts/bootstrap-modal.js" charset="utf-8"></script>
 <script type="text/javascript" src="/static/jscripts/bootstrap-tooltip.js" charset="utf-8"></script>
+<script type="text/javascript" src="/static/jscripts/bootstrap-ie6.js" charset="utf-8"></script>
 <script type="text/javascript">
 // JavaScript Starts Here <![CDATA[
     (function($) {
