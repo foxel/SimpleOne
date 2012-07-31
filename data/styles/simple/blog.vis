@@ -139,7 +139,7 @@
     <div class="clearfix">
         <div class="pull-right" style="text-align: right;">
             <a href="{FULLURL:IN_PARENTPATH}/date/{FTIME:IN_createTime|"Y-m-d"|false|true}"><i class="icon-time"></i> <time itemprop="datePublished" datetime="{FTIME:IN_createTime|"c"|false|true}">{FTIME:IN_createTime}</time></a>
-            {IF:IN_tags}<div itemprop="keywords">{IN_tags}</div>{/IF}
+            {IF:IN_tags}<div class="blog-keywords" itemprop="keywords">{IN_tags}</div>{/IF}
         </div>
         <h3 itemprop="name"><a href="{FULLURL:IN_PATH}" itemprop="url">{IF:IN_caption}{IN_CAPTION}{ELSE}{IN_PATH}{/IF}</a>
             <small></small>
@@ -159,3 +159,19 @@
 <<+ 'SONE_OBJECT_BLOG_PAGE'>>
 <li {IF:IN_current}class="active"{/IF}><a href="{FULLURL:in_path}?{IF:IN_actionState}{IN_actionState}&amp;{/IF}page={IN_page}">{IN_page}</a></li>
 <<- 'SONE_OBJECT_BLOG_PAGE'>>
+
+<<+ 'CSS'>>
+div.blog-keywords {
+    max-width: 250px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+div.blog-keywords a {
+    white-space: nowrap;
+}
+div.blog-keywords:hover {
+    overflow: visible;
+    white-space: normal;
+}
+<<- 'CSS'>>
