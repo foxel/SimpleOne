@@ -69,4 +69,6 @@ vk.appId => 100
 vk.appSecret => XxxX
 vk.baseDomain => simple.one
 
+#staticRoutes.sitemap.class => SiteMap
+
 */
