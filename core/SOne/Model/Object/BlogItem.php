@@ -92,8 +92,8 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
         unset($data['comments']);
 
         if (preg_match('#<!--\s*pagebreak\s*-->#', $data['content'])) {
-            $data['content'] = preg_replace('#(<\w+>)*<!--\s*pagebreak\s*-->.*$#', '', $data['content']);
-            $data['content'] = F()->Parser->XMLCheck($data['content']);
+            $data['content'] = preg_replace('#(<\w+>)*<!--\s*pagebreak\s*-->.*$#Ds', '', $data['content']);
+            $data['content'] = F()->Parser->XMLCheck($data['content'], true);
             $data['showReadMore'] = 1;
         }
 
