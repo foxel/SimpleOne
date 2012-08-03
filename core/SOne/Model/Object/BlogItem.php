@@ -207,4 +207,21 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
         $this->_tagsRepo->setObjectTags($this->id, $this->tags);
     }
 
+    /**
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->content;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getCategories()
+    {
+        return $this->tags;
+    }
+
+
 }

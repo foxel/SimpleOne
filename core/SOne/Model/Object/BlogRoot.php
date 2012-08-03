@@ -37,6 +37,23 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
      */
     public function visualize(K3_Environment $env)
     {
+        if ($this->id && $this->actionState == 'rss')
+        {
+            $items   = $this->_loadListItems($env, $this->_itemPerPage);
+            $rss = new K3_RSS(array(
+                'title' => $this->caption,
+                'link'  => FStr::fullUrl($this->path),
+            ), $items);
+
+            $env->getResponse()
+                ->setDoHTMLParse(false)
+                ->write($rss->toXML())
+                ->sendBuffer(F::INTERNAL_ENCODING, array(
+                    'contentType' => 'application/rss+xml',
+                    'filename' => FStr::basename($this->path).'.xml',
+                ));
+        }
+
         $node = new FVISNode('SONE_OBJECT_BLOG_LIST', 0, $env->get('VIS'));
 
         $node->addDataArray($this->pool + (array) $this->_filterParams + array(

@@ -41,7 +41,7 @@
  *
  * @property int|null $treeLevel
  */
-abstract class SOne_Model_Object extends SOne_Model
+abstract class SOne_Model_Object extends SOne_Model implements I_K3_RSS_Item
 {
     const DEFAULT_ACCESS_LEVEL = 0;
     const DEFAULT_EDIT_LEVEL = 0;
@@ -254,5 +254,63 @@ abstract class SOne_Model_Object extends SOne_Model
     public function __sleep()
     {
         return array('pool');
+    }
+
+    // RSS methods
+
+    /**
+     * @return null|string
+     */
+    public function getAuthor()
+    {
+        return null;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getDescription()
+    {
+        return null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGUID()
+    {
+        return md5(FStr::fullUrl('object~'.$this->id));
+    }
+
+    /**
+     * @return string
+     */
+    public function getLink()
+    {
+        return FStr::fullUrl($this->path);
+    }
+
+    /**
+     * @return string
+     */
+    public function getPubDate()
+    {
+        return date('r', $this->createTime);
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->caption;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getCategories()
+    {
+        return array();
     }
 }
