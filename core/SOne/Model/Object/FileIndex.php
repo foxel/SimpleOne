@@ -21,6 +21,7 @@
 /**
  * @property-read string $basePath
  * @property-read string $xAccelLocation
+ * @property-read bool   $m3uEnabled
  */
 class SOne_Model_Object_FileIndex extends SOne_Model_Object implements SOne_Interface_Object_WithSubRoute
 {
@@ -51,6 +52,26 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object implements SOne_Inte
             $realPath = $this->basePath.DIRECTORY_SEPARATOR.$realPath;
         }
 
+        if ($this->actionState == 'm3u' && $this->m3uEnabled) {
+            $iterator = $this->_getFSIterator($realPath, true, '/^.+\.(mp3|ogg|fla|flac|wav)$/i');
+            $out = array();
+            $realBasePath = realpath($this->basePath);
+            foreach ($iterator as $file) {
+                $out[] = strtr($file->getRealPath(), array($realBasePath => $this->path));
+            }
+            unset($iterator);
+            sort($out);
+            foreach ($out as &$item) {
+                $item = FStr::fullUrl(implode('/', array_map('rawurlencode', explode('/', $item))));
+            }
+            $env->getResponse()->write(implode(PHP_EOL, $out))->sendBuffer(F::INTERNAL_ENCODING, array(
+                'contentType' => 'audio/x-mpegurl',
+                'filename'    => FStr::basename($realPath).'.m3u',
+            ), K3_Response::DISPOSITION_ATTACHMENT);
+
+            return null;
+        }
+
         if (is_file($realPath)) {
             // TODO: improve this
             $fInfo = new finfo(FILEINFO_MIME_TYPE);
@@ -74,7 +95,7 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object implements SOne_Inte
             $node->addDataArray($this->pool)->addData('curPath', $this->_subPath);
             $contents = array();
             if (is_dir($realPath)) {
-                $dir = new DirectoryIterator($realPath ?: '.');
+                $dir = $this->_getFSIterator($realPath ?: '.');
                 foreach ($dir as $file) {
                     /** @var $file DirectoryIterator */
                     if ($file->isDot()) {
@@ -146,6 +167,7 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object implements SOne_Inte
     {
         parent::saveAction($env, $updated);
         $this->pool['basePath']   = $env->request->getString('basePath', K3_Request::POST, FStr::PATH);
+        $this->pool['m3uEnabled'] = $env->request->getBinary('m3uEnabled', K3_Request::POST, false);
         $this->pool['updateTime'] = time();
 
         $updated = true;
@@ -161,11 +183,35 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object implements SOne_Inte
             'basePath' => F_SITE_ROOT,
             'disposition' => 'attachment',
             'xAccelLocation' => false,
+            'm3uEnabled' => false,
         );
 
         $this->pool['basePath'] =& $this->pool['data']['basePath'];
         $this->pool['xAccelLocation'] =& $this->pool['data']['xAccelLocation'];
+        $this->pool['m3uEnabled'] =& $this->pool['data']['m3uEnabled'];
 
         return $this;
+    }
+
+    /**
+     * @param string $dirPath
+     * @param bool $recursive
+     * @param string|null $filter
+     * @return DirectoryIterator|RecursiveIteratorIterator|RegexIterator
+     */
+    protected function _getFSIterator($dirPath, $recursive = false, $filter = null)
+    {
+        if ($recursive) {
+            $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dirPath));
+        } else {
+            $iterator = new DirectoryIterator($dirPath);
+        }
+
+
+        if ($filter) {
+            $iterator = new RegexIterator($iterator, $filter, RecursiveRegexIterator::MATCH);
+        }
+
+        return $iterator;
     }
 }

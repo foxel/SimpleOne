@@ -24,12 +24,17 @@
     Базовый путь для обзора файлов:
     <input type="text" name="basePath" value="{!IN_basePath}" style="width: 600px;" />
 </label>
+<label>
+    Разрешить генерацию m3u-списов:
+    <input type="checkbox" name="m3uEnabled" value="1" {IF:IN_m3uEnabled}checked="checked"{/IF} />
+</label>
 {WRITE}
 {VIS:SONE_OBJECT_EDITFORM|formElements=formElements|_}
 {ELSE}
-    {IF:IN_canEdit}<div class="pull-right">
-        <a class="btn" href="{FULLURL:IN_PATH}?edit"><i class="icon-pencil"></i> Править</a>
-    </div>{/IF}
+    <div class="pull-right btn-group">
+        {IF:IN_m3uEnabled}<a class="btn" href="{FULLURL:IN_PATH}{IF:IN_curPath}/{IN_curPath}{/IF}?m3u"><i class="icon-music"></i> M3U</a>{/IF}
+        {IF:IN_canEdit}<a class="btn" href="{FULLURL:IN_PATH}?edit"><i class="icon-pencil"></i> Править</a>{/IF}
+    </div>
 <h3>{IN_CAPTION}{IF:IN_curPath} :: {IN_curPath}{/IF}</h3>
 <table class="table table-striped">
     <thead>

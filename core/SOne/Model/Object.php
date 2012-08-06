@@ -79,7 +79,7 @@ abstract class SOne_Model_Object extends SOne_Model implements I_K3_RSS_Item
             throw new FException('SOne object construct without class specified');
         }
 
-        foreach (self::$_classNamespaces as &$namespace) {
+        foreach (self::$_classNamespaces as $namespace) {
             $className = $namespace.'_'.ucfirst($init['class']);
 
             if (class_exists($className, true)) {
