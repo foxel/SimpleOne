@@ -313,4 +313,12 @@ abstract class SOne_Model_Object extends SOne_Model implements I_K3_RSS_Item
     {
         return array();
     }
+
+    /**
+     * @return I_K3_RSS_Item_Enclosure|null
+     */
+    public function getEnclosures()
+    {
+        return array();
+    }
 }

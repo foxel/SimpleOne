@@ -223,5 +223,20 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
         return $this->tags;
     }
 
+    public function getEnclosures()
+    {
+        if ($this->thumbnailImage) {
+            return array(
+                new K3_RSS_Item_Enclosure(array(
+                    'type' => F()->Mime->getMime($this->thumbnailImage, true),
+                    'url' => FStr::fullUrl($this->thumbnailImage),
+                    'length' => null,
+                ))
+            );
+        }
+
+        return array();
+    }
+
 
 }
