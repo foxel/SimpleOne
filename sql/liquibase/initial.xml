@@ -1,9 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ 
+ This file is part of QuickFox Kernel 3.
+ See https://github.com/foxel/Kernel3/ for more details.
+
+ Kernel 3 is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ Kernel 3 is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with Kernel 3. If not, see <http://www.gnu.org/licenses/>.
+-->
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd"
                    logicalFilePath="simpleone/init">
-    <property name="db.prefix" value="qfso_" />
-    <property name="admin.email" value="admin@example.com" />
-
     <changeSet author="Foxel" id="init-sessions-create">
         <createTable tableName="${db.prefix}sessions">
             <column defaultValue="" name="sid" type="CHAR(32)">
@@ -56,7 +72,7 @@
             <column defaultValue="" name="nick" type="CHAR(16)">
                 <constraints nullable="false"/>
             </column>
-            <column defaultValue="" name="email" type="CHAR(128)">
+            <column defaultValue="" name="email" type="CHAR(128) CHARACTER SET ascii">
                 <constraints nullable="false"/>
             </column>
             <column defaultValueNumeric="1" name="level" type="TINYINT UNSIGNED">
@@ -68,16 +84,16 @@
             <column defaultValueNumeric="0" name="adm_lvl" type="TINYINT UNSIGNED">
                 <constraints nullable="false"/>
             </column>
-            <column defaultValueNumeric="0" name="frozen" type="BIT">
+            <column defaultValueNumeric="0" name="frozen" type="TINYINT(1) UNSIGNED">
                 <constraints nullable="false"/>
             </column>
-            <column defaultValueNumeric="0" name="readonly" type="BIT">
+            <column defaultValueNumeric="0" name="readonly" type="TINYINT(1) UNSIGNED">
                 <constraints nullable="false"/>
             </column>
             <column defaultValueNumeric="0" name="acc_group" type="INT UNSIGNED">
                 <constraints nullable="false"/>
             </column>
-            <column name="avatar" type="CHAR(128)"/>
+            <column name="avatar" type="CHAR(128) CHARACTER SET ascii"/>
             <column defaultValue="" name="signature" type="CHAR(255)">
                 <constraints nullable="false"/>
             </column>
@@ -87,7 +103,7 @@
             <column defaultValueNumeric="0" name="lastseen" type="INT">
                 <constraints nullable="false"/>
             </column>
-            <column defaultValue="" name="last_url" type="CHAR(255)">
+            <column defaultValue="" name="last_url" type="CHAR(255) CHARACTER SET ascii">
                 <constraints nullable="false"/>
             </column>
             <column defaultValue="" name="last_uagent" type="CHAR(255)">
@@ -96,7 +112,7 @@
             <column defaultValueNumeric="0" name="last_ip" type="INT UNSIGNED">
                 <constraints nullable="false"/>
             </column>
-            <column defaultValue="" name="last_sid" type="CHAR(32)">
+            <column defaultValue="" name="last_sid" type="CHAR(32) CHARACTER SET ascii">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -129,6 +145,7 @@
     </changeSet>
     <changeSet author="Foxel" id="init-users-insert">
         <insert tableName="${db.prefix}users">
+            <column name="id" valueNumeric="1" />
             <column name="nick" value="admin" />
             <column name="email" value="${admin.email}" />
             <column name="level" valueNumeric="7" />
@@ -165,6 +182,13 @@
             <column name="pass_dropcode"/>
         </createIndex>
         <addForeignKeyConstraint baseColumnNames="uid" baseTableName="${db.prefix}users_auth" constraintName="${db.prefix}users_auth_uid_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="${db.prefix}users" />
+    </changeSet>
+    <changeSet author="Foxel" id="init-users.auth-insert">
+        <insert tableName="${db.prefix}users_auth">
+            <column name="uid" valueNumeric="1" />
+            <column name="login" value="admin" />
+            <column name="pass_crypt" value="$1$e73b6648$KbSLROHwDjst.jGt/PtG90" />
+        </insert>
     </changeSet>
 
     <changeSet author="Foxel" id="init-objects-create">
@@ -249,7 +273,7 @@
         </createTable>
         <modifySql dbms="mysql">
             <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8"/>
-            <replace replace="DEFAULT CURRENT TIMESTAMP" with="DEFAULT CURRENT TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" />
+            <replace replace="DEFAULT CURRENT_TIMESTAMP" with="DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" />
         </modifySql>
     </changeSet>
     <changeSet author="Foxel" id="init-objects.data-indexes">
@@ -270,7 +294,7 @@
             <column defaultValue="" name="path_hash" type="CHAR(32) CHARACTER SET ascii">
                 <constraints nullable="false"/>
             </column>
-            <column defaultValueNumeric="0" name="hide_in_tree" type="BIT">
+            <column defaultValueNumeric="0" name="hide_in_tree" type="TINYINT(1) UNSIGNED">
                 <constraints nullable="false"/>
             </column>
         </createTable>

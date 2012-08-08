@@ -29,16 +29,16 @@ CREATE TABLE `qfso_comments` (
   `author_id` int(10) unsigned DEFAULT NULL,
   `time` int(11) NOT NULL,
   `client_ip` int(10) unsigned DEFAULT NULL,
-  `text` text NOT NULL,
+  `text` longtext NOT NULL,
   PRIMARY KEY (`id`),
   KEY `object_id` (`object_id`),
   KEY `author_id` (`author_id`),
   KEY `time` (`time`),
   KEY `client_ip` (`client_ip`),
   KEY `answer_to` (`answer_to`),
-  CONSTRAINT `qfso_comments_ibfk_10` FOREIGN KEY (`answer_to`) REFERENCES `qfso_comments` (`id`) ON UPDATE CASCADE,
-  CONSTRAINT `qfso_comments_ibfk_11` FOREIGN KEY (`author_id`) REFERENCES `qfso_users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `qfso_comments_ibfk_2` FOREIGN KEY (`object_id`) REFERENCES `qfso_objects` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `qfso_comments_object_id_fk` FOREIGN KEY (`object_id`) REFERENCES `qfso_objects` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `qfso_comments_answer_to_fk` FOREIGN KEY (`answer_to`) REFERENCES `qfso_comments` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  CONSTRAINT `qfso_comments_author_id_fk` FOREIGN KEY (`author_id`) REFERENCES `qfso_users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -56,9 +56,9 @@ CREATE TABLE `qfso_objects` (
   `owner_id` int(10) unsigned DEFAULT NULL,
   `create_time` int(11) NOT NULL DEFAULT '0',
   `update_time` int(11) NOT NULL DEFAULT '0',
-  `acc_lvl` tinyint(2) unsigned NOT NULL DEFAULT '0',
+  `acc_lvl` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `acc_grp` int(10) unsigned NOT NULL DEFAULT '0',
-  `edit_lvl` tinyint(2) unsigned NOT NULL DEFAULT '3',
+  `edit_lvl` tinyint(3) unsigned NOT NULL DEFAULT '3',
   `caption` char(255) NOT NULL DEFAULT '',
   `order_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -71,8 +71,8 @@ CREATE TABLE `qfso_objects` (
   KEY `edit_lvl` (`edit_lvl`),
   KEY `parent_id` (`parent_id`),
   KEY `order_id` (`order_id`),
-  CONSTRAINT `qfso_objects_ibfk_8` FOREIGN KEY (`parent_id`) REFERENCES `qfso_objects` (`id`) ON UPDATE CASCADE,
-  CONSTRAINT `qfso_objects_ibfk_9` FOREIGN KEY (`owner_id`) REFERENCES `qfso_users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+  CONSTRAINT `qfso_objects_parent_id_fk` FOREIGN KEY (`parent_id`) REFERENCES `qfso_objects` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  CONSTRAINT `qfso_objects_owner_id_fk` FOREIGN KEY (`owner_id`) REFERENCES `qfso_users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -85,11 +85,11 @@ DROP TABLE IF EXISTS `qfso_objects_data`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `qfso_objects_data` (
   `o_id` int(10) unsigned NOT NULL,
-  `data` text NOT NULL COMMENT 'serialised data',
+  `data` longtext NOT NULL,
   `change_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`o_id`),
   KEY `change_time` (`change_time`),
-  CONSTRAINT `qfso_objects_data_ibfk_1` FOREIGN KEY (`o_id`) REFERENCES `qfso_objects` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `qfso_objects_data_o_id_fk` FOREIGN KEY (`o_id`) REFERENCES `qfso_objects` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -108,7 +108,7 @@ CREATE TABLE `qfso_objects_navi` (
   PRIMARY KEY (`id`),
   KEY `path_hash` (`path_hash`),
   KEY `hide_in_tree` (`hide_in_tree`),
-  CONSTRAINT `qfso_objects_navi_ibfk_1` FOREIGN KEY (`id`) REFERENCES `qfso_objects` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `qfso_objects_navi_id_fk` FOREIGN KEY (`id`) REFERENCES `qfso_objects` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -118,7 +118,7 @@ CREATE TABLE `qfso_objects_navi` (
 /*!50003 SET character_set_results = latin1 */ ;
 /*!50003 SET collation_connection  = latin1_swedish_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = '' */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES' */ ;
 DELIMITER ;;
 /*!50003 CREATE TRIGGER qfso_objects_navi_hash_insert BEFORE INSERT ON qfso_objects_navi FOR EACH ROW SET NEW.path_hash = MD5(NEW.path) */;;
 DELIMITER ;
@@ -133,7 +133,7 @@ DELIMITER ;
 /*!50003 SET character_set_results = latin1 */ ;
 /*!50003 SET collation_connection  = latin1_swedish_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = '' */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES' */ ;
 DELIMITER ;;
 /*!50003 CREATE TRIGGER qfso_objects_navi_hash_update BEFORE UPDATE ON qfso_objects_navi FOR EACH ROW SET NEW.path_hash = MD5(NEW.path) */;;
 DELIMITER ;
@@ -150,13 +150,13 @@ DROP TABLE IF EXISTS `qfso_sessions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `qfso_sessions` (
-  `sid` char(32) CHARACTER SET ascii NOT NULL DEFAULT '',
+  `sid` char(32) NOT NULL DEFAULT '',
   `ip` int(10) unsigned NOT NULL,
-  `clsign` char(32) CHARACTER SET ascii NOT NULL,
+  `clsign` char(32) NOT NULL,
   `starttime` int(11) NOT NULL,
   `lastused` int(11) NOT NULL,
-  `clicks` int(7) unsigned NOT NULL DEFAULT '1',
-  `vars` text,
+  `clicks` int(10) unsigned NOT NULL DEFAULT '1',
+  `vars` longtext,
   PRIMARY KEY (`sid`),
   KEY `clicks` (`clicks`),
   KEY `clsign` (`clsign`),
@@ -177,12 +177,12 @@ CREATE TABLE `qfso_users` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `nick` char(16) NOT NULL DEFAULT '',
   `email` char(128) CHARACTER SET ascii NOT NULL DEFAULT '',
-  `level` tinyint(2) unsigned NOT NULL DEFAULT '1',
-  `mod_lvl` tinyint(2) unsigned NOT NULL DEFAULT '0',
-  `adm_lvl` tinyint(2) unsigned NOT NULL DEFAULT '0',
+  `level` tinyint(3) unsigned NOT NULL DEFAULT '1',
+  `mod_lvl` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `adm_lvl` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `frozen` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `readonly` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `acc_group` int(5) unsigned NOT NULL DEFAULT '0',
+  `acc_group` int(10) unsigned NOT NULL DEFAULT '0',
   `avatar` char(128) CHARACTER SET ascii DEFAULT NULL,
   `signature` char(255) NOT NULL DEFAULT '',
   `regtime` int(11) NOT NULL DEFAULT '0',
@@ -193,12 +193,12 @@ CREATE TABLE `qfso_users` (
   `last_sid` char(32) CHARACTER SET ascii NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   UNIQUE KEY `nick` (`nick`),
+  KEY `email` (`email`),
   KEY `level` (`level`,`mod_lvl`,`adm_lvl`),
-  KEY `sess_id` (`last_sid`),
-  KEY `acc_state` (`frozen`,`readonly`),
   KEY `acc_group` (`acc_group`),
-  KEY `email` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+  KEY `acc_state` (`frozen`,`readonly`),
+  KEY `sess_id` (`last_sid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -217,7 +217,7 @@ CREATE TABLE `qfso_users_auth` (
   PRIMARY KEY (`uid`),
   UNIQUE KEY `login` (`login`),
   KEY `pass_dropcode` (`pass_dropcode`),
-  CONSTRAINT `qfso_users_auth_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `qfso_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `qfso_users_auth_uid_fk` FOREIGN KEY (`uid`) REFERENCES `qfso_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -234,7 +234,7 @@ CREATE TABLE `qfso_vk_users` (
   `token` char(64) CHARACTER SET ascii NOT NULL,
   PRIMARY KEY (`uid`),
   UNIQUE KEY `vk_id` (`vk_id`),
-  CONSTRAINT `qfso_vk_users_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `qfso_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `qfso_vk_users_uid_fk` FOREIGN KEY (`uid`) REFERENCES `qfso_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -254,7 +254,7 @@ CREATE TABLE `qfso_tag` (
   UNIQUE KEY `name` (`name`),
   KEY `user_id` (`user_id`),
   KEY `time` (`time`),
-  CONSTRAINT `qfso_tag_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `qfso_users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+  CONSTRAINT `qfso_tag_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `qfso_users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -269,9 +269,9 @@ CREATE TABLE `qfso_tag_object` (
   `tag_id` int(10) unsigned NOT NULL,
   `object_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`tag_id`,`object_id`),
-  KEY `object_id` (`object_id`),
-  CONSTRAINT `qfso_tag_object_ibfk_1` FOREIGN KEY (`tag_id`) REFERENCES `qfso_tag` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `qfso_tag_object_ibfk_2` FOREIGN KEY (`object_id`) REFERENCES `qfso_objects` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `qfso_tag_object_object_id_fk` (`object_id`),
+  CONSTRAINT `qfso_tag_object_tag_id_fk` FOREIGN KEY (`tag_id`) REFERENCES `qfso_tag` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `qfso_tag_object_object_id_fk` FOREIGN KEY (`object_id`) REFERENCES `qfso_objects` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -284,4 +284,4 @@ CREATE TABLE `qfso_tag_object` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-07-20 11:14:39
+-- Dump completed on 2012-08-08 14:30:07

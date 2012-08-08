@@ -1,0 +1,4 @@
+Sample usage:
+
+cp liquibase.properties.sample liquibase.properties
+./liquibase update -Ddb.prefix=qfso_
