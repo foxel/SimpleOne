@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
  Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
- 
- This file is part of QuickFox Kernel 3.
- See https://github.com/foxel/Kernel3/ for more details.
 
- Kernel 3 is free software: you can redistribute it and/or modify
+ This file is part of QuickFox SimpleOne.
+
+ SimpleOne is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
 
- Kernel 3 is distributed in the hope that it will be useful,
+ SimpleOne is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with Kernel 3. If not, see <http://www.gnu.org/licenses/>.
+ along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
 -->
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd"
                    logicalFilePath="simpleone/init">
