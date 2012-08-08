@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd"
+                   logicalFilePath="simpleone/init">
+    <property name="db.prefix" value="qfso_" />
+    <property name="admin.email" value="admin@example.com" />
+
+    <changeSet author="Foxel" id="init-sessions-create">
+        <createTable tableName="${db.prefix}sessions">
+            <column defaultValue="" name="sid" type="CHAR(32)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="ip" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="clsign" type="CHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="starttime" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lastused" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="1" name="clicks" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="vars" type="TEXT"/>
+        </createTable>
+        <modifySql dbms="mysql">
+            <append value=" ENGINE=MyISAM DEFAULT CHARSET=utf8"/>
+        </modifySql>
+    </changeSet>
+    <changeSet author="Foxel" id="init-sessions-indexes">
+        <createIndex indexName="clicks" tableName="${db.prefix}sessions" unique="false">
+            <column name="clicks"/>
+        </createIndex>
+        <createIndex indexName="clsign" tableName="${db.prefix}sessions" unique="false">
+            <column name="clsign"/>
+        </createIndex>
+        <createIndex indexName="ip" tableName="${db.prefix}sessions" unique="false">
+            <column name="ip"/>
+        </createIndex>
+        <createIndex indexName="lastused" tableName="${db.prefix}sessions" unique="false">
+            <column name="lastused"/>
+        </createIndex>
+        <createIndex indexName="starttime" tableName="${db.prefix}sessions" unique="false">
+            <column name="starttime"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet author="Foxel" id="init-users-create">
+        <createTable tableName="${db.prefix}users">
+            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValue="" name="nick" type="CHAR(16)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="email" type="CHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="1" name="level" type="TINYINT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="mod_lvl" type="TINYINT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="adm_lvl" type="TINYINT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="frozen" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="readonly" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="acc_group" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="avatar" type="CHAR(128)"/>
+            <column defaultValue="" name="signature" type="CHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="regtime" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="lastseen" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="last_url" type="CHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="last_uagent" type="CHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="last_ip" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="last_sid" type="CHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <modifySql dbms="mysql">
+            <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8"/>
+        </modifySql>
+    </changeSet>
+    <changeSet author="Foxel" id="init-users-indexes">
+        <createIndex indexName="nick" tableName="${db.prefix}users" unique="true">
+            <column name="nick"/>
+        </createIndex>
+        <createIndex indexName="email" tableName="${db.prefix}users" unique="false">
+            <column name="email"/>
+        </createIndex>
+        <createIndex indexName="level" tableName="${db.prefix}users" unique="false">
+            <column name="level"/>
+            <column name="mod_lvl"/>
+            <column name="adm_lvl"/>
+        </createIndex>
+        <createIndex indexName="acc_group" tableName="${db.prefix}users" unique="false">
+            <column name="acc_group"/>
+        </createIndex>
+        <createIndex indexName="acc_state" tableName="${db.prefix}users" unique="false">
+            <column name="frozen"/>
+            <column name="readonly"/>
+        </createIndex>
+        <createIndex indexName="sess_id" tableName="${db.prefix}users" unique="false">
+            <column name="last_sid"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Foxel" id="init-users-insert">
+        <insert tableName="${db.prefix}users">
+            <column name="nick" value="admin" />
+            <column name="email" value="${admin.email}" />
+            <column name="level" valueNumeric="7" />
+            <column name="mod_lvl" valueNumeric="7" />
+            <column name="adm_lvl" valueNumeric="7" />
+        </insert>
+    </changeSet>
+
+    <changeSet author="Foxel" id="init-users.auth-create">
+        <createTable tableName="${db.prefix}users_auth">
+            <column defaultValueNumeric="0" name="uid" type="INT UNSIGNED">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValue="" name="login" type="CHAR(16) CHARACTER SET ascii ">
+                <constraints nullable="false"/>
+            </column>
+            <column name="pass_crypt" type="CHAR(34) CHARACTER SET ascii ">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="pass_dropcode" type="CHAR(32) CHARACTER SET ascii">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_auth" type="INT"/>
+        </createTable>
+        <modifySql dbms="mysql">
+            <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8"/>
+        </modifySql>
+    </changeSet>
+    <changeSet author="Foxel" id="init-users.auth-indexes">
+        <createIndex indexName="login" tableName="${db.prefix}users_auth" unique="true">
+            <column name="login"/>
+        </createIndex>
+        <createIndex indexName="pass_dropcode" tableName="${db.prefix}users_auth" unique="false">
+            <column name="pass_dropcode"/>
+        </createIndex>
+        <addForeignKeyConstraint baseColumnNames="uid" baseTableName="${db.prefix}users_auth" constraintName="${db.prefix}users_auth_uid_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="${db.prefix}users" />
+    </changeSet>
+
+    <changeSet author="Foxel" id="init-objects-create">
+        <createTable tableName="${db.prefix}objects">
+            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="parent_id" type="INT UNSIGNED"/>
+            <column defaultValue="" name="class" type="CHAR(32) CHARACTER SET ascii">
+                <constraints nullable="false"/>
+            </column>
+            <column name="owner_id" type="INT UNSIGNED"/>
+            <column defaultValueNumeric="0" name="create_time" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="update_time" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="acc_lvl" type="TINYINT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="acc_grp" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="3" name="edit_lvl" type="TINYINT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="caption" type="CHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="order_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <modifySql dbms="mysql">
+            <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8"/>
+        </modifySql>
+    </changeSet>
+    <changeSet author="Foxel" id="init-objects-indexes">
+        <createIndex indexName="class" tableName="${db.prefix}objects" unique="false">
+            <column name="class"/>
+        </createIndex>
+        <createIndex indexName="owner_id" tableName="${db.prefix}objects" unique="false">
+            <column name="owner_id"/>
+        </createIndex>
+        <createIndex indexName="time" tableName="${db.prefix}objects" unique="false">
+            <column name="create_time"/>
+        </createIndex>
+        <createIndex indexName="upd_time" tableName="${db.prefix}objects" unique="false">
+            <column name="update_time"/>
+        </createIndex>
+        <createIndex indexName="acc_lvl" tableName="${db.prefix}objects" unique="false">
+            <column name="acc_lvl"/>
+        </createIndex>
+        <createIndex indexName="acc_grp" tableName="${db.prefix}objects" unique="false">
+            <column name="acc_grp"/>
+        </createIndex>
+        <createIndex indexName="edit_lvl" tableName="${db.prefix}objects" unique="false">
+            <column name="edit_lvl"/>
+        </createIndex>
+        <createIndex indexName="parent_id" tableName="${db.prefix}objects" unique="false">
+            <column name="parent_id"/>
+        </createIndex>
+        <createIndex indexName="order_id" tableName="${db.prefix}objects" unique="false">
+            <column name="order_id"/>
+        </createIndex>
+        <addForeignKeyConstraint baseColumnNames="owner_id" baseTableName="${db.prefix}objects" constraintName="${db.prefix}objects_owner_id_fk" deferrable="false" initiallyDeferred="false" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="${db.prefix}users" />
+        <addForeignKeyConstraint baseColumnNames="parent_id" baseTableName="${db.prefix}objects" constraintName="${db.prefix}objects_parent_id_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="${db.prefix}objects" />
+    </changeSet>
+
+    <changeSet author="Foxel" id="init-objects.data-create">
+        <createTable tableName="${db.prefix}objects_data">
+            <column name="o_id" type="INT UNSIGNED">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="data" remarks="serialised data" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="change_time" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <modifySql dbms="mysql">
+            <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8"/>
+            <replace replace="DEFAULT CURRENT TIMESTAMP" with="DEFAULT CURRENT TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" />
+        </modifySql>
+    </changeSet>
+    <changeSet author="Foxel" id="init-objects.data-indexes">
+        <createIndex indexName="change_time" tableName="${db.prefix}objects_data" unique="false">
+            <column name="change_time"/>
+        </createIndex>
+        <addForeignKeyConstraint baseColumnNames="o_id" baseTableName="${db.prefix}objects_data" constraintName="${db.prefix}objects_data_o_id_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="${db.prefix}objects" />
+    </changeSet>
+
+    <changeSet author="Foxel" id="init-objects.navi-create">
+        <createTable tableName="${db.prefix}objects_navi">
+            <column defaultValueNumeric="0" name="id" type="INT UNSIGNED">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValue="" name="path" type="CHAR(255) CHARACTER SET ascii">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="path_hash" type="CHAR(32) CHARACTER SET ascii">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="hide_in_tree" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <modifySql dbms="mysql">
+            <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8"/>
+        </modifySql>
+    </changeSet>
+    <changeSet author="Foxel" id="init-objects.navi-indexes">
+        <createIndex indexName="path_hash" tableName="${db.prefix}objects_navi" unique="false">
+            <column name="path_hash"/>
+        </createIndex>
+        <createIndex indexName="hide_in_tree" tableName="${db.prefix}objects_navi" unique="false">
+            <column name="hide_in_tree"/>
+        </createIndex>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="${db.prefix}objects_navi" constraintName="${db.prefix}objects_navi_id_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="${db.prefix}objects" />
+    </changeSet>
+    <changeSet author="Foxel" id="init-objects.navi-triggers" dbms="mysql">
+        <comment>Adding triggers for ${db.prefix}objects_navi</comment>
+        <sql>
+            CREATE TRIGGER ${db.prefix}objects_navi_hash_insert BEFORE INSERT ON ${db.prefix}objects_navi FOR EACH ROW SET NEW.path_hash = MD5(NEW.path);
+            CREATE TRIGGER ${db.prefix}objects_navi_hash_update BEFORE UPDATE ON ${db.prefix}objects_navi FOR EACH ROW SET NEW.path_hash = MD5(NEW.path);
+        </sql>
+        <rollback>
+            <sql>
+                DROP TRIGGER ${db.prefix}objects_navi_hash_insert;
+                DROP TRIGGER ${db.prefix}objects_navi_hash_update;
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="Foxel" id="init-comments-create">
+        <createTable tableName="${db.prefix}comments">
+            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="answer_to" type="INT UNSIGNED"/>
+            <column name="object_id" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="author_id" type="INT UNSIGNED"/>
+            <column name="time" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="client_ip" type="INT UNSIGNED"/>
+            <column name="text" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <modifySql dbms="mysql">
+            <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8"/>
+        </modifySql>
+    </changeSet>
+    <changeSet author="Foxel" id="init-comments-indexes">
+        <createIndex indexName="object_id" tableName="${db.prefix}comments" unique="false">
+            <column name="object_id"/>
+        </createIndex>
+        <createIndex indexName="author_id" tableName="${db.prefix}comments" unique="false">
+            <column name="author_id"/>
+        </createIndex>
+        <createIndex indexName="time" tableName="${db.prefix}comments" unique="false">
+            <column name="time"/>
+        </createIndex>
+        <createIndex indexName="client_ip" tableName="${db.prefix}comments" unique="false">
+            <column name="client_ip"/>
+        </createIndex>
+        <createIndex indexName="answer_to" tableName="${db.prefix}comments" unique="false">
+            <column name="answer_to"/>
+        </createIndex>
+        <addForeignKeyConstraint baseColumnNames="answer_to" baseTableName="${db.prefix}comments" constraintName="${db.prefix}comments_answer_to_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="${db.prefix}comments" />
+        <addForeignKeyConstraint baseColumnNames="author_id" baseTableName="${db.prefix}comments" constraintName="${db.prefix}comments_author_id_fk" deferrable="false" initiallyDeferred="false" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="${db.prefix}users" />
+        <addForeignKeyConstraint baseColumnNames="object_id" baseTableName="${db.prefix}comments" constraintName="${db.prefix}comments_object_id_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="${db.prefix}objects" />
+    </changeSet>
+
+    <changeSet author="Foxel" id="init-tag-create">
+        <createTable tableName="${db.prefix}tag">
+            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="time" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="INT UNSIGNED"/>
+        </createTable>
+        <modifySql dbms="mysql">
+            <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8"/>
+        </modifySql>
+    </changeSet>
+    <changeSet author="Foxel" id="init-tag-indexes">
+        <createIndex indexName="name" tableName="${db.prefix}tag" unique="true">
+            <column name="name"/>
+        </createIndex>
+        <createIndex indexName="user_id" tableName="${db.prefix}tag" unique="false">
+            <column name="user_id"/>
+        </createIndex>
+        <createIndex indexName="time" tableName="${db.prefix}tag" unique="false">
+            <column name="time"/>
+        </createIndex>
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="${db.prefix}tag" constraintName="${db.prefix}tag_user_id_fk" deferrable="false" initiallyDeferred="false" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="${db.prefix}users" />
+    </changeSet>
+
+    <changeSet author="Foxel" id="init-tag.object-create">
+        <createTable tableName="${db.prefix}tag_object">
+            <column name="tag_id" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="object_id" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <modifySql dbms="mysql">
+            <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8"/>
+        </modifySql>
+    </changeSet>
+    <changeSet author="Foxel" id="init-tag.object-indexes">
+        <addPrimaryKey columnNames="tag_id, object_id" tableName="${db.prefix}tag_object"/>
+        <addForeignKeyConstraint baseColumnNames="object_id" baseTableName="${db.prefix}tag_object" constraintName="${db.prefix}tag_object_object_id_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="${db.prefix}objects" />
+        <addForeignKeyConstraint baseColumnNames="tag_id" baseTableName="${db.prefix}tag_object" constraintName="${db.prefix}tag_object_tag_id_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="${db.prefix}tag" />
+    </changeSet>
+
+    <changeSet author="Foxel" id="init-vk.users-create">
+        <createTable tableName="${db.prefix}vk_users">
+            <column name="uid" type="INT UNSIGNED">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="vk_id" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="token" type="CHAR(64) CHARACTER SET ascii">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <modifySql dbms="mysql">
+            <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8"/>
+        </modifySql>
+    </changeSet>
+    <changeSet author="Foxel" id="init-vk.users-indexes">
+        <createIndex indexName="vk_id" tableName="${db.prefix}vk_users" unique="true">
+            <column name="vk_id"/>
+        </createIndex>
+        <addForeignKeyConstraint baseColumnNames="uid" baseTableName="${db.prefix}vk_users" constraintName="${db.prefix}vk_users_uid_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="${db.prefix}users" />
+    </changeSet>
+</databaseChangeLog>
