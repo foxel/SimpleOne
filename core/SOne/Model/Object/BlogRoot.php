@@ -49,12 +49,15 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
                 ->setDoHTMLParse(false)
                 ->write($rss->toXML())
                 ->sendBuffer(F::INTERNAL_ENCODING, array(
-                    'contentType' => 'application/rss+xml',
+                    'contentType' => 'text/xml',
                     'filename' => FStr::basename($this->path).'.xml',
                 ));
         }
 
-        $node = new FVISNode('SONE_OBJECT_BLOG_LIST', 0, $env->get('VIS'));
+        /** @var $vis FVISInterface */
+        $vis = $env->get('VIS');
+
+        $node = new FVISNode('SONE_OBJECT_BLOG_LIST', 0, $vis);
 
         $node->addDataArray($this->pool + (array) $this->_filterParams + array(
             'canAddItem' => $this->isActionAllowed('new', $env->get('user')) ? 1 : null,
@@ -63,6 +66,12 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
         if ($this->id && !in_array($this->actionState, array('new', 'edit'))) {
             $curPage = max((int) $env->request->getNumber('page'), 1);
             $items   = $this->_loadListItems($env, $this->_itemPerPage, $curPage - 1, $totalItems);
+            $rootNode = $vis->getRootNode();
+            $rootNode->addData('META', sprintf(
+                '<link rel="alternate" type="application/rss+xml" title="%s" href="%s?rss" />',
+                FStr::htmlschars($this->caption),
+                FStr::fullUrl($this->path)
+            ));
 
             foreach ($items as $item) {
                 $node->appendChild('items', $item->visualizeForList($env));
@@ -72,7 +81,7 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
 
             $totalPages = ceil($totalItems/$this->_itemPerPage);
             if ($totalPages > 1) {
-                $node->appendChild('pages', $pagesNode = new FVISNode('SONE_OBJECT_BLOG_PAGE', FVISNode::VISNODE_ARRAY, $env->get('VIS')));
+                $node->appendChild('pages', $pagesNode = new FVISNode('SONE_OBJECT_BLOG_PAGE', FVISNode::VISNODE_ARRAY, $vis));
                 $pages = array();
                 $pagesPath = $this->path;
                 if ($this->_filterParams) {
