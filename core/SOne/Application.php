@@ -21,8 +21,10 @@
 class SOne_Application extends K3_Application
 {
     const DEFAULT_PLUGINS_SUBDIR = 'plugins';
-    const EVENT_PAGE_RENDER = 'pageRender';
-    const EVENT_WIDGETS_BOOTSTRAP = 'widgetsBootstrap';
+    const EVENT_PAGE_RENDERED = 'pageRendered';
+    const EVENT_PAGE_OBJECT_VISUALIZED = 'pageObjectVisualized';
+    const EVENT_PAGE_OBJECT_ROUTED = 'pageObjectRouted';
+    const EVENT_WIDGETS_BOOTSTRAPPED = 'widgetsBootstrapped';
 
     /**
      * @var K3_Config
@@ -190,6 +192,8 @@ class SOne_Application extends K3_Application
             }
         }
 
+        $this->throwEvent(self::EVENT_PAGE_OBJECT_ROUTED, $tipObject);
+
         return $tipObject;
     }
 
@@ -199,6 +203,8 @@ class SOne_Application extends K3_Application
         $this->_VIS->setRootNode($pageNode);
 
         $objectNode = $pageObject->visualize($this->_env);
+
+        $this->throwEvent(self::EVENT_PAGE_OBJECT_VISUALIZED, $objectNode, $pageObject);
 
         if ($this->_env->request->isAjax) {
             return $objectNode->parse();
@@ -226,7 +232,7 @@ class SOne_Application extends K3_Application
             }
         }
 
-        $this->throwEvent(self::EVENT_PAGE_RENDER, $this->_VIS->getRootNode());
+        $this->throwEvent(self::EVENT_PAGE_RENDERED, $this->_VIS->getRootNode());
 
         F()->Timer->logEvent('App Page Construct complete');
 
@@ -268,7 +274,7 @@ class SOne_Application extends K3_Application
             }
         }
 
-        $this->throwEventRef(self::EVENT_WIDGETS_BOOTSTRAP, $widgets);
+        $this->throwEventRef(self::EVENT_WIDGETS_BOOTSTRAPPED, $widgets);
 
         return (array) $widgets;
     }
@@ -324,6 +330,14 @@ class SOne_Application extends K3_Application
     {
         $this->_env->session->drop('userId');
         $this->_env->put('user', new SOne_Model_User());
+    }
+
+    /**
+     * @return K3_Environment
+     */
+    public function getEnv()
+    {
+        return $this->_env;
     }
 
     /**

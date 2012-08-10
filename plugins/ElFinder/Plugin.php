@@ -34,7 +34,7 @@ class ElFinder_Plugin
         $this->_app    = $app;
         $this->_config = $config;
         if ($this->_config->connectorUrl) {
-            $this->_app->addEventHandler(SOne_Application::EVENT_PAGE_RENDER, array($this, 'addAppVisData'));
+            $this->_app->addEventHandler(SOne_Application::EVENT_PAGE_RENDERED, array($this, 'addAppVisData'));
         }
     }
 

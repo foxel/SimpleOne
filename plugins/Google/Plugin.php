@@ -24,6 +24,8 @@ class Google_Plugin
     protected $_app;
     /** @var K3_Config */
     protected $_config;
+    /** @var SOne_Model_Object */
+    protected $_pageObject;
 
     /**
      * @param SOne_Application $app
@@ -34,8 +36,17 @@ class Google_Plugin
         $this->_app    = $app;
         $this->_config = $config;
         if ($this->_config->analyticsId) {
-            $this->_app->addEventHandler(SOne_Application::EVENT_PAGE_RENDER, array($this, 'addAppVisData'));
+            $this->_app->addEventHandler(SOne_Application::EVENT_PAGE_OBJECT_ROUTED, array($this, 'grabPageObject'));
+            $this->_app->addEventHandler(SOne_Application::EVENT_PAGE_RENDERED, array($this, 'addAppVisData'));
         }
+    }
+
+    /**
+     * @param SOne_Model_Object $pageObject
+     */
+    public function grabPageObject(SOne_Model_Object $pageObject)
+    {
+        $this->_pageObject = $pageObject;
     }
 
     /**
@@ -43,9 +54,13 @@ class Google_Plugin
      */
     public function addAppVisData(FVISNode $pageNode)
     {
+        /** @var $user SOne_Model_User */
+        $user = $this->_app->getEnv()->get('user');
         $pageNode
             ->addNode('SONE_GOOGLE_ANALYTICS_JS', 'JS_BLOCKS', array(
                 'accountId' => $this->_config->analyticsId,
+                'userId'    => $user->id ? $user->id : null,
+                'pageClass' => $this->_pageObject ? $this->_pageObject->class : 'unknown',
             ));
     }
 }

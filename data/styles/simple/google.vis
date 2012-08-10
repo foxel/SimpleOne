@@ -22,6 +22,8 @@
 // JavaScript Starts Here <![CDATA[
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', {JS_DEF:IN_accountId}]);
+    {IF:IN_userId}_gaq.push(['_setCustomVar', 1, 'User ID', '{IN_userId}', 2]);{/IF}
+    _gaq.push(['_setCustomVar', 2, 'Page Class', '{IN_pageClass}', 3]);
     _gaq.push(['_trackPageview']);
 
     (function () {
