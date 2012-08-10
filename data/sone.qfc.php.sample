@@ -13,7 +13,11 @@ markup.responsive => 1
 #markup.hideDefaultFooter => 1
 
 plugins.VK => 1
-#plugins.Google.analyticsId => UA-XXXXXXXX-X
+#plugins.Google.analytics.accountId => UA-XXXXXXXX-X
+#plugins.Google.analytics.sampleRate => 100
+#plugins.Google.analytics.sessionCookieTimeout => 1800000
+#plugins.Google.analytics.visitorCookieTimeout => 63072000000
+#plugins.Google.analytics.siteSpeedSampleRate => 1
 
 # widgets
 # don't remove navigator widget if you have no other navigation

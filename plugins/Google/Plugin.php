@@ -35,7 +35,7 @@ class Google_Plugin
     {
         $this->_app    = $app;
         $this->_config = $config;
-        if ($this->_config->analyticsId) {
+        if ($this->_config->analytics || $this->_config->analyticsId) {
             $this->_app->addEventHandler(SOne_Application::EVENT_PAGE_OBJECT_ROUTED, array($this, 'grabPageObject'));
             $this->_app->addEventHandler(SOne_Application::EVENT_PAGE_RENDERED, array($this, 'addAppVisData'));
         }
@@ -54,13 +54,21 @@ class Google_Plugin
      */
     public function addAppVisData(FVISNode $pageNode)
     {
+        $analyticsConfig = ($this->_config->analytics instanceof K3_Config)
+            ? $this->_config->analytics->toArray()
+            : (array) $this->_config->analytics;
+
+        if (!isset($analyticsConfig['accountId'])) {
+            $analyticsConfig['accountId'] = (string) $this->_config->analyticsId;
+        }
+
         /** @var $user SOne_Model_User */
         $user = $this->_app->getEnv()->get('user');
+
         $pageNode
             ->addNode('SONE_GOOGLE_ANALYTICS_JS', 'JS_BLOCKS', array(
-                'accountId' => $this->_config->analyticsId,
                 'userId'    => $user->id ? $user->id : null,
                 'pageClass' => $this->_pageObject ? $this->_pageObject->class : 'unknown',
-            ));
+            ) + $analyticsConfig);
     }
 }
