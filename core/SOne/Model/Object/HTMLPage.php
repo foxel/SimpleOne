@@ -35,4 +35,24 @@ class SOne_Model_Object_HTMLPage extends SOne_Model_Object_PlainPage
         return $node;
     }
 
+    protected function saveAction(K3_Environment $env, &$updated = false)
+    {
+        parent::saveAction($env, $updated);
+
+        /** @var $user SOne_Model_User */
+        $user = $env->get('user');
+
+        $dom = new K3_DOM('4.0', F::INTERNAL_ENCODING);
+        if ($dom->loadHTML(mb_convert_encoding($this->content, 'HTML-ENTITIES', F::INTERNAL_ENCODING))) {
+            $dom->encoding = F::INTERNAL_ENCODING;
+            if (!$user->adminLevel) {
+                $dom->stripXSSVulnerableCode();
+            }
+            $content       = $dom->saveXML($dom->getElementsByTagName('body')->item(0));
+            $this->content = str_replace(array('<body>', '</body>', '&#13;'), '', $content);
+        } else {
+            $this->content = '';
+        }
+    }
+
 }

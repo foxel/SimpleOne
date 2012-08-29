@@ -137,22 +137,28 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
     {
         parent::saveAction($env, $updated);
         $this->pool['tags'] = array_unique(array_map('trim', explode(',', $env->request->getString('tags', K3_Request::POST, FStr::LINE))));
+        /** @var $user SOne_Model_User */
+        $user = $env->get('user');
 
         $imageSrc = '';
-        if (class_exists('DOMDocument', false)) {
-            $dom = new DOMDocument('4.0', F::INTERNAL_ENCODING);
-            if ($dom->loadHTML(mb_convert_encoding($this->content, 'HTML-ENTITIES', F::INTERNAL_ENCODING))) {
-                $dom->encoding = F::INTERNAL_ENCODING;
-                $images = $dom->getElementsByTagName('img');
-                if ($images->length && $image = $images->item(0)) {
-                    if ($imageSrc = $image->attributes->getNamedItem('src')) {
-                        $imageSrc = $imageSrc->nodeValue;
-                    }
-                }
-                $content = $dom->saveXML($dom->getElementsByTagName('body')->item(0));
-                $this->content = str_replace(array('<body>', '</body>', '&#13;'), '', $content);
+        $dom = new K3_DOM('4.0', F::INTERNAL_ENCODING);
+        if ($dom->loadHTML(mb_convert_encoding($this->content, 'HTML-ENTITIES', F::INTERNAL_ENCODING))) {
+            $dom->encoding = F::INTERNAL_ENCODING;
+            if (!$user->adminLevel) {
+                $dom->stripXSSVulnerableCode();
             }
+            $images = $dom->getElementsByTagName('img');
+            if ($images->length && $image = $images->item(0)) {
+                if ($imageSrc = $image->attributes->getNamedItem('src')) {
+                    $imageSrc = $imageSrc->nodeValue;
+                }
+            }
+            $content = $dom->saveXML($dom->getElementsByTagName('body')->item(0));
+            $this->content = str_replace(array('<body>', '</body>', '&#13;'), '', $content);
+        } else {
+            $this->content = '';
         }
+
         $this->pool['thumbnailImage'] = (string) $imageSrc;
     }
 

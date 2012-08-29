@@ -104,7 +104,7 @@
                 var opts = SOne.config.elRTE;
                 if (opts) {
                     // create editor
-                    $('textarea.htmleditor').each(function() {
+                    $('textarea.htmleditors').each(function() {
                         if ($(this).val() == '') {
                             $(this).val('<p>&nbsp;</p>');
                         }
