@@ -230,7 +230,7 @@
 
 <<+ 'NAVIGATOR_ITEM'>>
 <li class="mp_navigator_item{IF:IN_ISCURRENT} active{/IF}">
- <a class="mp_navigator_item_a" href="{IN_HREF}" title="{IN_caption}">{!IN_shortCaption}</a>
+ <a class="mp_navigator_item_a" href="{IN_HREF}" title="{!IN_CAPTION}">{!IN_shortCaption}</a>
  {IF:IN_SUBS}
   <ul class="mp_navigator_item_subs nav nav-list">
    {IN_SUBS}
@@ -240,8 +240,8 @@
 <<- 'NAVIGATOR_ITEM'>>
 
 <<+ 'SONE_OBJECT_COMMON'>>
-<h2>{IN_CAPTION}</h2>
-<pre>{IN_DATA}</pre>
+<h2>{!IN_CAPTION}</h2>
+<pre>{!IN_DATA}</pre>
 <<- 'SONE_OBJECT_COMMON'>>
 
 <<+ 'SONE_OBJECT_EDITFORM'>>
@@ -249,7 +249,7 @@
     {IN_ERRORS}
 </div>{/IF}
 <form action="{FULLURL:IN_PATH}/?{IF:IN_saveAction}{!IN_saveAction}{ELSE}save{/IF}" method="post"{IF:IN_formClass} class="{IN_formClass}"{/IF} >
- <label>{L_EDITOR_OBJECT_CAPTION}: <input type="text" name="caption" value="{IN_caption}" /></label>
+ <label>{L_EDITOR_OBJECT_CAPTION}: <input type="text" name="caption" value="{!IN_caption}" /></label>
  {IF:IN_formElements}
   <hr />
   {IN_formElements}
@@ -284,7 +284,7 @@
 {IF:IN_canEdit}<div class="pull-right">
     <a class="btn" href="{FULLURL:IN_PATH}?edit"><i class="icon-pencil"></i> Править</a>
 </div>{/IF}
-<h2>{IN_CAPTION}</h2>
+<h2>{!IN_CAPTION}</h2>
 <div class="htmlpage clearfix">{IN_CONTENT}</div>
 {IF:IN_commentsBlock}
  <hr />
@@ -375,7 +375,7 @@
 <<- 'SONE_OBJECT_LOGINPAGE'>>
 
 <<+ 'SONE_OBJECT_CONSTRUCTOR'>>
-<h2>{IN_CAPTION}</h2>
+<h2>{!IN_CAPTION}</h2>
 <form id="constructorForm" action="{IN_PATH}/?prepare" method="POST">
     <fieldset>
         <legend>Параметры объекта:</legend>
@@ -425,7 +425,7 @@
 <<- 'SONE_OBJECT_CONSTRUCTOR'>>
 
 <<+ 'SONE_OBJECT_CONSTRUCTOR_FRAME'>>
-{!IF:IN_hideCaption}<h2>{IN_CAPTION}</h2>{/IF}
+{!IF:IN_hideCaption}<h2>{!IN_CAPTION}</h2>{/IF}
 {IF:IN_ERRORS}<div class="alert alert-error">
     {IN_ERRORS}
 </div>{/IF}
@@ -433,7 +433,7 @@
 <<- 'SONE_OBJECT_CONSTRUCTOR_FRAME'>>
 
 <<+ 'SONE_OBJECT_CONSTRUCTOR_PATHOPTION'>>
-<option value="{IN_PATH}/">{IN_PATH} ({IN_caption})</option>
+<option value="{IN_PATH}/">{IN_PATH} ({!IN_CAPTION})</option>
 <<- 'SONE_OBJECT_CONSTRUCTOR_PATHOPTION'>>
 
 
@@ -450,7 +450,7 @@
     {IF:IN_canEdit}<div class="pull-right">
         <a class="btn" href="{FULLURL:IN_PATH}?edit"><i class="icon-pencil"></i> Править</a>
     </div>{/IF}
-    <h3>{IN_CAPTION}</h3>
+    <h3>{!IN_CAPTION}</h3>
     <a href="{!FULLURL:IN_redirectUrl}">{!IN_redirectUrl}</a>
 {/IF}
 <<- 'SONE_OBJECT_REDIRECTOR'>>

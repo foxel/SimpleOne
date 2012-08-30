@@ -74,7 +74,7 @@
         <a class="btn" href="{FULLURL:IN_PATH}?edit"><i class="icon-pencil"></i> Править</a>
         <a class="btn btn-danger" href="{FULLURL:IN_PATH}?delete" onclick="return confirm('Вы уверены, что хотите удалить эту запись?');"><i class="icon-remove"></i> Удалить</a>
     </div>{/IF}
-<h2 itemprop="name">{IN_CAPTION}</h2>
+<h2 itemprop="name">{!IN_CAPTION}</h2>
 <div class="htmlpage clearfix" itemprop="text">{IN_CONTENT}</div>
 {IF:IN_tags}
  <hr />
@@ -98,7 +98,7 @@
 {IF:IN_actionState="edit"}
 {VIS:SONE_OBJECT_EDITFORM|_}
 {ELSEIF:IN_actionState="new"}
-<h2>{IN_CAPTION}</h2>
+<h2>{!IN_CAPTION}</h2>
 <h3>Создание новой записи</h3>
     {VIS:SONE_OBJECT_BLOG_ITEM|actionState="edit"|path=IN_newPath|commentsAllowed="1"|allTagsJson=IN_allTagsJson}
 {ELSE}
@@ -108,7 +108,7 @@
 </div>
 {/if}
 <div itemscope itemtype="http://schema.org/Blog">
-<h2 itemprop="name">{IN_CAPTION}</h2>
+<h2 itemprop="name">{!IN_CAPTION}</h2>
 {if:in_date}
     <div class="alert alert-info">
         <i class="icon-time"></i> Записи за {in_date}
@@ -141,7 +141,7 @@
             <a href="{FULLURL:IN_PARENTPATH}/date/{FTIME:IN_createTime|"Y-m-d"|false|true}"><i class="icon-time"></i> <time itemprop="datePublished" datetime="{FTIME:IN_createTime|"c"|false|true}">{FTIME:IN_createTime}</time></a>
             {IF:IN_tags}<div class="blog-keywords" itemprop="keywords">{IN_tags}</div>{/IF}
         </div>
-        <h3 itemprop="name"><a href="{FULLURL:IN_PATH}" itemprop="url">{IF:IN_caption}{IN_CAPTION}{ELSE}{IN_PATH}{/IF}</a>
+        <h3 itemprop="name"><a href="{FULLURL:IN_PATH}" itemprop="url">{IF:IN_caption}{!IN_CAPTION}{ELSE}{IN_PATH}{/IF}</a>
             <small></small>
         </h3>
     </div>
@@ -153,7 +153,7 @@
 <<- 'SONE_OBJECT_BLOG_LISTITEM'>>
 
 <<+ 'SONE_OBJECT_BLOG_TAG'>>
-<a href="{FULLURL:IN_PARENTPATH}/tag/{URLENCODE:IN_name}"><i class="icon-tag"></i> {IN_name}</a>{!IF:IN__IS_LAST}, {/IF}
+<a href="{FULLURL:IN_PARENTPATH}/tag/{URLENCODE:IN_name}"><i class="icon-tag"></i> {!IN_name}</a>{!IF:IN__IS_LAST}, {/IF}
 <<- 'SONE_OBJECT_BLOG_TAG'>>
 
 <<+ 'SONE_OBJECT_BLOG_PAGE'>>

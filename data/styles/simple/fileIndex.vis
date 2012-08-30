@@ -35,7 +35,7 @@
         {IF:IN_m3uEnabled}<a class="btn" href="{FULLURL:IN_PATH}{IF:IN_curPath}/{IN_curPath}{/IF}?m3u"><i class="icon-music"></i> M3U</a>{/IF}
         {IF:IN_canEdit}<a class="btn" href="{FULLURL:IN_PATH}?edit"><i class="icon-pencil"></i> Править</a>{/IF}
     </div>
-<h3>{IN_CAPTION}{IF:IN_curPath} :: {IN_curPath}{/IF}</h3>
+<h3>{!IN_CAPTION}{IF:IN_curPath} :: {IN_curPath}{/IF}</h3>
 <table class="table table-striped">
     <thead>
     <tr>
@@ -56,7 +56,7 @@
 
 <<+ 'SONE_FILES_FILEITEM'>>
 <tr>
-    <td><a href="/{IN_PATH}">{IN_NAME}</a></td>
+    <td><a href="/{IN_PATH}">{!IN_name}</a></td>
     <td>{IN_TYPE}</td>
     <td>{IF:IN_TYPE="file"}{FBYTES:IN_SIZE}{ELSE}--{/IF}</td>
 </tr>

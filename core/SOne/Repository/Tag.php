@@ -20,6 +20,8 @@
 
 class SOne_Repository_Tag extends SOne_Repository
 {
+    const MAX_TAG_NAME_LENGTH = 125;
+
     protected static $dbMap = array(
         'id'     => 'id',
         'userId' => 'user_id',
@@ -130,6 +132,8 @@ class SOne_Repository_Tag extends SOne_Repository
      */
     public function getTagIds(array $tagNames, $autoCreate = false)
     {
+        $tagNames = array_map(array($this, 'stripTagName'), $tagNames);
+
         $tags = $this->loadAll(array(
             'name' => $tagNames,
         ));
@@ -175,5 +179,18 @@ class SOne_Repository_Tag extends SOne_Repository
     public function compareTags($tag1, $tag2)
     {
         return strcmp(FStr::strToLower($tag1), FStr::strToLower($tag2));
+    }
+
+    /**
+     * @param string $tagName
+     * @return string
+     */
+    public function stripTagName($tagName)
+    {
+        if (FStr::strLen($tagName) > self::MAX_TAG_NAME_LENGTH) {
+            $tagName = FStr::subStr($tagName, 0, self::MAX_TAG_NAME_LENGTH);
+        }
+
+        return $tagName;
     }
 }
