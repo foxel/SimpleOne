@@ -42,7 +42,7 @@
   {IF:IN_META_DESCRIPTION}<meta name="Description" content="{!IN_META_DESCRIPTION}" />{ENDIF}
   {IF:IN_META_KEYWORDS}<meta name="Keywords" content="{!IN_META_KEYWORDS}" />{ENDIF}
   <!-- <meta http-equiv="MSThemeCompatible" content="no" /> -->
-  <title>{IN_SITE_NAME}{IF:IN_PAGE_TITLE} :: {!IN_PAGE_TITLE}{IF:IN_PAGE_SUBTITLE} :: {!IN_PAGE_SUBTITLE}{ENDIF}{ENDIF}</title>
+  <title>{!IN_SITE_NAME}{IF:IN_PAGE_TITLE} :: {!IN_PAGE_TITLE}{IF:IN_PAGE_SUBTITLE} :: {!IN_PAGE_SUBTITLE}{ENDIF}{ENDIF}</title>
 
   <link rel="shortcut icon" href="{IF:IN_FAVICON}{FULLURL:IN_FAVICON}{ELSE}{FULLURL:"static/images/sone.ico"}{/IF}" />
 
@@ -230,7 +230,7 @@
 
 <<+ 'NAVIGATOR_ITEM'>>
 <li class="mp_navigator_item{IF:IN_ISCURRENT} active{/IF}">
- <a class="mp_navigator_item_a" href="{IN_HREF}" title="{!IN_CAPTION}">{!IN_shortCaption}</a>
+ <a class="mp_navigator_item_a" href="{!IN_HREF}" title="{!IN_CAPTION}">{!IN_shortCaption}</a>
  {IF:IN_SUBS}
   <ul class="mp_navigator_item_subs nav nav-list">
    {IN_SUBS}
@@ -319,7 +319,7 @@
 <<- 'SONE_OBJECT_COMMENTS'>>
 
 <<+ 'SONE_OBJECT_COMMENTS_PAGE'>>
-<li {IF:IN_current}class="active"{/IF}><a href="{FULLURL:in_path}?{IF:IN_actionState}{IN_actionState}&amp;{/IF}commentsPage={IN_page}#pageComments">{IN_page}</a></li>
+<li {IF:IN_current}class="active"{/IF}><a href="{FULLURL:in_path}?{IF:IN_actionState}{!IN_actionState}&amp;{/IF}commentsPage={IN_page}#pageComments">{IN_page}</a></li>
 <<- 'SONE_OBJECT_COMMENTS_PAGE'>>
 
 <<+ 'SONE_OBJECT_COMMENTS_FORM'>>
@@ -363,10 +363,10 @@
   / <strong>Регистрация</strong>
  </legend>
  <form action="{FULLURL:IN_PATH}/?register" method="post">
-  <label>Имя/ник: <br/><input type="text" name="reg_name" value="{IN_REG_NAME}" autocomplete="off" /></label>
-  <label>Логин: <br/><input type="text" name="reg_login" value="{IN_REG_LOGIN}" autocomplete="off" /></label>
-  <label>Пароль: <br/><input type="password" name="reg_password" value="{IN_REG_PASSWORD}" autocomplete="off" /></label>
-  <label>e-Mail: <br/><input type="text" name="reg_email" value="{IN_REG_EMAIL}" autocomplete="off" /></label>
+  <label>Имя/ник: <br/><input type="text" name="reg_name" value="{!IN_REG_NAME}" autocomplete="off" /></label>
+  <label>Логин: <br/><input type="text" name="reg_login" value="{!IN_REG_LOGIN}" autocomplete="off" /></label>
+  <label>Пароль: <br/><input type="password" name="reg_password" value="{!IN_REG_PASSWORD}" autocomplete="off" /></label>
+  <label>e-Mail: <br/><input type="text" name="reg_email" value="{!IN_REG_EMAIL}" autocomplete="off" /></label>
   <button class="btn btn-primary" type="submit">{L_EDITOR_SUBMIT_REGISTER}</button>
  </form>
 </fieldset>
@@ -376,7 +376,7 @@
 
 <<+ 'SONE_OBJECT_CONSTRUCTOR'>>
 <h2>{!IN_CAPTION}</h2>
-<form id="constructorForm" action="{IN_PATH}/?prepare" method="POST">
+<form id="constructorForm" action="{FULLURL:IN_PATH}/?prepare" method="POST">
     <fieldset>
         <legend>Параметры объекта:</legend>
         <label>Класс:
@@ -433,7 +433,7 @@
 <<- 'SONE_OBJECT_CONSTRUCTOR_FRAME'>>
 
 <<+ 'SONE_OBJECT_CONSTRUCTOR_PATHOPTION'>>
-<option value="{IN_PATH}/">{IN_PATH} ({!IN_CAPTION})</option>
+<option value="{!IN_PATH}/">{!IN_PATH} ({!IN_CAPTION})</option>
 <<- 'SONE_OBJECT_CONSTRUCTOR_PATHOPTION'>>
 
 

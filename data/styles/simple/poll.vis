@@ -106,7 +106,7 @@
     <legend>
     {!IN_CAPTION}
     </legend>
-    {IF:IN_statVal}Ответил(и) <span title="{IN_statUsers}">{IN_statVal} чел.{IF:IN_ANSWERED}, включая вас{/IF}</span>{/if}
+    {IF:IN_statVal}Ответил(и) <span title="{!IN_statUsers}">{IN_statVal} чел.{IF:IN_ANSWERED}, включая вас{/IF}</span>{/if}
     <div class="pollQuestionAnswersContainer">
     {IN_variants}
     </div>
@@ -166,7 +166,7 @@
 
 <<+ 'SONE_OBJECT_POLL_ITEM_STAT_VALUEVARIANT'>>
 <div class="pollQuestionAnswer" style="margin: 5px 0;">
-{!IN_title} - <span title="{IN_statUsers}">{IN_statVal} чел.{IF:IN_selected}, включая вас{/IF}</span>
+{!IN_title} - <span title="{!IN_statUsers}">{IN_statVal} чел.{IF:IN_selected}, включая вас{/IF}</span>
 {IF:IN_available} (осталось {IN_available}){/IF}
 </div>
 <<- 'SONE_OBJECT_POLL_ITEM_STAT_VALUEVARIANT'>>

@@ -111,12 +111,12 @@
 <h2 itemprop="name">{!IN_CAPTION}</h2>
 {if:in_date}
     <div class="alert alert-info">
-        <i class="icon-time"></i> Записи за {in_date}
+        <i class="icon-time"></i> Записи за {!in_date}
         <a class="close" href="{FULLURL:in_path}"><i class="icon-remove"></i></a>
     </div>
 {elseif:in_tag}
     <div class="alert alert-info">
-        <i class="icon-tag"></i> Записи с меткой "{in_tag}"
+        <i class="icon-tag"></i> Записи с меткой "{!in_tag}"
         <a class="close" href="{FULLURL:in_path}"><i class="icon-remove"></i></a>
     </div>
 {/if}
@@ -157,7 +157,7 @@
 <<- 'SONE_OBJECT_BLOG_TAG'>>
 
 <<+ 'SONE_OBJECT_BLOG_PAGE'>>
-<li {IF:IN_current}class="active"{/IF}><a href="{FULLURL:in_path}?{IF:IN_actionState}{IN_actionState}&amp;{/IF}page={IN_page}">{IN_page}</a></li>
+<li {IF:IN_current}class="active"{/IF}><a href="{FULLURL:in_path}?{IF:IN_actionState}{!IN_actionState}&amp;{/IF}page={IN_page}">{IN_page}</a></li>
 <<- 'SONE_OBJECT_BLOG_PAGE'>>
 
 <<+ 'CSS'>>
