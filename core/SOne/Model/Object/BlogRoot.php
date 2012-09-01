@@ -43,6 +43,7 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
             $rss = new K3_RSS(array(
                 'title' => $this->caption,
                 'link'  => FStr::fullUrl($this->path),
+                'feedLink' => FStr::fullUrl($this->path).'?rss',
             ), $items);
 
             $env->getResponse()
