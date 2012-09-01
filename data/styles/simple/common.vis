@@ -313,14 +313,8 @@
 <div style="margin: 5px 0;">
 {IN_COMMENTS}
 </div>
-{IF:in_pages}
-<div class="pagination pagination-centered btn-small"><ul>{in_pages}</ul></div>
-{/IF}
+{IN_paginator}
 <<- 'SONE_OBJECT_COMMENTS'>>
-
-<<+ 'SONE_OBJECT_COMMENTS_PAGE'>>
-<li {IF:IN_current}class="active"{/IF}><a href="{FULLURL:in_path}?{IF:IN_actionState}{!IN_actionState}&amp;{/IF}commentsPage={IN_page}#pageComments">{IN_page}</a></li>
-<<- 'SONE_OBJECT_COMMENTS_PAGE'>>
 
 <<+ 'SONE_OBJECT_COMMENTS_FORM'>>
 <form action="{FULLURL:IN_PATH}/?saveComment" method="post">
@@ -494,3 +488,20 @@
     <a href="{!FULLURL:IN_href}">{!IN_caption}</a>
 </li>
 <<- 'SONE_WIDGET_NAVBAR_LINK'>>
+
+
+<<+ 'SONE_WIDGET_PAGINATOR'>>
+<div class="pagination pagination-centered btn-small"><ul>
+    {in_links}
+</ul></div>
+<<- 'SONE_WIDGET_PAGINATOR'>>
+
+<<+ 'SONE_WIDGET_PAGINATOR_LINK'>>
+{IF:IN_page}
+<li {IF:IN_current}class="active"{/IF}>
+    <a href="{FULLURL:IN_objectPath}?{IF:IN_actionState}{!IN_actionState}&amp;{/IF}{IF:IN_addParams}{IN_addParams}&amp;{/IF}{IF:IN_pageVarName}{IN_pageVarName}{ELSE}page{/IF}={IN_page}{IF:IN_fragment}#{IN_fragment}{/IF}">{IN_page}</a>
+</li>
+{ELSE}
+<li class="disabled"><a>&#133;</a></li>
+{/IF}
+<<- 'SONE_WIDGET_PAGINATOR_LINK'>>

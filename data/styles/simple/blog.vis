@@ -126,9 +126,7 @@
     {else}
         <div class="alert">Нет записей</div>
     {/if}
-    {IF:in_pages}
-        <div class="pagination pagination-centered btn-small"><ul>{in_pages}</ul></div>
-    {/IF}
+    {in_paginator}
 </div>
 </div>
 {/IF}
@@ -155,10 +153,6 @@
 <<+ 'SONE_OBJECT_BLOG_TAG'>>
 <a href="{FULLURL:IN_PARENTPATH}/tag/{URLENCODE:IN_name}"><i class="icon-tag"></i> {!IN_name}</a>{!IF:IN__IS_LAST}, {/IF}
 <<- 'SONE_OBJECT_BLOG_TAG'>>
-
-<<+ 'SONE_OBJECT_BLOG_PAGE'>>
-<li {IF:IN_current}class="active"{/IF}><a href="{FULLURL:in_path}?{IF:IN_actionState}{!IN_actionState}&amp;{/IF}page={IN_page}">{IN_page}</a></li>
-<<- 'SONE_OBJECT_BLOG_PAGE'>>
 
 <<+ 'CSS'>>
 div.blog-keywords {

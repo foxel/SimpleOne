@@ -82,24 +82,20 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
 
             $totalPages = ceil($totalItems/$this->_itemPerPage);
             if ($totalPages > 1) {
-                $node->appendChild('pages', $pagesNode = new FVISNode('SONE_OBJECT_BLOG_PAGE', FVISNode::VISNODE_ARRAY, $vis));
-                $pages = array();
                 $pagesPath = $this->path;
                 if ($this->_filterParams) {
                     foreach ($this->_filterParams as $key => $param) {
-                        $pagesPath.= '/'.urlencode($key).'/'.urlencode($param);
+                        $pagesPath .= '/'.urlencode($key).'/'.urlencode($param);
                     }
                 }
 
-                for ($i = 1; $i <= $totalPages; $i++) {
-                    $pages[] = array(
-                        'path' => $pagesPath,
-                        'actionState' => $this->actionState,
-                        'page' => $i,
-                        'current' => ($i == $curPage) ? 1 : null,
-                    );
-                }
-                $pagesNode->addDataArray($pages);
+                $paginator = new SOne_VIS_Paginator(array(
+                    'objectPath'  => $pagesPath,
+                    'totalPages'  => $totalPages,
+                    'currentPage' => $curPage,
+                    'actionState' => $this->actionState,
+                ));
+                $node->appendChild('paginator', $paginator->visualize($env));
             }
         }
 

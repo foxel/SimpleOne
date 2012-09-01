@@ -116,18 +116,18 @@ abstract class SOne_Model_Object_Commentable extends SOne_Model_Object implement
                 if ($totalPages > 1) {
                     $curPage = (int) $env->request->getNumber('commentsPage');
                     $curPage = max(1, min($curPage, $totalPages));
+
                     $comments = array_slice($comments, $commentsPerPage*($curPage - 1), $commentsPerPage);
-                    $node->appendChild('pages', $pagesNode = new FVISNode('SONE_OBJECT_COMMENTS_PAGE', FVISNode::VISNODE_ARRAY, $env->get('VIS')));
-                    $pages = array();
-                    for ($i = 1; $i <= $totalPages; $i++) {
-                        $pages[] = array(
-                            'path' => $this->path,
-                            'actionState' => $this->actionState,
-                            'page' => $i,
-                            'current' => ($i == $curPage) ? 1 : null,
-                        );
-                    }
-                    $pagesNode->addDataArray($pages);
+
+                    $paginator = new SOne_VIS_Paginator(array(
+                        'objectPath'  => $this->path,
+                        'pageVarName' => 'commentsPage',
+                        'totalPages'  => $totalPages,
+                        'currentPage' => $curPage,
+                        'actionState' => $this->actionState,
+                        'fragment'    => 'pageComments',
+                    ));
+                    $node->appendChild('paginator', $paginator->visualize($env));
                 }
             }
 
