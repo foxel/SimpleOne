@@ -257,7 +257,7 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
 
         /** @var $tools SOne_Tools */
         $tools = $env->get('tools');
-        $data['content'] = $tools->HTML_FullURLs($this->content);
+        $this->pool['content'] = $tools->HTML_FullURLs($this->content);
 
         return $this;
     }
