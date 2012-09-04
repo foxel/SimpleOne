@@ -147,11 +147,12 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
             if (!$user->adminLevel) {
                 $dom->stripXSSVulnerableCode();
             }
+            // $dom->fixFullUrls();
             $images = $dom->getElementsByTagName('img');
-            if ($images->length && $image = $images->item(0)) {
-                if ($imageSrc = $image->attributes->getNamedItem('src')) {
-                    $imageSrc = $imageSrc->nodeValue;
-                }
+            if ($images->length) {
+                /** @var $thumbImage DOMElement */
+                $thumbImage = $images->item(0);
+                $imageSrc = $thumbImage->getAttribute('src');
             }
             $content = $dom->saveXML($dom->getElementsByTagName('body')->item(0));
             $this->content = str_replace(array('<body>', '</body>', '&#13;'), '', $content);
@@ -235,7 +236,7 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
             return array(
                 new K3_RSS_Item_Enclosure(array(
                     'type' => F()->Mime->getMime($this->thumbnailImage, true),
-                    'url' => FStr::fullUrl($this->thumbnailImage),
+                    'url' => $this->thumbnailImage,
                     'length' => null,
                 ))
             );
@@ -244,5 +245,20 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
         return array();
     }
 
+    /**
+     * @param K3_Environment $env
+     * @return SOne_Model_Object_BlogItem
+     */
+    public function fixFullUrls(K3_Environment $env)
+    {
+        if ($this->thumbnailImage) {
+            $this->pool['thumbnailImage'] = FStr::fullUrl($this->thumbnailImage, false, '', $env);
+        }
 
+        /** @var $tools SOne_Tools */
+        $tools = $env->get('tools');
+        $data['content'] = $tools->HTML_FullURLs($this->content);
+
+        return $this;
+    }
 }

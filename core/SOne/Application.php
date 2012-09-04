@@ -90,6 +90,11 @@ class SOne_Application extends K3_Application
         $this->_VIS->addAutoLoadDir(F_DATA_ROOT.'/styles/simple')
         //    ->loadECSS(F_DATA_ROOT.'/styles/simple/common.ecss')
         ;
+
+        $tools = new SOne_Tools($this->_env);
+        $this->getResponse()
+            ->addEventHandler('HTML_parse', array($tools, 'HTML_FullURLs'));
+
         F()->Parser->initStdTags();
         $this->_VIS->addFuncParser('BBPARSE', array(F()->Parser, 'parse'));
 
@@ -101,11 +106,12 @@ class SOne_Application extends K3_Application
 
         // putting to environment
         $this->_env
-            ->put('db',   $this->_db)
-            ->put('VIS',  $this->_VIS)
-            ->put('user', $this->_bootstrapUser())
-            ->put('lang', $this->_lang)
-            ->put('app',  $this);
+            ->put('db',    $this->_db)
+            ->put('VIS',   $this->_VIS)
+            ->put('user',  $this->_bootstrapUser())
+            ->put('lang',  $this->_lang)
+            ->put('tools', $tools)
+            ->put('app',   $this);
 
         $this->bootstrapPlugins();
 
