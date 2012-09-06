@@ -73,89 +73,90 @@
   /* ]]> CSS ends here */
   </style>
   {ENDIF}
+  
+  <!-- Load jQuery -->
+  <script type="text/javascript" src="/static/jscripts/jquery-1.7.2.min.js" charset="utf-8"></script>
+  <script type="text/javascript" src="/static/jscripts/jquery-ui-1.8.21.custom.min.js" charset="utf-8"></script>
+  <script type="text/javascript" src="/static/jscripts/elrte.min.js" charset="utf-8"></script>
+  <script type="text/javascript" src="/static/jscripts/i18n/elrte.ru.js" charset="utf-8"></script>
+  <script type="text/javascript" src="/static/jscripts/bootstrap-modal.js" charset="utf-8"></script>
+  <script type="text/javascript" src="/static/jscripts/bootstrap-tooltip.js" charset="utf-8"></script>
+  <script type="text/javascript" src="/static/jscripts/bootstrap-ie6.js" charset="utf-8"></script>
+  <script type="text/javascript">
+  // JavaScript Starts Here <![CDATA[
+      (function($) {
+          var SOne = {
+              config: {
+                  elRTE: {
+                      lang: 'ru',
+                      styleWithCSS: false,
+                      allowTextNodes: false,
+                      height: 400,
+                      toolbar: 'maxi',
+                      resizable: true,
+                      resizeHandle: 's',
+                      cssfiles: ['{FULLURL:"static/css/bootstrap.css"}', '{FULLURL:"static/css/elrte.inner.css"}']
+                  }
+              },
+              updateHtmlEditors: function() {
+                  var opts = SOne.config.elRTE;
+                  if (opts) {
+                      // create editor
+                      $('textarea.htmleditor').each(function() {
+                          if ($(this).val() == '') {
+                              $(this).val('<p>&nbsp;</p>');
+                          }
+                      }).elrte(opts);
+                  }
+              }
+          };
+
+          $().ready(SOne.updateHtmlEditors);
+
+          $.SOne = SOne;
+      })(jQuery);
+
+      // automated previews on images
+      $(function() {
+          $('#mp_pagecont img').each(function() {
+              var i = document.createElement('img');
+              var o = this;
+              $(i).load(function() {
+                  if (i.width && i.width > 1.2*o.width && !$(o).closest('a').length) {
+                      var modalDiv = $('<div />', {class: 'modal hide'}).append(
+                          $('<div />', {class: 'modal-body'}).append(i)
+                      );
+                      $('body').append(modalDiv);
+                      modalDiv.modal({show: false});
+                      $(o).css({cursor: 'pointer'}).click(function() {
+                          var s = Math.min(($(window).width() - 130)/i.width, ($(window).height() - 130)/i.height, 1);
+                          var w = Math.max(parseInt(i.width*s), 20);
+                          var h = Math.max(parseInt(i.height*s), 18);
+                          modalDiv.find('.modal-body').css({'max-height': h+'px'});
+                          w+= 30;
+                          h+= 30;
+                          modalDiv.css({
+                              width: w+'px',
+                              'margin-left': (-w/2)+'px',
+                              'margin-top': (-h/2)+'px'}
+                          );
+                          modalDiv.modal('show');
+                          return false;
+                      }).tooltip({title: 'Увеличить'});
+                  }
+              }).attr('src', o.src);
+          });
+      });
+
+      {IN_JS}
+
+  //]]> JavaScript ends here
+  </script>
+  {IN_JS_BLOCKS}
+
   {VIS:HTMLPAGE_HEAD_INCLUDES}
 </head>
 <body>
-<!-- Load jQuery -->
-<script type="text/javascript" src="/static/jscripts/jquery-1.7.2.min.js" charset="utf-8"></script>
-<script type="text/javascript" src="/static/jscripts/jquery-ui-1.8.21.custom.min.js" charset="utf-8"></script>
-<script type="text/javascript" src="/static/jscripts/elrte.min.js" charset="utf-8"></script>
-<script type="text/javascript" src="/static/jscripts/i18n/elrte.ru.js" charset="utf-8"></script>
-<script type="text/javascript" src="/static/jscripts/bootstrap-modal.js" charset="utf-8"></script>
-<script type="text/javascript" src="/static/jscripts/bootstrap-tooltip.js" charset="utf-8"></script>
-<script type="text/javascript" src="/static/jscripts/bootstrap-ie6.js" charset="utf-8"></script>
-<script type="text/javascript">
-// JavaScript Starts Here <![CDATA[
-    (function($) {
-        var SOne = {
-            config: {
-                elRTE: {
-                    lang: 'ru',
-                    styleWithCSS: false,
-                    allowTextNodes: false,
-                    height: 400,
-                    toolbar: 'maxi',
-                    resizable: true,
-                    resizeHandle: 's',
-                    cssfiles: ['{FULLURL:"static/css/bootstrap.css"}', '{FULLURL:"static/css/elrte.inner.css"}']
-                }
-            },
-            updateHtmlEditors: function() {
-                var opts = SOne.config.elRTE;
-                if (opts) {
-                    // create editor
-                    $('textarea.htmleditor').each(function() {
-                        if ($(this).val() == '') {
-                            $(this).val('<p>&nbsp;</p>');
-                        }
-                    }).elrte(opts);
-                }
-            }
-        };
-
-        $().ready(SOne.updateHtmlEditors);
-
-        $.SOne = SOne;
-    })(jQuery);
-
-    // automated previews on images
-    $(function() {
-        $('#mp_pagecont img').each(function() {
-            var i = document.createElement('img');
-            var o = this;
-            $(i).load(function() {
-                if (i.width && i.width > 1.2*o.width && !$(o).closest('a').length) {
-                    var modalDiv = $('<div />', {class: 'modal hide'}).append(
-                        $('<div />', {class: 'modal-body'}).append(i)
-                    );
-                    $('body').append(modalDiv);
-                    modalDiv.modal({show: false});
-                    $(o).css({cursor: 'pointer'}).click(function() {
-                        var s = Math.min(($(window).width() - 130)/i.width, ($(window).height() - 130)/i.height, 1);
-                        var w = Math.max(parseInt(i.width*s), 20);
-                        var h = Math.max(parseInt(i.height*s), 18);
-                        modalDiv.find('.modal-body').css({'max-height': h+'px'});
-                        w+= 30;
-                        h+= 30;
-                        modalDiv.css({
-                            width: w+'px',
-                            'margin-left': (-w/2)+'px',
-                            'margin-top': (-h/2)+'px'}
-                        );
-                        modalDiv.modal('show');
-                        return false;
-                    }).tooltip({title: 'Увеличить'});
-                }
-            }).attr('src', o.src);
-        });
-    });
-
-    {IN_JS}
-
-//]]> JavaScript ends here
-</script>
-{IN_JS_BLOCKS}
-
 <div id="mp_outer" class="container">
     <div class="row">
         <div id="mp_head" class="span12">
