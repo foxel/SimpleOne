@@ -53,8 +53,8 @@ class SOne_Repository_Object extends SOne_Repository
 
         $path = $this->parsePath($path);
 
-        $paths = Array();
-        $hashes = Array();
+        $paths = array();
+        $hashes = array();
 
         // collectings paths and hashes
         for ($i = count($path); $i > 0; $i--)
@@ -65,8 +65,8 @@ class SOne_Repository_Object extends SOne_Repository
             array_unshift($hashes, $chash);
         }
 
-        $navis = Array();
-        if ($datas = $this->db->doSelectAll('objects_navi', '*', Array('path_hash' => $hashes)))
+        $navis = array();
+        if ($datas = $this->db->doSelectAll('objects_navi', '*', array('path_hash' => $hashes)))
         {
             foreach ($datas as $data) {
                 if (list($i) = array_keys($hashes, $data['path_hash'])) {
