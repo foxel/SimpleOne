@@ -22,7 +22,7 @@
  * @property string $content
  */
 class SOne_Model_Object_HTMLPage extends SOne_Model_Object_PlainPage
-    implements SOne_Interface_Object_AcceptChilds
+    implements SOne_Interface_Object_AcceptChildren
 {
     /**
      * @param K3_Environment $env

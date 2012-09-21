@@ -88,15 +88,15 @@ class SOne_Repository_Object extends SOne_Repository
         return preg_replace('#\W+#', '_', $path);
     }
 
-    public function loadObjectsTreeByPath($path, $withChildsAndSiblings = false, $withData = false)
+    public function loadObjectsTreeByPath($path, $withChildrenAndSiblings = false, $withData = false)
     {
         $navis = $this->loadNavigationByPath($path);
 
         $ids = array_keys($navis);
 
         IF (!empty($ids)) {
-            return $this->loadObjectsTree(array('id' => $ids), $withChildsAndSiblings, $withData);
-        } elseif ($withChildsAndSiblings) {
+            return $this->loadObjectsTree(array('id' => $ids), $withChildrenAndSiblings, $withData);
+        } elseif ($withChildrenAndSiblings) {
             return $this->loadObjectsTree(array('parentId' => null), false, $withData);
         } else {
             return array();
@@ -105,13 +105,13 @@ class SOne_Repository_Object extends SOne_Repository
 
     /**
      * @param array $filters
-     * @param bool $withChildsAndSiblings
+     * @param bool $withChildrenAndSiblings
      * @param bool $withData
      * @return SOne_Model_Object[]|null
      */
-    public function loadObjectsTree(array $filters = array(), $withChildsAndSiblings = false, $withData = false)
+    public function loadObjectsTree(array $filters = array(), $withChildrenAndSiblings = false, $withData = false)
     {
-        if (!empty($filters) && $withChildsAndSiblings) {
+        if (!empty($filters) && $withChildrenAndSiblings) {
             $select = $this->db->select('objects', 'of', array());
 
             foreach (self::mapFilters($filters, self::$dbMap, 'of') as $key => $filter) {

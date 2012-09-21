@@ -18,4 +18,4 @@
  * along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
  */
 
-interface SOne_Interface_Object_AcceptChilds { }
+interface SOne_Interface_Object_AcceptChildren { }

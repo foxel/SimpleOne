@@ -119,7 +119,7 @@ class SOne_Model_Object_Constructor extends SOne_Model_Object implements SOne_In
             $tree = SOne_Repository_Object::getInstance($env->get('db'))->loadObjectsTree();
             $pathOptions = array();
             foreach ($tree as $item) {
-                if (!$item instanceof SOne_Interface_Object_AcceptChilds) {
+                if (!$item instanceof SOne_Interface_Object_AcceptChildren) {
                     continue;
                 }
                 $pathOptions[] = array(
