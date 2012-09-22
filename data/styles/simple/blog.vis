@@ -76,11 +76,12 @@
     </div>{/IF}
 <h2 itemprop="name">{!IN_CAPTION}</h2>
 <div class="htmlpage clearfix" itemprop="text">{IN_CONTENT}</div>
-{IF:IN_tags}
  <hr />
  <div style="text-align: right;">
+  {IN_userTag}
   <a href="{FULLURL:IN_PARENTPATH}/date/{FTIME:IN_createTime|"Y-m-d"|false|true}"><i class="icon-time"></i> <time itemprop="datePublished" datetime="{FTIME:IN_createTime|"c"|false|true}">{FTIME:IN_createTime}</time></a>
  </div>
+{IF:IN_tags}
  <div style="text-align: right;">
   <strong>Метки:</strong>
   <span itemprop="keywords">{IN_tags}</span>
@@ -109,14 +110,21 @@
 {/if}
 <div itemscope itemtype="http://schema.org/Blog">
 <h2 itemprop="name">{!IN_CAPTION}</h2>
-{if:in_date}
+{if:in_filter_date}
     <div class="alert alert-info">
-        <i class="icon-time"></i> Записи за {!in_date}
+        <i class="icon-time"></i> Записи за {!in_filter_date}
         <a class="close" href="{FULLURL:in_path}"><i class="icon-remove"></i></a>
     </div>
-{elseif:in_tag}
+{/if}
+{if:in_filter_tag}
     <div class="alert alert-info">
-        <i class="icon-tag"></i> Записи с меткой "{!in_tag}"
+        <i class="icon-tag"></i> Записи с меткой "{!in_filter_tag}"
+        <a class="close" href="{FULLURL:in_path}"><i class="icon-remove"></i></a>
+    </div>
+{/if}
+{if:in_filter_author}
+    <div class="alert alert-info">
+        <i class="icon-tag"></i> Записи автора {!in_filter_author}
         <a class="close" href="{FULLURL:in_path}"><i class="icon-remove"></i></a>
     </div>
 {/if}
@@ -136,6 +144,7 @@
 <div class="blog-item well" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
     <div class="clearfix">
         <div class="pull-right" style="text-align: right;">
+            {IN_userTag}
             <a href="{FULLURL:IN_PARENTPATH}/date/{FTIME:IN_createTime|"Y-m-d"|false|true}"><i class="icon-time"></i> <time itemprop="datePublished" datetime="{FTIME:IN_createTime|"c"|false|true}">{FTIME:IN_createTime}</time></a>
             {IF:IN_tags}<div class="blog-keywords" itemprop="keywords">{IN_tags}</div>{/IF}
         </div>
@@ -149,6 +158,10 @@
     </div>
 </div>
 <<- 'SONE_OBJECT_BLOG_LISTITEM'>>
+
+<<+ 'SONE_OBJECT_BLOG_USERTAG'>>
+<a href="{FULLURL:IN_PARENTPATH}/author/{IN_id}" itemprop="author" itemscope itemtype="http://schema.org/Person"><i class="icon-user"></i> <span itemprop="name">{IN_name}</span></a>
+<<- 'SONE_OBJECT_BLOG_USERTAG'>>
 
 <<+ 'SONE_OBJECT_BLOG_TAG'>>
 <a href="{FULLURL:IN_PARENTPATH}/tag/{URLENCODE:IN_name}"><i class="icon-tag"></i> {!IN_name}</a>{!IF:IN__IS_LAST}, {/IF}

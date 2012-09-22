@@ -64,9 +64,20 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
 
         $node = new FVISNode('SONE_OBJECT_BLOG_LIST', 0, $vis);
 
-        $node->addDataArray($this->pool + (array) $this->_filterParams + array(
+        $node->addDataArray($this->pool + array(
             'canAddItem' => $this->isActionAllowed('new', $env->get('user')) ? 1 : null,
         ));
+
+        $currentPath = $this->path;
+        if ($this->_filterParams) {
+            foreach ($this->_filterParams as $key => $param) {
+                $currentPath .= '/'.urlencode($key).'/'.urlencode($param);
+                if ($key == 'author') {
+                    $param = reset(SOne_Repository_User::getInstance($env->get('db'))->loadNames(array('id' => (int)$param)));
+                }
+                $node->addData('filter_'.$key, $param, true);
+            }
+        }
 
         if ($this->id && !in_array($this->actionState, array('new', 'edit'))) {
             $curPage = max((int) $env->request->getNumber('page'), 1);
@@ -86,15 +97,8 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
 
             $totalPages = ceil($totalItems/$this->_itemPerPage);
             if ($totalPages > 1) {
-                $pagesPath = $this->path;
-                if ($this->_filterParams) {
-                    foreach ($this->_filterParams as $key => $param) {
-                        $pagesPath .= '/'.urlencode($key).'/'.urlencode($param);
-                    }
-                }
-
                 $paginator = new SOne_VIS_Paginator(array(
-                    'objectPath'  => $pagesPath,
+                    'objectPath'  => $currentPath,
                     'totalPages'  => $totalPages,
                     'currentPage' => $curPage,
                     'actionState' => $this->actionState,
@@ -125,7 +129,7 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
             return array();
         }
 
-        $repo = new SOne_Repository_Object($this->_db);
+        $repo = SOne_Repository_Object::getInstance($this->_db);
         $filter = array(
             'parentId' => $this->id,
             'class'    => 'BlogItem',
@@ -153,11 +157,23 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
                     case 'tag':
                         $filter['id='] = SOne_Repository_Tag::getInstance($this->_db)->getObjectIdsByTags($filterValue, true);
                         break;
+                    case 'author':
+                        $filter['ownerId='] = (int)$filterValue;
+                        break;
                 }
             }
         }
 
         $items = $repo->loadAll($filter, false, $perPage, $pageOffset*$perPage, $totalItems);
+
+        $userIds = array();
+        foreach ($items as $item) {
+            $userIds[] = $item->ownerId;
+        }
+
+        /** @var $usersRepo SOne_Repository_User */
+        $usersRepo = SOne_Repository_User::getInstance($this->_db);
+        $usersRepo->prepareFetch(array('id=' => array_unique($userIds)));
 
         return $items;
     }

@@ -74,6 +74,12 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
         if ($this->id && $this->actionState == 'edit') {
             $allTags = $this->_tagsRepo->loadNames();
             $node->addData('allTagsJson', json_encode($allTags));
+        } else {
+            /** @var $user SOne_Model_User */
+            $user = SOne_Repository_User::getInstance($env->get('db'))->get($this->ownerId);
+            $node->addNode('SONE_OBJECT_BLOG_USERTAG', 'userTag', $user->toArray() + array(
+                'parentPath' => $parentPath,
+            ));
         }
 
         return $node;
@@ -114,6 +120,12 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
             $tagsNode->addDataArray($tags);
             $node->appendChild('tags', $tagsNode, true);
         }
+
+        /** @var $user SOne_Model_User */
+        $user = SOne_Repository_User::getInstance($env->get('db'))->get($this->ownerId);
+        $node->addNode('SONE_OBJECT_BLOG_USERTAG', 'userTag', $user->toArray() + array(
+            'parentPath' => $parentPath,
+        ));
 
         return $node;
     }

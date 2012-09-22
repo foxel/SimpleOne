@@ -47,8 +47,8 @@ class SOne_Repository_Object extends SOne_Repository
     {
         $path = trim($path, ' \\/');
         $pathHash = 'navi'.md5($path);
-        if (isset($this->cache[$pathHash])) {
-            return $this->cache[$pathHash];
+        if (isset($this->_cache[$pathHash])) {
+            return $this->_cache[$pathHash];
         }
 
         $path = $this->parsePath($path);
@@ -66,7 +66,7 @@ class SOne_Repository_Object extends SOne_Repository
         }
 
         $navis = array();
-        if ($datas = $this->db->doSelectAll('objects_navi', '*', array('path_hash' => $hashes)))
+        if ($datas = $this->_db->doSelectAll('objects_navi', '*', array('path_hash' => $hashes)))
         {
             foreach ($datas as $data) {
                 if (list($i) = array_keys($hashes, $data['path_hash'])) {
@@ -78,7 +78,7 @@ class SOne_Repository_Object extends SOne_Repository
             F2DArray::keycol($navis, 'id');
         }
 
-        return ($this->cache[$pathHash] = $navis);
+        return ($this->_cache[$pathHash] = $navis);
     }
 
     protected function parsePath($path)
@@ -112,7 +112,7 @@ class SOne_Repository_Object extends SOne_Repository
     public function loadObjectsTree(array $filters = array(), $withChildrenAndSiblings = false, $withData = false)
     {
         if (!empty($filters) && $withChildrenAndSiblings) {
-            $select = $this->db->select('objects', 'of', array());
+            $select = $this->_db->select('objects', 'of', array());
 
             foreach (self::mapFilters($filters, self::$dbMap, 'of') as $key => $filter) {
                 $select->where($key, $filter);
@@ -132,7 +132,7 @@ class SOne_Repository_Object extends SOne_Repository
 
             $filters = array();
         } else {
-            $select = $this->db->select('objects', 'o', self::$dbMap)
+            $select = $this->_db->select('objects', 'o', self::$dbMap)
                 ->join('objects_navi', array('id' => 'o.id'), 'n', self::$dbMapNavi)
                 ->order('o.order_id')
                 ->order('o.id');
@@ -168,7 +168,7 @@ class SOne_Repository_Object extends SOne_Repository
      */
     public function loadAll(array $filters = array(), $order = false, $limit = false, $offset = false, &$rowsCount = null)
     {
-        $select = $this->db->select('objects', 'o', self::$dbMap)
+        $select = $this->_db->select('objects', 'o', self::$dbMap)
             ->joinLeft('objects_navi', array('id' => 'o.id'), 'n', self::$dbMapNavi)
             ->joinLeft('objects_data', array('o_id' => 'o.id'), 'd', array('data'))
             ->order('o.order_id')
@@ -189,7 +189,7 @@ class SOne_Repository_Object extends SOne_Repository
         $rows = $select->fetchAll();
 
         if ($limit) {
-            $rowsCount = $this->db->lastSelectRowsCount;
+            $rowsCount = $this->_db->lastSelectRowsCount;
         }
 
         $objects = array();
@@ -199,7 +199,7 @@ class SOne_Repository_Object extends SOne_Repository
             $object = SOne_Model_Object::construct($row);
             if ($object instanceof SOne_Interface_Object_WithExtraData) {
                 /** @var SOne_Interface_Object_WithExtraData $object */
-                $object->loadExtraData($this->db);
+                $object->loadExtraData($this->_db);
             }
             if ($object instanceof SOne_Interface_Object_WithSubObjects) {
                 /** @var SOne_Interface_Object_WithSubObjects $object */
@@ -216,17 +216,17 @@ class SOne_Repository_Object extends SOne_Repository
         $objData = self::mapModelToDb($object, self::$dbMap, 'id');
 
         if ($object->id) {
-            $this->db->doUpdate('objects', $objData, array('id' => $object->id));
+            $this->_db->doUpdate('objects', $objData, array('id' => $object->id));
         } else {
-            $object->id = $this->db->doInsert('objects', $objData);
+            $object->id = $this->_db->doInsert('objects', $objData);
         }
 
         if (!is_null($object->path)) {
             // TODO: checking paths with parents
             $naviData = self::mapModelToDb($object, self::$dbMapNavi);
-            $this->db->doInsert('objects_navi', $naviData + array('id' => $object->id), true);
+            $this->_db->doInsert('objects_navi', $naviData + array('id' => $object->id), true);
         } else {
-            $this->db->doDelete('objects_navi', array('id' => $object->id));
+            $this->_db->doDelete('objects_navi', array('id' => $object->id));
         }
 
         $data = $object->serializeData();
@@ -235,14 +235,14 @@ class SOne_Repository_Object extends SOne_Repository
                 'o_id' => $object->id,
                 'data' => $data,
             );
-            $this->db->doInsert('objects_data', $data, true);
+            $this->_db->doInsert('objects_data', $data, true);
         } else {
-            $this->db->doDelete('objects_data', array('id' => $object->id));
+            $this->_db->doDelete('objects_data', array('id' => $object->id));
         }
 
         if ($object instanceof SOne_Interface_Object_WithExtraData) {
             /** @var SOne_Interface_Object_WithExtraData $object */
-            $object->saveExtraData($this->db);
+            $object->saveExtraData($this->_db);
         }
         if ($object instanceof SOne_Interface_Object_WithSubObjects) {
             /** @var SOne_Interface_Object_WithSubObjects $object */
@@ -256,7 +256,7 @@ class SOne_Repository_Object extends SOne_Repository
      */
     public function delete($objectId)
     {
-        return $this->db->doDelete('objects', array('id' => $objectId));
+        return $this->_db->doDelete('objects', array('id' => $objectId));
     }
 
     public function saveAll(array $objects)

@@ -31,7 +31,7 @@ class SOne_Repository_Tag extends SOne_Repository
 
     public function loadAll(array $filters = array())
     {
-        $select = $this->db->select('tag', 't', self::$dbMap)
+        $select = $this->_db->select('tag', 't', self::$dbMap)
             ->order('t.name', 'ASC');
 
         foreach (self::mapFilters($filters, self::$dbMap, 't') as $key => $filter) {
@@ -45,7 +45,7 @@ class SOne_Repository_Tag extends SOne_Repository
 
     public function loadNames(array $filters = array())
     {
-        $select = $this->db->select('tag', 't', array('name' => self::$dbMap['name']))
+        $select = $this->_db->select('tag', 't', array('name' => self::$dbMap['name']))
             ->order('t.name', 'ASC');
 
         foreach (self::mapFilters($filters, self::$dbMap, 't') as $key => $filter) {
@@ -64,7 +64,7 @@ class SOne_Repository_Tag extends SOne_Repository
      */
     public function getObjectTags($objectId, array $filters = array())
     {
-        $select = $this->db->select('tag', 't', array('name'))
+        $select = $this->_db->select('tag', 't', array('name'))
             ->join('tag_object', array('tag_id' => 't.id'), 'to', array())
             ->order('t.name', 'ASC');
 
@@ -86,7 +86,7 @@ class SOne_Repository_Tag extends SOne_Repository
      */
     public function getObjectIdsByTags($tags, $noExecute = false)
     {
-        $select = $this->db->select('tag', 't', array())
+        $select = $this->_db->select('tag', 't', array())
             ->joinLeft('tag_object', array('tag_id' => 't.id'), 'to', array('object_id'))
             ->where('t.name', $tags);
 
@@ -103,13 +103,13 @@ class SOne_Repository_Tag extends SOne_Repository
     {
         $tagIds = $this->getTagIds($tags, true);
 
-        $useTransaction = !$this->db->inTransaction;
+        $useTransaction = !$this->_db->inTransaction;
 
         if ($useTransaction) {
-            $this->db->beginTransaction();
+            $this->_db->beginTransaction();
         }
 
-        $this->db->doDelete('tag_object', array('object_id' => (int) $objectId));
+        $this->_db->doDelete('tag_object', array('object_id' => (int) $objectId));
         $bind = array();
         foreach ($tagIds as $tagId) {
             $bind[] = array(
@@ -118,10 +118,10 @@ class SOne_Repository_Tag extends SOne_Repository
             );
         }
 
-        $this->db->doInsert('tag_object', $bind, false, FDataBase::SQL_MULINSERT);
+        $this->_db->doInsert('tag_object', $bind, false, FDataBase::SQL_MULINSERT);
 
         if ($useTransaction) {
-            $this->db->commit();
+            $this->_db->commit();
         }
     }
 
@@ -168,7 +168,7 @@ class SOne_Repository_Tag extends SOne_Repository
             'user_id' => $userId,
         );
 
-        return $this->db->doInsert('tag', $bind);
+        return $this->_db->doInsert('tag', $bind);
     }
 
     /**

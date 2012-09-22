@@ -22,7 +22,7 @@ class SOne_Repository_Comment extends SOne_Repository
 {
     public function loadAll(array $filters = array())
     {
-        $select = $this->db->select('comments', 'c')
+        $select = $this->_db->select('comments', 'c')
             ->order('c.id', 'DESC');
 
         foreach ($filters as $key => $filter) {
@@ -51,9 +51,9 @@ class SOne_Repository_Comment extends SOne_Repository
         unset($bind['id'], $bind['t_level']);
 
         if (isset($comment['id']) && is_numeric($comment['id'])) {
-            $this->db->doUpdate('comments', $bind, array('id' => $comment['id']));
+            $this->_db->doUpdate('comments', $bind, array('id' => $comment['id']));
         } else {
-            $comment['id'] = $this->db->doInsert('comments', $bind);
+            $comment['id'] = $this->_db->doInsert('comments', $bind);
         }
     }
 }

@@ -20,5 +20,11 @@
 
 abstract class SOne_Model extends FBaseClass
 {
-
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        return $this->pool;
+    }
 }

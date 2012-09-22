@@ -18,6 +18,10 @@
  * along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * @method SOne_Model_User loadOne
+ * @method SOne_Model_User get
+ */
 class SOne_Repository_User extends SOne_Repository
 {
     protected static $dbMap = array(
@@ -44,13 +48,21 @@ class SOne_Repository_User extends SOne_Repository
         'lastAuth'        => 'last_auth',
     );
 
+    /**
+     * @param array $filters
+     * @return SOne_Model_User[]
+     */
     public function loadAll(array $filters = array())
     {
-        $select = $this->db->select('users', 'u', self::$dbMap)
+        $select = $this->_db->select('users', 'u', self::$dbMap)
             ->joinLeft('users_auth', array('uid' => 'u.id'), 'a', self::$dbMapAuth)
             ->order('u.id');
 
-        foreach ($filters as $key => $filter) {
+        foreach (self::mapFilters($filters, self::$dbMap, 'u') as $key => $filter) {
+            $select->where($key, $filter);
+        }
+
+        foreach (self::mapFilters($filters, self::$dbMapAuth, 'a') as $key => $filter) {
             $select->where($key, $filter);
         }
 
@@ -65,12 +77,16 @@ class SOne_Repository_User extends SOne_Repository
         return $objects;
     }
 
+    /**
+     * @param array $filters
+     * @return string[]
+     */
     public function loadNames(array $filters = array())
     {
-        $select = $this->db->select('users', 'u', array('id', 'nick'))
+        $select = $this->_db->select('users', 'u', array('id', 'nick'))
             ->order('u.id');
 
-        foreach ($filters as $key => $filter) {
+        foreach (self::mapFilters($filters, self::$dbMap, 'u') as $key => $filter) {
             $select->where($key, $filter);
         }
 
@@ -84,23 +100,26 @@ class SOne_Repository_User extends SOne_Repository
         return $names;
     }
 
+    /**
+     * @param SOne_Model_User $object
+     */
     public function save(SOne_Model_User $object)
     {
         $userData = self::mapModelToDb($object, self::$dbMap, 'id');
 
         if ($object->id) {
-            $this->db->doUpdate('users', $userData, array('id' => $object->id));
+            $this->_db->doUpdate('users', $userData, array('id' => $object->id));
         } else {
-            $object->id = $this->db->doInsert('users', $userData);
+            $object->id = $this->_db->doInsert('users', $userData);
         }
 
         if ($object->authUpdated) {
             if (!empty($object->login)) {
                 $authData = self::mapModelToDb($object, self::$dbMapAuth);
 
-                $this->db->doInsert('users_auth', $authData + array('uid' => $object->id), true);
+                $this->_db->doInsert('users_auth', $authData + array('uid' => $object->id), true);
             } else {
-                $this->db->doDelete('users_auth', array('uid' => $object->id));
+                $this->_db->doDelete('users_auth', array('uid' => $object->id));
             }
         }
     }

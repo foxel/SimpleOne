@@ -20,8 +20,10 @@
 
 abstract class SOne_Repository
 {
-    protected $db    = null;
-    protected $cache = array();
+    protected $_db    = null;
+    protected $_cache = array();
+    protected $_preparedFetches = array();
+    protected $_fetchedItems = array();
 
     /**
      * @var SOne_Repository[]
@@ -33,7 +35,7 @@ abstract class SOne_Repository
      */
     public function __construct(FDataBase $db)
     {
-        $this->db = $db;
+        $this->_db = $db;
     }
 
     /**
@@ -77,6 +79,55 @@ abstract class SOne_Repository
         $objects = $this->loadAll($filter);
 
         return reset($objects);
+    }
+
+    /**
+     * @param array $filters
+     * @return static
+     */
+    public function prepareFetch(array $filters)
+    {
+        $this->_preparedFetches[] = $filters;
+        return $this;
+    }
+
+    /**
+     * @param int|string $id
+     * @return array|object|null
+     */
+    public function get($id)
+    {
+        if (isset($this->_fetchedItems[$id])) {
+            return $this->_fetchedItems[$id];
+        }
+
+        $out = null;
+        while (null === $out && ($filters = array_pop($this->_preparedFetches))) {
+            $items = $this->loadAll($filters);
+            foreach ($items as $item) {
+                $itemId = is_array($item)
+                    ? $item['id']
+                    : $item->id;
+
+                $this->_fetchedItems[$itemId] = $item;
+                if ($itemId == $id) {
+                    $out = $item;
+                }
+            }
+        }
+
+        if (null === $out) {
+            $out = $this->loadOne(array('id' => $id));
+            if ($out !== null) {
+                $itemId = is_array($out)
+                    ? $out['id']
+                    : $out->id;
+
+                $this->_fetchedItems[$itemId] = $out;
+            }
+        }
+
+        return $out;
     }
 
     /**
