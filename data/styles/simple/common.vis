@@ -82,6 +82,7 @@
   <script type="text/javascript" src="/static/jscripts/bootstrap-modal.js" charset="utf-8"></script>
   <script type="text/javascript" src="/static/jscripts/bootstrap-tooltip.js" charset="utf-8"></script>
   <script type="text/javascript" src="/static/jscripts/bootstrap-ie6.js" charset="utf-8"></script>
+  <script type="text/javascript" src="/static/jscripts/chosen.jquery.js" charset="utf-8"></script>
   <script type="text/javascript">
   // JavaScript Starts Here <![CDATA[
       (function($) {
@@ -111,7 +112,31 @@
               }
           };
 
-          $().ready(SOne.updateHtmlEditors);
+          $.fn.extend({
+              sOneSelect:function (options) {
+                  if ($.browser.msie && ($.browser.version === "6.0" || ($.browser.version === "7.0" && document.documentMode === 7))) {
+                      return this;
+                  }
+                  return this.each(function (input_field) {
+                      var $this = $(this);
+                      var emptyValue = $('option[value=""]', this).text();
+                      if (emptyValue) {
+                          $this.attr('data-placeholder', emptyValue);
+                          $('option[value=""]', this).text('');
+                      }
+                      $this.chosen({allow_single_deselect: true});
+                  });
+              }
+          });
+
+          $().ready(function() {
+              SOne.updateHtmlEditors();
+              $('select').each(function() {
+                  if ($('option', this).length > 7) {
+                      $(this).sOneSelect({allow_single_deselect: true});
+                  }
+              });
+          });
 
           $.SOne = SOne;
       })(jQuery);
@@ -411,7 +436,7 @@
     });
     $('select[name="parentPath"]', '#constructorForm').change(function () {
         $('#constructorForm-parentPath').text('/'+$(this).val());
-    });
+    }).sOneSelect();
     $('#constructorForm').submit(function () {
         $('#constructorObjectContainer').text('Загрузка ...').load(this.action + '&' + $(this).serialize(), $.SOne.updateHtmlEditors);
         return false;
@@ -428,7 +453,7 @@
 <<- 'SONE_OBJECT_CONSTRUCTOR_FRAME'>>
 
 <<+ 'SONE_OBJECT_CONSTRUCTOR_PATHOPTION'>>
-<option value="{!IN_PATH}/">{!IN_PATH} ({!IN_CAPTION})</option>
+<option value="{!IN_PATH}/" title="{!IN_PATH}">{!IN_CAPTION} ({!IN_PATH})</option>
 <<- 'SONE_OBJECT_CONSTRUCTOR_PATHOPTION'>>
 
 
