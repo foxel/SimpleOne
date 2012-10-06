@@ -19,7 +19,6 @@
  */
 
 /**
- * @method SOne_Repository_Object getInstance static
  * @method SOne_Model_Object loadOne
  */
 class SOne_Repository_Object extends SOne_Repository
@@ -209,6 +208,29 @@ class SOne_Repository_Object extends SOne_Repository
         }
 
         return $objects;
+    }
+
+    /**
+     * @param array $filters
+     * @param bool $noExecute
+     * @return int[]
+     */
+    public function loadIds(array $filters, $noExecute = false)
+    {
+        $select = $this->_db->select('objects', 'o', array('id'))
+            ->joinLeft('objects_navi', array('id' => 'o.id'), 'n', array())
+            ->joinLeft('objects_data', array('o_id' => 'o.id'), 'd', array());
+
+        foreach (self::mapFilters($filters, self::$dbMap, 'o') as $key => $filter) {
+            $select->where($key, $filter);
+        }
+        foreach (self::mapFilters($filters, self::$dbMapNavi, 'n') as $key => $filter) {
+            $select->where($key, $filter);
+        }
+
+        return $noExecute
+            ? $select
+            : $select->fetchAll();
     }
 
     public function save(SOne_Model_Object $object)

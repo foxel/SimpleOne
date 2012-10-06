@@ -172,6 +172,29 @@ class SOne_Repository_Tag extends SOne_Repository
     }
 
     /**
+     * @param array $objectFilters
+     * @return array
+     */
+    public function getTagsCloud(array $objectFilters = array())
+    {
+        $select = $this->_db->select('tag', 't', array('id', 'tag' => 'name'))
+            ->join('tag_object', array('tag_id' => 't.id'), 'to', array('weight' => 'count(to.object_id)'))
+            ->group('id')
+            ->group('name')
+            ->order('name');
+
+        if ($objectFilters) {
+            $objects = SOne_Repository_Object::getInstance($this->_db);
+            $objectIds = $objects->loadIds($objectFilters, true);
+            $select->where('to.object_id', $objectIds);
+        }
+
+        $tags = $select->fetchAll();
+
+        return F2DArray::keycol($tags, 'id', true);
+    }
+
+    /**
      * @param $tag1
      * @param $tag2
      * @return int

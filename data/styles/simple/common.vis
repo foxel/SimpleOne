@@ -83,6 +83,7 @@
   <script type="text/javascript" src="/static/jscripts/bootstrap-tooltip.js" charset="utf-8"></script>
   <script type="text/javascript" src="/static/jscripts/bootstrap-ie6.js" charset="utf-8"></script>
   <script type="text/javascript" src="/static/jscripts/chosen.jquery.js" charset="utf-8"></script>
+  <script type="text/javascript" src="/static/jscripts/jquery.tagcloud.js" charset="utf-8"></script>
   <script type="text/javascript">
   // JavaScript Starts Here <![CDATA[
       (function($) {
@@ -531,3 +532,22 @@
 <li class="disabled"><a>&#133;</a></li>
 {/IF}
 <<- 'SONE_WIDGET_PAGINATOR_LINK'>>
+
+<<+ 'SONE_WIDGET_TAGCLOUD_BLOCK'>>
+{IF:IN_tags}
+{WRITE:blockId}{RANDOM:100|999}{WRITE}
+<div id="tagcloud_{blockId}" class="well well-small" style="overflow: hidden; text-overflow: ellipsis;">
+    <legend>Облако тегов</legend>
+    {IN_tags}
+</div>
+<script type="text/javascript">
+    $(function () {
+        $('#tagcloud_{blockId} a').tagcloud({size: {start: 10, end: 16, unit: 'px'}});
+    });
+</script>
+{/IF}
+<<- 'SONE_WIDGET_TAGCLOUD_BLOCK'>>
+
+<<+ 'SONE_WIDGET_TAGCLOUD_ITEM'>>
+<a href="{FULLURL:IN_path}/tag/{URLENCODE:IN_tag}" rel="{IN_weight}">{!IN_tag}</a>{!IF:IN__IS_LAST}, {/IF}
+<<- 'SONE_WIDGET_TAGCLOUD_ITEM'>>

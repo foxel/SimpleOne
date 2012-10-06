@@ -225,7 +225,7 @@ class SOne_Application extends K3_Application
         //$pageNode->addData('page_cont', '<pre>'.print_r(get_included_files(), true).'</pre>');
         //$pageNode->addData('page_cont', '<pre>'.print_r($this->env, true).'</pre>');
 
-        $widgets = $this->bootstrapWidgets();
+        $widgets = $this->_bootstrapWidgets();
         foreach ($widgets as $widgetId => $widget) {
             if ($widget instanceof SOne_Model_Widget) {
                 /** @var $widget SOne_Model_Widget */
@@ -269,7 +269,7 @@ class SOne_Application extends K3_Application
     /**
      * @return SOne_Model_Widget[]
      */
-    protected function bootstrapWidgets()
+    protected function _bootstrapWidgets()
     {
         $widgets = array();
 

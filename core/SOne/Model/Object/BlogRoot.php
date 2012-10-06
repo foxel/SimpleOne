@@ -131,8 +131,8 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
 
         $repo = SOne_Repository_Object::getInstance($this->_db);
         $filter = array(
-            'parentId' => $this->id,
-            'class'    => 'BlogItem',
+            'parentId=' => $this->id,
+            'class='    => 'BlogItem',
         );
         /** @var $lang FLNGData */
         $lang = $env->get('lang');
@@ -164,6 +164,7 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
             }
         }
 
+        // $cloud = SOne_Repository_Tag::getInstance($this->_db)->getTagsCloud(array('parentId=' => $this->id));
         $items = $repo->loadAll($filter, false, $perPage, $pageOffset*$perPage, $totalItems);
 
         $userIds = array();
