@@ -43,6 +43,7 @@ class SOne_Model_Widget_TagCloud extends SOne_Model_Widget
         $db = $env->get('db');
 
         $container = new FVISNode('SONE_WIDGET_TAGCLOUD_BLOCK', 0, $vis);
+        $container->addDataArray($this->pool);
         if ($pageObject instanceof SOne_Model_Object_BlogRoot || $pageObject instanceof SOne_Model_Object_BlogItem) {
             $blogId = $pageObject instanceof SOne_Model_Object_BlogRoot ? $pageObject->id : $pageObject->parentId;
             $blogPath = $pageObject instanceof SOne_Model_Object_BlogRoot ? $pageObject->path : preg_replace('#/[^/]+$#', '', trim($pageObject->path, '/'));
@@ -65,8 +66,10 @@ class SOne_Model_Widget_TagCloud extends SOne_Model_Widget
     {
         $this->pool['data'] = $data + array(
             'limit' => null,
+            'title' => null,
         );
         $this->pool['limit'] =& $this->pool['data']['limit'];
+        $this->pool['title'] =& $this->pool['data']['title'];
         return $this;
     }
 }

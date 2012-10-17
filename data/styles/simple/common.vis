@@ -537,7 +537,7 @@
 {IF:IN_tags}
 {WRITE:blockId}{RANDOM:100|999}{WRITE}
 <div id="tagcloud_{blockId}" class="well well-small" style="overflow: hidden; text-overflow: ellipsis;">
-    <legend>Облако тегов</legend>
+    <legend>{IF:IN_title}{IN_title}{ELSE}Облако тегов{/IF}</legend>
     {IN_tags}
 </div>
 <script type="text/javascript">
