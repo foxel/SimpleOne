@@ -25,6 +25,11 @@ plugins.VK => 1
 widgets.navigator.class => Navigator
 widgets.navigator.block => sidebar
 
+# tag cloud
+widgets.tags.class => TagCloud
+widgets.tags.block => sidebar
+#widgets.tags.limit => 5
+
 # navbar
 #widgets.navbar.class => Navbar
 #widgets.navbar.block => head

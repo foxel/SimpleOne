@@ -57,7 +57,7 @@ class SOne_Model_Widget_Panel extends SOne_Model_Widget
 
     /**
      * @param array $data
-     * @return SOne_Model_Object_HTMLPage
+     * @return static
      */
     protected function setData(array $data)
     {

@@ -173,20 +173,29 @@ class SOne_Repository_Tag extends SOne_Repository
 
     /**
      * @param array $objectFilters
+     * @param int $limit
      * @return array
      */
-    public function getTagsCloud(array $objectFilters = array())
+    public function getTagsCloud(array $objectFilters = array(), $limit = null)
     {
         $select = $this->_db->select('tag', 't', array('id', 'tag' => 'name'))
             ->join('tag_object', array('tag_id' => 't.id'), 'to', array('weight' => 'count(to.object_id)'))
             ->group('id')
-            ->group('name')
-            ->order('name');
+            ->group('name');
 
         if ($objectFilters) {
             $objects = SOne_Repository_Object::getInstance($this->_db);
             $objectIds = $objects->loadIds($objectFilters, true);
             $select->where('to.object_id', $objectIds);
+        }
+
+        if ($limit) {
+            $select->order('weight', true)
+                ->order('name')
+                ->limit($limit);
+            $select = $this->_db->select($select, 't')->order('tag');
+        } else {
+            $select->order('name');
         }
 
         $tags = $select->fetchAll();

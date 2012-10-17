@@ -21,6 +21,16 @@
 class SOne_Model_Widget_TagCloud extends SOne_Model_Widget
 {
     /**
+     * @param  array $init
+     */
+    public function __construct(array $init = array())
+    {
+        parent::__construct($init);
+
+        $this->setData((array)$this->pool['data']);
+    }
+
+    /**
      * @param K3_Environment $env
      * @param SOne_Model_Object $pageObject
      * @return FVISNode
@@ -36,7 +46,7 @@ class SOne_Model_Widget_TagCloud extends SOne_Model_Widget
         if ($pageObject instanceof SOne_Model_Object_BlogRoot || $pageObject instanceof SOne_Model_Object_BlogItem) {
             $blogId = $pageObject instanceof SOne_Model_Object_BlogRoot ? $pageObject->id : $pageObject->parentId;
             $blogPath = $pageObject instanceof SOne_Model_Object_BlogRoot ? $pageObject->path : preg_replace('#/[^/]+$#', '', trim($pageObject->path, '/'));
-            $cloud = SOne_Repository_Tag::getInstance($db)->getTagsCloud(array('parentId=' => $blogId));
+            $cloud = SOne_Repository_Tag::getInstance($db)->getTagsCloud(array('parentId=' => $blogId), $this->limit);
 
             $tagsNode = new FVISNode('SONE_WIDGET_TAGCLOUD_ITEM', FVISNode::VISNODE_ARRAY, $vis);
             $tagsNode->addDataArray($cloud)
@@ -45,5 +55,18 @@ class SOne_Model_Widget_TagCloud extends SOne_Model_Widget
         }
 
         return $container;
+    }
+
+    /**
+     * @param array $data
+     * @return static
+     */
+    protected function setData(array $data)
+    {
+        $this->pool['data'] = $data + array(
+            'limit' => null,
+        );
+        $this->pool['limit'] =& $this->pool['data']['limit'];
+        return $this;
     }
 }
