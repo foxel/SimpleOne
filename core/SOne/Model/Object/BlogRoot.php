@@ -71,7 +71,7 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
         $currentPath = $this->path;
         if ($this->_filterParams) {
             foreach ($this->_filterParams as $key => $param) {
-                $currentPath .= '/'.urlencode($key).'/'.urlencode($param);
+                $currentPath .= '/'.FStr::urlencode($key).'/'.FStr::urlencode($param);
                 if ($key == 'author') {
                     $param = reset(SOne_Repository_User::getInstance($env->get('db'))->loadNames(array('id' => (int)$param)));
                 }
