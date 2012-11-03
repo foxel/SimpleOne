@@ -192,7 +192,7 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
      * @param array $data
      * @return SOne_Model_Object_BlogItem
      */
-    protected function setData(array $data)
+    public function setData(array $data)
     {
         parent::setData($data);
         $this->pool['data']['thumbnailImage'] = isset($data['thumbnailImage'])

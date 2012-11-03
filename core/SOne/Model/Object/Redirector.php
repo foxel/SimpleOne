@@ -22,18 +22,9 @@
  * @property-read string $redirectUrl
  */
 class SOne_Model_Object_Redirector extends SOne_Model_Object
+    implements SOne_Interface_Object_Structured
 {
     protected $_subPath = '';
-
-    /**
-     * @param  array $init
-     */
-    public function __construct(array $init = array())
-    {
-        parent::__construct($init);
-
-        $this->setData((array)$this->pool['data']);
-    }
 
     /**
      * @param  K3_Environment $env
@@ -69,7 +60,7 @@ class SOne_Model_Object_Redirector extends SOne_Model_Object
      * @param array $data
      * @return SOne_Model_Object_HTMLPage
      */
-    protected function setData(array $data)
+    public function setData(array $data)
     {
         $this->pool['data'] = $data + array(
             'redirectUrl' => '/',

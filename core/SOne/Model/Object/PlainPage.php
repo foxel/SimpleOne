@@ -22,17 +22,8 @@
  * @property string $content
  */
 abstract class SOne_Model_Object_PlainPage extends SOne_Model_Object_Commentable
+    implements SOne_Interface_Object_Structured
 {
-    /**
-     * @param  array $init
-     */
-    public function __construct(array $init = array())
-    {
-        parent::__construct($init);
-
-        $this->setData((array) $this->pool['data']);
-    }
-
     /**
      * @param K3_Environment $env
      * @return FVISNode
@@ -115,7 +106,7 @@ abstract class SOne_Model_Object_PlainPage extends SOne_Model_Object_Commentable
      * @param array $data
      * @return SOne_Model_Object_HTMLPage
      */
-    protected function setData(array $data)
+    public function setData(array $data)
     {
         $this->pool['data'] = $data + array(
             'commentsAllowed' => false,

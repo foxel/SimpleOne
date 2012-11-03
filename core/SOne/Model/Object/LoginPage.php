@@ -25,17 +25,12 @@
  * @property array $errors
  */
 class SOne_Model_Object_LoginPage extends SOne_Model_Object
+    implements SOne_Interface_Object_Structured
 {
     /**
-     * @param  array $init
+     * @param K3_Environment $env
+     * @return FVISNode
      */
-    public function __construct(array $init = array())
-    {
-        parent::__construct($init);
-
-        $this->setData((array)$this->pool['data']);
-    }
-
     public function visualize(K3_Environment $env)
     {
         if ($this->actionState == 'redirect') {
@@ -142,7 +137,7 @@ class SOne_Model_Object_LoginPage extends SOne_Model_Object
      * @param array $data
      * @return SOne_Model_Object_HTMLPage
      */
-    protected function setData(array $data)
+    public function setData(array $data)
     {
         $this->pool['data'] = $data + array(
             'registerAllowed' => false,

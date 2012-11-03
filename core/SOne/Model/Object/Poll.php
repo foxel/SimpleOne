@@ -24,6 +24,7 @@
  * @property-read array[] $answers
  */
 class SOne_Model_Object_Poll extends SOne_Model_Object
+    implements SOne_Interface_Object_Structured
 {
     const QUESTION_TYPE_SELECT = 1;
     const QUESTION_TYPE_MULTI = 2;
@@ -41,16 +42,6 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
      * @var array
      */
     protected $aclEditActionsList = array('edit', 'save', 'stat', 'drop', 'grid');
-
-    /**
-     * @param  array $init
-     */
-    public function __construct(array $init = array())
-    {
-        parent::__construct($init);
-
-        $this->setData((array) $this->pool['data']);
-    }
 
     /**
      * @param K3_Environment $env

@@ -23,19 +23,10 @@
  * @property-read string $xAccelLocation
  * @property-read bool   $m3uEnabled
  */
-class SOne_Model_Object_FileIndex extends SOne_Model_Object implements SOne_Interface_Object_WithSubRoute
+class SOne_Model_Object_FileIndex extends SOne_Model_Object
+    implements SOne_Interface_Object_WithSubRoute, SOne_Interface_Object_Structured
 {
     protected $_subPath = '';
-
-    /**
-     * @param  array $init
-     */
-    public function __construct(array $init = array())
-    {
-        parent::__construct($init);
-
-        $this->setData((array)$this->pool['data']);
-    }
 
     /**
      * @param  K3_Environment $env
@@ -168,7 +159,6 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object implements SOne_Inte
         parent::saveAction($env, $updated);
         $this->pool['basePath']   = $env->request->getString('basePath', K3_Request::POST, FStr::PATH);
         $this->pool['m3uEnabled'] = $env->request->getBinary('m3uEnabled', K3_Request::POST, false);
-        $this->pool['updateTime'] = time();
 
         $updated = true;
     }
@@ -177,7 +167,7 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object implements SOne_Inte
      * @param array $data
      * @return SOne_Model_Object_HTMLPage
      */
-    protected function setData(array $data)
+    public function setData(array $data)
     {
         $this->pool['data'] = $data + array(
             'basePath' => F_SITE_ROOT,

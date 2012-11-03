@@ -24,6 +24,9 @@
  */
 abstract class SOne_Model_Object_Commentable extends SOne_Model_Object implements SOne_Interface_Object_WithExtraData
 {
+    /**
+     * @param array $init
+     */
     public function __construct(array $init = array())
     {
         parent::__construct($init);

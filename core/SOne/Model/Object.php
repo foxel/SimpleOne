@@ -44,7 +44,7 @@
 abstract class SOne_Model_Object extends SOne_Model implements I_K3_RSS_Item
 {
     const DEFAULT_ACCESS_LEVEL = 0;
-    const DEFAULT_EDIT_LEVEL = 0;
+    const DEFAULT_EDIT_LEVEL   = 3;
 
     /**
      * @var array
@@ -123,6 +123,10 @@ abstract class SOne_Model_Object extends SOne_Model implements I_K3_RSS_Item
 
         if (!isset($init['data']) && $data = array_diff_key($init, $this->pool)) {
             $this->pool['data'] = $data;
+        }
+
+        if ($this instanceof SOne_Interface_Object_Structured) {
+            $this->setData((array)$this->pool['data']);
         }
     }
 
@@ -241,6 +245,7 @@ abstract class SOne_Model_Object extends SOne_Model implements I_K3_RSS_Item
         $newCaption = $env->request->getString('caption', K3_Request::POST, FStr::LINE);
         if ($newCaption) {
             $this->pool['caption'] = $newCaption;
+            $this->pool['updateTime'] = time();
             $objectUpdated = true;
         }
     }

@@ -18,8 +18,11 @@
  * along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * @property-read boolean $rssEnabled
+ */
 class SOne_Model_Object_BlogRoot extends SOne_Model_Object
-        implements SOne_Interface_Object_WithExtraData, SOne_Interface_Object_WithSubRoute
+    implements SOne_Interface_Object_WithExtraData, SOne_Interface_Object_WithSubRoute, SOne_Interface_Object_Structured
 {
     /**
      * @var array
@@ -37,7 +40,11 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
      */
     public function visualize(K3_Environment $env)
     {
-        if ($this->id && $this->actionState == 'rss')
+        if (in_array($this->actionState, array('save'))) {
+            $env->response->sendRedirect($this->path);
+        }
+
+        if ($this->id && $this->actionState == 'rss' && $this->rssEnabled)
         {
             $items   = $this->_loadListItems($env, $this->_itemPerPage);
             foreach ($items as $item) {
@@ -221,6 +228,34 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
         }
 
         $this->_filterParams = FStr::getZendStyleURLParams($subPath);
+        return $this;
+    }
+
+    /**
+     * @param K3_Environment $env
+     * @param bool           $updated
+     */
+    protected function saveAction(K3_Environment $env, &$updated = false)
+    {
+        parent::saveAction($env, $updated);
+        $this->pool['rssEnabled'] = $env->request->getBinary('rssEnabled', K3_Request::POST, false);
+        $this->pool['updateTime'] = time();
+
+        $updated = true;
+    }
+
+    /**
+     * @param array $data
+     * @return SOne_Model_Object_HTMLPage
+     */
+    public function setData(array $data)
+    {
+        $this->pool['data'] = $data + array(
+            'rssEnabled' => false,
+        );
+
+        $this->pool['rssEnabled'] =& $this->pool['data']['rssEnabled'];
+
         return $this;
     }
 }

@@ -144,7 +144,7 @@ class SOne_Application extends K3_Application
     {
         /** @var $tipObject SOne_Model_Object */
         $tipObject = null;
-        if ($staticRoutes = $this->_config->staticRoutes) {
+        if (($staticRoutes = $this->_config->staticRoutes) && $staticRoutes instanceof K3_Config) {
             $staticRoutes = $staticRoutes->toArray();
             foreach ($staticRoutes as $route => $data) {
                 if ($request->path == $route || strpos($request->path, $route.'/') === 0) {
