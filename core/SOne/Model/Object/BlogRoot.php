@@ -46,16 +46,7 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
 
         if ($this->id && $this->actionState == 'rss' && $this->rssEnabled)
         {
-            $items   = $this->_loadListItems($env, $this->_itemPerPage);
-            foreach ($items as $item) {
-                $item->fixFullUrls($env);
-            }
-
-            $rss = new K3_RSS(array(
-                'title' => $this->caption,
-                'link'  => FStr::fullUrl($this->path),
-                'feedLink' => FStr::fullUrl($this->path).'?rss',
-            ), $items, $env);
+            $rss = $this->_prepareRSSFeed($env);
 
             $env->getResponse()
                 ->setDoHTMLParse(false)
@@ -121,6 +112,26 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
         }
 
         return $node;
+    }
+
+    /**
+     * @param K3_Environment $env
+     * @return K3_RSS
+     */
+    protected function _prepareRSSFeed(K3_Environment $env)
+    {
+        $items   = $this->_loadListItems($env, $this->_itemPerPage);
+        foreach ($items as $item) {
+            $item->fixFullUrls($env);
+        }
+
+        $rss = new K3_RSS(array(
+            'title'    => $this->caption,
+            'link'     => FStr::fullUrl($this->path, false, '', $env),
+            'feedLink' => FStr::fullUrl($this->path.'?rss', false, '', $env),
+        ), $items, $env);
+
+        return $rss;
     }
 
     /**

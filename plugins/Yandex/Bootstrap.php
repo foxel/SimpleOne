@@ -18,12 +18,26 @@
  * along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
  */
 
-interface SOne_Interface_Object_Structured
+class Yandex_Bootstrap implements SOne_Interface_PluginBootstrap
 {
+    /** @var K3_Config */
+    protected static $_config;
+
     /**
-     * @abstract
-     * @param array $data
-     * @return static
+     * @return \K3_Config
      */
-    public function setData(array $data);
+    public static function getConfig()
+    {
+        return self::$_config;
+    }
+
+    /**
+     * @param SOne_Application $app
+     * @param K3_Config $config
+     */
+    public static function bootstrap(SOne_Application $app, K3_Config $config)
+    {
+        self::$_config = $config;
+        SOne_Model_Object::addNamespace('Yandex_Model_Object');
+    }
 }

@@ -81,4 +81,11 @@ vk.baseDomain => simple.one
 
 #staticRoutes.sitemap.class => SiteMap
 
+# Yandex plugin
+#plugins.Yandex => 1
+#staticRoutes.yrss.class => YandexRSS
+#staticRoutes.yrss.blogPath => data
+#staticRoutes.yrss.imageUrl => data.png
+
+
 */
