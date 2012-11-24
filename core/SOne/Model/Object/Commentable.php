@@ -30,7 +30,9 @@ abstract class SOne_Model_Object_Commentable extends SOne_Model_Object implement
     public function __construct(array $init = array())
     {
         parent::__construct($init);
-        $this->pool['commentsAllowed'] = true;
+        $this->pool += array(
+            'commentsAllowed' => true
+        );
 
         $this->setComments(isset($init['comments']) ? $init['comments'] : array());
     }
