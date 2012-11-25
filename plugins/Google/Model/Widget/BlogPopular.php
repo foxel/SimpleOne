@@ -87,10 +87,14 @@ class Google_Model_Widget_BlogPopular extends SOne_Model_Widget
                 $rawStats = $statsCache['stats'];
             }
         }
-        if (!$rawStats) {
-            $auth = Google_Bootstrap::getPluginInstance()->getAPIAuth(Google_API_Analytics::SCOPE_URL);
-            $analytics = new Google_API_Analytics($auth);
-            $rawStats = $analytics->getMostVisitedPagesStats($analytics->getFistProfileId($config->analytics->accountId));
+        if ($rawStats === null) {
+            try {
+                $auth = Google_Bootstrap::getPluginInstance()->getAPIAuth(Google_API_Analytics::SCOPE_URL);
+                $analytics = new Google_API_Analytics($auth);
+                $rawStats = $analytics->getMostVisitedPagesStats($analytics->getFistProfileId($config->analytics->accountId));
+            } catch (Exception $e) {
+                $rawStats = array();
+            }
             FCache::set('googleStats', array(
                 'timestamp' => time(),
                 'stats'     => $rawStats,
