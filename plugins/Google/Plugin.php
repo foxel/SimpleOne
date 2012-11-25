@@ -71,4 +71,26 @@ class Google_Plugin
                 'pageClass' => $this->_pageObject ? $this->_pageObject->class : 'unknown',
             ) + $analyticsConfig);
     }
+
+    /**
+     * @return K3_Config
+     */
+    public function getConfig()
+    {
+        return $this->_config;
+    }
+
+    /**
+     * @param  string|array $scope
+     * @return Google_API_Auth
+     * @throws FException
+     */
+    public function getAPIAuth($scope)
+    {
+        if ($this->_config->API instanceof K3_Config) {
+            return new Google_API_Auth($this->_config->API->accountName, $scope, $this->_config->API->privateKeyPath);
+        }
+
+        throw new FException('Google API auth parameters not set in config');
+    }
 }

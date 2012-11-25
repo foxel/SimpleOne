@@ -128,7 +128,7 @@ class Google_API_Analytics
             if (preg_match('#UA-(\d+)-\d+#', $webPropertyId, $matches)) {
                 $accountId = (int) $matches[1];
             } else {
-                throw new FException('Web Property ID is invalid');
+                throw new FException('Web Property ID is invalid: '.$webPropertyId);
             }
         }
 

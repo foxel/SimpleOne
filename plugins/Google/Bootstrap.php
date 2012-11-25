@@ -25,9 +25,18 @@ class Google_Bootstrap implements SOne_Interface_PluginBootstrap
     /** @var Google_Plugin */
     protected static $_pluginInstance;
 
+    /**
+     * @return \Google_Plugin
+     */
+    public static function getPluginInstance()
+    {
+        return self::$_pluginInstance;
+    }
+
     public static function bootstrap(SOne_Application $app, K3_Config $config)
     {
         self::$_pluginInstance = new Google_Plugin($app, $config);
+        SOne_Model_Widget::addNamespace('Google_Model_Widget');
     }
 
 }

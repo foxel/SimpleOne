@@ -45,3 +45,18 @@
 </script>
 <<- 'SONE_GOOGLE_ANALYTICS_JS'>>
 
+<<+ 'SONE_GOOGLE_WIDGET_POPULAR_BLOCK'>>
+{IF:IN_items}
+<div class="well well-small" style="overflow: hidden; text-overflow: ellipsis;">
+    <legend>{IF:IN_title}{IN_title}{ELSE}Популярное{/IF}</legend>
+    {IN_items}
+</div>
+{/IF}
+<<- 'SONE_GOOGLE_WIDGET_POPULAR_BLOCK'>>
+
+<<+ 'SONE_GOOGLE_WIDGET_POPULAR_ITEM'>>
+<div style="text-align: center; margin-bottom: 10px;">
+    {IF:IN_image}<img src="{FULLURL:IN_image}" alt="{!IN_caption}" style="width: 110px;" />{/IF}
+    <p><a href="{FULLURL:IN_path}">{!IN_caption}</a></p>
+</div>
+<<- 'SONE_GOOGLE_WIDGET_POPULAR_ITEM'>>
