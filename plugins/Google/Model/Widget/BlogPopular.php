@@ -101,7 +101,7 @@ class Google_Model_Widget_BlogPopular extends SOne_Model_Widget
             ));
         }
 
-        usort($objects, function(SOne_Model_Object $a, SOne_Model_Object $b) {
+        uasort($objects, function(SOne_Model_Object $a, SOne_Model_Object $b) {
             $al = count(explode('/', $a->path));
             $bl = count(explode('/', $b->path));
             if ($al == $bl) {
