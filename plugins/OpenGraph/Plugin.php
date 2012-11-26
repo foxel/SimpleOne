@@ -57,7 +57,7 @@ class OpenGraph_Plugin
             ->addData('META', sprintf('<meta property="og:type" content="%s"/>', 'article'))
             ->addData('META', sprintf('<meta property="og:url" content="%s"/>', FStr::htmlschars(FStr::fullUrl($this->_pageObject->path))))
             ->addData('META', sprintf('<meta property="og:image" content="%s"/>', !empty($this->_pageObject->thumbnailImage)
-                ? FStr::htmlschars(FStr::fullUrl($this->_pageObject->path, false, '', $this->_app->getEnv()))
+                ? FStr::htmlschars(FStr::fullUrl($this->_pageObject->thumbnailImage, false, '', $this->_app->getEnv()))
                 : ''))
             ;
     }
