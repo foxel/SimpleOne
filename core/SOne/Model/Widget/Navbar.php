@@ -59,7 +59,7 @@ class SOne_Model_Widget_Navbar extends SOne_Model_Widget
                         'href'    => $id,
                     );
                 }
-                $link['active'] = (FStr::isUrl($link['href']) == 2) && (strcasecmp(trim($currentPath, '/').'/', trim($link['href'], '/').'/') == 0);
+                $link['active'] = (trim($currentPath, '/').'/' == trim($link['href'], '/').'/');
                 $links[] = $link;
             }
 
