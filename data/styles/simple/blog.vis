@@ -147,12 +147,11 @@
 <<- 'SONE_OBJECT_BLOG_LIST'>>
 
 <<+ 'SONE_OBJECT_BLOG_LISTITEM'>>
-<div class="blog-item well" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-    <div class="clearfix">
-        <div class="pull-right" style="text-align: right;">
+<div class="blog-item well well-small clearfix" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+    <div class="clearfix" style="border-bottom: 1px solid #E5E5E5; margin-bottom: 5px;">
+        <div class="pull-right" style="text-align: right; padding-top: 5px;">
             {IN_userTag}
             <a href="{FULLURL:IN_PARENTPATH}/date/{FTIME:IN_createTime|"Y-m-d"|false|true}"><i class="icon-time"></i> <time itemprop="datePublished" datetime="{FTIME:IN_createTime|"c"|0|true}">{FTIME:IN_createTime}</time></a>
-            {IF:IN_tags}<div class="blog-keywords" itemprop="keywords">{IN_tags}</div>{/IF}
         </div>
         <h3 itemprop="name"><a href="{FULLURL:IN_PATH}" itemprop="url">{IF:IN_caption}{!IN_CAPTION}{ELSE}{IN_PATH}{/IF}</a>
             <small></small>
@@ -162,6 +161,7 @@
         {IN_CONTENT}
         {IF:IN_showReadMore}<a href="{FULLURL:IN_PATH}">Читать дальше...</a>{/IF}
     </div>
+    {IF:IN_tags}<div class="pull-right blog-keywords" itemprop="keywords">{IN_tags}</div>{/IF}
 </div>
 <<- 'SONE_OBJECT_BLOG_LISTITEM'>>
 
@@ -174,17 +174,17 @@
 <<- 'SONE_OBJECT_BLOG_TAG'>>
 
 <<+ 'CSS'>>
+div.blog-item-preview {
+    min-height: 100px;
+}
 div.blog-keywords {
-    max-width: 250px;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+    border-top: 1px solid #E5E5E5;
+    margin-top: 5px;
+    text-align: right;
+    padding-left: 50px;
+    min-width: 30%;
 }
 div.blog-keywords a {
     white-space: nowrap;
-}
-div.blog-keywords:hover {
-    overflow: visible;
-    white-space: normal;
 }
 <<- 'CSS'>>
