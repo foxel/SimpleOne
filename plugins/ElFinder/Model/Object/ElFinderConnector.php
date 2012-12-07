@@ -171,9 +171,11 @@ class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
             return;
         }
 
+        $imageActionsNeeded = false;
+
         $autoResize = $maxWidth = $maxHeight = null;
         if (isset($this->_config['maxImageWidth']) || isset($this->_config['maxImageHeight'])) {
-            $autoResize = true;
+            $imageActionsNeeded = $autoResize = true;
             $maxWidth = isset($this->_config['maxImageWidth']) && is_numeric($this->_config['maxImageWidth'])
                 ? (int) $this->_config['maxImageWidth']
                 : PHP_INT_MAX;
@@ -182,11 +184,19 @@ class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
                 : PHP_INT_MAX;
         }
 
+        $addWatermark = $watermarkFont = $watermarkText = $watermarkSize = null;
+        if (isset($this->_config['watermarkFont']) && isset($this->_config['watermarkText'])) {
+            $imageActionsNeeded = $addWatermark = true;
+            $watermarkFont = realpath($this->_config['watermarkFont']);
+            $watermarkText = $this->_config['watermarkText'];
+            $watermarkSize = isset($this->_config['watermarkSize']) ? (int)$this->_config['watermarkSize'] : 22;
+        }
+
         foreach ($result['added'] as &$file) {
             $path = $finder->realpath($file['hash']);
 
-            if ($autoResize && (strpos($file['mime'], 'image/') === 0) && ($iData = getimagesize($path))) {
-                if ($iData[0] > $maxWidth || $iData[1] > $maxHeight) {
+            if ($imageActionsNeeded && (strpos($file['mime'], 'image/') === 0) && ($iData = getimagesize($path))) {
+                if ($autoResize && ($iData[0] > $maxWidth || $iData[1] > $maxHeight)) {
                     $s = min($maxWidth/$iData[0], $maxHeight/$iData[1]);
                     if ($s > 0 && $s < 1) {
                         $w = (int) $iData[0]*$s;
@@ -205,6 +215,12 @@ class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
                             $file = array_shift($res['changed']);
                         }
                     }
+                }
+                if ($addWatermark && $this->_watermark($path, $watermarkText, $watermarkFont, $watermarkSize)) {
+                    $file['ts'] = filemtime($path);
+                    $file['size'] = @filesize($path);
+                    $iData = getimagesize($path);
+                    $file['mime'] = $iData['mime'];
                 }
             }
         }
@@ -228,5 +244,66 @@ class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
                 $args['name'] = FStr::cast($args['name'], FStr::PATH);
                 break;
         };
+    }
+
+    /**
+     * @param string $path
+     * @param string $text
+     * @param string $fontFile
+     * @param int $fontSize
+     * @return bool
+     */
+    protected function _watermark($path, $text, $fontFile, $fontSize = 24)
+    {
+        if ($img = $this->_loadImage($path, $imageInfo)) {
+            $box = imagettfbbox($fontSize, 0, $fontFile, $text);
+            $x = imagesx($img) - 10 - $box[2];
+            $y = imagesy($img) - 10 - $box[3];
+            imagettftext($img, $fontSize, 0, $x+1, $y+1, imagecolorallocate($img, 0, 0, 0), $fontFile, $text);
+            imagettftext($img, $fontSize, 0, $x, $y, imagecolorallocate($img, 255, 255, 255), $fontFile, $text);
+
+            if ($imageInfo['mime'] == 'image/jpeg') {
+                $result = imagejpeg($img, $path, 100);
+            } elseif ($imageInfo['mime'] == 'image/gif') {
+                $result = imagegif($img, $path, 7);
+            } else {
+                $result = imagepng($img, $path, 7);
+            }
+
+            return $result;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string $path
+     * @param array &$imageInfo
+     * @return bool|resource
+     */
+    protected function _loadImage($path, &$imageInfo = array())
+    {
+        if (($imageInfo = @getimagesize($path)) == false) {
+            return false;
+        }
+
+        switch ($imageInfo['mime']) {
+            case 'image/jpeg':
+                $img = imagecreatefromjpeg($path);
+                break;
+            case 'image/png':
+                $img = imagecreatefrompng($path);
+                break;
+            case 'image/gif':
+                $img = imagecreatefromgif($path);
+                break;
+            case 'image/xbm':
+                $img = imagecreatefromxbm($path);
+                break;
+            default:
+                $img = false;
+        }
+
+        return $img;
     }
 }

@@ -60,6 +60,9 @@ staticRoutes.uploader.roots.0.uploadAllow => image,application/x-shockwave-flash
 staticRoutes.uploader.roots.0.uploadOrder => allow,deny
 #staticRoutes.uploader.maxImageWidth  => 600
 #staticRoutes.uploader.maxImageHeight => 500
+#staticRoutes.uploader.watermarkFont  => {F_DATA_ROOT}/font.otf
+#staticRoutes.uploader.watermarkText => Hi there!
+#staticRoutes.uploader.watermarkSize => 20
 
 plugins.ElFinder.connectorUrl => uploader
 
