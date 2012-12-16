@@ -80,7 +80,12 @@
                 minDate: new Date('{FTIME:IN_lastPubTime|"c"|0|true}')
             })
             .on('change', function() {
-                $(this).closest('span').find('input[name="pubTime"]').val((new Date($(this).val())).toISOString());
+                var time = '';
+                try {
+                    time = (new Date($(this).val())).toISOString();
+                } finally {
+                    $(this).closest('span').find('input[name="pubTime"]').val(time);
+                }
             })
             .closest('span').addClass('input-append')
             .find('.ui-datepicker-trigger').addClass('btn');
