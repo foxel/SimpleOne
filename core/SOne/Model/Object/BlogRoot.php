@@ -107,6 +107,8 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
 
         if ($this->actionState == 'new') {
             $node->addData('newPath', $this->path.'/'.FStr::shortUID());
+            $lastOne = $this->_loadLastPublished($env);
+            $node->addData('lastPubTime', $lastOne->createTime);
             $allTags = SOne_Repository_Tag::getInstance($this->_db)->loadNames();
             $node->addData('allTagsJson', json_encode($allTags));
         }
@@ -152,6 +154,15 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
             'parentId=' => $this->id,
             'class='    => 'BlogItem',
         );
+
+        if ($env->get('user') && $userId = $env->get('user')->id) {
+            if (!$this->isActionAllowed('edit', $env->get('user'))) {
+                $filter['publishedOrOwnerId='] = $userId;
+            }
+        } else {
+            $filter['published='] = true;
+        }
+
         /** @var $lang FLNGData */
         $lang = $env->get('lang');
         if ($this->_filterParams) {
@@ -195,6 +206,29 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
         $usersRepo->prepareFetch(array('id=' => array_unique($userIds)));
 
         return $items;
+    }
+
+    /**
+     * @param K3_Environment $env
+     * @return \SOne_Model_Object_BlogItem
+     */
+    protected function _loadLastPublished(K3_Environment $env)
+    {
+        if (!$this->id) {
+            return null;
+        }
+
+        /** @var $repo SOne_Repository_Object */
+        $repo = SOne_Repository_Object::getInstance($this->_db);
+        $filter = array(
+            'parentId='  => $this->id,
+            'class='     => 'BlogItem',
+            'published=' => true,
+        );
+
+        $item = $repo->loadOne($filter);
+
+        return $item;
     }
 
     /**

@@ -19,7 +19,7 @@
  */
 
 /**
- * @method SOne_Model_Object loadOne
+ * @method SOne_Model_Object loadOne(array $filter)
  */
 class SOne_Repository_Object extends SOne_Repository
 {
@@ -287,4 +287,41 @@ class SOne_Repository_Object extends SOne_Repository
             $this->save($object);
         }
     }
+
+    /**
+     * @param array $filters
+     * @param array $map
+     * @param string $dbFieldPrefix
+     * @return array
+     */
+    public static function mapFilters(array $filters, array $map, $dbFieldPrefix = '')
+    {
+        $notMappedFilters = array();
+        $mappedFilters = array();
+
+        $dbPrefix = $dbFieldPrefix
+            ? $dbFieldPrefix.'.'
+            : '';
+
+        foreach ($filters as $filterKey => $filterValue) {
+            switch ($filterKey) {
+                case 'publishedOrOwnerId=':
+                    if (isset($map['ownerId'], $map['createTime'])) {
+                        $mappedFilters[$dbPrefix.$map['ownerId'].' = ? OR '.$dbPrefix.$map['createTime'].' <= '.time()] = $filterValue;
+                    }
+                    break;
+                case 'published=':
+                    if (isset($map['createTime'])) {
+                        $mappedFilters['('.$dbPrefix.$map['createTime'].' <= '.time().') = ?'] = (bool) $filterValue;
+                    }
+                    break;
+                default:
+                    $notMappedFilters[$filterKey] = $filterValue;
+            }
+        }
+
+        return array_merge($mappedFilters, parent::mapFilters($notMappedFilters, $map, $dbFieldPrefix));
+    }
+
+
 }

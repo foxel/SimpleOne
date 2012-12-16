@@ -77,6 +77,7 @@
   <!-- Load jQuery -->
   <script type="text/javascript" src="/static/jscripts/jquery-1.7.2.min.js" charset="utf-8"></script>
   <script type="text/javascript" src="/static/jscripts/jquery-ui-1.8.21.custom.min.js" charset="utf-8"></script>
+  <script type="text/javascript" src="/static/jscripts/jquery-ui-timepicker-addon.js" charset="utf-8"></script>
   <script type="text/javascript" src="/static/jscripts/elrte.min.js" charset="utf-8"></script>
   <script type="text/javascript" src="/static/jscripts/i18n/elrte.ru.js" charset="utf-8"></script>
   <script type="text/javascript" src="/static/jscripts/bootstrap-modal.js" charset="utf-8"></script>
