@@ -90,7 +90,7 @@
             .closest('span').addClass('input-append')
             .find('.ui-datepicker-trigger').addClass('btn');
         $('button.blogTimeReset').click(function() {
-            $(this).closest('span').find('input.blogTime').val('').trigger('keyup');
+            $(this).closest('span').find('input.blogTime').val('').trigger('keyup').trigger('change');
         });
     });
 </script>{/IF}
