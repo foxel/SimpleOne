@@ -77,12 +77,12 @@
                 showOn: 'both',
                 constrainInput: true,
                 buttonText: '<i class="icon-time"></i>',
-                minDate: Date.fromISO('{FTIME:IN_lastPubTime|"c"|0|true}')
+                minDate: new Date('{FTIME:IN_lastPubTime|"c"|0|true}')
             })
             .on('change', function() {
                 var time = '';
                 try {
-                    time = (new Date($(this).val())).toISOString();
+                    time = (new Date($(this).val().replace(/ /, 'T'))).toISOString();
                 } finally {
                     $(this).closest('span').find('input[name="pubTime"]').val(time);
                 }

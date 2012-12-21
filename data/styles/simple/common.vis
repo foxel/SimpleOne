@@ -75,6 +75,7 @@
   {ENDIF}
   
   <!-- Load jQuery -->
+  <!--[if lt IE 9]><script type="text/javascript" src="/static/jscripts/date-iefix.js" charset="utf-8"></script><![endif]-->
   <script type="text/javascript" src="/static/jscripts/jquery-1.7.2.min.js" charset="utf-8"></script>
   <script type="text/javascript" src="/static/jscripts/jquery-ui-1.8.21.custom.min.js" charset="utf-8"></script>
   <script type="text/javascript" src="/static/jscripts/jquery-ui-timepicker-addon.js" charset="utf-8"></script>
@@ -82,54 +83,11 @@
   <script type="text/javascript" src="/static/jscripts/i18n/elrte.ru.js" charset="utf-8"></script>
   <script type="text/javascript" src="/static/jscripts/bootstrap-modal.js" charset="utf-8"></script>
   <script type="text/javascript" src="/static/jscripts/bootstrap-tooltip.js" charset="utf-8"></script>
-  <script type="text/javascript" src="/static/jscripts/bootstrap-ie6.js" charset="utf-8"></script>
+  <!--[if lt IE 7]><script type="text/javascript" src="/static/jscripts/bootstrap-ie6.js" charset="utf-8"></script><![endif]-->
   <script type="text/javascript" src="/static/jscripts/chosen.jquery.js" charset="utf-8"></script>
   <script type="text/javascript" src="/static/jscripts/jquery.tagcloud.js" charset="utf-8"></script>
   <script type="text/javascript">
   // JavaScript Starts Here <![CDATA[
-
-      // Date extension
-      (function(){
-          var D = new Date('2011-06-02T09:34:29+02:00');
-          if (!D || +D !== 1307000069000) {
-              Date.fromISO = function(s) {
-                  var day, tz,
-                      rx = /^(\d{4}\-\d\d\-\d\d([tT][\d:\.]*)?)([zZ]|([+\-])(\d\d):(\d\d))?$/,
-                      p = rx.exec(s) || [];
-                  if (p[1]){
-                      day= p[1].split(/\D/);
-                      for (var i = 0, L = day.length; i < L; i++) {
-                          day[i] = parseInt(day[i], 10) || 0;
-                      }
-                      day[1]-= 1;
-                      day= new Date(Date.UTC.apply(Date, day));
-                      if (!day.getDate()) return NaN;
-                      if (p[5]) {
-                          tz = (parseInt(p[5], 10)*60);
-                          if (p[6]) {
-                              tz += parseInt(p[6], 10);
-                          }
-                          if (p[4]== '+') {
-                              tz *= -1;
-                          }
-                          if(tz) {
-                              day.setUTCMinutes(day.getUTCMinutes() + tz);
-                          }
-                      }
-                      return day;
-                  }
-                  return NaN;
-              }
-          } else {
-              Date.fromISO = function(s){
-                  return new Date(s);
-              }
-          }
-
-          if (typeof (Date.prototype.toISOString) != 'function') {
-              Date.protoype.toISOString = Date.protoype.toJSON;
-          }
-      })();
 
       (function($) {
           var SOne = {
@@ -194,8 +152,8 @@
               var o = this;
               $(i).load(function() {
                   if (i.width && i.width > 1.2*o.width && !$(o).closest('a').length) {
-                      var modalDiv = $('<div />', {class: 'modal hide'}).append(
-                          $('<div />', {class: 'modal-body'}).append(i)
+                      var modalDiv = $('<div />', {"class": 'modal hide'}).append(
+                          $('<div />', {"class": 'modal-body'}).append(i)
                       );
                       $('body').append(modalDiv);
                       modalDiv.modal({show: false});
