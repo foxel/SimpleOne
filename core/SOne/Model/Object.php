@@ -230,7 +230,8 @@ abstract class SOne_Model_Object extends SOne_Model implements I_K3_RSS_Item
     {
         $this->pool['actionState'] = $action;
         $actionMethod = $action.'Action';
-        if (method_exists($this, $actionMethod)) {
+        // prevent cycle call
+        if ($action != 'do' && method_exists($this, $actionMethod)) {
             $this->$actionMethod($env, $objectUpdated);
         }
     }
