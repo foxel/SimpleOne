@@ -51,9 +51,14 @@ Date = (function(nativeDate) {
         };
 
         var prepare = function() {
-            return arguments.length == 1
-                ? new nativeDate(nativeDate.parse.apply(nativeDate, arguments))
-                : new nativeDate()
+            if (arguments.length) {
+                var date = arguments[0];
+                if (typeof date != 'number') {
+                    date = nativeDate.parse.call(nativeDate, date);
+                }
+                return new nativeDate(date);
+            }
+            return new nativeDate();
         };
 
         d = function() {
