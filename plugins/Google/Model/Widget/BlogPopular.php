@@ -48,9 +48,16 @@ class Google_Model_Widget_BlogPopular extends SOne_Model_Widget
 
         $container = new FVISNode('SONE_GOOGLE_WIDGET_POPULAR_BLOCK', 0, $vis);
         $container->addDataArray($this->pool);
-        if ($pageObject instanceof SOne_Model_Object_BlogRoot || $pageObject instanceof SOne_Model_Object_BlogItem) {
-            $blogId = $pageObject instanceof SOne_Model_Object_BlogRoot ? $pageObject->id : $pageObject->parentId;
-            $blogPath = $pageObject instanceof SOne_Model_Object_BlogRoot ? $pageObject->path : preg_replace('#/[^/]+$#', '', trim($pageObject->path, '/'));
+
+        if ($this->blogPath) {
+            $blogObject = SOne_Repository_Object::getInstance($db)->loadOne(array('path=' => $this->blogPath));
+        } else {
+            $blogObject = $pageObject;
+        }
+
+        if ($blogObject instanceof SOne_Model_Object_BlogRoot || $blogObject instanceof SOne_Model_Object_BlogItem) {
+            $blogId = $blogObject instanceof SOne_Model_Object_BlogRoot ? $blogObject->id : $blogObject->parentId;
+            $blogPath = $blogObject instanceof SOne_Model_Object_BlogRoot ? $blogObject->path : preg_replace('#/[^/]+$#', '', trim($blogObject->path, '/'));
             $topObjects = $this->_getTopObjects($blogId, $db, $this->limit);
 
             $items = array();
@@ -158,9 +165,11 @@ class Google_Model_Widget_BlogPopular extends SOne_Model_Widget
         $this->pool['data'] = $data + array(
             'limit' => 10,
             'title' => null,
+            'blogPath' => null,
         );
         $this->pool['limit'] =& $this->pool['data']['limit'];
         $this->pool['title'] =& $this->pool['data']['title'];
+        $this->pool['blogPath'] =& $this->pool['data']['blogPath'];
         return $this;
     }
 }
