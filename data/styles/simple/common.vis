@@ -76,6 +76,8 @@
   
   <!-- Load jQuery -->
   <!--[if lt IE 9]><script type="text/javascript" src="/static/jscripts/date-iefix.js" charset="utf-8"></script><![endif]-->
+  <script type="text/javascript" src="/static/jscripts/date.format.js" charset="utf-8"></script>
+  <script type="text/javascript" src="/static/jscripts/i18n/date.format.ru.js" charset="utf-8"></script>
   <script type="text/javascript" src="/static/jscripts/jquery-1.7.2.min.js" charset="utf-8"></script>
   <script type="text/javascript" src="/static/jscripts/jquery-ui-1.8.21.custom.min.js" charset="utf-8"></script>
   <script type="text/javascript" src="/static/jscripts/jquery-ui-timepicker-addon.js" charset="utf-8"></script>
@@ -138,6 +140,16 @@
               $('select').each(function() {
                   if ($('option', this).length > 7) {
                       $(this).sOneSelect({allow_single_deselect: true});
+                  }
+              });
+
+              var minimal = new Date();
+              minimal.setSeconds(0);
+              minimal.setMinutes(0);
+              $('time').each(function() {
+                  var time = new Date($(this).attr('datetime'));
+                  if (!isNaN(time.valueOf()) && minimal.valueOf() > time.valueOf()) {
+                      $(this).text(time.format('dd mmm yyyy HH:MM'));
                   }
               });
           });
