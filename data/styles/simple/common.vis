@@ -144,8 +144,7 @@
               });
 
               var minimal = new Date();
-              minimal.setSeconds(0);
-              minimal.setMinutes(0);
+              minimal.setHours(minimal.getHours()-1);
               $('time').each(function() {
                   var time = new Date($(this).attr('datetime'));
                   if (!isNaN(time.valueOf()) && minimal.valueOf() > time.valueOf()) {
