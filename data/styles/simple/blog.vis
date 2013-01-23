@@ -82,7 +82,9 @@
             .on('change', function() {
                 var time = '';
                 try {
-                    time = (new Date($(this).val().replace(/ /, 'T'))).toISOString();
+                    var tz = -(new Date()).getTimezoneOffset();
+                    tz = '%0%1:%2'.format(tz<0?'-':'+', ('0'+Math.abs(Math.floor(tz/60))).substr(-2), ('0'+Math.abs(tz)%60).substr(-2));
+                    time = (new Date($(this).val().replace(/ /, 'T')+tz)).toISOString();
                 } finally {
                     $(this).closest('span').find('input[name="pubTime"]').val(time);
                 }
