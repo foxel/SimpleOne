@@ -1,15 +1,7 @@
 Date = (function(nativeDate) {
 
     if (typeof (nativeDate.prototype.toISOString) != 'function') {
-        nativeDate.prototype.toISOString = nativeDate.prototype.toJSON || function() {
-          return this.getUTCFullYear() + "-"
-            + ("0" + this.getUTCMonth() + 1 + "-").slice(-3)
-            + ("0" + this.getUTCDate() + "T").slice(-3)
-            + ("0" + this.getUTCHours() + ":").slice(-3)
-            + ("0" + this.getUTCMinutes() + ":").slice(-3)
-            + ("0" + this.getUTCSeconds() + ".").slice(-3)
-            + ("00" + this.getUTCMilliseconds() + "Z").slice(-4);
-        };
+        nativeDate.prototype.toISOString = nativeDate.prototype.toJSON;
     }
 
     var test = nativeDate.parse('2011-06-02T09:34:29+02:00');
@@ -17,7 +9,7 @@ Date = (function(nativeDate) {
         var nativeParse = nativeDate.parse;
 
         var d;
-        var rx = /^(\d{4}\-\d\d\-\d\d([tT ][\d:\.]*)?)([zZ]|([+\-])(\d\d):(\d\d))?$/;
+        var rx = /^(\d{4}\-\d\d\-\d\d([tT][\d:\.]*)?)([zZ]|([+\-])(\d\d):(\d\d))?$/;
         nativeDate.parse = function(s) {
             if (s instanceof nativeDate || s instanceof d) {
                 return s.valueOf();
@@ -44,6 +36,8 @@ Date = (function(nativeDate) {
                     if(tz) {
                         day.setUTCMinutes(day.getUTCMinutes() + tz);
                     }
+                } else if (!p[3]) {
+                    day.setUTCMinutes(day.getUTCMinutes() + day.getTimezoneOffset());
                 }
                 return day.valueOf();
             }
@@ -52,11 +46,19 @@ Date = (function(nativeDate) {
 
         var prepare = function() {
             if (arguments.length) {
-                var date = arguments[0];
-                if (typeof date != 'number') {
-                    date = nativeDate.parse.call(nativeDate, date);
+                if (arguments.length == 1) {
+                    var date = arguments[0];
+                    if (typeof date != 'number') {
+                        date = nativeDate.parse.call(nativeDate, date);
+                    }
+                    return new nativeDate(date);
+                } else {
+                    var args = [];
+                    for(var i in arguments) {
+                        args.push('arguments['+i+']');
+                    }
+                    return eval('new nativeDate('+args.join(', ')+')');
                 }
-                return new nativeDate(date);
             }
             return new nativeDate();
         };
@@ -65,7 +67,7 @@ Date = (function(nativeDate) {
             if (this instanceof d) {
                 this.native = prepare.apply(this, arguments);
             } else {
-                return prepare.apply(this, arguments);
+                return nativeDate();
             }
         };
 
