@@ -88,6 +88,7 @@
   <!--[if lt IE 7]><script type="text/javascript" src="/static/jscripts/bootstrap-ie6.js" charset="utf-8"></script><![endif]-->
   <script type="text/javascript" src="/static/jscripts/chosen.jquery.js" charset="utf-8"></script>
   <script type="text/javascript" src="/static/jscripts/jquery.tagcloud.js" charset="utf-8"></script>
+  <script type="text/javascript" src="/static/jscripts/sone.misc.js" charset="utf-8"></script>
   <script type="text/javascript">
   // JavaScript Starts Here <![CDATA[
 
@@ -118,23 +119,6 @@
               }
           };
 
-          $.fn.extend({
-              sOneSelect:function (options) {
-                  if ($.browser.msie && ($.browser.version === "6.0" || ($.browser.version === "7.0" && document.documentMode === 7))) {
-                      return this;
-                  }
-                  return this.each(function (input_field) {
-                      var $this = $(this);
-                      var emptyValue = $('option[value=""]', this).text();
-                      if (emptyValue) {
-                          $this.attr('data-placeholder', emptyValue);
-                          $('option[value=""]', this).text('');
-                      }
-                      $this.chosen({allow_single_deselect: true});
-                  });
-              }
-          });
-
           $().ready(function() {
               SOne.updateHtmlEditors();
               $('select').each(function() {
@@ -143,14 +127,7 @@
                   }
               });
 
-              var minimal = new Date();
-              minimal.setHours(minimal.getHours()-1);
-              $('time').each(function() {
-                  var time = new Date($(this).attr('datetime'));
-                  if (!isNaN(time.valueOf()) && minimal.valueOf() > time.valueOf()) {
-                      $(this).text(time.format('dd mmm yyyy HH:MM'));
-                  }
-              });
+              $('time').timeFormat();
           });
 
           $.SOne = SOne;
