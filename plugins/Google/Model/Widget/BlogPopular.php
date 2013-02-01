@@ -58,7 +58,7 @@ class Google_Model_Widget_BlogPopular extends SOne_Model_Widget
         if ($blogObject instanceof SOne_Model_Object_BlogRoot || $blogObject instanceof SOne_Model_Object_BlogItem) {
             $blogId = $blogObject instanceof SOne_Model_Object_BlogRoot ? $blogObject->id : $blogObject->parentId;
             $blogPath = $blogObject instanceof SOne_Model_Object_BlogRoot ? $blogObject->path : preg_replace('#/[^/]+$#', '', trim($blogObject->path, '/'));
-            $topObjects = $this->_getTopObjects($blogId, $db, $this->limit);
+            $topObjects = $this->_getTopObjects($blogId, $blogPath, $db, $this->limit);
 
             $items = array();
             foreach ($topObjects as $object) {
@@ -79,17 +79,17 @@ class Google_Model_Widget_BlogPopular extends SOne_Model_Widget
 
     /**
      * @param int $blogId
+     * @param string $blogPath
      * @param FDataBase $db
      * @param int|null $limit
      * @return SOne_Model_Object
      */
-    protected function _getTopObjects($blogId, FDataBase $db, $limit = null)
+    protected function _getTopObjects($blogId, $blogPath, FDataBase $db, $limit = null)
     {
-        $objects = SOne_Repository_Object::getInstance($db)->loadAll(array('parentId=' => $blogId));
         $config = Google_Bootstrap::getPluginInstance()->getConfig();
 
         $rawStats = null;
-        if ($statsCache = FCache::get('googleStats')) {
+        if ($statsCache = FCache::get('googleStats.'.$blogId)) {
             if ($statsCache['timestamp'] >= time() - 900) {
                 $rawStats = $statsCache['stats'];
             }
@@ -98,11 +98,11 @@ class Google_Model_Widget_BlogPopular extends SOne_Model_Widget
             try {
                 $auth = Google_Bootstrap::getPluginInstance()->getAPIAuth(Google_API_Analytics::SCOPE_URL);
                 $analytics = new Google_API_Analytics($auth);
-                $rawStats = $analytics->getMostVisitedPagesStats($analytics->getFistProfileId($config->analytics->accountId));
+                $rawStats = $analytics->getMostVisitedPagesStats($analytics->getFistProfileId($config->analytics->accountId), $blogPath.'/');
             } catch (Exception $e) {
                 $rawStats = array();
             }
-            FCache::set('googleStats', array(
+            FCache::set('googleStats.'.$blogId, array(
                 'timestamp' => time(),
                 'stats'     => $rawStats,
             ));
@@ -119,38 +119,33 @@ class Google_Model_Widget_BlogPopular extends SOne_Model_Widget
 
         $stats = array();
         foreach ($rawStats as $rawRow) {
-            $path = explode('/', preg_replace('#^/+|[?\#]+.*$#', '', $rawRow['ga:pagePath']));
+            $path = preg_replace('#^/+|[?\#]+.*$#', '', $rawRow['ga:pagePath']);
             unset($rawRow['ga:pagePath']);
-            /** @var $objectFound SOne_Model_Object */
-            $objectFound = null;
-            while (!empty($path)) {
-                $pathString = implode('/', $path);
-                foreach ($objects as $object) {
-                    if ($object->path == $pathString) {
-                        $objectFound = $object;
-                        break 2;
-                    }
-                }
-                array_pop($path);
-            }
 
-            if ($objectFound) {
-                if (isset($stats[$objectFound->id])) {
-                    foreach ($rawRow as $k => $v) {
-                        $stats[$objectFound->id][$k] += $v;
-                    }
-                } elseif ($limit && count($stats) >= $limit) {
-                    break;
-                } else {
-                    $stats[$objectFound->id] = $rawRow;
+            if (isset($stats[$path])) {
+                foreach ($rawRow as $k => $v) {
+                    $stats[$path][$k] += $v;
                 }
+            } elseif ($limit && count($stats) >= $limit) {
+                break;
+            } else {
+                $stats[$path] = $rawRow;
             }
         }
+        unset($rawStats);
+
+        $paths = array_keys($stats);
+
+        $objects = SOne_Repository_Object::getInstance($db)->loadAll(array('parentId=' => $blogId, 'path=' => $paths));
 
         $topObjects = array();
-
-        foreach ($stats as $objectId => $stat) {
-            $topObjects[$objectId] = $objects[$objectId];
+        foreach ($paths as $path) {
+            foreach ($objects as $object) {
+                if ($object->path == $path) {
+                    $topObjects[$object->id] = $object;
+                    continue;
+                }
+            }
         }
 
         return $topObjects;

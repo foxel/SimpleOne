@@ -37,9 +37,9 @@ class Google_API_Analytics
      * @return array
      * @throws FException
      */
-    public function getMostVisitedPagesStats($profileId)
+    public function getMostVisitedPagesStats($profileId, $pathFilter = false)
     {
-        $url = self::REPORTING_URL.'?'.http_build_query(array(
+        $query = array(
             'ids'        => 'ga:'.$profileId,
             'start-date' => date('Y-m-d', time() - 3600*24*7),
             'end-date'   => date('Y-m-d'),
@@ -47,7 +47,13 @@ class Google_API_Analytics
             'dimensions' => 'ga:pagePath',
             'sort'       => '-ga:pageviews,-ga:visitors,-ga:visits',
             'filters'    => 'ga:visitors>0',
-        ));
+        );
+
+        if ($pathFilter) {
+            $query['filters'].= ';ga:pagePath=~^/?'.preg_quote($pathFilter);
+        }
+
+        $url = self::REPORTING_URL.'?'.http_build_query($query);
 
         $response = Google_Misc::makeRequest($url, array(), $this->_auth->getAuthHeaders());
 
