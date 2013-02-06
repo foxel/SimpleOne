@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -27,10 +27,10 @@
 class SOne_Request extends FBaseClass
 {
     /**
-     * @param K3_Environment $env
+     * @param SOne_Environment $env
      * @param K3_Config $config
      */
-    public function __construct(K3_Environment $env, K3_Config $config)
+    public function __construct(SOne_Environment $env, K3_Config $config)
     {
         list ($path) = explode('?', preg_replace('#^index\.php/?#i', '', $env->request->url), 2);
         $query = $env->getRequest()->getURLParams();

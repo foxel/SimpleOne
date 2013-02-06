@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -44,10 +44,10 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
     protected $aclEditActionsList = array('edit', 'save', 'stat', 'drop', 'grid');
 
     /**
-     * @param K3_Environment $env
+     * @param SOne_Environment $env
      * @return FVISNode
      */
-    public function visualize(K3_Environment $env)
+    public function visualize(SOne_Environment $env)
     {
         if (in_array($this->actionState, array('save', 'fill', 'drop'))) {
             $env->response->sendRedirect($this->path);
@@ -57,14 +57,14 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
             return $this->visualizeGrid($env);
         }
 
-        $node = new FVISNode('SONE_OBJECT_POLL', 0, $env->get('VIS'));
+        $node = new FVISNode('SONE_OBJECT_POLL', 0, $env->getVIS());
         $data =& $this->pool['data'];
 
         $statUsers = array();
         switch ($this->actionState) {
             case 'stat':
                 $pollItemVisClass = 'SONE_OBJECT_POLL_ITEM_STAT';
-                $statUsers = !empty($data['answers']) ? SOne_Repository_User::getInstance($env->get('db'))->loadAll(array('id' => array_keys($data['answers']))) : array();
+                $statUsers = !empty($data['answers']) ? SOne_Repository_User::getInstance($env->getDb())->loadAll(array('id' => array_keys($data['answers']))) : array();
                 break;
             case 'edit':
                 $pollItemVisClass = 'SONE_OBJECT_POLL_ITEM_EDIT';
@@ -74,8 +74,8 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
         }
 
         $statAnswers = $this->_genAnswersStats($statUsers);
-        $curAnswers = (isset($data['answers'][$env->get('user')->id]))
-            ? $data['answers'][$env->get('user')->id]
+        $curAnswers = (isset($data['answers'][$env->getUser()->id]))
+            ? $data['answers'][$env->getUser()->id]
             : array();
 
         $pollLocked   = true;
@@ -104,7 +104,7 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
 
             $questionLocked   = $question['lockAnswers'] && $questionAnswered;
 
-            $node->appendChild('question_items', $item = new FVISNode($pollItemVisClass, 0, $env->get('VIS')));
+            $node->appendChild('question_items', $item = new FVISNode($pollItemVisClass, 0, $env->getVIS()));
             $item->addDataArray(array(
                 'id'          => $qId,
                 'answered'    => $questionAnswered ? 1 : $pollAnswered = null,
@@ -125,7 +125,7 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
                         foreach ($statAnswers[$qId] as $username => $answerValue) {
                             $answers[] = array('userName' => $username, 'answerValue' => $answerValue);
                         }
-                        $item->appendChild('variants', $answersItem = new FVISNode($pollItemVisClass.'_TEXTANSWER', FVISNode::VISNODE_ARRAY, $env->get('VIS')));
+                        $item->appendChild('variants', $answersItem = new FVISNode($pollItemVisClass.'_TEXTANSWER', FVISNode::VISNODE_ARRAY, $env->getVIS()));
                         $answersItem->addDataArray($answers);
                     } else {
                         $item->addData('statVal', 0);
@@ -145,7 +145,7 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
                         $valueSelected = $questionAnswered && in_array($valueVariant, (array)$answerValue);
                         $valueLocked   = ($questionLocked) || ($valueLimit && !$valueSelected && $valueCount >= $valueLimit);
 
-                        $item->appendChild('variants', $variantItem = new FVISNode($pollItemVisClass.'_VALUEVARIANT', 0, $env->get('VIS')));
+                        $item->appendChild('variants', $variantItem = new FVISNode($pollItemVisClass.'_VALUEVARIANT', 0, $env->getVIS()));
                         $variantItem->addDataArray(array(
                             'qId'       => $qId,
                             'value'     => $valueVariant,
@@ -166,19 +166,19 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
         $node->addDataArray($this->pool + array(
             'locked'        => $pollLocked,
             'answered'      => $pollAnswered,
-            'ask_for_login' => $env->get('user')->id ? null : 1,
-            'canEdit'       => $this->isActionAllowed('edit', $env->get('user')) ? 1 : null,
+            'ask_for_login' => $env->getUser()->id ? null : 1,
+            'canEdit'       => $this->isActionAllowed('edit', $env->getUser()) ? 1 : null,
         ));
         return $node;
     }
 
     /**
-     * @param K3_Environment $env
+     * @param SOne_Environment $env
      * @return FVISNode
      */
-    public function visualizeGrid(K3_Environment $env)
+    public function visualizeGrid(SOne_Environment $env)
     {
-        return new FVISNode('SONE_OBJECT_POLL_GRID', 0, $env->get('VIS'));
+        return new FVISNode('SONE_OBJECT_POLL_GRID', 0, $env->getVIS());
     }
 
     /**
@@ -200,18 +200,18 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
 
     /**
      * @param string $action
-     * @param K3_Environment $env
+     * @param SOne_Environment $env
      * @param bool $updated
      */
-    public function doAction($action, K3_Environment $env, &$updated = false)
+    public function doAction($action, SOne_Environment $env, &$updated = false)
     {
         parent::doAction($action, $env, $updated);
         $data =& $this->pool['data'];
 
-        if ($action == 'fill' && !empty($data['questions']) && $env->get('user')->id) {
+        if ($action == 'fill' && !empty($data['questions']) && $env->getUser()->id) {
             $statAnswers = $this->_genAnswersStats();
-            $curAnswers = isset($data['answers'][$env->get('user')->id])
-                ? $data['answers'][$env->get('user')->id]
+            $curAnswers = isset($data['answers'][$env->getUser()->id])
+                ? $data['answers'][$env->getUser()->id]
                 : array();
 
             foreach($data['questions'] as $qId => &$question) {
@@ -289,17 +289,17 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
                 }
             }
 
-            $data['answers'][$env->get('user')->id] = $curAnswers;
+            $data['answers'][$env->getUser()->id] = $curAnswers;
 
             $updated = true;
         }
     }
 
     /**
-     * @param K3_Environment $env
+     * @param SOne_Environment $env
      * @param bool $updated
      */
-    protected function saveAction(K3_Environment $env, &$updated = false)
+    protected function saveAction(SOne_Environment $env, &$updated = false)
     {
         parent::saveAction($env, $updated);
 
@@ -376,7 +376,7 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
         $updated = true;
     }
 
-    protected function dropAction(K3_Environment $env, &$updated = false)
+    protected function dropAction(SOne_Environment $env, &$updated = false)
     {
         $data =& $this->pool['data'];
 

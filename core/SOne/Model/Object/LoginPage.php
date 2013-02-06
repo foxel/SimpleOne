@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -28,16 +28,16 @@ class SOne_Model_Object_LoginPage extends SOne_Model_Object
     implements SOne_Interface_Object_Structured
 {
     /**
-     * @param K3_Environment $env
+     * @param SOne_Environment $env
      * @return FVISNode
      */
-    public function visualize(K3_Environment $env)
+    public function visualize(SOne_Environment $env)
     {
         if ($this->actionState == 'redirect') {
             $env->response->sendRedirect($this->path);
         }
-        $node = new FVISNode('SONE_OBJECT_LOGINPAGE', 0, $env->get('VIS'));
-        $user = $env->get('user');
+        $node = new FVISNode('SONE_OBJECT_LOGINPAGE', 0, $env->getVIS());
+        $user = $env->getUser();
         if ($user->id) {
             $node->addData('logged_as', $user->name);
         }
@@ -59,20 +59,20 @@ class SOne_Model_Object_LoginPage extends SOne_Model_Object
 
     /**
      * @param string $action
-     * @param K3_Environment $env
+     * @param SOne_Environment $env
      * @param bool $updated
      */
-    public function doAction($action, K3_Environment $env, &$updated = false)
+    public function doAction($action, SOne_Environment $env, &$updated = false)
     {
         parent::doAction($action, $env, $updated);
 
         /* @var SOne_Application $app */
-        $app = $env->get('app');
+        $app = $env->getApp();
         /* @var SOne_Repository_User $users */
-        $users = SOne_Repository_User::getInstance($env->get('db'));
+        $users = SOne_Repository_User::getInstance($env->getDb());
 
         /* @var FLNGData $lang */
-        $lang = $env->get('lang');
+        $lang = $env->getLang();
 
         if ($action == 'login') {
             $user = $users->loadOne(array('login' => $env->request->getString('login', K3_Request::POST, FStr::WORD)));

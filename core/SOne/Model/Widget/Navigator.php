@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -21,17 +21,14 @@
 class SOne_Model_Widget_Navigator extends SOne_Model_Widget
 {
     /**
-     * @param K3_Environment $env
+     * @param SOne_Environment $env
      * @param SOne_Model_Object $pageObject
      * @return FVISNode
      */
-    public function visualize(K3_Environment $env, SOne_Model_Object $pageObject = null)
+    public function visualize(SOne_Environment $env, SOne_Model_Object $pageObject = null)
     {
-        /** @var $vis FVISInterface */
-        $vis = $env->get('VIS');
-        /** @var $app SOne_Application */
-        $app = $env->get('app');
-        /** @var $config  */
+        $vis = $env->getVIS();
+        $app = $env->getApp();
         $config = $app->getConfig();
 
         $currentPath = $pageObject->path;
@@ -64,7 +61,7 @@ class SOne_Model_Widget_Navigator extends SOne_Model_Widget
 
         if (is_array($tree)) {
             foreach ($tree as $item) {
-                if ($item->hideInTree || $item->accessLevel > $env->get('user')->accessLevel || !$parents[$item->treeLevel]) {
+                if ($item->hideInTree || $item->accessLevel > $env->getUser()->accessLevel || !$parents[$item->treeLevel]) {
                     $parents[$item->treeLevel + 1] = null;
                     continue;
                 }

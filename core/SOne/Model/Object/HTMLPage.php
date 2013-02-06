@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -25,22 +25,21 @@ class SOne_Model_Object_HTMLPage extends SOne_Model_Object_PlainPage
     implements SOne_Interface_Object_AcceptChildren
 {
     /**
-     * @param K3_Environment $env
+     * @param SOne_Environment $env
      * @return FVISNode
      */
-    public function visualize(K3_Environment $env)
+    public function visualize(SOne_Environment $env)
     {
         $node = parent::visualize($env);
         $node->setType('SONE_OBJECT_HTMLPAGE');
         return $node;
     }
 
-    protected function saveAction(K3_Environment $env, &$updated = false)
+    protected function saveAction(SOne_Environment $env, &$updated = false)
     {
         parent::saveAction($env, $updated);
 
-        /** @var $user SOne_Model_User */
-        $user = $env->get('user');
+        $user = $env->getUser();
 
         $dom = new K3_DOM('4.0', F::INTERNAL_ENCODING);
         if ($dom->loadHTML(mb_convert_encoding($this->content, 'HTML-ENTITIES', F::INTERNAL_ENCODING))) {

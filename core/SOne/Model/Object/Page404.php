@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -21,13 +21,13 @@
 class SOne_Model_Object_Page404 extends SOne_Model_Object
 {
     /**
-     * @param K3_Environment $env
+     * @param SOne_Environment $env
      * @return FVISNode
      */
-    public function visualize(K3_Environment $env)
+    public function visualize(SOne_Environment $env)
     {
         $env->getResponse()->setStatusCode(404);
-        $node = new FVISNode('SONE_PAGE_404', 0, $env->get('VIS'));
+        $node = new FVISNode('SONE_PAGE_404', 0, $env->getVIS());
         $node->addDataArray($this->pool);
         return $node;
     }

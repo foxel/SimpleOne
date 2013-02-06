@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -20,6 +20,21 @@
 
 class SOne_Tools extends K3_Environment_Element
 {
+    /**
+     * @param SOne_Environment $env
+     * @return SOne_Tools
+     */
+    public static function getInstance(SOne_Environment $env)
+    {
+        $instance = $env->get('tools');
+        if (!$instance instanceof static) {
+            $instance = new static($env);
+            $env->put('tools', $instance);
+        }
+
+        return $instance;
+    }
+
     /**
      * @param string $buffer
      * @return string

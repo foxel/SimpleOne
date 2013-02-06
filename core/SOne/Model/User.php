@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -92,7 +92,7 @@ class SOne_Model_User extends SOne_Model
         return $this;
     }
 
-    public function updateLastSeen(K3_Environment $env)
+    public function updateLastSeen(SOne_Environment $env)
     {
         $this->pool['lastSeen'] = time();
         $this->pool['lastIP']   = $env->client->IPInteger;

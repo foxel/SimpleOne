@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -24,8 +24,8 @@ interface SOne_Interface_Object_WithSubRoute
      * @abstract
      * @param string $subPath
      * @param SOne_Request $request
-     * @param K3_Environment $env
+     * @param SOne_Environment $env
      * @return SOne_Model_Object
      */
-    public function routeSubPath($subPath, SOne_Request $request, K3_Environment $env);
+    public function routeSubPath($subPath, SOne_Request $request, SOne_Environment $env);
 }

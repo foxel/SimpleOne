@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -25,19 +25,15 @@
 class Yandex_Model_Object_YandexRSS extends SOne_Model_Object
     implements SOne_Interface_Object_Structured
 {
-    /** @var FDataBase */
-    protected $_db;
     protected $_itemPerPage = 10;
 
     /**
-     * @param  K3_Environment $env
+     * @param  SOne_Environment $env
      * @return FVISNode
      */
-    public function visualize(K3_Environment $env)
+    public function visualize(SOne_Environment $env)
     {
-        $this->_db = $env->get('db');
-        /** @var $app SOne_Application */
-        $app = $env->get('app');
+        $app = $env->getApp();
         $appConfig = $app->getConfig();
         $yandexConfig = Yandex_Bootstrap::getConfig();
 
@@ -65,20 +61,20 @@ class Yandex_Model_Object_YandexRSS extends SOne_Model_Object
     }
 
     /**
-     * @param K3_Environment $env
+     * @param SOne_Environment $env
      * @param int $perPage
      * @param int $pageOffset
      * @param null $totalItems
      * @return \SOne_Model_Object_BlogItem[]
      */
-    protected function _loadListItems(K3_Environment $env, $perPage = 10, $pageOffset = 0, &$totalItems = null)
+    protected function _loadListItems(SOne_Environment $env, $perPage = 10, $pageOffset = 0, &$totalItems = null)
     {
         if (!$this->blogPath) {
             return array();
         }
 
         /** @var $repo SOne_Repository_Object */
-        $repo = SOne_Repository_Object::getInstance($this->_db);
+        $repo = SOne_Repository_Object::getInstance($env->getDb());
         $filter = array(
             'parentId=' => $repo->loadIds(array('path=' => $this->blogPath), true),
             'class='    => 'BlogItem',
@@ -92,7 +88,7 @@ class Yandex_Model_Object_YandexRSS extends SOne_Model_Object
         }
 
         /** @var $usersRepo SOne_Repository_User */
-        $usersRepo = SOne_Repository_User::getInstance($this->_db);
+        $usersRepo = SOne_Repository_User::getInstance($env->getDb());
         $usersRepo->prepareFetch(array('id=' => array_unique($userIds)));
 
         return $items;

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -123,11 +123,11 @@ abstract class SOne_Model_Widget extends SOne_Model
     }
 
     /**
-     * @param  K3_Environment $env
+     * @param  SOne_Environment $env
      * @param SOne_Model_Object $pageObject
      * @return FVISNode|null
      */
-    abstract public function visualize(K3_Environment $env, SOne_Model_Object $pageObject = null);
+    abstract public function visualize(SOne_Environment $env, SOne_Model_Object $pageObject = null);
 
     public function __sleep()
     {

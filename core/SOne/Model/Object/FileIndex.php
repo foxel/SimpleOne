@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -29,10 +29,10 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object
     protected $_subPath = '';
 
     /**
-     * @param  K3_Environment $env
+     * @param  SOne_Environment $env
      * @return FVISNode
      */
-    public function visualize(K3_Environment $env)
+    public function visualize(SOne_Environment $env)
     {
         if (in_array($this->actionState, array('save'))) {
             $env->response->sendRedirect($this->path);
@@ -82,7 +82,7 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object
 
             return null;
         } else {
-            $node = new FVISNode('SONE_FILES_FILEINDEX', 0, $env->get('VIS'));
+            $node = new FVISNode('SONE_FILES_FILEINDEX', 0, $env->getVIS());
             $node->addDataArray($this->pool)->addData('curPath', $this->_subPath);
             $contents = array();
             if (is_dir($realPath)) {
@@ -115,14 +115,14 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object
             if (!empty($contents)) {
                 uksort($contents, 'strcasecmp');
                 //F2DArray::sort($contents, 'type');
-                $node->appendChild('files', $contNode = new FVISNode('SONE_FILES_FILEITEM', FVISNode::VISNODE_ARRAY, $env->get('VIS')));
+                $node->appendChild('files', $contNode = new FVISNode('SONE_FILES_FILEITEM', FVISNode::VISNODE_ARRAY, $env->getVIS()));
                 $contNode->addDataArray($contents)->sort('type');
             }
             if ($this->_subPath) {
                 $node->addData('upPath', $this->path.'/'.implode('/', array_slice(explode('/', trim($this->_subPath, '/')), 0, -1)));
             }
 
-            $node->addData('canEdit', $this->isActionAllowed('edit', $env->get('user')) ? 1 : null);
+            $node->addData('canEdit', $this->isActionAllowed('edit', $env->getUser()) ? 1 : null);
 
             return $node;
         }
@@ -131,10 +131,10 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object
     /**
      * @param string $subPath
      * @param SOne_Request $request
-     * @param K3_Environment $env
+     * @param SOne_Environment $env
      * @return SOne_Model_Object
      */
-    public function routeSubPath($subPath, SOne_Request $request, K3_Environment $env)
+    public function routeSubPath($subPath, SOne_Request $request, SOne_Environment $env)
     {
         $this->_subPath = $subPath;
 
@@ -151,10 +151,10 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object
     }
 
     /**
-     * @param K3_Environment $env
-     * @param bool           $updated
+     * @param SOne_Environment $env
+     * @param bool $updated
      */
-    protected function saveAction(K3_Environment $env, &$updated = false)
+    protected function saveAction(SOne_Environment $env, &$updated = false)
     {
         parent::saveAction($env, $updated);
         $this->pool['basePath']   = $env->request->getString('basePath', K3_Request::POST, FStr::PATH);

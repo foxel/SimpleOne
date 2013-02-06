@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -34,13 +34,13 @@ class SOne_Model_Widget_Panel extends SOne_Model_Widget
     }
 
     /**
-     * @param K3_Environment $env
+     * @param SOne_Environment $env
      * @param SOne_Model_Object $pageObject
      * @return FVISNode
      */
-    public function visualize(K3_Environment $env, SOne_Model_Object $pageObject = null)
+    public function visualize(SOne_Environment $env, SOne_Model_Object $pageObject = null)
     {
-        $node = new FVISNode('SONE_WIDGET_PANEL', 0, $env->get('VIS'));
+        $node = new FVISNode('SONE_WIDGET_PANEL', 0, $env->getVIS());
         $node->addDataArray($this->pool);
         return $node;
     }

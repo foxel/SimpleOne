@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -62,8 +62,7 @@ class Google_Plugin
             $analyticsConfig['accountId'] = (string) $this->_config->analyticsId;
         }
 
-        /** @var $user SOne_Model_User */
-        $user = $this->_app->getEnv()->get('user');
+        $user = $this->_app->getEnv()->getUser();
 
         $pageNode
             ->addNode('SONE_GOOGLE_ANALYTICS_JS', 'JS_BLOCKS', array(

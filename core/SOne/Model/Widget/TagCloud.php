@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -31,16 +31,14 @@ class SOne_Model_Widget_TagCloud extends SOne_Model_Widget
     }
 
     /**
-     * @param K3_Environment $env
+     * @param SOne_Environment $env
      * @param SOne_Model_Object $pageObject
      * @return FVISNode
      */
-    public function visualize(K3_Environment $env, SOne_Model_Object $pageObject = null)
+    public function visualize(SOne_Environment $env, SOne_Model_Object $pageObject = null)
     {
-        /** @var $vis FVISInterface */
-        $vis = $env->get('VIS');
-        /** @var $app FDataBase */
-        $db = $env->get('db');
+        $vis = $env->getVIS();
+        $db = $env->getDb();
 
         $container = new FVISNode('SONE_WIDGET_TAGCLOUD_BLOCK', 0, $vis);
         $container->addDataArray($this->pool);

@@ -35,16 +35,14 @@ class Google_Model_Widget_BlogPopular extends SOne_Model_Widget
     }
 
     /**
-     * @param K3_Environment $env
+     * @param SOne_Environment $env
      * @param SOne_Model_Object $pageObject
      * @return FVISNode
      */
-    public function visualize(K3_Environment $env, SOne_Model_Object $pageObject = null)
+    public function visualize(SOne_Environment $env, SOne_Model_Object $pageObject = null)
     {
-        /** @var $vis FVISInterface */
-        $vis = $env->get('VIS');
-        /** @var $app FDataBase */
-        $db = $env->get('db');
+        $vis = $env->getVIS();
+        $db = $env->getDb();
 
         $container = new FVISNode('SONE_GOOGLE_WIDGET_POPULAR_BLOCK', 0, $vis);
         $container->addDataArray($this->pool);

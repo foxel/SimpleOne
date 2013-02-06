@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -25,22 +25,22 @@ abstract class SOne_Model_Object_PlainPage extends SOne_Model_Object_Commentable
     implements SOne_Interface_Object_Structured
 {
     /**
-     * @param K3_Environment $env
+     * @param SOne_Environment $env
      * @return FVISNode
      */
-    public function visualize(K3_Environment $env)
+    public function visualize(SOne_Environment $env)
     {
         if (in_array($this->actionState, array('save', 'saveComment'))) {
             $env->response->sendRedirect($this->path);
         }
-        $node = new FVISNode('SONE_OBJECT_PLAINPAGE', 0, $env->get('VIS'));
+        $node = new FVISNode('SONE_OBJECT_PLAINPAGE', 0, $env->getVIS());
         $data = $this->pool;
         if ($this->commentsAllowed) {
-            $node->appendChild('commentsBlock', $this->visualizeComments($env, (bool) $env->get('user')->id, 15));
+            $node->appendChild('commentsBlock', $this->visualizeComments($env, (bool) $env->getUser()->id, 15));
         }
         unset($data['comments']);
         $node->addDataArray($data + array(
-            'canEdit'       => $this->isActionAllowed('edit', $env->get('user')) ? 1 : null,
+            'canEdit'       => $this->isActionAllowed('edit', $env->getUser()) ? 1 : null,
         ));
         return $node;
     }
@@ -73,10 +73,10 @@ abstract class SOne_Model_Object_PlainPage extends SOne_Model_Object_Commentable
     }
 
     /**
-     * @param K3_Environment $env
+     * @param SOne_Environment $env
      * @param bool $updated
      */
-    protected function saveAction(K3_Environment $env, &$updated = false)
+    protected function saveAction(SOne_Environment $env, &$updated = false)
     {
         parent::saveAction($env, $updated);
         $this->content = $env->request->getString('content', K3_Request::POST);
@@ -85,7 +85,7 @@ abstract class SOne_Model_Object_PlainPage extends SOne_Model_Object_Commentable
 
 
         /* @var FLNGData $lang */
-        $lang = $env->get('lang');
+        $lang = $env->getLang();
 
         if (!$this->caption) {
             $this->pool['errors'][] = $lang->lang('SONE_OBJECT_ERROR_CAPTION_REQUIRED');

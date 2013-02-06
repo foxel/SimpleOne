@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -21,10 +21,10 @@
 class VK_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
 {
     /**
-     * @param K3_Environment $env
+     * @param SOne_Environment $env
      * @return FVISNode
      */
-    public function visualize(K3_Environment $env)
+    public function visualize(SOne_Environment $env)
     {
         $node = parent::visualize($env);
         if (!ini_get('allow_url_fopen') || !extension_loaded('openssl')) {
@@ -33,7 +33,7 @@ class VK_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
 
         $node->setType('SONE_OBJECT_LOGINPAGE_VKAUTH');
 
-        $config = $env->get('app')->config->vk;
+        $config = $env->getApp()->config->vk;
 
         if (($baseDomain = $config->baseDomain) && !preg_match('#([\w\.]+\.)?'.preg_quote($baseDomain, '#').'$#i', $env->server->domain)) {
             $node->addDataArray(array(
@@ -57,15 +57,15 @@ class VK_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
     }
 
     /**
-     * @param K3_Environment $env
+     * @param SOne_Environment $env
      * @param bool $updated
      * @return mixed
      */
-    protected function vkauthAction(K3_Environment $env, &$updated = false)
+    protected function vkauthAction(SOne_Environment $env, &$updated = false)
     {
-        $config = $env->get('app')->config->vk;
+        $config = $env->getApp()->config->vk;
         /* @var SOne_Application $app */
-        $app = $env->get('app');
+        $app = $env->getApp();
 
         $code = $env->request->getString('code', K3_Request::GET, FStr::LINE);
         if (!$code) {
@@ -88,11 +88,10 @@ class VK_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
         }
 
         /* @var SOne_Repository_User $users */
-        $users = SOne_Repository_User::getInstance($env->get('db'));
+        $users = SOne_Repository_User::getInstance($env->getDb());
 
         // TODO: move to repository
-        /* @var FDataBase $db */
-        $db = $env->get('db');
+        $db = $env->getDb();
         if ($userId = $db->doSelect('vk_users', 'uid', array('vk_id' => $tokenData->user_id))) {
             $db->doUpdate('vk_users', array('token' => $tokenData->access_token), array('vk_id' => $tokenData->user_id));
             $user = $users->loadOne(array('id' => $userId));
@@ -132,18 +131,18 @@ class VK_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
     }
 
     /**
-     * @param K3_Environment $env
+     * @param SOne_Environment $env
      * @param bool $updated
      * @return mixed
      */
-    protected function vkauthcookieAction(K3_Environment $env, &$updated = false)
+    protected function vkauthcookieAction(SOne_Environment $env, &$updated = false)
     {
         /* @var SOne_Application $app */
-        $app = $env->get('app');
+        $app = $env->getApp();
 
         $this->pool['actionState'] = 'redirect';
 
-        $config      = $env->get('app')->config->vk;
+        $config      = $env->getApp()->config->vk;
         $cookieName  = 'vk_app_'.$config->appId;
         $cookieValue = $env->client->getCookie($cookieName, false);
 
@@ -153,11 +152,10 @@ class VK_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
         }
 
         /* @var SOne_Repository_User $users */
-        $users = SOne_Repository_User::getInstance($env->get('db'));
+        $users = SOne_Repository_User::getInstance($env->getDb());
 
         // TODO: move to repository
-        /* @var FDataBase $db */
-        $db = $env->get('db');
+        $db = $env->getDb();
         if ($userId = $db->doSelect('vk_users', 'uid', array('vk_id' => $vkUserId))) {
             $user = $users->loadOne(array('id' => $userId));
             $app->setAuthUser($user);
@@ -174,14 +172,14 @@ class VK_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
     }
 
     /**
-     * @param K3_Environment $env
+     * @param SOne_Environment $env
      * @param bool $updated
      */
-    protected function logoutAction(K3_Environment $env, &$updated = false)
+    protected function logoutAction(SOne_Environment $env, &$updated = false)
     {
         $this->pool['actionState'] = 'redirect';
 
-        $config     = $env->get('app')->config->vk;
+        $config     = $env->getApp()->config->vk;
         $cookieName = 'vk_app_'.$config->appId;
         $env->client->setCookie($cookieName, false, false, false, false);
     }

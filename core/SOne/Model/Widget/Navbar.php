@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -34,17 +34,16 @@ class SOne_Model_Widget_Navbar extends SOne_Model_Widget
     }
 
     /**
-     * @param K3_Environment $env
+     * @param SOne_Environment $env
      * @param SOne_Model_Object $pageObject
      * @return FVISNode
      */
-    public function visualize(K3_Environment $env, SOne_Model_Object $pageObject = null)
+    public function visualize(SOne_Environment $env, SOne_Model_Object $pageObject = null)
     {
-        $node = new FVISNode('SONE_WIDGET_NAVBAR', 0, $env->get('VIS'));
+        $node = new FVISNode('SONE_WIDGET_NAVBAR', 0, $env->getVIS());
         $node->addDataArray($this->pool);
         if (!empty($this->data['links'])) {
-            /** @var $app SOne_Application */
-            $app = $env->get('app');
+            $app = $env->getApp();
             $currentPath = $app->getRequest()->path;
             $links = array();
             foreach ($this->data['links'] as $id => $link) {
@@ -63,7 +62,7 @@ class SOne_Model_Widget_Navbar extends SOne_Model_Widget
                 $links[] = $link;
             }
 
-            $linksNode = new FVISNode('SONE_WIDGET_NAVBAR_LINK', FVISNode::VISNODE_ARRAY, $env->get('VIS'));
+            $linksNode = new FVISNode('SONE_WIDGET_NAVBAR_LINK', FVISNode::VISNODE_ARRAY, $env->getVIS());
             $linksNode->addDataArray($links);
             $node->appendChild('links', $linksNode, true);
         }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -18,6 +18,9 @@
  * along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * @property SOne_Environment $_env protected
+ */
 class SOne_Application extends K3_Application
 {
     const DEFAULT_PLUGINS_SUBDIR = 'plugins';
@@ -59,7 +62,8 @@ class SOne_Application extends K3_Application
 
     public function __construct(K3_Environment $env = null)
     {
-        $this->_env = is_null($env) ? F()->appEnv : $env;
+        $this->_env = SOne_Environment::prepare($env);
+        $this->_env->setApp($this);
 
         $this->pool = array(
             'environment' => &$this->_env,
@@ -91,7 +95,7 @@ class SOne_Application extends K3_Application
         //    ->loadECSS(F_DATA_ROOT.'/styles/simple/common.ecss')
         ;
 
-        $tools = new SOne_Tools($this->_env);
+        $tools = SOne_Tools::getInstance($this->_env);
         $this->getResponse()
             ->addEventHandler('HTML_parse', array($tools, 'HTML_FullURLs'));
 
@@ -106,12 +110,10 @@ class SOne_Application extends K3_Application
 
         // putting to environment
         $this->_env
-            ->put('db',    $this->_db)
-            ->put('VIS',   $this->_VIS)
-            ->put('user',  $this->_bootstrapUser())
-            ->put('lang',  $this->_lang)
-            ->put('tools', $tools)
-            ->put('app',   $this);
+            ->setDb($this->_db)
+            ->setVIS($this->_VIS)
+            ->setLang($this->_lang)
+            ->setUser($this->_bootstrapUser());
 
         $this->bootstrapPlugins();
 
@@ -180,13 +182,13 @@ class SOne_Application extends K3_Application
             $tipObject = new SOne_Model_Object_Page404(array('path' => $request->path));
         }
 
-        if ($tipObject->accessLevel > $this->_env->get('user')->accessLevel) {
+        if ($tipObject->accessLevel > $this->_env->getUser()->accessLevel) {
             $tipObject = new SOne_Model_Object_Page403(array('path' => $request->path));
         }
 
         // performing action
         if ($performAction && $request->action) {
-            if ($tipObject->isActionAllowed($request->action, $this->_env->get('user'))) {
+            if ($tipObject->isActionAllowed($request->action, $this->_env->getUser())) {
                 $tipObject->doAction($request->action, $this->_env, $objectUpdated);
                 // TODO: think about deleting
                 // NOTE: static objects are not for save
@@ -329,17 +331,17 @@ class SOne_Application extends K3_Application
         $this->_env->session->open();
         $users->save($user->updateLastSeen($this->_env));
         $this->_env->session->set('userId', $user->id);
-        $this->_env->put('user', $user);
+        $this->_env->setUser($user);
     }
 
     public function dropAuthUser()
     {
         $this->_env->session->drop('userId');
-        $this->_env->put('user', new SOne_Model_User());
+        $this->_env->setUser(new SOne_Model_User());
     }
 
     /**
-     * @return K3_Environment
+     * @return SOne_Environment
      */
     public function getEnv()
     {

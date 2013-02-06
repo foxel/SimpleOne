@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -38,10 +38,10 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
     }
 
     /**
-     * @param  K3_Environment $env
+     * @param  SOne_Environment $env
      * @return FVISNode
      */
-    public function visualize(K3_Environment $env)
+    public function visualize(SOne_Environment $env)
     {
         $parentPath = preg_replace('#/[^/]+$#', '', $this->path);
 
@@ -65,7 +65,7 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
                         'parentPath' => $parentPath,
                     );
                 }
-                $tagsNode = new FVISNode('SONE_OBJECT_BLOG_TAG', FVISNode::VISNODE_ARRAY, $env->get('VIS'));
+                $tagsNode = new FVISNode('SONE_OBJECT_BLOG_TAG', FVISNode::VISNODE_ARRAY, $env->getVIS());
                 $tagsNode->addDataArray($tags);
                 $node->appendChild('tags', $tagsNode, true);
             }
@@ -75,8 +75,7 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
             $allTags = $this->_tagsRepo->loadNames();
             $node->addData('allTagsJson', json_encode($allTags));
         } else {
-            /** @var $user SOne_Model_User */
-            $user = SOne_Repository_User::getInstance($env->get('db'))->get($this->ownerId);
+            $user = SOne_Repository_User::getInstance($env->getDb())->get($this->ownerId);
             $node->addNode('SONE_OBJECT_BLOG_USERTAG', 'userTag', $user->toArray() + array(
                 'parentPath' => $parentPath,
             ));
@@ -86,12 +85,12 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
     }
 
     /**
-     * @param K3_Environment $env
+     * @param SOne_Environment $env
      * @return FVISNode
      */
-    public function visualizeForList(K3_Environment $env)
+    public function visualizeForList(SOne_Environment $env)
     {
-        $node = new FVISNode('SONE_OBJECT_BLOG_LISTITEM', 0, $env->get('VIS'));
+        $node = new FVISNode('SONE_OBJECT_BLOG_LISTITEM', 0, $env->getVIS());
         $data = $this->pool;
         $parentPath = preg_replace('#/[^/]+$#', '', $this->path);
 
@@ -104,7 +103,7 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
         }
 
         $node->addDataArray($data + array(
-            'canEdit'    => $this->isActionAllowed('edit', $env->get('user')) ? 1 : null,
+            'canEdit'    => $this->isActionAllowed('edit', $env->getUser()) ? 1 : null,
             'parentPath' => $parentPath,
         ));
 
@@ -116,13 +115,12 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
                     'parentPath' => $parentPath,
                 );
             }
-            $tagsNode = new FVISNode('SONE_OBJECT_BLOG_TAG', FVISNode::VISNODE_ARRAY, $env->get('VIS'));
+            $tagsNode = new FVISNode('SONE_OBJECT_BLOG_TAG', FVISNode::VISNODE_ARRAY, $env->getVIS());
             $tagsNode->addDataArray($tags);
             $node->appendChild('tags', $tagsNode, true);
         }
 
-        /** @var $user SOne_Model_User */
-        $user = SOne_Repository_User::getInstance($env->get('db'))->get($this->ownerId);
+        $user = SOne_Repository_User::getInstance($env->getDb())->get($this->ownerId);
         $node->addNode('SONE_OBJECT_BLOG_USERTAG', 'userTag', $user->toArray() + array(
             'parentPath' => $parentPath,
         ));
@@ -142,15 +140,15 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
     }
 
     /**
-     * @param K3_Environment $env
+     * @param SOne_Environment $env
      * @param bool $updated
      */
-    protected function saveAction(K3_Environment $env, &$updated = false)
+    protected function saveAction(SOne_Environment $env, &$updated = false)
     {
         parent::saveAction($env, $updated);
         $this->pool['tags'] = array_unique(array_map('trim', explode(',', $env->request->getString('tags', K3_Request::POST, FStr::LINE))));
         /** @var $user SOne_Model_User */
-        $user = $env->get('user');
+        $user = $env->getUser();
 
         $imageSrc = '';
         $dom = new K3_DOM('4.0', F::INTERNAL_ENCODING);
@@ -181,13 +179,12 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
     }
 
     /**
-     * @param K3_Environment $env
+     * @param SOne_Environment $env
      * @param bool $updated
      */
-    protected function deleteAction(K3_Environment $env, &$updated = false)
+    protected function deleteAction(SOne_Environment $env, &$updated = false)
     {
-        /** @var $db FDataBase */
-        $db = $env->get('db');
+        $db = $env->getDb();
         $objects = SOne_Repository_Object::getInstance($db);
         $objects->delete($this->id);
         $updated = false;
@@ -263,18 +260,16 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
     }
 
     /**
-     * @param K3_Environment $env
+     * @param SOne_Environment $env
      * @return SOne_Model_Object_BlogItem
      */
-    public function fixFullUrls(K3_Environment $env)
+    public function fixFullUrls(SOne_Environment $env)
     {
         if ($this->thumbnailImage) {
             $this->pool['thumbnailImage'] = FStr::fullUrl($this->thumbnailImage, false, '', $env);
         }
 
-        /** @var $tools SOne_Tools */
-        $tools = $env->get('tools');
-        $this->pool['content'] = $tools->HTML_FullURLs($this->content);
+        $this->pool['content'] = SOne_Tools::getInstance($env)->HTML_FullURLs($this->content);
 
         return $this;
     }

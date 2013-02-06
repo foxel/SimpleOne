@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -23,10 +23,10 @@ class Yandex_RSS extends K3_RSS
     /**
      * @param array $params
      * @param array $items
-     * @param K3_Environment $env
+     * @param SOne_Environment $env
      * @throws FException
      */
-    public function __construct(array $params, array $items = array(), K3_Environment $env = null)
+    public function __construct(array $params, array $items = array(), SOne_Environment $env = null)
     {
         if (!isset($params['siteUrl'], $params['siteName'], $params['siteImage'])) {
             throw new FException('siteUrl, siteName, siteImage are required to produce Yandex capable RSS feed');

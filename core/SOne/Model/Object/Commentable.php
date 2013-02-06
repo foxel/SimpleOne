@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -40,10 +40,10 @@ abstract class SOne_Model_Object_Commentable extends SOne_Model_Object implement
     /**
      * This should be introduced in clild classes
      * @param  string $action
-     * @param  K3_Environment $env
+     * @param  SOne_Environment $env
      * @param  boolean &$objectUpdated
      */
-    public function doAction($action, K3_Environment $env, &$objectUpdated = false)
+    public function doAction($action, SOne_Environment $env, &$objectUpdated = false)
     {
         parent::doAction($action, $env, $objectUpdated);
 
@@ -58,7 +58,7 @@ abstract class SOne_Model_Object_Commentable extends SOne_Model_Object implement
                     $env->request->getNumber('commentAnswerTo', K3_Request::POST),
                     array(
                         'client_ip' => $env->client->IPInteger,
-                        'author_id' => $env->get('user')->id,
+                        'author_id' => $env->getUser()->id,
                     )
                 );
                 $objectUpdated = true;
@@ -105,9 +105,9 @@ abstract class SOne_Model_Object_Commentable extends SOne_Model_Object implement
         $this->pool['comments'] = F2DArray::tree($comments, 'id', 'answer_to');
     }
 
-    public function visualizeComments(K3_Environment $env, $allowAddComment = true, $commentsPerPage = false)
+    public function visualizeComments(SOne_Environment $env, $allowAddComment = true, $commentsPerPage = false)
     {
-        $node = new FVISNode('SONE_OBJECT_COMMENTS', 0, $env->get('VIS'));
+        $node = new FVISNode('SONE_OBJECT_COMMENTS', 0, $env->getVIS());
         $node->addDataArray(array(
             'actionState' => $this->actionState,
             'path'        => $this->path,
@@ -138,13 +138,13 @@ abstract class SOne_Model_Object_Commentable extends SOne_Model_Object implement
 
             $uIds = array_unique(F2DArray::cols($comments, 'author_id'));
             /* @var SOne_Repository_User $users */
-            $users = SOne_Repository_User::getInstance($env->get('db'));
+            $users = SOne_Repository_User::getInstance($env->getDb());
             $userNames = $users->loadNames(array('id' => $uIds));
             foreach ($comments as &$comment) {
                 $comment['author_name'] = isset($userNames[$comment['author_id']]) ? $userNames[$comment['author_id']] : null;
             }
 
-            $node->appendChild('comments', $commentsNode = new FVISNode('SONE_OBJECT_COMMENTS_ITEM', FVISNode::VISNODE_ARRAY, $env->get('VIS')));
+            $node->appendChild('comments', $commentsNode = new FVISNode('SONE_OBJECT_COMMENTS_ITEM', FVISNode::VISNODE_ARRAY, $env->getVIS()));
 
             $commentsNode->addDataArray($comments);
         }

@@ -223,10 +223,10 @@ abstract class SOne_Model_Object extends SOne_Model implements I_K3_RSS_Item
     /**
      * This should be introduced in child classes
      * @param  string $action
-     * @param  K3_Environment $env
+     * @param  SOne_Environment $env
      * @param  boolean &$objectUpdated
      */
-    public function doAction($action, K3_Environment $env, &$objectUpdated = false)
+    public function doAction($action, SOne_Environment $env, &$objectUpdated = false)
     {
         $this->pool['actionState'] = $action;
         $actionMethod = $action.'Action';
@@ -238,10 +238,10 @@ abstract class SOne_Model_Object extends SOne_Model implements I_K3_RSS_Item
 
     /**
      * saves caption
-     * @param  K3_Environment $env
+     * @param  SOne_Environment $env
      * @param  boolean &$objectUpdated
      */
-    protected function saveAction(K3_Environment $env, &$objectUpdated = false)
+    protected function saveAction(SOne_Environment $env, &$objectUpdated = false)
     {
         $newCaption = $env->request->getString('caption', K3_Request::POST, FStr::LINE);
         if ($newCaption) {
@@ -252,10 +252,10 @@ abstract class SOne_Model_Object extends SOne_Model implements I_K3_RSS_Item
     }
 
     /**
-     * @param  K3_Environment $env
+     * @param  SOne_Environment $env
      * @return FVISNode
      */
-    abstract public function visualize(K3_Environment $env);
+    abstract public function visualize(SOne_Environment $env);
 
     public function __sleep()
     {

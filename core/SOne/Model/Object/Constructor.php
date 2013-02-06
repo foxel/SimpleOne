@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -26,10 +26,10 @@ class SOne_Model_Object_Constructor extends SOne_Model_Object implements SOne_In
 {
     /**
      * @param $action
-     * @param K3_Environment $env
+     * @param SOne_Environment $env
      * @param bool $objectUpdated
      */
-    public function doAction($action, K3_Environment $env, &$objectUpdated = false)
+    public function doAction($action, SOne_Environment $env, &$objectUpdated = false)
     {
         parent::doAction($action, $env, $objectUpdated);
 
@@ -54,11 +54,11 @@ class SOne_Model_Object_Constructor extends SOne_Model_Object implements SOne_In
 
 
     /**
-     * @param K3_Environment $env
+     * @param SOne_Environment $env
      * @param bool $objectUpdated
      * @return void
      */
-    protected function prepareAction(K3_Environment $env, &$objectUpdated = false)
+    protected function prepareAction(SOne_Environment $env, &$objectUpdated = false)
     {
         $class = $env->request->getString('class', K3_Request::ALL, FStr::WORD);
         $path  = $env->request->getString('path',  K3_Request::ALL, FStr::WORD);
@@ -72,12 +72,12 @@ class SOne_Model_Object_Constructor extends SOne_Model_Object implements SOne_In
         $parentObject = null;
         if ($parentPath) {
             $path = FStr::cast($parentPath.'/'.$path, FStr::PATH);
-            $parentObject = SOne_Repository_Object::getInstance($env->get('db'))->loadOne(array('pathHash' => md5($parentPath)));
+            $parentObject = SOne_Repository_Object::getInstance($env->getDb())->loadOne(array('pathHash' => md5($parentPath)));
             if (!$parentObject) {
                 $this->pool['errors'] = 'Невозможно загрузить указанный родительсвий объект';
                 return;
             }
-            $collidedObject = SOne_Repository_Object::getInstance($env->get('db'))->loadOne(array('pathHash' => md5($path)));
+            $collidedObject = SOne_Repository_Object::getInstance($env->getDb())->loadOne(array('pathHash' => md5($path)));
             if ($collidedObject) {
                 $this->pool['errors'] = 'Объект с заданным путем уже существует';
                 return;
@@ -92,7 +92,7 @@ class SOne_Model_Object_Constructor extends SOne_Model_Object implements SOne_In
             'parentId'    => $parentObject ? $parentObject->id : null,
             'accessLevel' => $parentObject ? $parentObject->accessLevel : SOne_Model_Object::DEFAULT_ACCESS_LEVEL,
             'editLevel'   => $parentObject ? $parentObject->editLevel   : SOne_Model_Object::DEFAULT_EDIT_LEVEL,
-            'ownerId'     => $env->get('user')->id,
+            'ownerId'     => $env->getUser()->id,
         ));
 
         $env->session->set('constructor'.$uid, array($object, $path));
@@ -103,12 +103,12 @@ class SOne_Model_Object_Constructor extends SOne_Model_Object implements SOne_In
     }
 
     /**
-     * @param  K3_Environment $env
+     * @param  SOne_Environment $env
      * @return FVISNode
      */
-    public function visualize(K3_Environment $env)
+    public function visualize(SOne_Environment $env)
     {
-        $node = new FVISNode($this->actionState ? 'SONE_OBJECT_CONSTRUCTOR_FRAME' : 'SONE_OBJECT_CONSTRUCTOR', 0, $env->get('VIS'));
+        $node = new FVISNode($this->actionState ? 'SONE_OBJECT_CONSTRUCTOR_FRAME' : 'SONE_OBJECT_CONSTRUCTOR', 0, $env->getVIS());
         if ($this->object) {
             if ($this->actionState == 'redirect') {
                 $env->response->sendRedirect($this->object->path.'?edit');
@@ -116,7 +116,7 @@ class SOne_Model_Object_Constructor extends SOne_Model_Object implements SOne_In
                 $node->appendChild('content', $this->object->visualize($env));
             }
         } else {
-            $tree = SOne_Repository_Object::getInstance($env->get('db'))->loadObjectsTree();
+            $tree = SOne_Repository_Object::getInstance($env->getDb())->loadObjectsTree();
             $pathOptions = array();
             foreach ($tree as $item) {
                 if (!$item instanceof SOne_Interface_Object_AcceptChildren) {
@@ -128,7 +128,7 @@ class SOne_Model_Object_Constructor extends SOne_Model_Object implements SOne_In
                 );
             }
 
-            $node->appendChild('pathOptions', $optionsNode = new FVISNode('SONE_OBJECT_CONSTRUCTOR_PATHOPTION', FVISNode::VISNODE_ARRAY, $env->get('VIS')));
+            $node->appendChild('pathOptions', $optionsNode = new FVISNode('SONE_OBJECT_CONSTRUCTOR_PATHOPTION', FVISNode::VISNODE_ARRAY, $env->getVIS()));
             $optionsNode->addDataArray($pathOptions);
         }
 
@@ -145,10 +145,10 @@ class SOne_Model_Object_Constructor extends SOne_Model_Object implements SOne_In
     /**
      * @param string $subPath
      * @param SOne_Request $request
-     * @param K3_Environment $env
+     * @param SOne_Environment $env
      * @return SOne_Model_Object
      */
-    public function routeSubPath($subPath, SOne_Request $request, K3_Environment $env)
+    public function routeSubPath($subPath, SOne_Request $request, SOne_Environment $env)
     {
         list($object, $objectPath) = $env->session->get('constructor'.$subPath);
 

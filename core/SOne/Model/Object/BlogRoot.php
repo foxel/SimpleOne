@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -35,10 +35,10 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
     protected $_itemPerPage  = 10;
 
     /**
-     * @param  K3_Environment $env
+     * @param  SOne_Environment $env
      * @return FVISNode
      */
-    public function visualize(K3_Environment $env)
+    public function visualize(SOne_Environment $env)
     {
         if (in_array($this->actionState, array('save'))) {
             $env->response->sendRedirect($this->path);
@@ -57,13 +57,12 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
                 ));
         }
 
-        /** @var $vis FVISInterface */
-        $vis = $env->get('VIS');
+        $vis = $env->getVIS();
 
         $node = new FVISNode('SONE_OBJECT_BLOG_LIST', 0, $vis);
 
         $node->addDataArray($this->pool + array(
-            'canAddItem' => $this->isActionAllowed('new', $env->get('user')) ? 1 : null,
+            'canAddItem' => $this->isActionAllowed('new', $env->getUser()) ? 1 : null,
         ));
 
         $currentPath = $this->path;
@@ -71,7 +70,7 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
             foreach ($this->_filterParams as $key => $param) {
                 $currentPath .= '/'.FStr::urlencode($key).'/'.FStr::urlencode($param);
                 if ($key == 'author') {
-                    $param = reset(SOne_Repository_User::getInstance($env->get('db'))->loadNames(array('id' => (int)$param)));
+                    $param = reset(SOne_Repository_User::getInstance($env->getDb())->loadNames(array('id' => (int)$param)));
                 }
                 $node->addData('filter_'.$key, $param, true);
             }
@@ -117,10 +116,10 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
     }
 
     /**
-     * @param K3_Environment $env
+     * @param SOne_Environment $env
      * @return K3_RSS
      */
-    protected function _prepareRSSFeed(K3_Environment $env)
+    protected function _prepareRSSFeed(SOne_Environment $env)
     {
         $items   = $this->_loadListItems($env, $this->_itemPerPage);
         foreach ($items as $item) {
@@ -137,13 +136,13 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
     }
 
     /**
-     * @param K3_Environment $env
+     * @param SOne_Environment $env
      * @param int $perPage
      * @param int $pageOffset
      * @param null $totalItems
      * @return \SOne_Model_Object_BlogItem[]
      */
-    protected function _loadListItems(K3_Environment $env, $perPage = 10, $pageOffset = 0, &$totalItems = null)
+    protected function _loadListItems(SOne_Environment $env, $perPage = 10, $pageOffset = 0, &$totalItems = null)
     {
         if (!$this->id) {
             return array();
@@ -155,16 +154,15 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
             'class='    => 'BlogItem',
         );
 
-        if ($env->get('user') && $userId = $env->get('user')->id) {
-            if (!$this->isActionAllowed('edit', $env->get('user'))) {
+        if ($env->getUser() && $userId = $env->getUser()->id) {
+            if (!$this->isActionAllowed('edit', $env->getUser())) {
                 $filter['publishedOrOwnerId='] = $userId;
             }
         } else {
             $filter['published='] = true;
         }
 
-        /** @var $lang FLNGData */
-        $lang = $env->get('lang');
+        $lang = $env->getLang();
         if ($this->_filterParams) {
             foreach ($this->_filterParams as $filterType => $filterValue) {
                 switch ($filterType) {
@@ -209,10 +207,10 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
     }
 
     /**
-     * @param K3_Environment $env
+     * @param SOne_Environment $env
      * @return \SOne_Model_Object_BlogItem
      */
-    protected function _loadLastPublished(K3_Environment $env)
+    protected function _loadLastPublished(SOne_Environment $env)
     {
         if (!$this->id) {
             return null;
@@ -252,10 +250,10 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
     /**
      * @param string $subPath
      * @param SOne_Request $request
-     * @param K3_Environment $env
+     * @param SOne_Environment $env
      * @return SOne_Model_Object
      */
-    public function routeSubPath($subPath, SOne_Request $request, K3_Environment $env)
+    public function routeSubPath($subPath, SOne_Request $request, SOne_Environment $env)
     {
         if ($request->action == 'save' && preg_match('#^[0-9a-z]+$#', $subPath)) {
             $object = SOne_Model_Object::construct(array(
@@ -263,7 +261,7 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
                 'parentId'    => $this->id,
                 'accessLevel' => $this->accessLevel,
                 'editLevel'   => $this->editLevel,
-                'ownerId'     => $env->get('user')->id,
+                'ownerId'     => $env->getUser()->id,
                 'path'        => $this->path.'/'.$subPath,
                 'hideInTree'  => true,
             ));
@@ -277,10 +275,10 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
     }
 
     /**
-     * @param K3_Environment $env
-     * @param bool           $updated
+     * @param SOne_Environment $env
+     * @param bool $updated
      */
-    protected function saveAction(K3_Environment $env, &$updated = false)
+    protected function saveAction(SOne_Environment $env, &$updated = false)
     {
         parent::saveAction($env, $updated);
         $this->pool['rssEnabled'] = $env->request->getBinary('rssEnabled', K3_Request::POST, false);
