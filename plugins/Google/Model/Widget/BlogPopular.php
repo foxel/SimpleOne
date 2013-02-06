@@ -19,6 +19,7 @@
  */
 
 /**
+ * @property-read string $blogPath
  * @property-read string $title
  * @property-read int $limit
  */
@@ -134,7 +135,11 @@ class Google_Model_Widget_BlogPopular extends SOne_Model_Widget
 
         $paths = array_keys($stats);
 
-        $objects = SOne_Repository_Object::getInstance($db)->loadAll(array('parentId=' => $blogId, 'path=' => $paths));
+        $objects = SOne_Repository_Object::getInstance($db)->loadAll(array(
+            'parentId=' => $blogId,
+            'path='     => $paths,
+            'class='    => 'BlogItem',
+        ));
 
         $topObjects = array();
         foreach ($paths as $path) {

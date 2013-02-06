@@ -8,6 +8,7 @@ db.prefix => qfso_
 
 site.name => SimpleOne site
 site.indexPath => index
+site.language => ru
 
 markup.responsive => 1
 #markup.favicon => favicon.ico
@@ -89,6 +90,8 @@ vk.baseDomain => simple.one
 #staticRoutes.yrss.class => YandexRSS
 #staticRoutes.yrss.blogPath => data
 #staticRoutes.yrss.imageUrl => data.png
-
+#staticRoutes.news_sitemap.class => GoogleNewsSiteMap
+#staticRoutes.news_sitemap.blogPath => data
+#staticRoutes.news_sitemap.limit => 50
 
 */

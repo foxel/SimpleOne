@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -37,6 +37,7 @@ class Google_Bootstrap implements SOne_Interface_PluginBootstrap
     {
         self::$_pluginInstance = new Google_Plugin($app, $config);
         SOne_Model_Widget::addNamespace('Google_Model_Widget');
+        SOne_Model_Object::addNamespace('Google_Model_Object');
     }
 
 }
