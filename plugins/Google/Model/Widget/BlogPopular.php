@@ -120,6 +120,10 @@ class Google_Model_Widget_BlogPopular extends SOne_Model_Widget
         foreach ($rawStats as $rawRow) {
             $path = preg_replace('#^/+|[?\#]+.*$#', '', $rawRow['ga:pagePath']);
             unset($rawRow['ga:pagePath']);
+            // non ascii paths to be ignored
+            if (preg_match('#[\x80-\xFF]#', $path)) {
+                continue;
+            }
 
             if (isset($stats[$path])) {
                 foreach ($rawRow as $k => $v) {
