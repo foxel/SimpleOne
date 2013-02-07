@@ -116,7 +116,7 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
             switch ($questionType) {
                 case self::QUESTION_TYPE_TEXT:
                 case self::QUESTION_TYPE_STRING:
-                    if (isset($statAnswers[$qId])) {
+                    if (isset($statAnswers[$qId]) && !empty($statAnswers[$qId])) {
                         $item->addDataArray(array(
                             'statUsers' => implode(', ', array_keys($statAnswers[$qId])),
                             'statVal'   => count($statAnswers[$qId]),

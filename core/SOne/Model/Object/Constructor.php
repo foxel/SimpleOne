@@ -128,8 +128,10 @@ class SOne_Model_Object_Constructor extends SOne_Model_Object implements SOne_In
                 );
             }
 
-            $node->appendChild('pathOptions', $optionsNode = new FVISNode('SONE_OBJECT_CONSTRUCTOR_PATHOPTION', FVISNode::VISNODE_ARRAY, $env->getVIS()));
-            $optionsNode->addDataArray($pathOptions);
+            if ($pathOptions) {
+                $node->appendChild('pathOptions', $optionsNode = new FVISNode('SONE_OBJECT_CONSTRUCTOR_PATHOPTION', FVISNode::VISNODE_ARRAY, $env->getVIS()));
+                $optionsNode->addDataArray($pathOptions);
+            }
         }
 
         $node->addDataArray(array(

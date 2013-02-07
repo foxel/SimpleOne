@@ -68,9 +68,12 @@ class Google_Model_Widget_BlogPopular extends SOne_Model_Widget
                     'image'   => $object->thumbnailImage,
                 );
             }
-            $tagsNode = new FVISNode('SONE_GOOGLE_WIDGET_POPULAR_ITEM', FVISNode::VISNODE_ARRAY, $vis);
-            $tagsNode->addDataArray($items);
-            $container->appendChild('items', $tagsNode);
+
+            if ($items) {
+                $tagsNode = new FVISNode('SONE_GOOGLE_WIDGET_POPULAR_ITEM', FVISNode::VISNODE_ARRAY, $vis);
+                $tagsNode->addDataArray($items);
+                $container->appendChild('items', $tagsNode);
+            }
         }
 
         return $container;
