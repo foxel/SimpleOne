@@ -34,14 +34,16 @@ class Google_API_Analytics
 
     /**
      * @param int $profileId
-     * @return array
+     * @param int $daysToFetch
+     * @param string $pathFilter
      * @throws FException
+     * @return array
      */
-    public function getMostVisitedPagesStats($profileId, $pathFilter = false)
+    public function getMostVisitedPagesStats($profileId, $pathFilter = null, $daysToFetch = 2)
     {
         $query = array(
             'ids'        => 'ga:'.$profileId,
-            'start-date' => date('Y-m-d', time() - 3600*24*7),
+            'start-date' => date('Y-m-d', time() - 3600*24*$daysToFetch),
             'end-date'   => date('Y-m-d'),
             'metrics'    => 'ga:pageviews,ga:visitors,ga:visits',
             'dimensions' => 'ga:pagePath',
