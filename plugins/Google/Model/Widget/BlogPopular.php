@@ -110,15 +110,6 @@ class Google_Model_Widget_BlogPopular extends SOne_Model_Widget
             ));
         }
 
-        uasort($objects, function(SOne_Model_Object $a, SOne_Model_Object $b) {
-            $al = count(explode('/', $a->path));
-            $bl = count(explode('/', $b->path));
-            if ($al == $bl) {
-                return 0;
-            }
-            return ($al < $bl) ? 1 : -1;
-        });
-
         $stats = array();
         foreach ($rawStats as $rawRow) {
             $path = preg_replace('#^/+|[?\#]+.*$#', '', $rawRow['ga:pagePath']);
