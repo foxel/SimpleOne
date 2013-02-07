@@ -271,6 +271,10 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
         }
 
         $this->_filterParams = FStr::getZendStyleURLParams($subPath);
+        if (array_diff(array_keys($this->_filterParams), array('date', 'tag', 'author'))) {
+            return new SOne_Model_Object_Page404(array('path' => $this->path.'/'.$subPath));
+        }
+
         return $this;
     }
 
