@@ -94,7 +94,7 @@ class SOne_Model_Object_LoginPage extends SOne_Model_Object
             $nameLen = FStr::strLen($username);
             if ($nameLen < 3 || $nameLen > 16) {
                 $errors[] = $lang->lang('SONE_REGISTER_ERROR_NAME_INCORRECT');
-            } elseif ($users->loadOne(array('nick' => $username))) {
+            } elseif ($users->loadOne(array('name' => $username))) {
                 $errors[] = $lang->lang('SONE_REGISTER_ERROR_NAME_USED');
             }
             if (!preg_match('#\w{3,16}#', $login)) {
