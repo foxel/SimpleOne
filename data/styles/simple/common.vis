@@ -75,7 +75,7 @@
   {ENDIF}
   
   <!-- Load jQuery -->
-  <!--[if lt IE 9]><script type="text/javascript" src="/static/jscripts/date-iefix.js" charset="utf-8"></script><![endif]-->
+  <script type="text/javascript" src="/static/jscripts/date.iso.js" charset="utf-8"></script>
   <script type="text/javascript" src="/static/jscripts/date.format.js" charset="utf-8"></script>
   <script type="text/javascript" src="/static/jscripts/i18n/date.format.ru.js" charset="utf-8"></script>
   <script type="text/javascript" src="/static/jscripts/jquery-1.7.2.min.js" charset="utf-8"></script>

@@ -55,7 +55,7 @@ String.prototype.format = function() {
             var updateInOneMinute = $();
             var updateInOneHour = $();
             var res = this.each(function (input_field) {
-                var time = new Date($(this).attr('datetime'));
+                var time = new Date(Date.parse($(this).attr('datetime')));
                 var ts = Math.floor(time.valueOf()/1000);
                 if (isNaN(ts)) {
                     return;

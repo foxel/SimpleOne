@@ -20,7 +20,7 @@
 <<+ 'SONE_OBJECT_BLOG_ITEM'>>
 {IF:IN_actionState="edit"}
  {!WRITE:formElements}
- {!IF:IN_ID}<label>Время публикации: <span class="input-append">
+ {!IF:IN_ID}<label style="display: none;">Время публикации: <span class="input-append">
      <input class="blogTime" type="text" value="" autocomplete="off" />
      <input type="hidden" name="pubTime" />
      <button class="btn blogTimeReset" onclick="return false;"><i class="icon-remove"></i></button>
@@ -77,20 +77,19 @@
                 showOn: 'both',
                 constrainInput: true,
                 buttonText: '<i class="icon-time"></i>',
-                minDate: new Date('{FTIME:IN_lastPubTime|"c"|0|true}')
+                minDate: new Date()
             })
             .on('change', function() {
                 var time = '';
                 try {
-                    var tz = -(new Date()).getTimezoneOffset();
-                    tz = '%0%1:%2'.format(tz<0?'-':'+', ('0'+Math.abs(Math.floor(tz/60))).substr(-2), ('0'+Math.abs(tz)%60).substr(-2));
-                    time = (new Date($(this).val().replace(/ /, 'T')+tz)).toISOString();
+                    time = (new Date(Date.parseISOString($(this).val().replace(/ /, 'T')))).toISOString();
                 } finally {
                     $(this).closest('span').find('input[name="pubTime"]').val(time);
                 }
             })
             .closest('span').addClass('input-append')
-            .find('.ui-datepicker-trigger').addClass('btn');
+            .find('.ui-datepicker-trigger').addClass('btn')
+            .closest('label').show();
         $('button.blogTimeReset').click(function() {
             $(this).closest('span').find('input.blogTime').val('').trigger('keyup').trigger('change');
         });

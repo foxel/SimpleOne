@@ -170,9 +170,8 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
             $this->content = '';
         }
 
-        /** TODO: need publishTime */
         if (!$this->id && $pubTime = $env->request->getString('pubTime', K3_Request::POST, FStr::LINE)) {
-            $this->pool['createTime'] = strtotime($pubTime);
+            $this->pool['createTime'] = max(strtotime($pubTime), time());
         }
 
         $this->pool['thumbnailImage'] = (string) $imageSrc;

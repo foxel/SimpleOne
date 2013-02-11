@@ -106,8 +106,8 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
 
         if ($this->actionState == 'new') {
             $node->addData('newPath', $this->path.'/'.FStr::shortUID());
-            $lastOne = $this->_loadLastPublished($env);
-            $node->addData('lastPubTime', $lastOne->createTime);
+            /*$lastOne = $this->_loadLastPublished($env);
+            $node->addData('lastPubTime', $lastOne->createTime);*/
             $allTags = SOne_Repository_Tag::getInstance($this->_db)->loadNames();
             $node->addData('allTagsJson', json_encode($allTags));
         }
