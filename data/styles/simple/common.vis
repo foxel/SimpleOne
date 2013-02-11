@@ -542,3 +542,32 @@
 <<+ 'SONE_WIDGET_TAGCLOUD_ITEM'>>
 <a href="{FULLURL:IN_path}/tag/{URLENCODE:IN_tag}" rel="{IN_weight}">{!IN_tag}</a>{!IF:IN__IS_LAST}, {/IF}
 <<- 'SONE_WIDGET_TAGCLOUD_ITEM'>>
+
+<<+ 'SONE_WIDGET_TIMECHECK_BLOCK'>>
+{WRITE:cid}{RANDOM:100|999}{WRITE}
+<div id="timecheck-{cid}" style="display: none;"></div>
+<script type="text/javascript">
+(function() {
+    var serverTime = Date.parse('{FTIME:""|"c"|0|true}');
+    var clientShift = serverTime - (new Date()).valueOf();
+
+    if (Math.abs(clientShift) > 120*1000) { (function ($) {
+        $('#timecheck-{cid}')
+            .html('Похоже, часы на вашем компьютере настроены неверно. \
+                Верное время для вашего часового пояса: <span>'+new Date(serverTime).format('dd mmm yyyy HH:MM')+'</span>\
+                <a class="close" href="#"><i class="icon-remove"></i></a>')
+            .addClass('alert alert-error').show();
+
+        var interval = setInterval(function() {
+            serverTime = (new Date()).valueOf() + clientShift;
+            $('#timecheck-{cid}').find('span').text(new Date(serverTime).format('dd mmm yyyy HH:MM'));
+        }, 10*1000);
+
+        $('#timecheck-{cid}').find('a').click(function() {
+            clearInterval(interval);
+            $('#timecheck-{cid}').remove();
+        })
+    })(jQuery); }
+})();
+</script>
+<<- 'SONE_WIDGET_TIMECHECK_BLOCK'>>

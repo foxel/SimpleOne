@@ -20,7 +20,9 @@
 <<+ 'SONE_OBJECT_BLOG_ITEM'>>
 {IF:IN_actionState="edit"}
  {!WRITE:formElements}
- {!IF:IN_ID}<label style="display: none;">Время публикации: <span class="input-append">
+ {!IF:IN_ID}
+ {VIS:SONE_WIDGET_TIMECHECK_BLOCK}
+ <label style="display: none;">Время публикации: <span class="input-append">
      <input class="blogTime" type="text" value="" autocomplete="off" />
      <input type="hidden" name="pubTime" />
      <button class="btn blogTimeReset" onclick="return false;"><i class="icon-remove"></i></button>
