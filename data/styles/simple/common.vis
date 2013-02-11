@@ -548,7 +548,7 @@
 <div id="timecheck-{cid}" style="display: none;"></div>
 <script type="text/javascript">
 (function() {
-    var serverTime = Date.parse('{FTIME:""|"c"|0|true}');
+    var serverTime = Date.parse('{FTIME:""|"c"|0|true|cid}');
     var clientShift = serverTime - (new Date()).valueOf();
 
     if (Math.abs(clientShift) > 120*1000) { (function ($) {
