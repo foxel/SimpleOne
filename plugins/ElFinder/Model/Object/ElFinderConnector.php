@@ -259,8 +259,8 @@ class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
             $box = imagettfbbox($fontSize, 0, $fontFile, $text);
             $x = imagesx($img) - 10 - $box[2];
             $y = imagesy($img) - 10 - $box[3];
-            imagettftext($img, $fontSize, 0, $x+1, $y+1, imagecolorallocate($img, 0, 0, 0), $fontFile, $text);
-            imagettftext($img, $fontSize, 0, $x, $y, imagecolorallocate($img, 255, 255, 255), $fontFile, $text);
+            imagettftext($img, $fontSize, 0, $x+1, $y+1, $this->_imageColorAllocate($img, 0, 0, 0), $fontFile, $text);
+            imagettftext($img, $fontSize, 0, $x, $y, $this->_imageColorAllocate($img, 255, 255, 255), $fontFile, $text);
 
             if ($imageInfo['mime'] == 'image/jpeg') {
                 $result = imagejpeg($img, $path, 100);
@@ -274,6 +274,23 @@ class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
         }
 
         return false;
+    }
+
+    /**
+     * @param resource $img
+     * @param int $r
+     * @param int $g
+     * @param int $b
+     * @return int
+     */
+    protected function _imageColorAllocate($img, $r, $g, $b)
+    {
+        $idx = imagecolorallocate($img, $r, $g, $b);
+        if ($idx === false) {
+            $idx = imagecolorclosesthwb($img, $r, $g, $b);
+        }
+
+        return $idx;
     }
 
     /**
