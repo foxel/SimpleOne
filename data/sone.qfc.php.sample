@@ -11,6 +11,7 @@ site.indexPath => index
 site.language => ru
 
 markup.responsive => 1
+#markup.customCss => static/css/custom.css
 #markup.favicon => favicon.ico
 #markup.hideDefaultFooter => 1
 
