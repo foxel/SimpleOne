@@ -76,20 +76,20 @@
   {ENDIF}
   
   <!-- Load jQuery -->
-  <script type="text/javascript" src="/static/jscripts/date.iso.js" charset="utf-8"></script>
-  <script type="text/javascript" src="/static/jscripts/date.format.js" charset="utf-8"></script>
-  <script type="text/javascript" src="/static/jscripts/i18n/date.format.ru.js" charset="utf-8"></script>
-  <script type="text/javascript" src="/static/jscripts/jquery-1.7.2.min.js" charset="utf-8"></script>
-  <script type="text/javascript" src="/static/jscripts/jquery-ui-1.8.21.custom.min.js" charset="utf-8"></script>
-  <script type="text/javascript" src="/static/jscripts/jquery-ui-timepicker-addon.js" charset="utf-8"></script>
-  <script type="text/javascript" src="/static/jscripts/elrte.min.js" charset="utf-8"></script>
-  <script type="text/javascript" src="/static/jscripts/i18n/elrte.ru.js" charset="utf-8"></script>
-  <script type="text/javascript" src="/static/jscripts/bootstrap-modal.js" charset="utf-8"></script>
-  <script type="text/javascript" src="/static/jscripts/bootstrap-tooltip.js" charset="utf-8"></script>
-  <!--[if lt IE 7]><script type="text/javascript" src="/static/jscripts/bootstrap-ie6.js" charset="utf-8"></script><![endif]-->
-  <script type="text/javascript" src="/static/jscripts/chosen.jquery.js" charset="utf-8"></script>
-  <script type="text/javascript" src="/static/jscripts/jquery.tagcloud.js" charset="utf-8"></script>
-  <script type="text/javascript" src="/static/jscripts/sone.misc.js" charset="utf-8"></script>
+  <script type="text/javascript" src="static/jscripts/date.iso.js" charset="utf-8"></script>
+  <script type="text/javascript" src="static/jscripts/date.format.js" charset="utf-8"></script>
+  <script type="text/javascript" src="static/jscripts/i18n/date.format.ru.js" charset="utf-8"></script>
+  <script type="text/javascript" src="static/jscripts/jquery-1.7.2.min.js" charset="utf-8"></script>
+  <script type="text/javascript" src="static/jscripts/jquery-ui-1.8.21.custom.min.js" charset="utf-8"></script>
+  <script type="text/javascript" src="static/jscripts/jquery-ui-timepicker-addon.js" charset="utf-8"></script>
+  <script type="text/javascript" src="static/jscripts/elrte.min.js" charset="utf-8"></script>
+  <script type="text/javascript" src="static/jscripts/i18n/elrte.ru.js" charset="utf-8"></script>
+  <script type="text/javascript" src="static/jscripts/bootstrap-modal.js" charset="utf-8"></script>
+  <script type="text/javascript" src="static/jscripts/bootstrap-tooltip.js" charset="utf-8"></script>
+  <!--[if lt IE 7]><script type="text/javascript" src="static/jscripts/bootstrap-ie6.js" charset="utf-8"></script><![endif]-->
+  <script type="text/javascript" src="static/jscripts/chosen.jquery.js" charset="utf-8"></script>
+  <script type="text/javascript" src="static/jscripts/jquery.tagcloud.js" charset="utf-8"></script>
+  <script type="text/javascript" src="static/jscripts/sone.misc.js" charset="utf-8"></script>
   <script type="text/javascript">
   // JavaScript Starts Here <![CDATA[
 
@@ -346,7 +346,7 @@
 
 <<+ 'SONE_OBJECT_COMMENTS_ITEM'>>
 <div class="well well-small">
-<strong style="font-size: 85%">{IF:IN_author_name}{!IN_author_name} @ {/IF}{FTIME:IN_TIME}:</strong>
+<strong style="font-size: 85%">{IF:IN_author_name}{!IN_author_name} @ {/IF}<time datetime="{FTIME:IN_TIME|"c"|0|true}">{FTIME:IN_TIME}</time>:</strong>
  <div style="padding-left: 10px;">{BBPARSE:IN_TEXT}</div>
 </div>
 <<- 'SONE_OBJECT_COMMENTS_ITEM'>>
