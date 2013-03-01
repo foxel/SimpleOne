@@ -30,12 +30,13 @@
         {VIS:SONE_OBJECT_POLL_ITEM_EDIT|ID="{id}"}
     </div>
     {!WRITE:formButtons}
-    <a class="btn" href="#" onclick="var c = $(this).closest('form.pollEditor').find('div.pollEditQuestionTemplateContainer').find('div.pollEditQuestion').last().clone(); var i = c.find('input, select').val(''); var r = (new Date).getTime()+Math.random(); i.each(function() {$(this).attr('name', $(this).attr('name').replace(/\{id\}/, r));}); $(this).closest('form.pollEditor').find('div.pollEditQuestionsContainer').append(c); return false;">
+    <a class="btn" href="#" onclick="var c = $(this).closest('form.pollEditor').find('div.pollEditQuestionTemplateContainer').find('div.pollEditQuestion').last().clone(); var i = c.find('input, select').val(''); var r = (new Date).getTime()+Math.random(); i.each(function() { $(this).attr('name', $(this).attr('name').replace(/\{id\}/, r));}); $(this).closest('form.pollEditor').find('div.pollEditQuestionsContainer').append(c); return false;">
         <i class="icon-plus"></i>
         Добавить вопрос
     </a>
     {WRITE}
     {VIS:SONE_OBJECT_EDITFORM|formElements=formElements|formButtons=formButtons|formClass="pollEditor"|_}
+    <script type="text/javascript">require(['jquery']);</script>
 {ELSEIF:IN_actionState="stat"}
     {IF:IN_canEdit}
         <div class="pull-right btn-group">

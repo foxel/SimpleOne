@@ -33,7 +33,7 @@
  {WRITE}
  {VIS:SONE_OBJECT_EDITFORM|formElements=formElements|_}
 {IF:IN_allTagsJson}<script type="text/javascript">
-    $(function() {
+    require(['jquery'], function($) {
         var availableTags = {IN_allTagsJson};
         function split( val ) {
             return val.split(/,\s*/);
@@ -73,6 +73,10 @@
                     return false;
                 }
             });
+    });
+</script>{/IF}
+<script type="text/javascript">
+    require(['jquery', 'jquery.timepicker', 'date.iso'], function ($) {
         $('input.blogTime')
             .datetimepicker({
                 dateFormat: 'yy-mm-dd',
@@ -96,7 +100,7 @@
             $(this).closest('span').find('input.blogTime').val('').trigger('keyup').trigger('change');
         });
     });
-</script>{/IF}
+</script>
 {ELSE}
 <div itemscope itemtype="http://schema.org/BlogPosting">
     {IF:IN_canEdit}<div class="pull-right btn-group">

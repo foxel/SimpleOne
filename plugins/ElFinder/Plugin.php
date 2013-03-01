@@ -45,10 +45,7 @@ class ElFinder_Plugin
     {
         $pageNode
             ->addData('META', '<link rel="stylesheet" href="'.FStr::fullUrl('static/css/elfinder.min.css', true).'" type="text/css" media="screen" charset="utf-8">')
-            ->addData('JS_BLOCKS', implode(FStr::ENDL, array(
-                '<script type="text/javascript" src="'.FStr::fullUrl('static/jscripts/elfinder.min.js', true).'"></script>',
-                '<script type="text/javascript" src="'.FStr::fullUrl('static/jscripts/i18n/elfinder.ru.js', true).'" charset="utf-8"></script>',
-            )))
+
             ->addNode('ELFINDER_JS_BLOCK', 'JS_BLOCKS', array(
                 'connectorUrl' => $this->_config->connectorUrl,
             ));

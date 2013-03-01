@@ -26,7 +26,7 @@ String.prototype.format = function() {
     });
 };
 
-(function($) {
+define(['jquery', 'date.format', 'jquery.chosen', 'i18n/date.format.ru'], function($) {
     $.fn.extend({
         sOneSelect: function (options) {
             if ($.browser.msie && ($.browser.version === "6.0" || ($.browser.version === "7.0" && document.documentMode === 7))) {
@@ -112,4 +112,4 @@ String.prototype.format = function() {
             return res;
         }
     });
-})(jQuery);
+});

@@ -75,25 +75,38 @@
   </style>
   {ENDIF}
   
-  <!-- Load jQuery -->
-  <script type="text/javascript" src="static/jscripts/date.iso.js" charset="utf-8"></script>
-  <script type="text/javascript" src="static/jscripts/date.format.js" charset="utf-8"></script>
-  <script type="text/javascript" src="static/jscripts/i18n/date.format.ru.js" charset="utf-8"></script>
-  <script type="text/javascript" src="static/jscripts/jquery-1.7.2.min.js" charset="utf-8"></script>
-  <script type="text/javascript" src="static/jscripts/jquery-ui-1.8.21.custom.min.js" charset="utf-8"></script>
-  <script type="text/javascript" src="static/jscripts/jquery-ui-timepicker-addon.js" charset="utf-8"></script>
-  <script type="text/javascript" src="static/jscripts/elrte.min.js" charset="utf-8"></script>
-  <script type="text/javascript" src="static/jscripts/i18n/elrte.ru.js" charset="utf-8"></script>
-  <script type="text/javascript" src="static/jscripts/bootstrap-modal.js" charset="utf-8"></script>
-  <script type="text/javascript" src="static/jscripts/bootstrap-tooltip.js" charset="utf-8"></script>
-  <!--[if lt IE 7]><script type="text/javascript" src="static/jscripts/bootstrap-ie6.js" charset="utf-8"></script><![endif]-->
-  <script type="text/javascript" src="static/jscripts/chosen.jquery.js" charset="utf-8"></script>
-  <script type="text/javascript" src="static/jscripts/jquery.tagcloud.js" charset="utf-8"></script>
-  <script type="text/javascript" src="static/jscripts/sone.misc.js" charset="utf-8"></script>
+  <!-- Load require -->
+  <script type="text/javascript" src="static/jscripts/require.js" charset="utf-8"></script>
   <script type="text/javascript">
   // JavaScript Starts Here <![CDATA[
+      require.config({
+          baseUrl: "{FULLURL:"static/jscripts"}",
+          paths: {
+              "jquery": "jquery-1.7.2.min",
+              "jquery.ui": "jquery-ui-1.8.21.custom.min",
+              "jquery.timepicker": "jquery-ui-timepicker-addon",
+              "elrte": "elrte.min",
+          },
+          shim: {
+              "jquery.ui": ["jquery"],
+              "jquery.timepicker": ["jquery.ui"],
+              "bootstrap.modal": ["jquery"],
+              "bootstrap.tooltip": ["jquery"],
+              "bootstrap.ie6": ["jquery"],
+              "jquery.chosen": ["jquery.ui"],
+              "jquery.tagcloud": ["jquery.ui"],
+              "elrte": ["jquery.ui"],
+              "i18n/elrte.ru": ["elrte"],
+          },
+          waitSeconds:15
+      });
+  //]]> JavaScript ends here
+  </script>
 
-      (function($) {
+  <!--[if lt IE 7]><script type="text/javascript">require(['bootstrap.ie6']);</script><![endif]-->
+  <script type="text/javascript">
+  // JavaScript Starts Here <![CDATA[
+      define('SOne', ['jquery', 'sone.misc'], function($) {
           var SOne = {
               config: {
                   elRTE: {
@@ -107,63 +120,40 @@
                       cssfiles: ['{FULLURL:"static/css/bootstrap.css"}', '{FULLURL:"static/css/elrte.inner.css"}']
                   }
               },
-              updateHtmlEditors: function() {
-                  var opts = SOne.config.elRTE;
-                  if (opts) {
-                      // create editor
-                      $('textarea.htmleditor').each(function() {
-                          if ($(this).val() == '') {
-                              $(this).val('<p>&nbsp;</p>');
-                          }
-                      }).elrte(opts);
+              prepareContent: function(block) {
+                  var jq = typeof block !== 'undefined'
+                      ? function() { return $.fn.find.apply($(block), arguments); }
+                      : $;
+                  jq('select').each(function () {
+                      if ($('option', this).length > 7) {
+                          $(this).sOneSelect({allow_single_deselect: true});
+                      }
+                  });
+                  jq('time').timeFormat();
+
+                  if (jq('textarea.htmleditor').length) {
+                      var opts = SOne.config.elRTE;
+                      if (opts) {
+                          require(['elrte', 'i18n/elrte.ru'], function () {
+                              // create editor
+                              jq('textarea.htmleditor').each(function () {
+                                  if ($(this).val() == '') {
+                                      $(this).val('<p>&nbsp;</p>');
+                                  }
+                              }).elrte(opts);
+                          });
+                      }
                   }
               }
           };
 
           $().ready(function() {
-              SOne.updateHtmlEditors();
-              $('select').each(function() {
-                  if ($('option', this).length > 7) {
-                      $(this).sOneSelect({allow_single_deselect: true});
-                  }
-              });
-
-              $('time').timeFormat();
+              SOne.prepareContent();
           });
 
           $.SOne = SOne;
-      })(jQuery);
 
-      // automated previews on images
-      $(function() {
-          $('#mp_pagecont img').each(function() {
-              var i = document.createElement('img');
-              var o = this;
-              $(i).load(function() {
-                  if (i.width && i.width > 1.2*o.width && !$(o).closest('a').length) {
-                      var modalDiv = $('<div />', {"class": 'modal hide'}).append(
-                          $('<div />', {"class": 'modal-body'}).append(i)
-                      );
-                      $('body').append(modalDiv);
-                      modalDiv.modal({show: false});
-                      $(o).css({cursor: 'pointer'}).click(function() {
-                          var s = Math.min(($(window).width() - 130)/i.width, ($(window).height() - 130)/i.height, 1);
-                          var w = Math.max(parseInt(i.width*s), 20);
-                          var h = Math.max(parseInt(i.height*s), 18);
-                          modalDiv.find('.modal-body').css({'max-height': h+'px'});
-                          w+= 30;
-                          h+= 30;
-                          modalDiv.css({
-                              width: w+'px',
-                              'margin-left': (-w/2)+'px',
-                              'margin-top': (-h/2)+'px'}
-                          );
-                          modalDiv.modal('show');
-                          return false;
-                      }).tooltip({title: 'Увеличить'});
-                  }
-              }).attr('src', o.src);
-          });
+          return SOne;
       });
 
       {IN_JS}
@@ -228,13 +218,43 @@
     </div>
 </div>
 
-{IF:IN_BOTT_JS}
 <script type="text/javascript">
-    // JavaScript Starts Here (bottom section) <![CDATA[
-        {IN_BOTT_JS}
-    //]]> JavaScript ends here
+// JavaScript Starts Here (bottom section) <![CDATA[
+    require(['jquery', 'bootstrap.modal', 'bootstrap.tooltip'], function ($) {
+        // automated previews on images
+        $('#mp_pagecont img').each(function () {
+            var o = this;
+            var i = document.createElement('img');
+            $(i).load(function () {
+                if (i.width && i.width > 1.2 * o.width && !$(o).closest('a').length) {
+                    var modalDiv = $('<div />', {"class": 'modal hide'}).append(
+                            $('<div />', {"class": 'modal-body'}).append(i)
+                    );
+                    $('body').append(modalDiv);
+                    modalDiv.modal({show: false});
+                    $(o).css({cursor: 'pointer'}).click(function () {
+                        var s = Math.min(($(window).width() - 130) / i.width, ($(window).height() - 130) / i.height, 1);
+                        var w = Math.max(parseInt(i.width * s), 20);
+                        var h = Math.max(parseInt(i.height * s), 18);
+                        modalDiv.find('.modal-body').css({'max-height': h+'px'});
+                        w += 30;
+                        h += 30;
+                        modalDiv.css({
+                                    "width":w + 'px',
+                                    "margin-left":(-w / 2) + 'px',
+                                    "margin-top":(-h / 2) + 'px'}
+                        );
+                        modalDiv.modal('show');
+                        return false;
+                    }).tooltip({title: 'Увеличить'});
+                }
+            }).attr('src', o.src);
+        });
+    });
+
+    {IN_BOTT_JS}
+//]]> JavaScript ends here
 </script>
-{ENDIF}
 </body>
 </html>
 <<- 'GLOBAL_HTMLPAGE'>>
@@ -317,7 +337,7 @@
 <div style="margin-top: 10px;">
 {IF:IN_allowAdd}
 <span{IF:IN_actionState="addComment"} style="display: none;"{/IF}>
-    <a class="btn" href="{FULLURL:IN_PATH}?addComment" onclick="$(this).closest('span').hide().parent().find('div.objectCommentsFormContainer').show('fast'); return false;">
+    <a class="btn" href="{FULLURL:IN_PATH}?addComment" onclick="require(['jquery'], function($) { $(this).closest('span').hide().parent().find('div.objectCommentsFormContainer').show('fast'); }); return false;">
         <i class="icon-plus"></i>
         Добавить комментарий
     </a>
@@ -361,7 +381,7 @@
 <fieldset id="loginpageLogin"{IF:IN_actionState="register"} style="display: none;"{/IF}>
  <legend>
   <strong>Вход</strong>
-  {IF:IN_registerAllowed} / <a href="#" onclick="$('#loginpageLogin').hide(); $('#loginpageRegister').show(); return false;">Регистрация</a>{/IF}
+  {IF:IN_registerAllowed} / <a class="loginpageShowRegister" href="#" onclick="return false;">Регистрация</a>{/IF}
  </legend>
  <form action="{FULLURL:IN_PATH}/?login" method="post">
   <label>Логин: <br/><input type="text" name="login" value="" /></label>
@@ -372,7 +392,7 @@
 {IF:IN_registerAllowed}
 <fieldset id="loginpageRegister"{!IF:IN_actionState="register"} style="display: none;"{/IF}>
  <legend>
-  <a href="#" onclick="$('#loginpageRegister').hide(); $('#loginpageLogin').show(); return false;">Вход</a>
+  <a href="#" class="loginpageShowLogin" onclick="return false;">Вход</a>
   / <strong>Регистрация</strong>
  </legend>
  <form action="{FULLURL:IN_PATH}/?register" method="post">
@@ -384,6 +404,18 @@
  </form>
 </fieldset>
 {/IF}
+<script type="text/javascript">
+    require(['jquery'], function($) {
+        $('#loginpageLogin').find('.loginpageShowRegister').click(function() {
+            $('#loginpageLogin').hide();
+            $('#loginpageRegister').show();
+        });
+        $('#loginpageRegister').find('.loginpageShowLogin').click(function() {
+            $('#loginpageLogin').show();
+            $('#loginpageRegister').hide();
+        });
+    });
+</script>
 {/IF}
 <<- 'SONE_OBJECT_LOGINPAGE'>>
 
@@ -424,15 +456,19 @@
 <div id="constructorObjectContainer"></div>
 
 <script type="text/javascript">
-    $('input, select', '#constructorForm').change(function () {
-        $('#constructorObjectContainer').empty();
-    });
-    $('select[name="parentPath"]', '#constructorForm').change(function () {
-        $('#constructorForm-parentPath').text('/'+$(this).val());
-    }).sOneSelect();
-    $('#constructorForm').submit(function () {
-        $('#constructorObjectContainer').text('Загрузка ...').load(this.action + '&' + $(this).serialize(), $.SOne.updateHtmlEditors);
-        return false;
+    require(['jquery', 'sone.misc'], function($) {
+        $('input, select', '#constructorForm').change(function () {
+            $('#constructorObjectContainer').empty();
+        });
+        $('select[name="parentPath"]', '#constructorForm').change(function () {
+            $('#constructorForm-parentPath').text('/'+$(this).val());
+        }).sOneSelect();
+        $('#constructorForm').submit(function () {
+            $('#constructorObjectContainer').text('Загрузка ...').load(this.action + '&' + $(this).serialize(), function() {
+                $.SOne.prepareContent('#constructorObjectContainer');
+            });
+            return false;
+        });
     });
 </script>
 <<- 'SONE_OBJECT_CONSTRUCTOR'>>
@@ -533,8 +569,10 @@
     {IN_tags}
 </div>
 <script type="text/javascript">
-    $(function () {
-        $('#tagcloud_{blockId} a').tagcloud({size: {start: 10, end: 16, unit: 'px'}});
+    require(['jquery', 'jquery.tagcloud'], function($) {
+        $(function () {
+            $('#tagcloud_{blockId} a').tagcloud({size: {start: 10, end: 16, unit: 'px'}});
+        });
     });
 </script>
 {/IF}
@@ -548,7 +586,7 @@
 {WRITE:cid}{RANDOM:100|999}{WRITE}
 <div id="timecheck-{cid}" style="display: none;"></div>
 <script type="text/javascript">
-(function($) {
+require(['jquery'], function($) {
     $.get('{FULLURL:"/ping.php"}?'+Math.random(), function (serverTime) {
         var clientShift = serverTime - (new Date()).valueOf();
 
@@ -570,6 +608,6 @@
             })
         }
     })
-})(jQuery);
+});
 </script>
 <<- 'SONE_WIDGET_TIMECHECK_BLOCK'>>

@@ -20,42 +20,57 @@
 <<+ 'ELFINDER_JS_BLOCK'>>
 <script type="text/javascript">
 // JavaScript Starts Here <![CDATA[
-    $.SOne.config.elRTE.fmOpen = function (callback) {
-        $('<div />').dialogelfinder({
-            lang:   'ru',
-            url:    '{FULLURL:IN_connectorUrl}',
-            width:  $(window).width()-200,
-            height: Math.max(400, $(window).height()-80),
-            commandsOptions: {
-                getfile: {
-                    onlyURL:    true,
-                    oncomplete: 'destroy'
+
+require.config({
+    paths: {
+        "elfinder": "elfinder.min"
+    },
+    shim: {
+        "elfinder": ["jquery.ui"],
+        "i18n/elfinder.ru": ["elfinder"]
+    }
+});
+
+require(['jquery', 'SOne'], function($, SOne) {
+    SOne.config.elRTE.fmOpen = function (callback) {
+        require(['elfinder', 'i18n/elfinder.ru'], function() {
+            $('<div />').dialogelfinder({
+                lang:   'ru',
+                url:    '{FULLURL:IN_connectorUrl}',
+                width:  $(window).width()-200,
+                height: Math.max(400, $(window).height()-80),
+                commandsOptions: {
+                    getfile: {
+                        onlyURL:    true,
+                        oncomplete: 'destroy'
+                    },
+                    help: {view: ['shortcuts', null, null]}
                 },
-                help: {view: ['shortcuts', null, null]}
-            },
-            uiOptions:{
-                // toolbar configuration
-                toolbar:[
-                    ['back', 'forward'],
-                    ['home', 'up'],
-                    ['mkdir', 'upload'],
-                    ['open', 'download', 'getfile'],
-                    ['info'],
-                    ['quicklook'],
-                    ['copy', 'cut', 'paste'],
-                    ['rm'],
-                    ['duplicate', 'rename', 'resize'],
-                    ['search'],
-                    ['view', 'sort'],
-                    ['help']
-                ]
-            },
-            cwd: {oldSchool: true},
-            getFileCallback: function (url) {
-                callback(url);
-            }
+                uiOptions:{
+                    // toolbar configuration
+                    toolbar:[
+                        ['back', 'forward'],
+                        ['home', 'up'],
+                        ['mkdir', 'upload'],
+                        ['open', 'download', 'getfile'],
+                        ['info'],
+                        ['quicklook'],
+                        ['copy', 'cut', 'paste'],
+                        ['rm'],
+                        ['duplicate', 'rename', 'resize'],
+                        ['search'],
+                        ['view', 'sort'],
+                        ['help']
+                    ]
+                },
+                cwd: {oldSchool: true},
+                getFileCallback: function (url) {
+                    callback(url);
+                }
+            });
         });
     };
+});
 //]]> JavaScript ends here
 </script>
 <<- 'ELFINDER_JS_BLOCK'>>
