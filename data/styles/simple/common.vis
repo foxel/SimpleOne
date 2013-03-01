@@ -85,18 +85,18 @@
               "jquery": "jquery-1.7.2.min",
               "jquery.ui": "jquery-ui-1.8.21.custom.min",
               "jquery.timepicker": "jquery-ui-timepicker-addon",
-              "elrte": "elrte.min",
+              "elrte": "elrte.min"
           },
           shim: {
-              "jquery.ui": ["jquery"],
-              "jquery.timepicker": ["jquery.ui"],
               "bootstrap.modal": ["jquery"],
               "bootstrap.tooltip": ["jquery"],
               "bootstrap.ie6": ["jquery"],
-              "jquery.chosen": ["jquery.ui"],
-              "jquery.tagcloud": ["jquery.ui"],
+              "jquery.chosen": ["jquery"],
+              "jquery.tagcloud": ["jquery"],
+              "jquery.ui":["jquery"],
+              "jquery.timepicker":["jquery.ui"],
               "elrte": ["jquery.ui"],
-              "i18n/elrte.ru": ["elrte"],
+              "i18n/elrte.ru": ["elrte"]
           },
           waitSeconds:15
       });
