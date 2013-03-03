@@ -108,18 +108,8 @@
   // JavaScript Starts Here <![CDATA[
       define('SOne', ['jquery', 'sone.misc'], function($) {
           var SOne = {
-              config: {
-                  elRTE: {
-                      lang: 'ru',
-                      styleWithCSS: false,
-                      allowTextNodes: false,
-                      height: 400,
-                      toolbar: 'maxi',
-                      resizable: true,
-                      resizeHandle: 's',
-                      cssfiles: ['{FULLURL:"static/css/bootstrap.css"}', '{FULLURL:"static/css/elrte.inner.css"}']
-                  }
-              },
+              root: '{ROOTURL}',
+              config: { },
               prepareContent: function(block) {
                   var jq = typeof block !== 'undefined'
                       ? function() { return $.fn.find.apply($(block), arguments); }
@@ -132,17 +122,10 @@
                   jq('time').timeFormat();
 
                   if (jq('textarea.htmleditor').length) {
-                      var opts = SOne.config.elRTE;
-                      if (opts) {
-                          require(['elrte', 'i18n/elrte.ru'], function () {
-                              // create editor
-                              jq('textarea.htmleditor').each(function () {
-                                  if ($(this).val() == '') {
-                                      $(this).val('<p>&nbsp;</p>');
-                                  }
-                              }).elrte(opts);
-                          });
-                      }
+                      require(['sone.wysiwyg'], function () {
+                          // create editor
+                          jq('textarea.htmleditor').wysiwyg();
+                      });
                   }
               }
           };

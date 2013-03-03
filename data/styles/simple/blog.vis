@@ -33,7 +33,7 @@
  {WRITE}
  {VIS:SONE_OBJECT_EDITFORM|formElements=formElements|_}
 {IF:IN_allTagsJson}<script type="text/javascript">
-    require(['jquery'], function($) {
+    require(['jquery', 'jquery.ui'], function($) {
         var availableTags = {IN_allTagsJson};
         function split( val ) {
             return val.split(/,\s*/);
