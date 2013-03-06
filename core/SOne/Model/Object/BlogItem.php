@@ -50,8 +50,8 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
         }
 
         $node = parent::visualize($env);
-
         $node->setType('SONE_OBJECT_BLOG_ITEM')
+            ->addData('canSetPubTime', !$this->id || $this->createTime > time(), true)
             ->addData('parentPath', $parentPath, true);
 
         if ($this->pool['tags']) {
@@ -170,7 +170,8 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
             $this->content = '';
         }
 
-        if (!$this->id && $pubTime = $env->request->getString('pubTime', K3_Request::POST, FStr::LINE)) {
+        if (!$this->id || $this->createTime > time()) {
+            $pubTime = $env->request->getString('pubTime', K3_Request::POST, FStr::LINE);
             $this->pool['createTime'] = max(strtotime($pubTime), time());
         }
 

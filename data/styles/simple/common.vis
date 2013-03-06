@@ -349,7 +349,7 @@
 
 <<+ 'SONE_OBJECT_COMMENTS_ITEM'>>
 <div class="well well-small">
-<strong style="font-size: 85%">{IF:IN_author_name}{!IN_author_name} @ {/IF}<time datetime="{FTIME:IN_TIME|"c"|0|true}">{FTIME:IN_TIME}</time>:</strong>
+<strong style="font-size: 85%">{IF:IN_author_name}{!IN_author_name} @ {/IF}<time datetime="{FTIME:IN_TIME|"c"|false|true}">{FTIME:IN_TIME}</time>:</strong>
  <div style="padding-left: 10px;">{BBPARSE:IN_TEXT}</div>
 </div>
 <<- 'SONE_OBJECT_COMMENTS_ITEM'>>
