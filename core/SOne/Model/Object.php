@@ -91,6 +91,18 @@ abstract class SOne_Model_Object extends SOne_Model implements I_K3_RSS_Item
     }
 
     /**
+     * @return array
+     */
+    protected static function _getClassReplaceMap()
+    {
+        $out = array();
+        foreach (self::$_classNamespaces as $namespace) {
+            $out[$namespace.'_'] = '';
+        }
+        return $out;
+    }
+
+    /**
      * @param  array $init
      */
     public function __construct(array $init = array())
@@ -98,7 +110,7 @@ abstract class SOne_Model_Object extends SOne_Model implements I_K3_RSS_Item
         $this->pool = array(
             'id'          => isset($init['id'])          ? (int)    $init['id']          : null,
             'parentId'    => isset($init['parentId'])    ? (int)    $init['parentId']    : null,
-            'class'       => isset($init['class'])       ? (string) $init['class']       : lcfirst(strtr(get_class($this), array(__CLASS__.'_' => ''))),
+            'class'       => isset($init['class'])       ? (string) $init['class']       : lcfirst(strtr(get_class($this), self::_getClassReplaceMap())),
             'caption'     => isset($init['caption'])     ? (string) $init['caption']     : '',
             'ownerId'     => isset($init['ownerId'])     ? (int)    $init['ownerId']     : null,
             'createTime'  => isset($init['createTime'])  ? (int)    $init['createTime']  : time(),
