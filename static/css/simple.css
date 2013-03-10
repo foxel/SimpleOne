@@ -5512,6 +5512,275 @@ a.badge:hover {
   left: 11px;
   top: 11px;
 }
+/*
+    ColorBox Core Style:
+    The following CSS is consistent between example themes and should not be altered.
+*/
+#colorbox,
+#cboxOverlay,
+#cboxWrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10001;
+  overflow: hidden;
+}
+#cboxOverlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+#cboxMiddleLeft,
+#cboxBottomLeft {
+  clear: left;
+}
+#cboxContent {
+  position: relative;
+}
+#cboxLoadedContent {
+  overflow: auto;
+}
+#cboxTitle {
+  margin: 0;
+}
+#cboxLoadingOverlay,
+#cboxLoadingGraphic {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+#cboxPrevious,
+#cboxNext,
+#cboxClose,
+#cboxSlideshow {
+  cursor: pointer;
+}
+.cboxPhoto {
+  float: left;
+  margin: auto;
+  border: 0;
+  display: block;
+}
+.cboxIframe {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: 0;
+}
+/*
+    User Style:
+    Change the following styles to modify the appearance of ColorBox.  They are
+    ordered & tabbed in a way that represents the nesting of the generated HTML.
+*/
+#cboxOverlay {
+  background: #222;
+}
+#colorbox {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 750;
+  overflow: auto;
+  width: 560px;
+  margin: -250px 0 0 -280px;
+  background-color: #ffffff;
+  border: 1px solid #999;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  *border: 1px solid #999;
+  /* IE6-7 */
+
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  border-radius: 6px;
+  -webkit-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+  -webkit-background-clip: padding-box;
+  -moz-background-clip: padding-box;
+  background-clip: padding-box;
+  margin: 0 !important;
+  z-index: 10002;
+}
+#colorbox.fade {
+  -webkit-transition: opacity .3s linear, top .3s ease-out;
+  -moz-transition: opacity .3s linear, top .3s ease-out;
+  -o-transition: opacity .3s linear, top .3s ease-out;
+  transition: opacity .3s linear, top .3s ease-out;
+  top: -25%;
+}
+#colorbox.fade.in {
+  top: 50%;
+}
+#cboxLoadedContent {
+  overflow-y: auto;
+  max-height: 400px;
+  padding: 15px;
+  margin-top: 32px;
+  margin-bottom: 26px;
+  max-height: none;
+}
+#cboxTitle {
+  padding: 9px 15px;
+  border-bottom: 1px solid #eee;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding-right: 26px;
+  font-weight: bold;
+  color: #46a546;
+  height: 16px;
+}
+#cboxTitle .close {
+  margin-top: 2px;
+}
+#cboxTitle h3 {
+  margin: 0;
+  line-height: 30px;
+}
+.cb-icon {
+  border: 0;
+  text-shadow: none;
+  background-color: transparent;
+  position: absolute;
+  width: 18px;
+  font-size: 0;
+  color: transparent;
+  height: 16px;
+  line-height: 16px;
+  *margin-right: .3em;
+}
+.cb-icon-before {
+  font-family: FontAwesome;
+  font-size: 12px;
+  color: #111420;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  width: 1em;
+  text-decoration: inherit;
+}
+#cboxCurrent {
+  position: absolute;
+  bottom: 8px;
+  left: 73px;
+  color: #333333;
+}
+#cboxSlideshow {
+  border: 0;
+  text-shadow: none;
+  background-color: transparent;
+  position: absolute;
+  width: 18px;
+  font-size: 0;
+  color: transparent;
+  height: 16px;
+  line-height: 16px;
+  *margin-right: .3em;
+  bottom: 8px;
+  right: 16px;
+}
+#cboxSlideshow:before {
+  font-family: FontAwesome;
+  font-size: 12px;
+  color: #111420;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  width: 1em;
+  text-decoration: inherit;
+  color: #333333;
+  content: "\f009";
+}
+#cboxPrevious {
+  border: 0;
+  text-shadow: none;
+  background-color: transparent;
+  position: absolute;
+  width: 18px;
+  font-size: 0;
+  color: transparent;
+  height: 16px;
+  line-height: 16px;
+  *margin-right: .3em;
+  bottom: 8px;
+  left: 8px;
+}
+#cboxPrevious:before {
+  font-family: FontAwesome;
+  font-size: 12px;
+  color: #111420;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  width: 1em;
+  text-decoration: inherit;
+  content: "\f060";
+}
+#cboxNext {
+  border: 0;
+  text-shadow: none;
+  background-color: transparent;
+  position: absolute;
+  width: 18px;
+  font-size: 0;
+  color: transparent;
+  height: 16px;
+  line-height: 16px;
+  *margin-right: .3em;
+  bottom: 8px;
+  left: 26px;
+}
+#cboxNext:before {
+  font-family: FontAwesome;
+  font-size: 12px;
+  color: #111420;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  width: 1em;
+  text-decoration: inherit;
+  content: "\f061";
+}
+#cboxClose {
+  border: 0;
+  text-shadow: none;
+  background-color: transparent;
+  position: absolute;
+  width: 18px;
+  font-size: 0;
+  color: transparent;
+  height: 16px;
+  line-height: 16px;
+  *margin-right: .3em;
+  top: 8px;
+  right: 8px;
+}
+#cboxClose:before {
+  font-family: FontAwesome;
+  font-size: 12px;
+  color: #111420;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  width: 1em;
+  text-decoration: inherit;
+  content: "\f00d";
+}
+#cboxLoadingGraphic {
+  background: url(img/loading.gif) no-repeat center center;
+}
+.cboxIE #cboxTopLeft,
+.cboxIE #cboxTopCenter,
+.cboxIE #cboxTopRight,
+.cboxIE #cboxBottomLeft,
+.cboxIE #cboxBottomCenter,
+.cboxIE #cboxBottomRight,
+.cboxIE #cboxMiddleLeft,
+.cboxIE #cboxMiddleRight {
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#00FFFFFF,endColorstr=#00FFFFFF);
+}
 /*!
  * jQuery UI Bootstrap v0.23
  * Portions copyright Addy Osmani, jQuery UI & Twitter Bootstrap

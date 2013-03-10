@@ -92,6 +92,7 @@
               "bootstrap.tooltip": ["jquery"],
               "bootstrap.ie6": ["jquery"],
               "jquery.chosen": ["jquery"],
+              "jquery.colorbox": ["jquery"],
               "jquery.tagcloud": ["jquery"],
               "jquery.ui":["jquery"],
               "jquery.timepicker":["jquery.ui"],
