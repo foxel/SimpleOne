@@ -22,6 +22,7 @@ class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
 {
     /** @var array */
     protected $_config = array();
+    protected $_writeAccess = false;
 
     /**
      * @param  array $init
@@ -41,6 +42,8 @@ class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
      */
     public function visualize(SOne_Environment $env)
     {
+        $this->_writeAccess = ($this->editLevel <= $env->user->accessLevel);
+
         $finder = new elFinder($this->_config);
 
         $isPost = $env->request->isPost;
@@ -116,7 +119,7 @@ class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
             'utf8fix'         => true,
             'tmbCrop'         => false,
             'tmbBgColor'      => 'transparent',
-            'accessControl'   => array($this, 'checkAccess'),
+            'accessControl'   => array($this, '_accessControl'),
             'acceptedName'    => '/^[^\.].*$/',
             'attributes'      => array(
                 array(
@@ -152,11 +155,18 @@ class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
      * @param $volume
      * @return bool|null
      */
-    public function checkAccess($attr, $path, $data, $volume)
+    public function _accessControl($attr, $path, $data, $volume)
     {
-        return strpos(FStr::basename($path), '.') === 0 // if file/folder begins with '.' (dot)
-            ? !($attr == 'read' || $attr == 'write') // set read+write to false, other (locked+hidden) set to true
-            : null; // else elFinder decide it itself
+        switch ($attr) {
+            case 'locked':
+            case 'hidden':
+                return (strpos(FStr::basename($path), '.') === 0) ? true : null;
+            case 'write':
+                return !$this->_writeAccess ? false : null;
+            case 'read':
+            default:
+                return null;
+        }
     }
 
     /**
