@@ -5549,6 +5549,7 @@ a.badge:hover {
   top: 0;
   left: 0;
   width: 100%;
+  height: 100%;
 }
 #cboxPrevious,
 #cboxNext,
@@ -5769,7 +5770,10 @@ a.badge:hover {
   content: "\f00d";
 }
 #cboxLoadingGraphic {
-  background: url(img/loading.gif) no-repeat center center;
+  background: url("../images/loading.gif") no-repeat center center;
+}
+#cboxLoadingOverlay {
+  background: url("../images/loading_background.png") no-repeat center center;
 }
 .cboxIE #cboxTopLeft,
 .cboxIE #cboxTopCenter,
