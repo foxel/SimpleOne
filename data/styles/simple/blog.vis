@@ -225,7 +225,7 @@
 {else}
 <div class="alert">Нет записей</div>
 {/if}
-<div class="row">
+<div class="row blog-tag-blocks">
     {IN_tagBlocks}
 </div>
 <script type="text/javascript">
@@ -246,7 +246,7 @@
 <<- 'SONE_OBJECT_BLOG_FRONT_CAROUSEL_ITEM'>>
 
 <<+ 'SONE_OBJECT_BLOG_FRONT_TAG_BLOCK'>>
-<div class="span4">
+<div class="span4 blog-tag-block">
     <legend><a href="{FULLURL:IN_path}">{IN_caption}</a></legend>
     <div>
         {IN_items}
@@ -275,5 +275,9 @@ div.blog-keywords {
 }
 div.blog-keywords a {
     white-space: nowrap;
+}
+#mp_mainpage.span8 .blog-tag-block:nth-child(odd),
+#mp_mainpage.span10 .blog-tag-block:nth-child(odd) {
+    clear: left;
 }
 <<- 'CSS'>>
