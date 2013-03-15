@@ -211,7 +211,7 @@
 <h2>{!IN_CAPTION}</h2>
 {IF:IN_carouselItems}
 <div class="row">
-    <div id="carousel{UNIQID}" class="carousel slide span8">
+    <div id="carousel{UNIQID}" class="carousel slide span8 blog-carousel">
         <!-- Carousel items -->
         <div class="carousel-inner">
             {IN_carouselItems}
@@ -236,8 +236,8 @@
 <<- 'SONE_OBJECT_BLOG_FRONT'>>
 
 <<+ 'SONE_OBJECT_BLOG_FRONT_CAROUSEL_ITEM'>>
-<div class="item{IF:IN__IS_FIRST} active{/IF}" style="height: 350px; line-height: 350px;">
-    <a href="{FULLURL:IN_path}" title="{!IN_caption}"><img src="{IN_image}" style="width: 100%;"/></a>
+<div class="item{IF:IN__IS_FIRST} active{/IF}" >
+    <a href="{FULLURL:IN_path}" title="{!IN_caption}"><img src="{IN_image}" /></a>
 
     <div class="carousel-caption">
         <a href="{FULLURL:IN_path}"><h4>{!IN_caption}</h4></a>
@@ -275,6 +275,16 @@ div.blog-keywords {
 }
 div.blog-keywords a {
     white-space: nowrap;
+}
+
+.carousel.blog-carousel .item {
+    height: 350px;
+}
+.carousel.blog-carousel .item > a {
+    width: 100%;
+}
+.carousel.blog-carousel .item > a > img {
+    width: 100%;
 }
 #mp_mainpage.span8 .blog-tag-block:nth-child(odd),
 #mp_mainpage.span10 .blog-tag-block:nth-child(odd) {
