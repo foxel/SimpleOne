@@ -102,6 +102,10 @@ class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
 
         $response = $finder->exec($cmd, $args);
 
+        if (F_DEBUG) {
+            $response['dbQueries'] = $env->db->history;
+        }
+
         $env->response
             ->write(json_encode($response))
             ->sendBuffer('', array('contentType' => 'application/json'));
