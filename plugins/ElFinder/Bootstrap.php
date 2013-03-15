@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -33,7 +33,8 @@ class ElFinder_Bootstrap implements SOne_Interface_PluginBootstrap
             ->registerClassFile('elFinderVolumeDriver', ELFINDER_PLUGIN_PATH.DIRECTORY_SEPARATOR.'elFinderVolumeDriver.class.php')
             ->registerClassFile('elFinderVolumeLocalFileSystem', ELFINDER_PLUGIN_PATH.DIRECTORY_SEPARATOR.'elFinderVolumeLocalFileSystem.class.php')
             ->registerClassFile('elFinderVolumeMySQL', ELFINDER_PLUGIN_PATH.DIRECTORY_SEPARATOR.'elFinderVolumeMySQL.class.php')
-            ->registerClassFile('elFinderVolumeFTP', ELFINDER_PLUGIN_PATH.DIRECTORY_SEPARATOR.'elFinderVolumeFTP.class.php');
+            ->registerClassFile('elFinderVolumeFTP', ELFINDER_PLUGIN_PATH.DIRECTORY_SEPARATOR.'elFinderVolumeFTP.class.php')
+            ->registerClassFile('elFinderVolumeSOneFileSystem', dirname(__FILE__).DIRECTORY_SEPARATOR.'SOneVolumeDriver.php');
 
         self::$_pluginInstance = new ElFinder_Plugin($app, $config);
     }

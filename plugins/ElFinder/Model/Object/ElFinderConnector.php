@@ -22,6 +22,7 @@ class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
 {
     /** @var array */
     protected $_config = array();
+    /** @var bool */
     protected $_writeAccess = false;
 
     /**
@@ -33,7 +34,7 @@ class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
         $init['hideInTree'] = true;
         parent::__construct($init);
 
-        $this->_config = $this->_prepareConfig((array) $this->pool['data']);
+        $this->_config = (array) $this->pool['data'];
     }
 
     /**
@@ -44,7 +45,7 @@ class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
     {
         $this->_writeAccess = ($this->editLevel <= $env->user->accessLevel);
 
-        $finder = new elFinder($this->_config);
+        $finder = new elFinder($this->_prepareFinderConfig($this->_config, $env));
 
         $isPost = $env->request->isPost;
         $src    = $isPost ? $_POST : $_GET;
@@ -108,11 +109,13 @@ class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
 
     /**
      * @param array $config
+     * @param SOne_Environment $env
      * @return array
      */
-    protected function _prepareConfig(array $config)
+    protected function _prepareFinderConfig(array $config, SOne_Environment $env)
     {
         $rootDefaults = array(
+            'driver'          => 'SOneFileSystem',
             'treeDeep'        => 3,
             'mimeDetect'      => 'internal',
             'tmbPath'         => '.tmb',
@@ -125,7 +128,8 @@ class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
                 array(
                     'pattern' => '/\.(js|php)$/',
                     'read'    => true,
-                    'write'   => false
+                    'write'   => false,
+                    'locked'  => true,
                 ),
             )
         );
@@ -140,6 +144,7 @@ class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
                         $rootConfig[$confName] = array_map('trim', explode(',', $rootConfig[$confName]));
                     }
                 }
+                $rootConfig['env'] = $env;
             }
         }
 
@@ -159,6 +164,7 @@ class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
     {
         switch ($attr) {
             case 'locked':
+                return (!$this->_writeAccess || strpos(FStr::basename($path), '.') === 0) ? true : null;
             case 'hidden':
                 return (strpos(FStr::basename($path), '.') === 0) ? true : null;
             case 'write':

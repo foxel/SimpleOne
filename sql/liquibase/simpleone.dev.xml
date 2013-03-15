@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
- Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
 
  This file is part of QuickFox SimpleOne.
 
@@ -22,5 +22,6 @@
     <property name="db.prefix" value="qfso_" />
     <property name="admin.email" value="admin@example.com" />
 
-    <include file="initial.xml" />
+    <include file="initial.xml" relativeToChangelogFile="true" />
+    <include file="updates.2013.03.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

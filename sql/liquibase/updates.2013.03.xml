@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright (C) 2013 Andrey F. Kupreychik (Foxel)
+
+ This file is part of QuickFox SimpleOne.
+
+ SimpleOne is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ SimpleOne is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
+-->
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd"
+                   logicalFilePath="updates.2013.03">
+    <changeSet id="files-create" author="Foxel">
+        <createTable tableName="${db.prefix}files">
+            <column name="id" type="INT UNSIGNED" autoIncrement="true" ><constraints nullable="false" primaryKey="true"/></column>
+            <column name="path_sha1" type="VARCHAR(40)"><constraints nullable="false" /></column>
+            <column name="user_id" type="INT UNSIGNED"><constraints nullable="false" /></column>
+            <column name="acc_lvl" type="TINYINT UNSIGNED" defaultValueNumeric="0" ><constraints nullable="false"/></column>
+        </createTable>
+        <modifySql dbms="mysql">
+            <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8"/>
+        </modifySql>
+    </changeSet>
+
+    <changeSet id="files-indexes" author="Foxel">
+        <createIndex tableName="${db.prefix}files" indexName="path_sha1_idx" unique="true" >
+            <column name="path_sha1" />
+        </createIndex>
+        <createIndex tableName="${db.prefix}files" indexName="user_id_idx">
+            <column name="user_id" />
+        </createIndex>
+        <createIndex tableName="${db.prefix}objects" indexName="acc_lvl_idx">
+            <column name="acc_lvl"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseTableName="${db.prefix}files" baseColumnNames="user_id" constraintName="${db.prefix}files_user_id_fk"
+                                 referencedTableName="${db.prefix}users" referencedColumnNames="id" onDelete="CASCADE" onUpdate="CASCADE" />
+    </changeSet>
+</databaseChangeLog>

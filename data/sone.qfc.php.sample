@@ -53,7 +53,8 @@ widgets.tags.block => sidebar
 
 staticRoutes.uploader.class => ElFinderConnector
 staticRoutes.uploader.accessLevel => 1
-staticRoutes.uploader.roots.0.driver      => LocalFileSystem
+# SOneFileSystem is a default driver
+#staticRoutes.uploader.roots.0.driver      => SOneFileSystem
 staticRoutes.uploader.roots.0.alias       => Uploads
 staticRoutes.uploader.roots.0.path        => {F_SITE_ROOT}/static/files/
 staticRoutes.uploader.roots.0.startPath   => {F_SITE_ROOT}/static/files/
