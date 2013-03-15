@@ -78,7 +78,7 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
 
         if ($this->id && !in_array($this->actionState, array('new', 'edit'))) {
             $curPage = max((int) $env->request->getNumber('page'), 1);
-            $items   = $this->_loadListItems($env, $this->_itemPerPage, $curPage - 1, $totalItems);
+            $items   = $this->loadListItems($env, $this->_itemPerPage, $curPage - 1, $totalItems);
             $rootNode = $vis->getRootNode();
             $rootNode->addData('META', sprintf(
                 '<link rel="alternate" type="application/rss+xml" title="%s" href="%s?rss" />',
@@ -121,7 +121,7 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
      */
     protected function _prepareRSSFeed(SOne_Environment $env)
     {
-        $items   = $this->_loadListItems($env, $this->_itemPerPage);
+        $items   = $this->loadListItems($env, $this->_itemPerPage);
         foreach ($items as $item) {
             $item->fixFullUrls($env);
         }
@@ -142,7 +142,7 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
      * @param null $totalItems
      * @return \SOne_Model_Object_BlogItem[]
      */
-    protected function _loadListItems(SOne_Environment $env, $perPage = 10, $pageOffset = 0, &$totalItems = null)
+    public function loadListItems(SOne_Environment $env, $perPage = 10, $pageOffset = 0, &$totalItems = null)
     {
         if (!$this->id) {
             return array();

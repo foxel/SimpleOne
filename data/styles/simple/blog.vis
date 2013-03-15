@@ -207,6 +207,61 @@
 <a href="{FULLURL:IN_PARENTPATH}/tag/{URLENCODE:IN_name}"><i class="icon-tag"></i> {!IN_name}</a>{!IF:IN__IS_LAST}, {/IF}
 <<- 'SONE_OBJECT_BLOG_TAG'>>
 
+<<+ 'SONE_OBJECT_BLOG_FRONT'>>
+<h2>{!IN_CAPTION}</h2>
+{IF:IN_carouselItems}
+<div class="row">
+    <div id="carousel{UNIQID}" class="carousel slide span8">
+        <!-- Carousel items -->
+        <div class="carousel-inner">
+            {IN_carouselItems}
+        </div>
+        <!-- Carousel nav -->
+        <a class="carousel-control left" href="#carousel{UNIQID}" data-slide="prev">&lsaquo;</a>
+        <a class="carousel-control right" href="#carousel{UNIQID}" data-slide="next">&rsaquo;</a>
+    </div>
+
+</div>
+{else}
+<div class="alert">Нет записей</div>
+{/if}
+<div class="row">
+    {IN_tagBlocks}
+</div>
+<script type="text/javascript">
+    require(['jquery', 'bootstrap.carousel'], function($) {
+        $('#carousel{UNIQID}').carousel();
+    });
+</script>
+<<- 'SONE_OBJECT_BLOG_FRONT'>>
+
+<<+ 'SONE_OBJECT_BLOG_FRONT_CAROUSEL_ITEM'>>
+<div class="item{IF:IN__IS_FIRST} active{/IF}" style="height: 350px; line-height: 350px;">
+    <a href="{FULLURL:IN_path}" title="{!IN_caption}"><img src="{IN_image}" style="width: 100%;"/></a>
+
+    <div class="carousel-caption">
+        <a href="{FULLURL:IN_path}"><h4>{!IN_caption}</h4></a>
+    </div>
+</div>
+<<- 'SONE_OBJECT_BLOG_FRONT_CAROUSEL_ITEM'>>
+
+<<+ 'SONE_OBJECT_BLOG_FRONT_TAG_BLOCK'>>
+<div class="span4">
+    <legend><a href="{FULLURL:IN_path}">{IN_caption}</a></legend>
+    <div>
+        {IN_items}
+    </div>
+</div>
+<<- 'SONE_OBJECT_BLOG_FRONT_TAG_BLOCK'>>
+<<+ 'SONE_OBJECT_BLOG_FRONT_TAG_BLOCK_ITEM'>>
+<div class="clearfix" style="margin-bottom: 10px; height: 60px; overflow: hidden;">
+    <a href="{FULLURL:IN_path}" title="{!IN_caption}" style="display: block;">
+        <img src="{IN_image}" class="pull-left" style="width: 90px; margin-right: 7px;" />
+        <h4>{!IN_caption}</h4>
+    </a>
+</div>
+<<- 'SONE_OBJECT_BLOG_FRONT_TAG_BLOCK_ITEM'>>
+
 <<+ 'CSS'>>
 div.blog-item-preview {
     min-height: 100px;
