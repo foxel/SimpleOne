@@ -77,29 +77,11 @@
   
   <!-- Load require -->
   <script type="text/javascript" src="static/jscripts/require.js" charset="utf-8"></script>
+  <script type="text/javascript" src="static/jscripts/require.config.js" charset="utf-8"></script>
   <script type="text/javascript">
   // JavaScript Starts Here <![CDATA[
       require.config({
           baseUrl: "{FULLURL:"static/jscripts"}",
-          paths: {
-              "jquery": "jquery-1.7.2.min",
-              "jquery.ui": "jquery-ui-1.8.21.custom.min",
-              "jquery.timepicker": "jquery-ui-timepicker-addon",
-              "elrte": "elrte.min"
-          },
-          shim: {
-              "bootstrap.modal": ["jquery"],
-              "bootstrap.tooltip": ["jquery"],
-              "bootstrap.ie6": ["jquery"],
-              "jquery.chosen": ["jquery"],
-              "jquery.colorbox": ["jquery"],
-              "jquery.tagcloud": ["jquery"],
-              "jquery.ui":["jquery"],
-              "jquery.timepicker":["jquery.ui"],
-              "elrte": ["jquery.ui"],
-              "i18n/elrte.ru": ["elrte"]
-          },
-          waitSeconds:15
       });
   //]]> JavaScript ends here
   </script>
@@ -211,7 +193,7 @@
             var i = document.createElement('img');
             $(i).load(function () {
                 if (i.width && i.width > 1.2 * o.width && !$(o).closest('a').length) {
-                    var modalDiv = $('<div />', {"class": 'modal hide'}).append(
+                    var modalDiv = $('<div />', {"class": 'modal fade hide'}).append(
                             $('<div />', {"class": 'modal-body'}).append(i)
                     );
                     $('body').append(modalDiv);
