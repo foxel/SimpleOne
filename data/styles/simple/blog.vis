@@ -230,7 +230,20 @@
 </div>
 <script type="text/javascript">
     require(['jquery', 'bootstrap.carousel'], function($) {
-        $('#carousel{UNIQID}').carousel();
+        var $carousel = $('#carousel{UNIQID}');
+        $carousel.carousel();
+        $carousel.find('.item img').each(function () {
+            var o = this;
+            var i = document.createElement('img');
+            $(i).load(function () {
+                var h = i.height*$carousel.width()/i.width;
+                var maxHeight = $carousel.height();
+                if (h > maxHeight) {
+                    var top = Math.min((h + 50 - maxHeight)/3, h - maxHeight);
+                    $(o).css('margin-top', -top+'px');
+                }
+            }).attr('src', o.src);
+        });
     });
 </script>
 <<- 'SONE_OBJECT_BLOG_FRONT'>>
@@ -278,7 +291,7 @@ div.blog-keywords a {
 }
 
 .carousel.blog-carousel .item {
-    height: 350px;
+    height: 400px;
 }
 .carousel.blog-carousel .item > a {
     width: 100%;
