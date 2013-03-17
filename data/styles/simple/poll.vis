@@ -1,5 +1,5 @@
 <!--
- Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
 
  This file is part of QuickFox SimpleOne.
 
@@ -46,7 +46,7 @@
     {/IF}
     <h2>{!IN_CAPTION}</h2>
     <div class="htmlcontent">{IN_DESCRIPTION}</div>
-    <div>
+    <div class="poll-items">
         {IN_question_items}
     </div>
 {ELSE}
@@ -58,11 +58,11 @@
     {/IF}
     <h2>{!IN_CAPTION}</h2>
     <div class="htmlcontent">{IN_DESCRIPTION}</div>
-    <form action="{FULLURL:IN_PATH}/?fill" method="POST">
+    <form class="poll-form" action="{FULLURL:IN_PATH}/?fill" method="POST">
         {IF:IN_ASK_FOR_LOGIN}
             <div style="color: darkred;">Авторизируйтесь, чтобы сохранить ответы.</div>
         {/IF}
-        <div>
+        <div class="poll-items">
             {IN_question_items}
         </div>
         <hr />
@@ -93,7 +93,7 @@
     {if:IN_type=4}
         <input class="span9" type="text" name="question_{!IN_ID}_answer"{IF:IN_ANSWERED} readonly="readonly"{ELSEIF:IN_LOCKED} readonly="readonly"{/IF} value="{!in_answerValue}"/>
     {elseif:IN_type=3}
-        <textarea class="span9" name="question_{!IN_ID}_answer"{IF:IN_ANSWERED} readonly="readonly"{ELSEIF:IN_LOCKED} readonly="readonly"{/IF}>{!in_answerValue}</textarea>
+        <textarea class="span9" style="resize: vertical;" name="question_{!IN_ID}_answer"{IF:IN_ANSWERED} readonly="readonly"{ELSEIF:IN_LOCKED} readonly="readonly"{/IF}>{!in_answerValue}</textarea>
     {else}
         {IN_variants}
     {/if}

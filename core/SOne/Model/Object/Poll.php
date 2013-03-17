@@ -199,100 +199,108 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
     }
 
     /**
-     * @param string $action
      * @param SOne_Environment $env
      * @param bool $updated
      */
-    public function doAction($action, SOne_Environment $env, &$updated = false)
+    protected function fillAction(SOne_Environment $env, &$updated = false)
     {
-        parent::doAction($action, $env, $updated);
-        $data =& $this->pool['data'];
+        if (!empty($this->questions) && $env->getUser()->id) {
+            $curAnswers = $this->_fillAnswers($env);
 
-        if ($action == 'fill' && !empty($data['questions']) && $env->getUser()->id) {
-            $statAnswers = $this->_genAnswersStats();
-            $curAnswers = isset($data['answers'][$env->getUser()->id])
-                ? $data['answers'][$env->getUser()->id]
-                : array();
-
-            foreach($data['questions'] as $qId => &$question) {
-                $questionType = isset($question['type'])
-                    ? (int)$question['type']
-                    : self::QUESTION_TYPE_SELECT;
-
-                $answerValue = isset($curAnswers[$qId])
-                    ? $curAnswers[$qId]
-                    : null;
-
-                switch ($questionType) {
-                    case self::QUESTION_TYPE_TEXT:
-                    case self::QUESTION_TYPE_STRING:
-                        $questionAnswered = !is_null($answerValue);
-                        break;
-                    case self::QUESTION_TYPE_MULTI:
-                        $questionAnswered = (bool)count(array_intersect((array)$answerValue, array_keys($question['valueVariants'])));
-                        break;
-                    case self::QUESTION_TYPE_SELECT:
-                    default:
-                        $questionAnswered = isset($question['valueVariants'][$answerValue]);
-
-                }
-                $questionLocked = $question['lockAnswers'] && $questionAnswered;
-
-                if ($questionLocked) {
-                    continue;
-                }
-
-                $answerValue = null;
-
-                switch ($questionType) {
-                    case self::QUESTION_TYPE_TEXT:
-                    case self::QUESTION_TYPE_STRING:
-                        $answerValue = $env->request->getString('question_'.$qId.'_answer', K3_Request::POST);
-                        break;
-                    case self::QUESTION_TYPE_MULTI:
-                    case self::QUESTION_TYPE_SELECT:
-                    default:
-                        $answerValues = array();
-                        $rawAnswerValues = (array) $env->request->get('question_'.$qId.'_answer', K3_Request::POST);
-                        foreach ($rawAnswerValues as $rawAnswerValue) {
-                            // available count
-                            if (isset($question['valueLimits'][$rawAnswerValue])) {
-                                $valueLimit = $question['valueLimits'][$rawAnswerValue];
-                                $available  = isset($statAnswers[$qId][$rawAnswerValue])
-                                    ? $valueLimit - count($statAnswers[$qId][$rawAnswerValue])
-                                    : $valueLimit;
-
-                                if (isset($curAnswers[$qId]) && $curAnswers[$qId] == $rawAnswerValue) {
-                                    $available++;
-                                }
-                                // no available
-                                if ($available <= 0) {
-                                    continue;
-                                }
-                            }
-
-                            if (isset($question['valueVariants'][$rawAnswerValue])) {
-                                $answerValues[] = $rawAnswerValue;
-                            }
-                        }
-
-                        $answerValue = ($questionType == self::QUESTION_TYPE_SELECT)
-                            ? array_shift($answerValues)
-                            : $answerValues;
-                }
-
-                // storing answer
-                if (!empty($answerValue)) {
-                    $curAnswers[$qId] = $answerValue;
-                } elseif ($env->request->getBinary('question_'.$qId.'_active', K3_Request::POST)) {
-                    unset($curAnswers[$qId]);
-                }
-            }
-
-            $data['answers'][$env->getUser()->id] = $curAnswers;
+            $this->pool['data']['answers'][$env->getUser()->id] = $curAnswers;
 
             $updated = true;
         }
+    }
+
+    /**
+     * @param SOne_Environment $env
+     * @return array
+     */
+    protected function _fillAnswers(SOne_Environment $env)
+    {
+        $data =& $this->data;
+        $statAnswers = $this->_genAnswersStats();
+        $curAnswers = isset($data['answers'][$env->getUser()->id])
+            ? $data['answers'][$env->getUser()->id]
+            : array();
+
+        foreach ($data['questions'] as $qId => $question) {
+            $questionType = isset($question['type'])
+                ? (int)$question['type']
+                : self::QUESTION_TYPE_SELECT;
+
+            $answerValue = isset($curAnswers[$qId])
+                ? $curAnswers[$qId]
+                : null;
+
+            switch ($questionType) {
+                case self::QUESTION_TYPE_TEXT:
+                case self::QUESTION_TYPE_STRING:
+                    $questionAnswered = !is_null($answerValue);
+                    break;
+                case self::QUESTION_TYPE_MULTI:
+                    $questionAnswered = (bool)count(array_intersect((array)$answerValue, array_keys($question['valueVariants'])));
+                    break;
+                case self::QUESTION_TYPE_SELECT:
+                default:
+                    $questionAnswered = isset($question['valueVariants'][$answerValue]);
+
+            }
+            $questionLocked = $question['lockAnswers'] && $questionAnswered;
+
+            if ($questionLocked) {
+                continue;
+            }
+
+            $answerValue = null;
+
+            switch ($questionType) {
+                case self::QUESTION_TYPE_TEXT:
+                case self::QUESTION_TYPE_STRING:
+                    $answerValue = $env->request->getString('question_'.$qId.'_answer', K3_Request::POST);
+                    break;
+                case self::QUESTION_TYPE_MULTI:
+                case self::QUESTION_TYPE_SELECT:
+                default:
+                    $answerValues = array();
+                    $rawAnswerValues = (array)$env->request->get('question_'.$qId.'_answer', K3_Request::POST);
+                    foreach ($rawAnswerValues as $rawAnswerValue) {
+                        // available count
+                        if (isset($question['valueLimits'][$rawAnswerValue])) {
+                            $valueLimit = $question['valueLimits'][$rawAnswerValue];
+                            $available = isset($statAnswers[$qId][$rawAnswerValue])
+                                ? $valueLimit - count($statAnswers[$qId][$rawAnswerValue])
+                                : $valueLimit;
+
+                            if (isset($curAnswers[$qId]) && $curAnswers[$qId] == $rawAnswerValue) {
+                                $available++;
+                            }
+                            // no available
+                            if ($available <= 0) {
+                                continue;
+                            }
+                        }
+
+                        if (isset($question['valueVariants'][$rawAnswerValue])) {
+                            $answerValues[] = $rawAnswerValue;
+                        }
+                    }
+
+                    $answerValue = ($questionType == self::QUESTION_TYPE_SELECT)
+                        ? array_shift($answerValues)
+                        : $answerValues;
+            }
+
+            // storing answer
+            if (!empty($answerValue)) {
+                $curAnswers[$qId] = $answerValue;
+            } elseif ($env->request->getBinary('question_'.$qId.'_active', K3_Request::POST)) {
+                unset($curAnswers[$qId]);
+            }
+        }
+
+        return $curAnswers;
     }
 
     /**
@@ -362,7 +370,7 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
 
             $newQuestions[$qId] = array(
                 'caption'       => $newQuestionRaw['caption'],
-                'lockAnswers'   => isset($newQuestionRaw['lockAnswers']) && $newQuestionRaw['lockAnswers'] ? true : false,
+                'lockAnswers'   => isset($newQuestionRaw['lockAnswers']) ? (bool)$newQuestionRaw['lockAnswers'] : false,
                 'valueVariants' => $newVariants,
                 'valueLimits'   => $newLimits,
                 'type'          => $newQuestionType,
@@ -401,8 +409,8 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
         foreach ($answers as $uId => &$uAnswers) {
             $uName = isset($statUsers[$uId]) ? $statUsers[$uId]->name : $uId;
 
-            foreach ($uAnswers as $qId => $ansverValue) {
-                if (!isset($questions[$qId]) || is_null($ansverValue)) {
+            foreach ($uAnswers as $qId => $answerValue) {
+                if (!isset($questions[$qId]) || is_null($answerValue)) {
                     continue;
                 }
 
@@ -413,12 +421,12 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
                 switch ($questions[$qId]['type']) {
                     case self::QUESTION_TYPE_TEXT:
                     case self::QUESTION_TYPE_STRING:
-                        $statAnswers[$qId][$uName] = $ansverValue;
+                        $statAnswers[$qId][$uName] = $answerValue;
                         break;
                     case self::QUESTION_TYPE_MULTI:
                     case self::QUESTION_TYPE_SELECT:
                     default:
-                        foreach ((array) $ansverValue as $aId) {
+                        foreach ((array) $answerValue as $aId) {
                             if (!isset($statAnswers[$qId][$aId])) {
                                 $statAnswers[$qId][$aId] = array($uName);
                             } else {
