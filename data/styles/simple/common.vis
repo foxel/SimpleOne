@@ -393,9 +393,10 @@
         <label>Класс:
             <select name="class">
                 <option value="HTMLPage">HTML-страница</option>
-                <option value="Poll">Опрос/Анкета</option>
-                <option value="FileIndex">Обзор файлов</option>
                 <option value="BlogRoot">Блог</option>
+                <option value="Poll">Опрос/Анкета</option>
+                <option value="Form">Форма</option>
+                <option value="FileIndex">Обзор файлов</option>
                 <option value="Redirector">Внешняя ссылка</option>
             </select>
         </label>

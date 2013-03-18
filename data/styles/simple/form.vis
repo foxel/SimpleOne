@@ -1,0 +1,103 @@
+<!--
+ Copyright (C) 2013 Andrey F. Kupreychik (Foxel)
+
+ This file is part of QuickFox SimpleOne.
+
+ SimpleOne is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ SimpleOne is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<<+ 'SONE_OBJECT_FORM'>>
+{IF:IN_actionState="edit"}
+    {!WRITE:formElements}
+    <label><textarea class="htmleditor span10" name="description" style="height: 450px;">{!IN_DESCRIPTION}</textarea></label>
+    <label>e-Main для отправки результатов: <input type="text" name="target_email" value="{IN_targetEmail}"></label>
+    <div class="pollEditQuestionsContainer">
+    {IF:IN_question_items}{IN_question_items}{ELSE}
+        {VIS:SONE_OBJECT_POLL_ITEM_EDIT|ID="0"}
+    {/IF}
+    </div>
+    <div class="pollEditQuestionTemplateContainer" style="display: none;">
+        {VIS:SONE_OBJECT_POLL_ITEM_EDIT|ID="{id}"}
+    </div>
+    {!WRITE:formButtons}
+    <a class="btn" href="#" onclick="var c = $(this).closest('form.pollEditor').find('div.pollEditQuestionTemplateContainer').find('div.pollEditQuestion').last().clone(); var i = c.find('input, select').val(''); var r = (new Date).getTime()+Math.random(); i.each(function() { $(this).attr('name', $(this).attr('name').replace(/\{id\}/, r));}); $(this).closest('form.pollEditor').find('div.pollEditQuestionsContainer').append(c); return false;">
+        <i class="icon-plus"></i>
+        Добавить вопрос
+    </a>
+    {WRITE}
+    {VIS:SONE_OBJECT_EDITFORM|formElements=formElements|formButtons=formButtons|formClass="pollEditor"|_}
+    <script type="text/javascript">require(['jquery']);</script>
+{ELSE}
+    {IF:IN_canEdit}
+        <div class="pull-right btn-group">
+            <a class="btn" href="{FULLURL:IN_PATH}?edit"><i class="icon-pencil"></i> Править</a>
+        </div>
+    {/IF}
+    <h2>{!IN_CAPTION}</h2>
+    <div class="htmlcontent">{IN_DESCRIPTION}</div>
+    {IF:IN_ERRORS}<div class="alert alert-error">
+        {IN_ERRORS}
+    </div>{/IF}
+    {IF:IN_formSent}<div class="alert alert-success">
+        Данные успешно сохранены
+    </div>{/IF}
+    <form class="poll-form" action="{FULLURL:IN_PATH}/?fill" method="POST">
+        <div class="poll-items">
+            {IN_question_items}
+            {IF:IN_captchaNeeded}
+            <fieldset>
+                <legend>
+                    Введите код с картинки
+                </legend>
+                <div class="pollQuestionAnswersContainer">
+                    <input class="input-small" type="text" name="captchaString" value=""/>
+                    <a class="captcha-update" href="#" onclick="return false;">
+                        <img src="{FULLURL:IN_path}?captcha&rand={RANDOM:100|10000}" alt="code" />
+                    </a>
+                </div>
+            </fieldset>
+            {/IF}
+        </div>
+        <hr />
+        <button class="btn btn-primary" type="submit">{L_EDITOR_SUBMIT_FILL}</button>
+    </form>
+    <script type="text/javascript">
+        require(['jquery', 'bootstrap.tooltip'], function($) {
+            $('a.captcha-update').click(function() {
+                var src = String($(this).find('img').attr('src'));
+                var sp = src.indexOf('?') == -1 ? '?' : '&';
+                $(this).find('img').attr('src', src.replace(new RegExp(sp+'rand=[\\d\\.]+|$'), sp+'rand='+Math.random()));
+            }).find('img').attr('title', 'Обновить').tooltip();
+        });
+    </script>
+{/IF}
+<<- 'SONE_OBJECT_FORM'>>
+
+<<+ 'SONE_OBJECT_FORM_MAIL_BODY'>>
+<div>
+    <h2>Заполнена форма {IN_caption}</h2>
+    <fieldset>
+        <legend>Информация о пользователе:</legend>
+        </p><strong>IP:</strong> {IN_clientIP}<br/>
+    </fieldset>
+    <fieldset>
+        <legend>Ответы:</legend>
+        {IN_answers}
+    </fieldset>
+</div>
+<<- 'SONE_OBJECT_FORM_MAIL_BODY'>>
+
+<<+ 'SONE_OBJECT_FORM_MAIL_ROW'>>
+</p><strong>{IN_question}:</strong> {IN_answer}<br/>
+<<- 'SONE_OBJECT_FORM_MAIL_ROW'>>
