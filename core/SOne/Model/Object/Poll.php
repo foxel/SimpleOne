@@ -74,9 +74,7 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
         }
 
         $statAnswers = $this->_genAnswersStats($statUsers);
-        $curAnswers = (isset($data['answers'][$env->getUser()->id]))
-            ? $data['answers'][$env->getUser()->id]
-            : array();
+        $curAnswers  = $this->_getCurrentAnswers($env);
 
         $pollLocked   = true;
         $pollAnswered = true;
@@ -166,10 +164,22 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
         $node->addDataArray($this->pool + array(
             'locked'        => $pollLocked,
             'answered'      => $pollAnswered,
-            'ask_for_login' => $env->getUser()->id ? null : 1,
+            'ask_for_login' => $this->isActionAllowed('fill', $env->getUser()) ? null : 1,
             'canEdit'       => $this->isActionAllowed('edit', $env->getUser()) ? 1 : null,
         ));
         return $node;
+    }
+
+    /**
+     * @param string $action
+     * @param SOne_Model_User $user
+     * @return bool
+     */
+    public function isActionAllowed($action, SOne_Model_User $user)
+    {
+        return ($action == 'fill')
+            ? $user->id > 0
+            : parent::isActionAllowed($action, $user);
     }
 
     /**
@@ -221,9 +231,7 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
     {
         $data =& $this->data;
         $statAnswers = $this->_genAnswersStats();
-        $curAnswers = isset($data['answers'][$env->getUser()->id])
-            ? $data['answers'][$env->getUser()->id]
-            : array();
+        $curAnswers = $this->_getCurrentAnswers($env, $data);
 
         foreach ($data['questions'] as $qId => $question) {
             $questionType = isset($question['type'])
@@ -300,6 +308,18 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
             }
         }
 
+        return $curAnswers;
+    }
+
+    /**
+     * @param SOne_Environment $env
+     * @return array
+     */
+    protected function _getCurrentAnswers(SOne_Environment $env)
+    {
+        $curAnswers = isset($this->answers[$env->getUser()->id])
+            ? $this->answers[$env->getUser()->id]
+            : array();
         return $curAnswers;
     }
 
