@@ -56,7 +56,7 @@ define(['jquery', 'SOne', 'elrte', 'i18n/elrte.ru'], function ($, SOne) {
             },
             toolbars:{
                 'sone':['copypaste', 'elfinder', 'undoredo', 'style', 'alignment', 'colors', 'eol', 'sone-format', 'indent', 'lists', 'links', 'eol', 'sone-elements', 'images', 'tables'],
-                'sone-mini':['mini-copypaste', 'mini-style', 'mini-links'],
+                'sone-mini':['mini-copypaste', 'mini-style', 'colors', 'mini-links'],
                 'sone-micro':['micro-copypaste', 'micro-style', 'mini-links']
             },
             toolbar: 'sone',
