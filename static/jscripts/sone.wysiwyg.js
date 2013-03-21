@@ -47,11 +47,11 @@ define(['jquery', 'SOne', 'elrte', 'i18n/elrte.ru'], function ($, SOne) {
                 'sone-elements':['horizontalrule', 'blockquote', 'div', 'pagebreak', 'stopfloat', 'css', 'nbsp'],
                 'sone-format':['formatblock', 'fontsize'],
 
-                'mini-copypaste':['copy', 'cut', 'paste', 'pastetext', 'removeformat'],
+                'mini-copypaste':['copy', 'cut', 'paste', 'pastetext', 'removeformat', 'docstructure'],
                 'mini-style':['formatblock', 'bold', 'italic', 'underline', 'strikethrough', 'css'],
                 'mini-links':['link', 'unlink', 'image'],
 
-                'micro-copypaste':['pastetext', 'removeformat'],
+                'micro-copypaste':['pastetext', 'removeformat', 'docstructure'],
                 'micro-style':['bold', 'italic', 'underline', 'strikethrough']
             },
             toolbars:{
