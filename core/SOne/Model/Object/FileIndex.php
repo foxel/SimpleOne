@@ -38,7 +38,7 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object
             $env->response->sendRedirect($this->path);
         }
 
-        $realPath = $this->_subPath;
+        $realPath = strtr($this->_subPath, array('/' => DIRECTORY_SEPARATOR));
         if ($this->basePath) {
             $realPath = $this->basePath.DIRECTORY_SEPARATOR.$realPath;
         }
@@ -136,9 +136,13 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object
      */
     public function routeSubPath($subPath, SOne_Request $request, SOne_Environment $env)
     {
-        $this->_subPath = $subPath;
+        if (preg_match('#(^|/)\.+(/|$)#', $subPath)) {
+            return new SOne_Model_Object_Page403(array('path' => $this->path.'/'.$subPath));
+        }
 
-        $realPath = $this->_subPath;
+        $this->_subPath = trim($subPath, '/');
+
+        $realPath = strtr($this->_subPath, array('/' => DIRECTORY_SEPARATOR));
         if ($this->basePath) {
             $realPath = $this->basePath.DIRECTORY_SEPARATOR.$realPath;
         }
