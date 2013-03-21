@@ -303,7 +303,7 @@
 <div style="margin-top: 10px;">
 {IF:IN_allowAdd}
 <span{IF:IN_actionState="addComment"} style="display: none;"{/IF}>
-    <a class="btn" href="{FULLURL:IN_PATH}?addComment" onclick="require(['jquery'], function($) { $(this).closest('span').hide().parent().find('div.objectCommentsFormContainer').show('fast'); }); return false;">
+    <a id="add-comment-{UNIQID}" class="btn" href="{FULLURL:IN_PATH}?addComment" onclick="return false;">
         <i class="icon-plus"></i>
         Добавить комментарий
     </a>
@@ -318,6 +318,13 @@
 <div style="margin: 5px 0;">
 {IN_COMMENTS}
 </div>
+<script type="text/javascript">
+    require(['jquery'], function ($) {
+        $('#add-comment-{UNIQID}').click(function() {
+            $(this).closest('span').hide().parent().find('div.objectCommentsFormContainer').show('fast');
+        });
+    });
+</script>
 {IN_paginator}
 <<- 'SONE_OBJECT_COMMENTS'>>
 
