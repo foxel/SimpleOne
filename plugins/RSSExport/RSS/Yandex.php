@@ -18,7 +18,7 @@
  * along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
  */
 
-class Yandex_RSS extends K3_RSS
+class RSSExport_RSS_Yandex extends K3_RSS
 {
     /**
      * @param array $params

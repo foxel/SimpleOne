@@ -87,11 +87,14 @@ vk.baseDomain => simple.one
 
 #staticRoutes.sitemap.class => SiteMap
 
-# Yandex plugin
-#plugins.Yandex => 1
-#staticRoutes.yrss.class => YandexRSS
-#staticRoutes.yrss.blogPath => data
-#staticRoutes.yrss.imageUrl => data.png
+# RSS Export plugin
+#plugins.RSSExport => 1
+#staticRoutes.rss.class => BlogRSS
+#staticRoutes.rss.blogPath => data
+#staticRoutes.rss.imageUrl => data.png
+#staticRoutes.rss.authKey => simplerss
+
+# Google news sitemap
 #staticRoutes.news_sitemap.class => GoogleNewsSiteMap
 #staticRoutes.news_sitemap.blogPath => data
 #staticRoutes.news_sitemap.limit => 50

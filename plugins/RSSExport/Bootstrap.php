@@ -18,7 +18,7 @@
  * along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
  */
 
-class Yandex_Bootstrap implements SOne_Interface_PluginBootstrap
+class RSSEXport_Bootstrap implements SOne_Interface_PluginBootstrap
 {
     /** @var K3_Config */
     protected static $_config;
@@ -38,6 +38,6 @@ class Yandex_Bootstrap implements SOne_Interface_PluginBootstrap
     public static function bootstrap(SOne_Application $app, K3_Config $config)
     {
         self::$_config = $config;
-        SOne_Model_Object::addNamespace('Yandex_Model_Object');
+        SOne_Model_Object::addNamespace('RSSExport_Model_Object');
     }
 }

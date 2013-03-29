@@ -21,11 +21,15 @@
 /**
  * @property-read string $blogPath
  * @property-read string $imageUrl
+ * @property-read string|string[] $authKey
  */
-class Yandex_Model_Object_YandexRSS extends SOne_Model_Object
+class RSSExport_Model_Object_BlogRSS extends SOne_Model_Object
     implements SOne_Interface_Object_Structured
 {
     protected $_itemPerPage = 10;
+    protected $_modeClasses = array(
+        'yandex'  => 'RSSExport_RSS_Yandex',
+    );
 
     /**
      * @param  SOne_Environment $env
@@ -33,31 +37,63 @@ class Yandex_Model_Object_YandexRSS extends SOne_Model_Object
      */
     public function visualize(SOne_Environment $env)
     {
-        $app = $env->getApp();
-        $appConfig = $app->getConfig();
-        $yandexConfig = Yandex_Bootstrap::getConfig();
-
-        $items   = $this->_loadListItems($env, $this->_itemPerPage);
+        $items = $this->_loadListItems($env, $this->_itemPerPage);
         foreach ($items as $item) {
             $item->fixFullUrls($env);
         }
 
-        $rss = new Yandex_RSS(array(
-            'title'     => $this->caption,
-            'link'      => FStr::fullUrl($this->path, false, '', $env),
-            'feedLink'  => FStr::fullUrl($this->path.'?rss', false, '', $env),
-            'siteUrl'   => FStr::fullUrl('/', false, '', $env),
-            'siteName'  => $appConfig->site ? (string) $appConfig->site->name : 'SimpleOne',
-            'siteImage' => $this->imageUrl ? $this->imageUrl : '/static/images/sone.ico.png',
-        ), $items, $env);
+        if ($this->authKey) {
+            $authKey = $env->request->getString('authKey', K3_Request::ALL);
+            $correct = is_array($this->authKey)
+                ? in_array($authKey, $this->authKey)
+                : $authKey == $this->authKey;
+
+            if (!$correct) {
+                $env->getResponse()
+                    ->setDoHTMLParse(false)
+                    ->write('Forbidden')
+                    ->setStatusCode(403)
+                    ->sendBuffer(F::INTERNAL_ENCODING, array(
+                        'contentType' => 'text/plain'
+                    ));
+                return;
+            }
+        }
 
         $env->getResponse()
             ->setDoHTMLParse(false)
-            ->write($rss->toXML())
+            ->write($this->_prepareRSS($env, $items)->toXML())
             ->sendBuffer(F::INTERNAL_ENCODING, array(
                 'contentType' => 'text/xml',
                 'filename' => FStr::basename($this->path).'.xml',
             ));
+    }
+
+    /**
+     * @param SOne_Environment $env
+     * @param SOne_Model_Object_BlogItem[] $items
+     * @return K3_RSS
+     */
+    protected function _prepareRSS(SOne_Environment $env, array $items)
+    {
+        $app = $env->getApp();
+        $appConfig = $app->getConfig();
+
+        $mode = $this->actionState;
+        if (isset($this->_modeClasses[$mode])) {
+            $class = $this->_modeClasses[$mode];
+        } else {
+            $class = 'K3_RSS';
+        }
+
+        return new $class(array(
+            'title'     => $this->caption,
+            'link'      => FStr::fullUrl($this->blogPath, false, '', $env),
+            'feedLink'  => FStr::fullUrl($this->path, false, '', $env),
+            'siteUrl'   => FStr::fullUrl('/', false, '', $env),
+            'siteName'  => $appConfig->site ? (string) $appConfig->site->name : 'SimpleOne',
+            'siteImage' => $this->imageUrl ? $this->imageUrl : '/static/images/sone.ico.png',
+        ), $items, $env);
     }
 
     /**
@@ -103,11 +139,13 @@ class Yandex_Model_Object_YandexRSS extends SOne_Model_Object
     {
         $this->pool['data'] = $data + array(
             'blogPath' => '',
-            'imageUrl' => null
+            'imageUrl' => null,
+            'authKey'  => null,
         );
 
         $this->pool['blogPath'] =& $this->pool['data']['blogPath'];
         $this->pool['imageUrl'] =& $this->pool['data']['imageUrl'];
+        $this->pool['authKey']  =& $this->pool['data']['authKey'];
 
         return $this;
     }
