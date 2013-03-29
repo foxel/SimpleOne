@@ -44,6 +44,9 @@ class RSSExport_Model_Object_BlogRSS extends SOne_Model_Object
 
         if ($this->authKey) {
             $authKey = $env->request->getString('authKey', K3_Request::ALL);
+            if (!$authKey) {
+                $authKey = $env->request->getString('authkey', K3_Request::ALL);
+            }
             $correct = is_array($this->authKey)
                 ? in_array($authKey, $this->authKey)
                 : $authKey == $this->authKey;
