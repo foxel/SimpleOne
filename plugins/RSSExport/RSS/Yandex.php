@@ -18,7 +18,7 @@
  * along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
  */
 
-class RSSExport_RSS_Yandex extends K3_RSS
+class RSSExport_RSS_Yandex extends RSSExport_RSS_FullText
 {
     /**
      * @param array $params
@@ -54,8 +54,8 @@ class RSSExport_RSS_Yandex extends K3_RSS
     {
         parent::addItem($itemData);
 
-        $this->_currentItem->appendChild($description = $this->_xml->createElement('yandex:full-text'));
-        $description->appendChild($this->_xml->createCDATASection($itemData->getDescription()));
+        $this->_currentItem->appendChild($fullText = $this->_xml->createElement('yandex:full-text'));
+        $fullText->appendChild($this->_xml->createCDATASection($itemData->content));
 
         // cleaning categories
         // @TODO: add replacing categories with single item

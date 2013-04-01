@@ -233,7 +233,12 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
      */
     public function getDescription()
     {
-        return $this->content;
+        $description = $this->content;
+        if (preg_match('#<!--\s*pagebreak\s*-->#', $description)) {
+            $description = preg_replace('#(<\w+>)*<!--\s*pagebreak\s*-->.*$#Ds', '', $description);
+            $description = F()->Parser->XMLCheck($description, true).' [...]';
+        }
+        return $description;
     }
 
     /**

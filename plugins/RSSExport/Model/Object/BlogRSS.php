@@ -86,7 +86,7 @@ class RSSExport_Model_Object_BlogRSS extends SOne_Model_Object
         if (isset($this->_modeClasses[$mode])) {
             $class = $this->_modeClasses[$mode];
         } else {
-            $class = 'K3_RSS';
+            $class = 'RSSExport_RSS_FullText';
         }
 
         return new $class(array(
