@@ -115,8 +115,9 @@ class RSSExport_Model_Object_BlogRSS extends SOne_Model_Object
         /** @var $repo SOne_Repository_Object */
         $repo = SOne_Repository_Object::getInstance($env->getDb());
         $filter = array(
-            'parentId=' => $repo->loadIds(array('path=' => $this->blogPath), true),
-            'class='    => 'BlogItem',
+            'parentId='  => $repo->loadIds(array('path=' => $this->blogPath), true),
+            'class='     => 'BlogItem',
+            'published=' => true,
         );
 
         $items = $repo->loadAll($filter, false, $perPage, $pageOffset * $perPage, $totalItems);
