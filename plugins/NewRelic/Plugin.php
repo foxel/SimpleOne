@@ -51,6 +51,6 @@ class NewRelic_Plugin
         $request = $this->_app->getRequest();
 
         /** @noinspection PhpUndefinedFunctionInspection */
-        newrelic_name_transaction(ucfirst($object->class).($request->action ? '?'.$request->action : ''));
+        newrelic_name_transaction(ucfirst($object->class).($request->action ? '/'.$request->action : ''));
     }
 }
