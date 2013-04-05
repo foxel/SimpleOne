@@ -34,13 +34,13 @@ class NewRelic_Plugin
      */
     public function __construct(SOne_Application $app, K3_Config $config)
     {
-        $this->_app    = $app;
-        $this->_config = $config;
-        $this->_app->addEventHandler(SOne_Application::EVENT_PAGE_OBJECT_ROUTED, array($this, 'soneObjectRoutedHandle'));
-
         if (!extension_loaded('newrelic')) {
             throw new FException('NewRelic PHP extension required');
         }
+
+        $this->_app    = $app;
+        $this->_config = $config;
+        $this->_app->addEventHandler(SOne_Application::EVENT_PAGE_OBJECT_ROUTED, array($this, 'soneObjectRoutedHandle'));
     }
 
     /**
@@ -51,6 +51,6 @@ class NewRelic_Plugin
         $request = $this->_app->getRequest();
 
         /** @noinspection PhpUndefinedFunctionInspection */
-        newrelic_name_transaction($object->class.($request->action ? '/'.$request->action : ''));
+        newrelic_name_transaction(ucfirst($object->class).($request->action ? '?'.$request->action : ''));
     }
 }
