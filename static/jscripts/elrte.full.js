@@ -6699,7 +6699,7 @@ elRTE.prototype.ui.prototype.buttons.image = function(rte, name) {
 		this.domElem.removeClass('disabled');
 		var n = this.rte.selection.getEnd(),
 			$n = $(n);
-		if (n.nodeName == 'IMG' && !$n.hasClass('elrte-protected')) {
+		if ($n.is('img') && !$n.hasClass('elrte-protected')) {
 			this.domElem.addClass('active');
 		} else {
 			this.domElem.removeClass('active');
@@ -6734,20 +6734,44 @@ elRTE.prototype.ui.prototype.buttons.indent = function(rte, name) {
 			var val = self.rte.dom.attr(n, 'style').indexOf(css) != -1 ? parseInt($(n).css(css))||0 : 0;
 			$(n).css(css, val+40+'px');
 		}
-		
-		for (var i=0; i < nodes.length; i++) {
+
+		for (var i = 0; i < nodes.length; i++) {
+			if (nodes[i].nodeName == 'BR') {
+				nodes[i] = nodes[i].parentNode;
+			}
+
 			if (/^(TABLE|THEAD|TFOOT|TBODY|COL|COLGROUP|TR)$/.test(nodes[i].nodeName)) {
-				$(nodes[i]).find('td,th').each(function() {
+				$(nodes[i]).find('td,th').each(function () {
 					indent(this);
 				});
 			} else if (/^LI$/.test(nodes[i].nodeName)) {
-				var n = $(nodes[i]);
-				$(this.rte.dom.create(nodes[i].parentNode.nodeName))
-					.append($(this.rte.dom.create('li')).html(n.html()||'')).appendTo(n.html('&nbsp;'));
+				var $node = $(nodes[i]),
+					$prevLi = $node.prev('li'),
+					$listParent, $list, $newNode;
+				
+				if ($prevLi.length) {
+					$listParent = $prevLi;
+					$newNode = $node;
+				} else {
+					$listParent = $node;
+					$newNode = $(this.rte.dom.create('li')).html('&nbsp;');
+				}
+
+				$list = $listParent.find('ul,ol').first();
+				if ($list.length) {
+					$list.append($newNode);
+				} else {
+					$list = $newNode.find('ul,ol').first();
+					$list.length || ($list = $(this.rte.dom.create(nodes[i].parentNode.nodeName)));
+					$list.appendTo($listParent);
+					$list.prepend($newNode);
+				}
+				this.rte.selection.selectContents($newNode[0]);
+				console.log(nodes[i].parentNode.nodeName);
 			} else {
 				indent(nodes[i]);
 			}
-		};
+		}
 		this.rte.ui.update();
 	}
 	
@@ -7279,7 +7303,20 @@ elRTE.prototype.ui.prototype.buttons.outdent = function(rte, name) {
 		var v = this.find();
 		if (v.node) {
 			this.rte.history.add();
-			$(v.node).css(v.type, (v.val>40 ? v.val-40 : 0)+'px');
+			var $node = $(v.node);
+			if (v.type == "list") {
+				var $myPar = $node.parent();
+				var imFirst = !$node.prev().length;
+				$node.insertAfter($myPar.parent());
+				if (!$myPar.children().length) {
+					$myPar.remove();
+				} else if (imFirst) {
+					$myPar.appendTo($node);
+				}
+				this.rte.selection.selectContents(v.node);
+			} else {
+				$node.css(v.type, (v.val > 40 ? v.val - 40 : 0) + 'px');
+			}
 			this.rte.ui.update();
 		}
 	}
@@ -7294,6 +7331,10 @@ elRTE.prototype.ui.prototype.buttons.outdent = function(rte, name) {
 					: (s.indexOf('margin-left') != -1 ? 'margin-left' : '');
 				ret.val = ret.type ? parseInt($(n).css(ret.type))||0 : 0;
 			}
+			if (n.nodeName == "LI" && (!$(n).next().length || !$(n).prev().length) && (n.parentNode.nodeName == "UL" || n.parentNode.nodeName == "OL") && $(n.parentNode).parent().is('li')) {
+				ret.type = "list";
+				ret.val = 1;
+			}
 			return ret;
 		}
 		
@@ -7306,8 +7347,9 @@ elRTE.prototype.ui.prototype.buttons.outdent = function(rte, name) {
 				ret = checkNode(this);
 				if (ret.val) {
 					ret.node = this;
-					return ret;
+					return false;
 				}
+				return true;
 			})
 		}
 		return ret;
