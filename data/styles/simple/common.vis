@@ -417,7 +417,7 @@
         <label>
             Путь:
             <span class="input-prepend">
-                <span class="add-on" id="constructorForm-parentPath">/</span><input class="span3" type="text" name="path" />
+                <span class="add-on" id="constructorForm-parentPath">{C_ROOTURL}</span><input class="span3" type="text" name="path" />
             </span>
         </label>
     </fieldset>
@@ -435,7 +435,7 @@
             $('#constructorObjectContainer').empty();
         });
         $('select[name="parentPath"]', '#constructorForm').change(function () {
-            $('#constructorForm-parentPath').text('/'+$(this).val());
+            $('#constructorForm-parentPath').text('{C_ROOTURL}'+$(this).val());
         }).sOneSelect();
         $('#constructorForm').submit(function () {
             $('#constructorObjectContainer').text('Загрузка ...').load(this.action + '&' + $(this).serialize(), function() {
