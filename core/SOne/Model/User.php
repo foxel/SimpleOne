@@ -43,6 +43,9 @@
  */
 class SOne_Model_User extends SOne_Model
 {
+    /**
+     * @param array $init
+     */
     public function __construct(array $init = array())
     {
         $this->pool = array(
@@ -70,15 +73,33 @@ class SOne_Model_User extends SOne_Model
         $this->pool['authUpdated'] = !$this->pool['id'];
     }
 
+    /**
+     * @param string $password
+     * @return bool
+     */
     public function checkPassword($password)
     {
         return (crypt($password, $this->cryptedPassword) == $this->cryptedPassword);
     }
 
+    /**
+     * @param string $password
+     * @return $this
+     */
     public function setPassword($password)
     {
         $this->pool['cryptedPassword'] = crypt($password, '$1$'.FStr::shortUID());
         $this->pool['authUpdated']     = true;
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     * @return $this
+     */
+    public function setName($name)
+    {
+        $this->pool['name'] = $name;
         return $this;
     }
 

@@ -6,6 +6,8 @@ db.username => developer
 db.password => 
 db.prefix => qfso_
 
+systemRoute => ~
+
 site.name => SimpleOne site
 site.indexPath => index
 site.language => ru
