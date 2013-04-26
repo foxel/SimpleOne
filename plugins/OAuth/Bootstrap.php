@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -18,11 +18,27 @@
  * along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
  */
 
-class VK_Bootstrap implements SOne_Interface_PluginBootstrap
+class OAuth_Bootstrap implements SOne_Interface_PluginBootstrap
 {
+    /** @var K3_Config */
+    protected static $_config;
 
+    /**
+     * @param SOne_Application $app
+     * @param K3_Config $config
+     */
     public static function bootstrap(SOne_Application $app, K3_Config $config)
     {
-        SOne_Model_Object::addNamespace('VK_Model_Object');
+        self::$_config = $config;
+        $app->getEnv()->getVIS()->addAutoLoadDir(realpath(dirname(__FILE__)).'/styles/simple');
+        SOne_Model_Object::addNamespace('OAuth_Model_Object');
+    }
+
+    /**
+     * @return K3_Config
+     */
+    public static function getConfig()
+    {
+        return self::$_config;
     }
 }

@@ -17,7 +17,13 @@ markup.responsive => 1
 #markup.favicon => favicon.ico
 #markup.hideDefaultFooter => 1
 
-plugins.VK => 1
+#OAuth integration for Facebook/VK
+plugins.OAuth.vkAppId => 2833416
+plugins.OAuth.vkAppSecret => XxxX
+plugins.OAuth.fbAppId => 161909050641274
+plugins.OAuth.fbAppSecret => XxxX
+plugins.OAuth.baseDomain => simpleone.dev
+
 #plugins.Google.analytics.accountId => UA-XXXXXXXX-X
 #plugins.Google.analytics.sampleRate => 100
 #plugins.Google.analytics.sessionCookieTimeout => 1800000
@@ -83,9 +89,6 @@ staticRoutes.uploads.basePath => {F_DATA_ROOT}/uploads/
 staticRoutes.uploads.disposition => inline
 staticRoutes.uploads.xAccelLocation => /_uploads/
 
-vk.appId => 100
-vk.appSecret => XxxX
-vk.baseDomain => simple.one
 
 #staticRoutes.sitemap.class => SiteMap
 

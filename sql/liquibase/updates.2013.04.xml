@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
- Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
+ Copyright (C) 2013 Andrey F. Kupreychik (Foxel)
 
  This file is part of QuickFox SimpleOne.
 
@@ -18,11 +18,17 @@
  along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
 -->
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd"
-                   logicalFilePath="simpleone.dev">
-    <property name="db.prefix" value="qfso_" />
-    <property name="admin.email" value="admin@example.com" />
-
-    <include file="initial.xml" relativeToChangelogFile="true" />
-    <include file="updates.2013.03.xml" relativeToChangelogFile="true" />
-    <include file="updates.2013.04.xml" relativeToChangelogFile="true" />
+                   logicalFilePath="updates.2013.04">
+    <changeSet id="vk-oauth-rename" author="Foxel">
+        <renameTable oldTableName="${db.prefix}vk_users" newTableName="${db.prefix}oauth_tokens" />
+    </changeSet>
+    <changeSet id="vk-oauth-columns" author="Foxel">
+        <renameColumn tableName="${db.prefix}oauth_tokens" oldColumnName="vk_id" newColumnName="oauth_uid" columnDataType="CHAR(128) CHARACTER SET ascii" />
+        <addColumn tableName="${db.prefix}oauth_tokens">
+            <column name="api" type="CHAR(8) CHARACTER SET ascii" defaultValue="vk">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+        <renameColumn tableName="${db.prefix}oauth_tokens" oldColumnName="token" newColumnName="token" columnDataType="CHAR(255) CHARACTER SET ascii" />
+    </changeSet>
 </databaseChangeLog>

@@ -18,7 +18,7 @@
  * along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
  */
 
-class VK_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
+class OAuth_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
 {
     /**
      * @param SOne_Environment $env
@@ -31,26 +31,42 @@ class VK_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
             return $node;
         }
 
-        $node->setType('SONE_OBJECT_LOGINPAGE_VKAUTH');
+        $node->setType('SONE_OBJECT_LOGINPAGE_OAUTH');
 
-        $config = $env->getApp()->config->vk;
+        $config = OAuth_Bootstrap::getConfig();
 
         if (($baseDomain = $config->baseDomain) && !preg_match('#([\w\.]+\.)?'.preg_quote($baseDomain, '#').'$#i', $env->server->domain)) {
             $node->addDataArray(array(
-                'vkMoveToLogin' => 'http://'.$baseDomain.'/'.($env->server->rootPath ? $env->server->rootPath.'/' : '').$this->path,
+                'oauthMoveToLogin' => 'http://'.$baseDomain.'/'.($env->server->rootPath ? $env->server->rootPath.'/' : '').$this->path,
             ));
         } else {
-            $request = array(
-                'client_id'     => $config->appId,
-                'scope'         => 'notify,offline',
-                'redirect_uri'  => FStr::fullUrl($this->path.'?vkauth'),
-                'response_type' => 'code',
-            );
+            if ($config->vkAppId) {
+                $request = array(
+                    'client_id'     => $config->vkAppId,
+                    'scope'         => 'notify,offline',
+                    'redirect_uri'  => FStr::fullUrl($this->path.'?vkauth'),
+                    'response_type' => 'code',
+                );
 
-            $node->addDataArray(array(
-                'vkAuthLink' => 'http://oauth.vk.com/authorize?'.http_build_query($request, '_', '&amp;'),
-                'vkAppId'    => $config->appId,
-            ));
+                $node->addDataArray(array(
+                    'vkAuthLink' => 'http://oauth.vk.com/authorize?'.http_build_query($request, '_', '&amp;'),
+                    'vkAppId'    => $config->vkAppId,
+                ));
+            }
+
+            if ($config->fbAppId) {
+                $request = array(
+                    'client_id'     => $config->fbAppId,
+                    //'scope'         => 'notify,offline',
+                    'redirect_uri'  => FStr::fullUrl($this->path.'?fbauth'),
+                    'state'         => md5(uniqid()),
+                );
+
+                $node->addDataArray(array(
+                    'fbAuthLink' => 'https://www.facebook.com/dialog/oauth?'.http_build_query($request, '_', '&amp;'),
+                    'fbAppId'    => $config->fbAppId,
+                ));
+            }
         }
 
         return $node;
@@ -63,7 +79,7 @@ class VK_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
      */
     protected function vkauthAction(SOne_Environment $env, &$updated = false)
     {
-        $config = $env->getApp()->config->vk;
+        $config = OAuth_Bootstrap::getConfig();
         /* @var SOne_Application $app */
         $app = $env->getApp();
 
@@ -75,8 +91,8 @@ class VK_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
 
         // code ok
         $tokenRequest = array(
-            'client_id'     => $config->appId,
-            'client_secret' => $config->appSecret,
+            'client_id'     => $config->vkAppId,
+            'client_secret' => $config->vkAppSecret,
             'code'          => $code,
         );
 
@@ -92,8 +108,8 @@ class VK_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
 
         // TODO: move to repository
         $db = $env->getDb();
-        if ($userId = $db->doSelect('vk_users', 'uid', array('vk_id' => $tokenData->user_id))) {
-            $db->doUpdate('vk_users', array('token' => $tokenData->access_token), array('vk_id' => $tokenData->user_id));
+        if ($userId = $db->doSelect('oauth_tokens', 'uid', array('oauth_uid' => $tokenData->user_id, 'api' => 'vk'))) {
+            $db->doUpdate('oauth_tokens', array('token' => $tokenData->access_token), array('oauth_uid' => $tokenData->user_id, 'api' => 'vk'));
             $user = $users->loadOne(array('id' => $userId));
             $app->setAuthUser($user);
             $this->pool['actionState'] = 'redirect';
@@ -120,10 +136,81 @@ class VK_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
                 'registerTime' => time(),
             ));
             $users->save($user);
-            $db->doInsert('vk_users', array(
-                'token' => $tokenData->access_token,
-                'vk_id' => $tokenData->user_id,
-                'uid'   => $user->id,
+            $db->doInsert('oauth_tokens', array(
+                'token'     => $tokenData->access_token,
+                'oauth_uid' => $tokenData->user_id,
+                'uid'       => $user->id,
+                'api'       => 'vk',
+            ));
+            $app->setAuthUser($user);
+            $this->pool['actionState'] = 'redirect';
+        }
+    }
+
+    /**
+     * @param SOne_Environment $env
+     * @param bool $updated
+     * @return mixed
+     */
+    protected function fbauthAction(SOne_Environment $env, &$updated = false)
+    {
+        $config = OAuth_Bootstrap::getConfig();
+        /* @var SOne_Application $app */
+        $app = $env->getApp();
+
+        $code = $env->request->getString('code', K3_Request::GET, FStr::LINE);
+        if (!$code) {
+            $this->pool['actionState'] = 'redirect';
+            return;
+        }
+
+        // code ok
+        $tokenRequest = array(
+            'client_id'     => $config->fbAppId,
+            'client_secret' => $config->fbAppSecret,
+            'code'          => $code,
+            'redirect_uri'  => FStr::fullUrl($this->path.'?fbauth'),
+        );
+
+        $tokenData = file_get_contents('https://graph.facebook.com/oauth/access_token?'.http_build_query($tokenRequest, '_', '&'));
+        parse_str($tokenData, $tokenData);
+        if (empty($tokenData) || !$tokenData['access_token']) {
+            $this->pool['actionState'] = 'redirect';
+            return;
+        }
+        $tokenData = (object) $tokenData;
+        $userData = file_get_contents('https://graph.facebook.com/me?'.http_build_query(array('access_token' => $tokenData->access_token, 'fields' => 'id,name,username'), '_', '&'));
+        $userData = json_decode($userData);
+        if (empty($userData) || !$userData->id) {
+            $this->pool['actionState'] = 'redirect';
+            return;
+        }
+
+        /* @var SOne_Repository_User $users */
+        $users = SOne_Repository_User::getInstance($env->getDb());
+
+        // TODO: move to repository
+        $db = $env->getDb();
+        if ($userId = $db->doSelect('oauth_tokens', 'uid', array('oauth_uid' => $userData->id, 'api' => 'fb'))) {
+            $db->doUpdate('oauth_tokens', array('token' => $tokenData->access_token), array('oauth_uid' => $userData->id, 'api' => 'fb'));
+            $user = $users->loadOne(array('id' => $userId));
+            $app->setAuthUser($user);
+            $this->pool['actionState'] = 'redirect';
+        } else {
+            $user = new SOne_Model_User(array(
+                'name'         => !empty($userData->username)
+                    ? $userData->username
+                    : $userData->name,
+                'email'        => '',
+                'accessLevel'  => 1,
+                'registerTime' => time(),
+            ));
+            $users->save($user);
+            $db->doInsert('oauth_tokens', array(
+                'token'     => $tokenData->access_token,
+                'oauth_uid' => $userData->id,
+                'uid'       => $user->id,
+                'api'       => 'fb',
             ));
             $app->setAuthUser($user);
             $this->pool['actionState'] = 'redirect';
@@ -142,11 +229,11 @@ class VK_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
 
         $this->pool['actionState'] = 'redirect';
 
-        $config      = $env->getApp()->config->vk;
-        $cookieName  = 'vk_app_'.$config->appId;
+        $config      = OAuth_Bootstrap::getConfig();
+        $cookieName  = 'vk_app_'.$config->vkAppId;
         $cookieValue = $env->client->getCookie($cookieName, false);
 
-        $vkUserId = $this->checkVkCookie($cookieValue, $config->appSecret);
+        $vkUserId = $this->checkVkCookie($cookieValue, $config->vkAppSecret);
         if (!$vkUserId) {
             return;
         }
@@ -156,13 +243,13 @@ class VK_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
 
         // TODO: move to repository
         $db = $env->getDb();
-        if ($userId = $db->doSelect('vk_users', 'uid', array('vk_id' => $vkUserId))) {
+        if ($userId = $db->doSelect('oauth_tokens', 'uid', array('oauth_uid' => $vkUserId, 'api' => 'vk'))) {
             $user = $users->loadOne(array('id' => $userId));
             $app->setAuthUser($user);
             $this->pool['actionState'] = 'redirect';
         } else {
             $request = array(
-                'client_id'     => $config->appId,
+                'client_id'     => $config->vkAppId,
                 'scope'         => 'notify,offline',
                 'redirect_uri'  => FStr::fullUrl($this->path.'?vkauth'),
                 'response_type' => 'code',
@@ -179,8 +266,8 @@ class VK_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
     {
         $this->pool['actionState'] = 'redirect';
 
-        $config     = $env->getApp()->config->vk;
-        $cookieName = 'vk_app_'.$config->appId;
+        $config     = OAuth_Bootstrap::getConfig();
+        $cookieName = 'vk_app_'.$config->vkAppId;
         $env->client->setCookie($cookieName, false, false, false, false);
     }
 
