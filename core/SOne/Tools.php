@@ -42,7 +42,7 @@ class SOne_Tools extends K3_Environment_Element
     public function HTML_FullURLs(&$buffer)
     {
         $buffer = preg_replace_callback(
-            '#(<(a|form|img|link|script)\s+[^>]*?)(href|action|src)\s*=\s*(\"([^\"<>\(\)]*)\"|\'([^\'<>\(\)]*)\'|[^\s<>\(\)]+)#i',
+            '#(<(a|form|img|link|script)\s+[^>]*?)(href|action|src)\s*=\s*(\"([^\"]*)\"|\'([^\']*)\'|[^\s<>]+)#i',
             array($this, '_FullURLs_Parse_Callback'),
             $buffer
         );
