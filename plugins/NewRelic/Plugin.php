@@ -42,6 +42,9 @@ class NewRelic_Plugin
         $this->_config = $config;
         $this->_app->addEventHandler(SOne_Application::EVENT_PAGE_OBJECT_ROUTED, array($this, 'soneObjectRoutedHandle'));
         $this->_app->addEventHandler(SOne_Application::EVENT_PAGE_RENDERED, array($this, 'addAppVisData'));
+
+        /** @noinspection PhpUndefinedFunctionInspection */
+        newrelic_disable_autorum();
     }
 
     /**
