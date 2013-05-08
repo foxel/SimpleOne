@@ -60,6 +60,9 @@ class SOne_Application extends K3_Application
      */
     protected $_lang    = null;
 
+    /**
+     * @param K3_Environment $env
+     */
     public function __construct(K3_Environment $env = null)
     {
         $this->_env = SOne_Environment::prepare($env);
@@ -71,6 +74,9 @@ class SOne_Application extends K3_Application
         );
     }
 
+    /**
+     * @return $this
+     */
     public function bootstrap()
     {
         F()->Timer->logEvent('App Bootstrap start');
@@ -142,6 +148,11 @@ class SOne_Application extends K3_Application
             ->sendBuffer();
     }
 
+    /**
+     * @param SOne_Request $request
+     * @param bool $performAction
+     * @return SOne_Model_Object
+     */
     public function routeRequest(SOne_Request $request, $performAction = true)
     {
         /** @var $tipObject SOne_Model_Object */
@@ -211,6 +222,10 @@ class SOne_Application extends K3_Application
         return $tipObject;
     }
 
+    /**
+     * @param SOne_Model_Object $pageObject
+     * @return string
+     */
     protected function renderPage(SOne_Model_Object $pageObject)
     {
         $pageNode = new FVISNode('GLOBAL_HTMLPAGE', 0, $this->_VIS);
@@ -293,21 +308,26 @@ class SOne_Application extends K3_Application
         return (array) $widgets;
     }
 
+    /**
+     * @param array $lines
+     * @return array
+     */
     protected function _parseConfigLines(array $lines)
     {
-        $constants = get_defined_constants(false);
+        $constants = get_defined_constants(true);
         $replaces = array();
-        foreach ($constants as $name => $value) {
+        foreach ($constants['user'] as $name => $value) {
             $replaces['{'.$name.'}'] = $value;
         }
 
-        foreach ($lines as &$line) {
-            $line = strtr($line, $replaces);
-        }
+        $lines = str_replace(array_keys($replaces), array_values($replaces), $lines);
 
         return $lines;
     }
 
+    /**
+     * @return SOne_Model_User
+     */
     protected function _bootstrapUser()
     {
         $user = null;
@@ -329,6 +349,9 @@ class SOne_Application extends K3_Application
         return $user;
     }
 
+    /**
+     * @param SOne_Model_User $user
+     */
     public function setAuthUser(SOne_Model_User $user)
     {
         /* @var SOne_Repository_User $users */
