@@ -41,6 +41,7 @@ class NewRelic_Plugin
         $this->_app    = $app;
         $this->_config = $config;
         $this->_app->addEventHandler(SOne_Application::EVENT_PAGE_OBJECT_ROUTED, array($this, 'soneObjectRoutedHandle'));
+        $this->_app->addEventHandler(SOne_Application::EVENT_PAGE_RENDERED, array($this, 'addAppVisData'));
     }
 
     /**
@@ -52,5 +53,17 @@ class NewRelic_Plugin
 
         /** @noinspection PhpUndefinedFunctionInspection */
         newrelic_name_transaction(ucfirst($object->class).($request->action ? '/'.$request->action : ''));
+    }
+
+    /**
+     * @param FVISNode $pageNode
+     */
+    public function addAppVisData(FVISNode $pageNode)
+    {
+        /** @noinspection PhpUndefinedFunctionInspection */
+        $pageNode
+            ->addData('META', newrelic_get_browser_timing_header(true))
+            ->addData('BOTT_JS', newrelic_get_browser_timing_footer(false))
+            ;
     }
 }
