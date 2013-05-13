@@ -129,7 +129,13 @@ class Google_Plugin
             if (!$updateData || $statsCache['timestamp'] >= time() - 900) {
                 $rawStats = $statsCache['stats'];
             }
+        } else {
+            FCache::set('googleStats.'.$cacheId, array(
+                'timestamp' => time(),
+                'stats' => array(),
+            ));
         }
+
         if ($rawStats === null) {
             try {
                 $auth = Google_Bootstrap::getPluginInstance()->getAPIAuth(Google_API_Analytics::SCOPE_URL);
