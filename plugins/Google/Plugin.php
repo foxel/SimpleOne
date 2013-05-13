@@ -129,25 +129,24 @@ class Google_Plugin
             if (!$updateData || $statsCache['timestamp'] >= time() - 900) {
                 $rawStats = $statsCache['stats'];
             }
-        } else {
-            FCache::set('googleStats.'.$cacheId, array(
-                'timestamp' => time(),
-                'stats' => array(),
-            ));
         }
 
         if ($rawStats === null) {
-            try {
-                $auth = Google_Bootstrap::getPluginInstance()->getAPIAuth(Google_API_Analytics::SCOPE_URL);
-                $analytics = new Google_API_Analytics($auth);
-                $rawStats = $analytics->getMostVisitedPagesStats($analytics->getFistProfileId($config->analytics->accountId), $path);
-            } catch (Exception $e) {
+            if ($updateData) {
+                try {
+                    $auth = Google_Bootstrap::getPluginInstance()->getAPIAuth(Google_API_Analytics::SCOPE_URL);
+                    $analytics = new Google_API_Analytics($auth);
+                    $rawStats = $analytics->getMostVisitedPagesStats($analytics->getFistProfileId($config->analytics->accountId), $path);
+                } catch (Exception $e) {
+                    $rawStats = array();
+                }
+                FCache::set('googleStats.'.$cacheId, array(
+                    'timestamp' => time(),
+                    'stats' => $rawStats,
+                ));
+            } else {
                 $rawStats = array();
             }
-            FCache::set('googleStats.'.$cacheId, array(
-                'timestamp' => time(),
-                'stats' => $rawStats,
-            ));
         }
 
         return $rawStats;
