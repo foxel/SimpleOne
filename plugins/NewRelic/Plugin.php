@@ -42,6 +42,7 @@ class NewRelic_Plugin
         $this->_config = $config;
         $this->_app->addEventHandler(SOne_Application::EVENT_PAGE_OBJECT_ROUTED, array($this, 'soneObjectRoutedHandle'));
         $this->_app->addEventHandler(SOne_Application::EVENT_PAGE_RENDERED, array($this, 'addAppVisData'));
+        $this->_app->addEventHandler(SOne_Application::EVENT_CRON_PROCESS, array($this, 'processCronJob'));
 
         /** @noinspection PhpUndefinedFunctionInspection */
         newrelic_disable_autorum();
@@ -56,6 +57,15 @@ class NewRelic_Plugin
 
         /** @noinspection PhpUndefinedFunctionInspection */
         newrelic_name_transaction(ucfirst($object->class).($request->action ? '/'.$request->action : ''));
+    }
+
+    /**
+     * @param SOne_Environment $env
+     */
+    public function processCronJob(SOne_Environment $env)
+    {
+        /** @noinspection PhpUndefinedFunctionInspection */
+        newrelic_name_transaction('Cron');
     }
 
     /**
