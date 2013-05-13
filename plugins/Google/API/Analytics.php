@@ -72,8 +72,8 @@ class Google_API_Analytics
      */
     protected function _parseStatGrid(array $json)
     {
-        $cols = $json['columnHeaders'];
-        $rows = $json['rows'];
+        $cols = (array) $json['columnHeaders'];
+        $rows = (array) $json['rows'];
 
         $grid = array();
         foreach ($rows as $row) {
