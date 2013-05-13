@@ -30,6 +30,8 @@ plugins.OAuth.baseDomain => simpleone.dev
 #plugins.Google.analytics.visitorCookieTimeout => 63072000000
 #plugins.Google.analytics.siteSpeedSampleRate => 1
 
+#plugins.Google.cron.statPaths => blog
+
 # widgets
 # don't remove navigator widget if you have no other navigation
 widgets.navigator.class => Navigator

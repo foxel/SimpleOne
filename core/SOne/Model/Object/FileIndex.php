@@ -69,7 +69,7 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object
             $params = array(
                 'contentType' => $fInfo->file($realPath),
             );
-            if ($this->xAccelLocation) {
+            if ($this->xAccelLocation && ($env->getResponse() instanceof K3_Response_HTTP)) {
                 $accelRedirectPath = $this->xAccelLocation.'/'.$this->_subPath;
                 $params['filename'] = FStr::basename($realPath);
                 $env->getResponse()

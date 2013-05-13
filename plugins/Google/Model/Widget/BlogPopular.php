@@ -55,9 +55,7 @@ class Google_Model_Widget_BlogPopular extends SOne_Model_Widget
         }
 
         if ($blogObject instanceof SOne_Model_Object_BlogRoot || $blogObject instanceof SOne_Model_Object_BlogItem) {
-            $blogId = $blogObject instanceof SOne_Model_Object_BlogRoot ? $blogObject->id : $blogObject->parentId;
-            $blogPath = $blogObject instanceof SOne_Model_Object_BlogRoot ? $blogObject->path : preg_replace('#/[^/]+$#', '', trim($blogObject->path, '/'));
-            $topObjects = $this->_getTopObjects($blogId, $blogPath, $db, $this->limit);
+            $topObjects = $this->_getTopObjects($blogObject, $db, $this->limit);
 
             $items = array();
             foreach ($topObjects as $object) {
@@ -80,35 +78,19 @@ class Google_Model_Widget_BlogPopular extends SOne_Model_Widget
     }
 
     /**
-     * @param int $blogId
-     * @param string $blogPath
+     * @param SOne_Model_Object_BlogRoot $blogObject
      * @param FDataBase $db
      * @param int|null $limit
+     * @internal param int $blogId
+     * @internal param string $blogPath
      * @return SOne_Model_Object
      */
-    protected function _getTopObjects($blogId, $blogPath, FDataBase $db, $limit = null)
+    protected function _getTopObjects(SOne_Model_Object_BlogRoot $blogObject, FDataBase $db, $limit = null)
     {
-        $config = Google_Bootstrap::getPluginInstance()->getConfig();
+        $blogId   = $blogObject instanceof SOne_Model_Object_BlogRoot ? $blogObject->id   : $blogObject->parentId;
+        $blogPath = $blogObject instanceof SOne_Model_Object_BlogRoot ? $blogObject->path : preg_replace('#/[^/]+$#', '', trim($blogObject->path, '/'));
 
-        $rawStats = null;
-        if ($statsCache = FCache::get('googleStats.'.$blogId)) {
-            if ($statsCache['timestamp'] >= time() - 900) {
-                $rawStats = $statsCache['stats'];
-            }
-        }
-        if ($rawStats === null) {
-            try {
-                $auth = Google_Bootstrap::getPluginInstance()->getAPIAuth(Google_API_Analytics::SCOPE_URL);
-                $analytics = new Google_API_Analytics($auth);
-                $rawStats = $analytics->getMostVisitedPagesStats($analytics->getFistProfileId($config->analytics->accountId), $blogPath.'/');
-            } catch (Exception $e) {
-                $rawStats = array();
-            }
-            FCache::set('googleStats.'.$blogId, array(
-                'timestamp' => time(),
-                'stats'     => $rawStats,
-            ));
-        }
+        $rawStats = Google_Bootstrap::getPluginInstance()->fetchStats($blogPath.'/', false);
 
         $stats = array();
         foreach ($rawStats as $rawRow) {

@@ -38,6 +38,7 @@ class Google_Plugin
         if ($this->_config->analytics || $this->_config->analyticsId) {
             $this->_app->addEventHandler(SOne_Application::EVENT_PAGE_OBJECT_ROUTED, array($this, 'grabPageObject'));
             $this->_app->addEventHandler(SOne_Application::EVENT_PAGE_RENDERED, array($this, 'addAppVisData'));
+            $this->_app->addEventHandler(SOne_Application::EVENT_CRON_PROCESS, array($this, 'processCronJob'));
         }
     }
 
@@ -72,6 +73,26 @@ class Google_Plugin
     }
 
     /**
+     * @param SOne_Environment $env
+     */
+    public function processCronJob(SOne_Environment $env)
+    {
+        $config = ($this->_config->cron instanceof K3_Config)
+            ? $this->_config->cron->toArray()
+            : (array) $this->_config->cron;
+
+        if (isset($config['statPaths'])) {
+            $paths = is_array($config['statPaths'])
+                ? $config['statPaths']
+                : explode(',', $config['statPaths']);
+
+            foreach ($paths as $path) {
+                $this->fetchStats(rtrim($path, '/').'/', true);
+            }
+        }
+    }
+
+    /**
      * @return K3_Config
      */
     public function getConfig()
@@ -91,5 +112,38 @@ class Google_Plugin
         }
 
         throw new FException('Google API auth parameters not set in config');
+    }
+
+    /**
+     * @param $path
+     * @param bool $updateData
+     * @return array
+     */
+    public function fetchStats($path, $updateData = false)
+    {
+        $config  = $this->getConfig();
+        $cacheId = FStr::shortHash($path);
+
+        $rawStats = null;
+        if ($statsCache = FCache::get('googleStats.'.$cacheId)) {
+            if (!$updateData || $statsCache['timestamp'] >= time() - 900) {
+                $rawStats = $statsCache['stats'];
+            }
+        }
+        if ($rawStats === null) {
+            try {
+                $auth = Google_Bootstrap::getPluginInstance()->getAPIAuth(Google_API_Analytics::SCOPE_URL);
+                $analytics = new Google_API_Analytics($auth);
+                $rawStats = $analytics->getMostVisitedPagesStats($analytics->getFistProfileId($config->analytics->accountId), $path);
+            } catch (Exception $e) {
+                $rawStats = array();
+            }
+            FCache::set('googleStats.'.$cacheId, array(
+                'timestamp' => time(),
+                'stats' => $rawStats,
+            ));
+        }
+
+        return $rawStats;
     }
 }

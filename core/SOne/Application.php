@@ -28,6 +28,7 @@ class SOne_Application extends K3_Application
     const EVENT_PAGE_OBJECT_VISUALIZED = 'pageObjectVisualized';
     const EVENT_PAGE_OBJECT_ROUTED = 'pageObjectRouted';
     const EVENT_WIDGETS_BOOTSTRAPPED = 'widgetsBootstrapped';
+    const EVENT_CRON_PROCESS = 'cronProcess';
 
     /**
      * @var K3_Config
@@ -121,7 +122,7 @@ class SOne_Application extends K3_Application
             ->setLang($this->_lang)
             ->setUser($this->_bootstrapUser());
 
-        $this->bootstrapPlugins();
+        $this->_bootstrapPlugins();
 
         F()->Timer->logEvent('App Bootstrap end');
 
@@ -268,7 +269,7 @@ class SOne_Application extends K3_Application
         return $this->_VIS->makeHTML();
     }
 
-    protected function bootstrapPlugins()
+    protected function _bootstrapPlugins()
     {
         $pluginsDir = isset($this->_config->pluginsDir)
             ? $this->_config->pluginsDir
