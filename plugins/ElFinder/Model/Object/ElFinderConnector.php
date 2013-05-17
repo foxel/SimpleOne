@@ -209,7 +209,7 @@ class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
             $imageActionsNeeded = $addWatermark = true;
             $watermarkFont = realpath($this->_config['watermarkFont']);
             $watermarkText = $this->_config['watermarkText'];
-            $watermarkSize = isset($this->_config['watermarkSize']) ? (int)$this->_config['watermarkSize'] : 22;
+            $watermarkSize = isset($this->_config['watermarkSize']) ? $this->_config['watermarkSize'] : 22;
         }
 
         foreach ($result['added'] as &$file) {
@@ -270,12 +270,21 @@ class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
      * @param string $path
      * @param string $text
      * @param string $fontFile
-     * @param int $fontSize
+     * @param int|string $fontSize
      * @return bool
      */
     protected function _watermark($path, $text, $fontFile, $fontSize = 24)
     {
         if ($img = $this->_loadImage($path, $imageInfo)) {
+            if (preg_match('#^([\d\.]+)%$#', $fontSize, $matches)) {
+                $percent  = ($matches[1]/100);
+                $fontSize = (int) ($percent*(imagesy($img) - 20));
+                $testBox  = imagettfbbox(20, 0, $fontFile, $text);
+                $fontSize = min($fontSize, (int) ($percent*20*(imagesx($img) - 20)/$testBox[2]));
+            } else {
+                $fontSize = (int) $fontSize;
+            }
+
             $box = imagettfbbox($fontSize, 0, $fontFile, $text);
             $x = imagesx($img) - 10 - $box[2];
             $y = imagesy($img) - 10 - $box[3];
