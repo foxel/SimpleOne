@@ -199,17 +199,16 @@
                     $('body').append(modalDiv);
                     modalDiv.modal({show: false});
                     $(o).css({cursor: 'pointer'}).click(function () {
-                        var s = Math.min(($(window).width() - 130) / i.width, ($(window).height() - 130) / i.height, 1);
+                        var s = Math.min(($(window).width() - 130) / i.width, ($(window).height()*0.85-30) / i.height, 1);
                         var w = Math.max(parseInt(i.width * s), 20);
                         var h = Math.max(parseInt(i.height * s), 18);
                         modalDiv.find('.modal-body').css({'max-height': h+'px'});
                         w += 30;
                         h += 30;
                         modalDiv.css({
-                                    "width":w + 'px',
-                                    "margin-left":(-w / 2) + 'px',
-                                    "margin-top":(-h / 2) + 'px'}
-                        );
+                            "width":w + 'px',
+                            "margin-left":(-w / 2) + 'px'
+                        });
                         modalDiv.modal('show');
                         return false;
                     }).tooltip({title: 'Увеличить'});
