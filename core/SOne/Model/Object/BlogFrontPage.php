@@ -53,7 +53,7 @@ class SOne_Model_Object_BlogFrontPage extends SOne_Model_Object
             return $blogObject->visualize($env);
         }
 
-        $blogPostings = $blogObject->loadListItems($env, 25, 0);
+        $blogPostings = $blogObject->loadListItems($env, 50, 0);
 
         $items = array();
         foreach ($blogPostings as $item) {
