@@ -1229,6 +1229,9 @@ elRTE = function(target, opts) {
 	this.window = this.iframe.contentWindow;
 	this.doc    = this.iframe.contentWindow.document;
 	this.$doc   = $(this.doc);
+	if(!this.doc.body.firstChild) {
+		this.doc.body.appendChild(document.createTextNode(''));
+	}
 	
 	/* put content into iframe */
 	html = '<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';
@@ -1477,6 +1480,9 @@ elRTE.prototype.val = function(v) {
 			if ($.browser.msie) {
 				this.doc.body.innerHTML = '<br />'+this.filter.wysiwyg(v);
 				this.doc.body.removeChild(this.doc.body.firstChild);
+				if(!this.doc.body.firstChild) {
+					this.doc.body.appendChild(document.createTextNode(''));
+				}
 			} else {
 				this.doc.body.innerHTML = this.filter.wysiwyg(v);
 			}
@@ -3230,7 +3236,7 @@ elRTE.prototype.options   = {
 		'superscript'         : 'Superscript',
 		'subscript'           : 'Subscript',
 		'justifyleft'         : 'Align left',
-		'justifyright'        : 'Ailgn right',
+		'justifyright'        : 'Align right',
 		'justifycenter'       : 'Align center',
 		'justifyfull'         : 'Align full',
 		'indent'              : 'Indent',
@@ -4553,10 +4559,10 @@ elRTE.prototype.utils = function(rte) {
 		
 		if (s['background-image']) {
 			s.background = (s['background-color']+' ')||''+s['background-image']+' '+s['background-position']||'0 0'+' '+s['background-repeat']||'repeat';
+			delete s['background-color'];
 			delete s['background-image'];
-			delete['background-image'];
-			delete['background-position'];
-			delete['background-repeat'];
+			delete s['background-position'];
+			delete s['background-repeat'];
 		}
 		
 		if (s['margin-top'] && s['margin-right'] && s['margin-bottom'] && s['margin-left']) {
@@ -4684,7 +4690,8 @@ elRTE.prototype.utils = function(rte) {
 	
 }
 
-})(jQuery);/**
+})(jQuery);
+/**
  * @class w3cRange  - w3c text range emulation for "strange" browsers
  *
  * @param  elRTE  rte  объект-редактор
@@ -6748,7 +6755,7 @@ elRTE.prototype.ui.prototype.buttons.indent = function(rte, name) {
 				var $node = $(nodes[i]),
 					$prevLi = $node.prev('li'),
 					$listParent, $list, $newNode;
-				
+
 				if ($prevLi.length) {
 					$listParent = $prevLi;
 					$newNode = $node;
