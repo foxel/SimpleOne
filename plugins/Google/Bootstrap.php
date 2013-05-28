@@ -18,8 +18,6 @@
  * along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
  */
 
-define ('ELFINDER_PLUGIN_PATH', F_SITE_ROOT.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'elFinder');
-
 class Google_Bootstrap implements SOne_Interface_PluginBootstrap
 {
     /** @var Google_Plugin */

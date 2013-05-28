@@ -66,10 +66,32 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object
         if (is_file($realPath)) {
             // TODO: improve this
             $fInfo = new finfo(FILEINFO_MIME_TYPE);
+            $fileMTime  = filemtime($realPath);
             $params = array(
                 'contentType' => $fInfo->file($realPath),
+                'contentTime' => $fileMTime,
             );
-            if ($this->xAccelLocation && ($env->getResponse() instanceof K3_Response_HTTP)) {
+
+            if (!empty($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $fileMTime) {
+                $env->getResponse()
+                    ->clearBuffer()
+                    ->setStatusCode(304)
+                    ->sendBuffer('', $params);
+            }
+
+            if ($this->actionState == 'scale' && ($imgInfo = getimagesize($realPath))) {
+                $w = $env->request->getNumber('w', K3_Request::GET);
+                $h = $env->request->getNumber('h', K3_Request::GET);
+                if (!$w && !$h) {
+                    $env->response->sendRedirect(FStr::fullUrl($this->path.'/'.$this->_subPath));
+                }
+                $img = new K3_Image($realPath);
+                $img->resize(min($img->width(), $w), min($img->height(), $h));
+
+                $env->getResponse()
+                    ->write($img->toString())
+                    ->sendBuffer('', $params);
+            } elseif ($this->xAccelLocation && ($env->getResponse() instanceof K3_Response_HTTP)) {
                 $accelRedirectPath = $this->xAccelLocation.'/'.$this->_subPath;
                 $params['filename'] = FStr::basename($realPath);
                 $env->getResponse()

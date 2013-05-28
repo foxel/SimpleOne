@@ -275,29 +275,9 @@ class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
      */
     protected function _watermark($path, $text, $fontFile, $fontSize = 24)
     {
-        if ($img = $this->_loadImage($path, $imageInfo)) {
-            if (preg_match('#^([\d\.]+)%$#', $fontSize, $matches)) {
-                $percent  = ($matches[1]/100);
-                $fontSize = (int) ($percent*(imagesy($img) - 20));
-                $testBox  = imagettfbbox(20, 0, $fontFile, $text);
-                $fontSize = min($fontSize, (int) ($percent*20*(imagesx($img) - 20)/$testBox[2]));
-            } else {
-                $fontSize = (int) $fontSize;
-            }
-
-            $box = imagettfbbox($fontSize, 0, $fontFile, $text);
-            $x = imagesx($img) - 10 - $box[2];
-            $y = imagesy($img) - 10 - $box[3];
-            imagettftext($img, $fontSize, 0, $x+1, $y+1, $this->_imageColorAllocate($img, 0, 0, 0), $fontFile, $text);
-            imagettftext($img, $fontSize, 0, $x, $y, $this->_imageColorAllocate($img, 255, 255, 255), $fontFile, $text);
-
-            if ($imageInfo['mime'] == 'image/jpeg') {
-                $result = imagejpeg($img, $path, 100);
-            } elseif ($imageInfo['mime'] == 'image/gif') {
-                $result = imagegif($img, $path, 7);
-            } else {
-                $result = imagepng($img, $path, 7);
-            }
+        if ($img = K3_Image::load($path)) {
+            $img->watermark($text, $fontFile, $fontSize);
+            $result = $img->save($path, null, $img->format == IMAGETYPE_JPEG ? 100 : 7);
 
             return $result;
         }
@@ -305,51 +285,4 @@ class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
         return false;
     }
 
-    /**
-     * @param resource $img
-     * @param int $r
-     * @param int $g
-     * @param int $b
-     * @return int
-     */
-    protected function _imageColorAllocate($img, $r, $g, $b)
-    {
-        $idx = imagecolorallocate($img, $r, $g, $b);
-        if ($idx === false) {
-            $idx = imagecolorclosesthwb($img, $r, $g, $b);
-        }
-
-        return $idx;
-    }
-
-    /**
-     * @param string $path
-     * @param array &$imageInfo
-     * @return bool|resource
-     */
-    protected function _loadImage($path, &$imageInfo = array())
-    {
-        if (($imageInfo = @getimagesize($path)) == false) {
-            return false;
-        }
-
-        switch ($imageInfo['mime']) {
-            case 'image/jpeg':
-                $img = imagecreatefromjpeg($path);
-                break;
-            case 'image/png':
-                $img = imagecreatefrompng($path);
-                break;
-            case 'image/gif':
-                $img = imagecreatefromgif($path);
-                break;
-            case 'image/xbm':
-                $img = imagecreatefromxbm($path);
-                break;
-            default:
-                $img = false;
-        }
-
-        return $img;
-    }
 }
