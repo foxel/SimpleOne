@@ -97,6 +97,7 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object
                 $env->getResponse()
                     ->write('nGinx redirected to '.$accelRedirectPath)
                     ->setHeader('X-Accel-Redirect', $accelRedirectPath)
+                    ->setHeader('X-Accel-Expires', 3600)
                     ->sendBuffer('', $params);
             } else {
                 $env->response->sendFile($realPath, $params);
