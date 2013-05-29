@@ -98,7 +98,7 @@ class SOneImages_Plugin
 
         $url = &$vars[2];
         $url = trim($url, '\'"');
-        if ($this->_config->scale && (strpos($url, $env->server->rootUrl) === 0 || FStr::isUrl($url) == 2)) {
+        if ($this->_config->scale && strpos($url, '?') == false && (strpos($url, $env->server->rootUrl) === 0 || FStr::isUrl($url) == 2)) {
             $scaleParams = array();
             if (preg_match('#width\s*[:=]\s*"?(\d+)(px|"|\s)#i', $vars[0], $matches)) {
                 $scaleParams['w'] = (int) $matches[1];
