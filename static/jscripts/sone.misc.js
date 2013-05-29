@@ -133,7 +133,7 @@ define(['jquery', 'date.format', 'jquery.chosen', 'i18n/date.format.ru'], functi
                     var prepareModal = function (onReady) {
                         require(['bootstrap.modal'], function () {
                             var _src = src || $this.attr('src');
-                            _src = _src.replace(/\?scale(&w=\d+)?(&h=d+)?/, '?');
+                            _src = _src.replace(/\?scale(&w=\d+)?(&h=\d+)?/, '?');
                             i = document.createElement('img');
                             $(i).load(function () {
                                 modalDiv = $('<div />', {'class': 'modal fade hide'}).append(
