@@ -52,7 +52,7 @@ define(["jquery", "jquery.lazyload"], function ($) {
                         });
                         modalDiv.modal("show");
                     };
-                    var prepareModal = function() {
+                    var prepareModal = function(onReady) {
                         require(["bootstrap.modal", "bootstrap.tooltip"], function() {
                             i = document.createElement("img");
                             $(i).load(function () {
@@ -61,13 +61,13 @@ define(["jquery", "jquery.lazyload"], function ($) {
                                 );
                                 $("body").append(modalDiv);
                                 modalDiv.modal({show: false});
-                                showModal();
+                                onReady && onReady();
                             }).attr("src", src);
                         });
                     };
 
                     $el.css({cursor: "pointer"}).click(function () {
-                        modalDiv ? showModal() : prepareModal();
+                        modalDiv ? showModal() : prepareModal(showModal);
                         return false;
                     }).tooltip({title: "Просмотреть"});
                 }
