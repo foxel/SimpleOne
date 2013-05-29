@@ -115,39 +115,18 @@ define(['jquery', 'date.format', 'jquery.chosen', 'i18n/date.format.ru'], functi
             return this.each(function() {
                 var $this = $(this);
                 if (!$this.closest('a').length) {
-                    var modalDiv, i;
-
-                    var showModal = function () {
-                        var s = Math.min(($(window).width() - 130) / i.width, ($(window).height() * 0.85 - 30) / i.height, 1);
-                        var w = Math.max(parseInt(i.width * s), 20);
-                        var h = Math.max(parseInt(i.height * s), 18);
-                        modalDiv.find('.modal-body').css({'max-height': h + 'px'});
-                        w += 30;
-                        h += 30;
-                        modalDiv.css({
-                            'width': w + 'px',
-                            'margin-left': (-w / 2) + 'px'
-                        });
-                        modalDiv.modal('show');
-                    };
-                    var prepareModal = function (onReady) {
-                        require(['bootstrap.modal'], function () {
-                            var _src = src || $this.attr('src');
-                            _src = _src.replace(/\?scale(&w=\d+)?(&h=\d+)?/, '?');
-                            i = document.createElement('img');
-                            $(i).load(function () {
-                                modalDiv = $('<div />', {'class': 'modal fade hide'}).append(
-                                    $('<div />', {'class': 'modal-body'}).append(i)
-                                );
-                                $('body').append(modalDiv);
-                                modalDiv.modal({show: false});
-                                onReady && onReady();
-                            }).attr('src', _src);
-                        });
-                    };
-
                     $this.css({cursor: 'pointer'}).click(function () {
-                        modalDiv ? showModal() : prepareModal(showModal);
+                        var _src = src || $this.attr('src');
+                        _src = _src.replace(/\?scale(&w=\d+)?(&h=\d+)?/, '?');
+                        require(['jquery.colorbox'], function() {
+                            $this.colorbox({
+                                open: true,
+                                href: _src,
+                                title: $this.attr('title') || $this.attr('data-original-title'),
+                                maxWidth: '90%',
+                                maxHeight: '95%'
+                            });
+                        });
                         return false;
                     });
                     require(['bootstrap.tooltip'], function () {
