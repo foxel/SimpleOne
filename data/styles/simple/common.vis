@@ -187,37 +187,6 @@
 {IN_BOTT_JS_BLOCKS}
 <script type="text/javascript">
 // JavaScript Starts Here (bottom section) <![CDATA[
-    require(['jquery', 'bootstrap.modal', 'bootstrap.tooltip'], function ($) {
-        // automated previews on images
-        $('#mp_pagecont img').each(function () {
-            var o = this;
-            var i = document.createElement('img');
-            $(i).load(function () {
-                if (i.width && i.width > 1.2 * o.width && !$(o).closest('a').length) {
-                    var modalDiv = $('<div />', {"class": 'modal fade hide'}).append(
-                            $('<div />', {"class": 'modal-body'}).append(i)
-                    );
-                    $('body').append(modalDiv);
-                    modalDiv.modal({show: false});
-                    $(o).css({cursor: 'pointer'}).click(function () {
-                        var s = Math.min(($(window).width() - 130) / i.width, ($(window).height()*0.85-30) / i.height, 1);
-                        var w = Math.max(parseInt(i.width * s), 20);
-                        var h = Math.max(parseInt(i.height * s), 18);
-                        modalDiv.find('.modal-body').css({'max-height': h+'px'});
-                        w += 30;
-                        h += 30;
-                        modalDiv.css({
-                            "width":w + 'px',
-                            "margin-left":(-w / 2) + 'px'
-                        });
-                        modalDiv.modal('show');
-                        return false;
-                    }).tooltip({title: 'Увеличить'});
-                }
-            }).attr('src', o.src);
-        });
-    });
-
     {IN_BOTT_JS}
 //]]> JavaScript ends here
 </script>

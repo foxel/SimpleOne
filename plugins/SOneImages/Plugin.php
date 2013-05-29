@@ -37,9 +37,7 @@ class SOneImages_Plugin
         $this->_app->getEnv()->getResponse()
             ->addEventHandler('HTML_parse', array($this, 'HTML_Images'));
 
-        if ($this->_config->lazyload) {
-            $this->_app->addEventHandler(SOne_Application::EVENT_PAGE_RENDERED, array($this, 'addAppVisData'));
-        }
+        $this->_app->addEventHandler(SOne_Application::EVENT_PAGE_RENDERED, array($this, 'addAppVisData'));
     }
 
     /**
@@ -47,13 +45,26 @@ class SOneImages_Plugin
      */
     public function addAppVisData(FVISNode $pageNode)
     {
-        $pageNode
-            ->addData('CSS', 'img[data-lazyload-src] { display: none; }')
-            ->addData('BOTT_JS_BLOCKS', '<script type="text/javascript">//<!--
-                require(["jquery", "sone.lazyload"], function ($) {
-                    $("img[data-lazyload-src]").show().lazyload();
-                });
-            //--></script>');
+        if ($this->_config->lazyload) {
+            $pageNode
+                ->addData('CSS', 'img[data-lazyload-src] { display: none; }')
+                ->addData('BOTT_JS_BLOCKS', '<script type="text/javascript">//<!--
+                    require(["jquery", "sone.lazyload"], function ($) {
+                        $("img[data-lazyload-src]").show().lazyload();
+                    });
+                //--></script>');
+        } elseif ($this->_config->scale) {
+            $pageNode
+                ->addData('BOTT_JS_BLOCKS', '<script type="text/javascript">//<!--
+                    require(["jquery", "sone.misc"], function ($) {
+                        $("#mp_pagecont img").each(function () {
+                            if ($(this).attr("src").match(/(\?|&)scale/)) {
+                                $(this).imageModal();
+                            }
+                        });
+                    });
+                //--></script>');
+        }
     }
 
 

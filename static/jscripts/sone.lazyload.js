@@ -23,7 +23,7 @@ require.config({
     }
 });
 
-define(["jquery", "jquery.lazyload"], function ($) {
+define(["jquery", "sone.misc", "jquery.lazyload"], function ($) {
     var lazyLoadOriginal = $.fn.lazyload;
 
     $.fn.lazyload = function(options) {
@@ -34,43 +34,7 @@ define(["jquery", "jquery.lazyload"], function ($) {
             "appear": function() {
                 var $el = $(this);
                 var src = $el.data("lazyload-src");
-                src = src.replace(/\?scale(&w=\d+)?(&h=d+)?/, '?');
-
-                if (!$el.closest("a").length) {
-                    var modalDiv, i;
-
-                    var showModal = function() {
-                        var s = Math.min(($(window).width() - 130)/i.width, ($(window).height()*0.85 - 30)/i.height, 1);
-                        var w = Math.max(parseInt(i.width*s), 20);
-                        var h = Math.max(parseInt(i.height*s), 18);
-                        modalDiv.find(".modal-body").css({"max-height": h + "px"});
-                        w += 30;
-                        h += 30;
-                        modalDiv.css({
-                            "width":       w + "px",
-                            "margin-left": (-w/2) + "px"
-                        });
-                        modalDiv.modal("show");
-                    };
-                    var prepareModal = function(onReady) {
-                        require(["bootstrap.modal", "bootstrap.tooltip"], function() {
-                            i = document.createElement("img");
-                            $(i).load(function () {
-                                modalDiv = $("<div />", {"class": "modal fade hide"}).append(
-                                    $("<div />", {"class": "modal-body"}).append(i)
-                                );
-                                $("body").append(modalDiv);
-                                modalDiv.modal({show: false});
-                                onReady && onReady();
-                            }).attr("src", src);
-                        });
-                    };
-
-                    $el.css({cursor: "pointer"}).click(function () {
-                        modalDiv ? showModal() : prepareModal(showModal);
-                        return false;
-                    }).tooltip({title: "Просмотреть"});
-                }
+                $el.imageModal(src);
             }
         };
 
