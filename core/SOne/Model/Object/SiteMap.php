@@ -38,12 +38,12 @@ class SOne_Model_Object_SiteMap extends SOne_Model_Object
     {
         $app = $env->getApp();
 
-        $tree = $app->getObjects()->loadObjectsTree(array('accessLevel=' => 0));
+        $paths = $app->getObjects()->loadPaths(array('accessLevel=' => 0));
 
         $xml = new SimpleXMLElement('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" />');
-        foreach ($tree as $item) {
+        foreach ($paths as $item) {
             $urlNode = $xml->addChild('url');
-            $locNode = $urlNode->addChild('loc', FStr::fullUrl($item->path, true));
+            $urlNode->addChild('loc', FStr::fullUrl($item, true));
         }
 
         $env->response->write($xml->asXML())->sendBuffer(F::INTERNAL_ENCODING, array(
