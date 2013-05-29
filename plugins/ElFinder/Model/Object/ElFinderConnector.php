@@ -277,7 +277,7 @@ class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
     {
         if ($img = K3_Image::load($path)) {
             $img->watermark($text, $fontFile, $fontSize);
-            $result = $img->save($path, null, $img->format == IMAGETYPE_JPEG ? 100 : 7);
+            $result = $img->save($path, null, $img->getFormat() == IMAGETYPE_JPEG ? 100 : 7);
 
             return $result;
         }
