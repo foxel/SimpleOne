@@ -17,6 +17,9 @@ markup.responsive => 1
 #markup.favicon => favicon.ico
 #markup.hideDefaultFooter => 1
 
+#plugins.SOneImages.scale => 1
+#plugins.SOneImages.lazyload => 1
+
 #OAuth integration for Facebook/VK
 plugins.OAuth.vkAppId => 2833416
 plugins.OAuth.vkAppSecret => XxxX
