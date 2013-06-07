@@ -49,15 +49,20 @@ class SOneImages_Plugin
             $pageNode
                 ->addData('CSS', 'img[data-lazyload-src] { display: none; }')
                 ->addData('BOTT_JS_BLOCKS', '<script type="text/javascript">//<!--
-                    require(["jquery", "sone.lazyload"], function ($) {
+                    require(["jquery", "sone.lazyload", "sone.misc"], function ($) {
                         $("img[data-lazyload-src]").show().lazyload();
+                        $("#mp_pagecont").find("img:not([data-lazyload-src])").each(function () {
+                            if ($(this).attr("src").match(/(\?|&)scale/)) {
+                                $(this).imageModal();
+                            }
+                        });
                     });
                 //--></script>');
         } elseif ($this->_config->scale) {
             $pageNode
                 ->addData('BOTT_JS_BLOCKS', '<script type="text/javascript">//<!--
                     require(["jquery", "sone.misc"], function ($) {
-                        $("#mp_pagecont img").each(function () {
+                        $("#mp_pagecont").find("img").each(function () {
                             if ($(this).attr("src").match(/(\?|&)scale/)) {
                                 $(this).imageModal();
                             }
