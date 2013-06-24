@@ -303,4 +303,10 @@ div.blog-keywords a {
 #mp_mainpage.span10 .blog-tag-block:nth-child(odd) {
     clear: left;
 }
+
+@media (min-width: 1200px) {
+    .carousel.blog-carousel .item {
+        height: 500px;
+    }
+}
 <<- 'CSS'>>
