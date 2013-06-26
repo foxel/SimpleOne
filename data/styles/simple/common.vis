@@ -141,9 +141,9 @@
     </div>
     <div class="row">
         {IF:IN_sidebar_widgets}
-        <div id="mp_sidebar" class="span2">
+        <div id="mp_sidebar" class="span2"><div class="sidebar-widgets">
             {IN_sidebar_widgets}
-        </div>
+        </div></div>
         {/IF}
         <div id="mp_mainpage" class="{IF:IN_sidebar_widgets}{IF:IN_sidebar2_widgets}span8{ELSE}span10{/IF}{ELSEIF:IN_sidebar2_widgets}span10{ELSE}span12{/IF}">
             {IF:IN_PATH_ITEMS}
@@ -156,9 +156,9 @@
             </div>
         </div>
         {IF:IN_sidebar2_widgets}
-            <div id="mp_sidebar2" class="span2">
-                {IN_sidebar2_widgets}
-            </div>
+        <div id="mp_sidebar2" class="span2"><div class="sidebar-widgets">
+            {IN_sidebar2_widgets}
+        </div></div>
         {/IF}
     </div>
     <div id="mp_footer" class="footer">

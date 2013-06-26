@@ -55,7 +55,7 @@
 <<- 'SONE_GOOGLE_WIDGET_POPULAR_BLOCK'>>
 
 <<+ 'SONE_GOOGLE_WIDGET_POPULAR_ITEM'>>
-<div style="text-align: center; margin-bottom: 10px;">
+<div class="blog-popular-item" style="text-align: center; margin-bottom: 10px;">
     {IF:IN_image}<a href="{FULLURL:IN_path}"><img src="{FULLURL:IN_image}?scale&amp;w=110" alt="{!IN_caption}" style="width: 110px;" /></a>{/IF}
     <p><a href="{FULLURL:IN_path}">{!IN_caption}</a></p>
 </div>
