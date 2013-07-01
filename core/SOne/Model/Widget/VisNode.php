@@ -42,6 +42,8 @@ class SOne_Model_Widget_VisNode extends SOne_Model_Widget
     {
         $node = new FVISNode($this->visClass, 0, $env->getVIS());
         $node->addDataArray($this->pool);
+        $node->addDataArray($pageObject->toArray(), 'pageObject_');
+        $node->addDataArray($env->user->toArray(),  'envUser_');
         return $node;
     }
 
