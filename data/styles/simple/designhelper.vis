@@ -1,0 +1,63 @@
+<!--
+ Copyright (C) 2013 Andrey F. Kupreychik (Foxel)
+
+ This file is part of QuickFox SimpleOne.
+
+ SimpleOne is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ SimpleOne is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<<+ 'SONE_DESIGNHELPER_WIDGET_CSSEDIT'>>
+<style type="text/css" id="{UNIQID}_style"></style>
+
+<div id="{UNIQID}_container" class="well well-small cssEditContainer">
+    <div>
+        <label for="{UNIQID}_data" >Quick CSS apply</label>
+        <textarea id="{UNIQID}_data"></textarea>
+    </div>
+    <div class="clearfix"></div>
+</div>
+<script type="text/javascript">//<!--
+    require(['jquery'], function($) {
+        $("#{UNIQID}_data").on('change keyup', function() {
+            var val = $(this).val();
+            localStorage && localStorage.setItem('cssEditContent'+{JS_DEF:IN_id}, val);
+            $("#{UNIQID}_style").text(val);
+        });
+        $("#{UNIQID}_data").focus(function() {
+            $("#{UNIQID}_container").addClass('expanded');
+        }).blur(function() {
+            $("#{UNIQID}_container").removeClass('expanded');
+        });
+        localStorage && $("#{UNIQID}_data").val(localStorage.getItem('cssEditContent'+{JS_DEF:IN_id}) || '').change();
+    });
+// --></script>
+<<- 'SONE_DESIGNHELPER_WIDGET_CSSEDIT'>>
+<<+ 'CSS'>>
+    div.cssEditContainer textarea {
+        width: 100%;
+        resize: vertical;
+        box-sizing: border-box;
+        height: 150px;
+    }
+    #mp_sidebar div.cssEditContainer.expanded {
+        margin-right: -300px;
+        z-index: 100;
+        position: relative;
+    }
+    #mp_sidebar2 div.cssEditContainer.expanded {
+        margin-left: -300px;
+        z-index: 100;
+        position: relative;
+    }
+<<- 'CSS'>>

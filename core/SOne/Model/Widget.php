@@ -19,7 +19,7 @@
  */
 
 /**
- * @property int    $parentId
+ * @property string $id
  * @property string $class
  * @property string $caption
  * @property string $block
@@ -75,6 +75,7 @@ abstract class SOne_Model_Widget extends SOne_Model
     public function __construct(array $init = array())
     {
         $this->pool = array(
+            'id'          => isset($init['id'])          ? (string) $init['id']          : FStr::shortUID(),
             'class'       => isset($init['class'])       ? (string) $init['class']       : lcfirst(strtr(get_class($this), array(__CLASS__.'_' => ''))),
             'caption'     => isset($init['caption'])     ? (string) $init['caption']     : '',
             'block'       => isset($init['block'])       ? (string) $init['block']       : '',
