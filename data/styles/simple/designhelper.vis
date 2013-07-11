@@ -21,8 +21,10 @@
 <style type="text/css" id="{UNIQID}_style"></style>
 
 <div id="{UNIQID}_container" class="well well-small cssEditContainer">
+    <legend>
+        <label for="{UNIQID}_data">Quick CSS apply</label>
+    </legend>
     <div>
-        <label for="{UNIQID}_data" >Quick CSS apply</label>
         <textarea id="{UNIQID}_data"></textarea>
     </div>
     <div class="clearfix"></div>
