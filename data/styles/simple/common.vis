@@ -507,9 +507,9 @@
 <<+ 'SONE_WIDGET_TAGCLOUD_BLOCK'>>
 {IF:IN_tags}
 {WRITE:blockId}{RANDOM:100|999}{WRITE}
-<div id="tagcloud_{blockId}" class="well well-small" style="overflow: hidden; text-overflow: ellipsis;">
+<div id="tagcloud_{blockId}" class="well well-small">
     <legend>{IF:IN_title}{IN_title}{ELSE}Облако тегов{/IF}</legend>
-    {IN_tags}
+    <div style="overflow: hidden; text-overflow: ellipsis;">{IN_tags}</div>
 </div>
 <script type="text/javascript">
     require(['jquery', 'jquery.tagcloud'], function($) {

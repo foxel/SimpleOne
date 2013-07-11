@@ -47,9 +47,9 @@
 
 <<+ 'SONE_GOOGLE_WIDGET_POPULAR_BLOCK'>>
 {IF:IN_items}
-<div class="well well-small" style="overflow: hidden; text-overflow: ellipsis;">
+<div class="well well-small">
     <legend>{IF:IN_title}{IN_title}{ELSE}Популярное{/IF}</legend>
-    {IN_items}
+    <div style="overflow: hidden; text-overflow: ellipsis;">{IN_items}</div>
 </div>
 {/IF}
 <<- 'SONE_GOOGLE_WIDGET_POPULAR_BLOCK'>>
