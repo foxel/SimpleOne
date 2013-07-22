@@ -32,6 +32,7 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
     /** @var FDataBase */
     protected $_db;
     protected $_filterParams = null;
+    protected $_subPath = '';
     protected $_itemPerPage  = 10;
 
     /**
@@ -126,10 +127,15 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
             $item->fixFullUrls($env);
         }
 
+        $path = $this->path;
+        if ($this->_subPath) {
+            $path.= '/'.$this->_subPath;
+        }
+
         $rss = new K3_RSS(array(
             'title'    => $this->caption,
-            'link'     => FStr::fullUrl($this->path, false, '', $env),
-            'feedLink' => FStr::fullUrl($this->path.'?rss', false, '', $env),
+            'link'     => FStr::fullUrl($path, false, '', $env),
+            'feedLink' => FStr::fullUrl($path.'?rss', false, '', $env),
         ), $items, $env);
 
         return $rss;
@@ -271,6 +277,7 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
         }
 
         $this->_filterParams = FStr::getZendStyleURLParams($subPath);
+        $this->_subPath = $subPath;
         if (array_diff(array_keys($this->_filterParams), array('date', 'tag', 'author'))) {
             return new SOne_Model_Object_Page404(array('path' => $this->path.'/'.$subPath));
         }
