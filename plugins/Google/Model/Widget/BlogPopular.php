@@ -115,6 +115,10 @@ class Google_Model_Widget_BlogPopular extends SOne_Model_Widget
 
         $paths = array_keys($stats);
 
+        if (empty($paths)) {
+            return array();
+        }
+
         $objects = SOne_Repository_Object::getInstance($db)->loadAll(array(
             'parentId=' => $blogId,
             'path='     => $paths,
