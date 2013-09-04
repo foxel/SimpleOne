@@ -29,6 +29,7 @@ class RSSExport_Model_Object_BlogRSS extends SOne_Model_Object
     protected $_itemPerPage = 10;
     protected $_modeClasses = array(
         'yandex'  => 'RSSExport_RSS_Yandex',
+        'rambler' => 'RSSExport_RSS_Rambler',
     );
 
     /**
