@@ -18,7 +18,7 @@
  * along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
  */
 
-class RSSExport_RSS_Rambler extends RSSExport_RSS_FullText
+class RSSExport_RSS_Rambler extends K3_RSS
 {
     /**
      * @param array $params
