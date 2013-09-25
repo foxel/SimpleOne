@@ -44,6 +44,7 @@ define(['jquery', 'SOne', 'elrte', 'i18n/elrte.ru'], function ($, SOne) {
             allowTextNodes:false,
             height:400,
             panels:{
+                'media':['image', 'youtube'],
                 'sone-elements':['horizontalrule', 'blockquote', 'div', 'pagebreak', 'stopfloat', 'css', 'nbsp'],
                 'sone-format':['formatblock', 'fontsize'],
 
@@ -55,7 +56,7 @@ define(['jquery', 'SOne', 'elrte', 'i18n/elrte.ru'], function ($, SOne) {
                 'micro-style':['bold', 'italic', 'underline', 'strikethrough']
             },
             toolbars:{
-                'sone':['copypaste', 'elfinder', 'undoredo', 'style', 'alignment', 'colors', 'eol', 'sone-format', 'indent', 'lists', 'links', 'eol', 'sone-elements', 'images', 'tables'],
+                'sone':['copypaste', 'elfinder', 'undoredo', 'style', 'alignment', 'colors', 'eol', 'sone-format', 'indent', 'lists', 'links', 'eol', 'sone-elements', 'media', 'tables'],
                 'sone-mini':['mini-copypaste', 'mini-style', 'colors', 'mini-links'],
                 'sone-micro':['micro-copypaste', 'micro-style', 'mini-links']
             },
