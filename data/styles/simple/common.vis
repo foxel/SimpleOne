@@ -325,10 +325,31 @@
   <strong>Вход</strong>
   {IF:IN_registerAllowed} / <a class="loginpageShowRegister" href="#" onclick="return false;">Регистрация</a>{/IF}
  </legend>
- <form action="{FULLURL:IN_PATH}/?login" method="post">
-  <label>Логин: <br/><input type="text" name="login" value="" /></label>
-  <label>Пароль: <br/><input type="password" name="password" value="" /></label>
-  <button class="btn btn-primary" type="submit">{L_EDITOR_SUBMIT_LOGIN}</button>
+ <form class="form-horizontal" action="{FULLURL:IN_PATH}/?login" method="post">
+  <div class="control-group">
+   <label class="control-label" for="inputLogin{UNIQID}">Логин:</label>
+   <div class="controls">
+    <input id="inputLogin{UNIQID}" type="text" name="login" value="" />
+   </div>
+  </div>
+  <div class="control-group">
+   <label class="control-label" for="inputPassword{UNIQID}">Пароль:</label>
+   <div class="controls">
+    <input id="inputPassword{UNIQID}" type="password" name="password" value="" />
+   </div>
+  </div>
+  <div class="control-group">
+   <div class="controls">
+    <label class="checkbox">
+     <input type="checkbox" name="set-auto-login" value="1" /> Запомнить меня
+    </label>
+   </div>
+  </div>
+  <div class="control-group">
+   <div class="controls">
+    <button type="submit" class="btn btn-primary">{L_EDITOR_SUBMIT_LOGIN}</button>
+   </div>
+  </div>
  </form>
 </fieldset>
 {IF:IN_registerAllowed}

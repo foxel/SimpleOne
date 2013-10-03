@@ -25,4 +25,5 @@
     <include file="initial.xml" relativeToChangelogFile="true" />
     <include file="updates.2013.03.xml" relativeToChangelogFile="true" />
     <include file="updates.2013.04.xml" relativeToChangelogFile="true" />
+    <include file="updates.2013.09.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

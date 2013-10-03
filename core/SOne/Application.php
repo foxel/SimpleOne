@@ -30,6 +30,8 @@ class SOne_Application extends K3_Application
     const EVENT_WIDGETS_BOOTSTRAPPED = 'widgetsBootstrapped';
     const EVENT_CRON_PROCESS = 'cronProcess';
 
+    const COOKIE_AUTO_LOGIN  = 'ALID';
+
     /**
      * @var K3_Config
      */
@@ -333,16 +335,39 @@ class SOne_Application extends K3_Application
     protected function _bootstrapUser()
     {
         $user = null;
+        /* @var SOne_Repository_User $users */
+        $users = SOne_Repository_User::getInstance($this->_db);
+
         if ($uid = $this->_env->session->get('userId')) {
-            /* @var SOne_Repository_User $users */
-            $users = SOne_Repository_User::getInstance($this->_db);
             if ($user = $users->loadOne(array('id' => (int) $uid, 'last_sid' => $this->_env->session->getSID()))) {
                 $users->save($user->updateLastSeen($this->_env));
             } else {
                 $this->_env->session->drop('userId');
             }
+        } elseif ($alId = $this->_env->client->getCookie(self::COOKIE_AUTO_LOGIN)) {
+            /** @var SOne_Repository_User_AutoLogin $alRepo */
+            $alRepo = SOne_Repository_User_AutoLogin::getInstance($this->_db);
+            $alSignature = $this->_env->client->getSignature(2);
+
+            if ($alData = $alRepo->loadOne(array('id' => $alId))) {
+                if ($alData->lastUsed > (time() - SOne_Model_User_AutoLogin::LIFETIME)) {
+                    if (!$alData->userId) {
+                    } elseif ($alSignature && $alSignature != $alData->userSig) {
+                        $alRepo->delete(array('id' => $alId));
+                    } elseif ($user = $users->loadOne(array('id' => (int)$alData->userId))) {
+                        $users->save($user->updateLastSeen($this->_env));
+                        $alData->update();
+                        $alRepo->save($alData);
+                        $this->_env->client->setCookie(self::COOKIE_AUTO_LOGIN, $alData->id, time() + SOne_Model_User_AutoLogin::LIFETIME);
+                    }
+                } else {
+                    $alRepo->delete(array('lastUsed<' => (time() - SOne_Model_User_AutoLogin::LIFETIME)));
+                }
+            }
         }
+
         if (!$user) {
+            $this->_env->client->setCookie(self::COOKIE_AUTO_LOGIN);
             $user = new SOne_Model_User(array(
                 'last_ip' => $this->_env->client->IPInteger,
             ));
@@ -353,14 +378,29 @@ class SOne_Application extends K3_Application
 
     /**
      * @param SOne_Model_User $user
+     * @param bool $setAutoLogin
      */
-    public function setAuthUser(SOne_Model_User $user)
+    public function setAuthUser(SOne_Model_User $user, $setAutoLogin = false)
     {
         /* @var SOne_Repository_User $users */
         $users = SOne_Repository_User::getInstance($this->_db);
 
         $this->_env->session->open();
         $users->save($user->updateLastSeen($this->_env));
+        if ($setAutoLogin) {
+            /** @var SOne_Repository_User_AutoLogin $alRepo */
+            $alRepo = SOne_Repository_User_AutoLogin::getInstance($this->_db);
+
+            $alData = new SOne_Model_User_AutoLogin(array(
+                'userId'  => $user->id,
+                'userSig' => $this->_env->client->getSignature(2),
+            ));
+
+            $alRepo->save($alData);
+            if ($alData->id) {
+                $this->_env->client->setCookie(self::COOKIE_AUTO_LOGIN, $alData->id, time() + SOne_Model_User_AutoLogin::LIFETIME);
+            }
+        }
         $this->_env->session->set('userId', $user->id);
         $this->_env->setUser($user);
     }
@@ -369,6 +409,7 @@ class SOne_Application extends K3_Application
     {
         $this->_env->session->drop('userId');
         $this->_env->setUser(new SOne_Model_User());
+        $this->_env->client->setCookie(self::COOKIE_AUTO_LOGIN);
     }
 
     /**

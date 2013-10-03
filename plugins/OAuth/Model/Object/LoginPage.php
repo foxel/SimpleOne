@@ -111,7 +111,7 @@ class OAuth_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
         if ($userId = $db->doSelect('oauth_tokens', 'uid', array('oauth_uid' => $tokenData->user_id, 'api' => 'vk'))) {
             $db->doUpdate('oauth_tokens', array('token' => $tokenData->access_token), array('oauth_uid' => $tokenData->user_id, 'api' => 'vk'));
             $user = $users->loadOne(array('id' => $userId));
-            $app->setAuthUser($user);
+            $app->setAuthUser($user, true);
             $this->pool['actionState'] = 'redirect';
         } else {
             $infoRequest = array(
@@ -142,7 +142,7 @@ class OAuth_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
                 'uid'       => $user->id,
                 'api'       => 'vk',
             ));
-            $app->setAuthUser($user);
+            $app->setAuthUser($user, true);
             $this->pool['actionState'] = 'redirect';
         }
     }
@@ -194,7 +194,7 @@ class OAuth_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
         if ($userId = $db->doSelect('oauth_tokens', 'uid', array('oauth_uid' => $userData->id, 'api' => 'fb'))) {
             $db->doUpdate('oauth_tokens', array('token' => $tokenData->access_token), array('oauth_uid' => $userData->id, 'api' => 'fb'));
             $user = $users->loadOne(array('id' => $userId));
-            $app->setAuthUser($user);
+            $app->setAuthUser($user, true);
             $this->pool['actionState'] = 'redirect';
         } else {
             $user = new SOne_Model_User(array(
@@ -212,7 +212,7 @@ class OAuth_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
                 'uid'       => $user->id,
                 'api'       => 'fb',
             ));
-            $app->setAuthUser($user);
+            $app->setAuthUser($user, true);
             $this->pool['actionState'] = 'redirect';
         }
     }
@@ -245,7 +245,7 @@ class OAuth_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
         $db = $env->getDb();
         if ($userId = $db->doSelect('oauth_tokens', 'uid', array('oauth_uid' => $vkUserId, 'api' => 'vk'))) {
             $user = $users->loadOne(array('id' => $userId));
-            $app->setAuthUser($user);
+            $app->setAuthUser($user, true);
             $this->pool['actionState'] = 'redirect';
         } else {
             $request = array(

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright (C) 2013 Andrey F. Kupreychik (Foxel)
+
+ This file is part of QuickFox SimpleOne.
+
+ SimpleOne is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ SimpleOne is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
+-->
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd"
+                   logicalFilePath="updates.2013.09">
+    <changeSet id="users_al" author="Foxel">
+        <createTable tableName="${db.prefix}users_al">
+            <column name="id" type="char(32) CHARACTER SET ascii">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="user_id" type="INT UNSIGNED">
+                <constraints nullable="true"/>
+            </column>
+            <column name="user_sig" type="CHAR(32) CHARACTER SET ascii">
+                <constraints nullable="false"/>
+            </column>
+            <column name="starttime" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lastused" type="INT">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+        <modifySql dbms="mysql">
+            <append value=" ENGINE=MyISAM DEFAULT CHARSET=utf8"/>
+        </modifySql>
+    </changeSet>
+    <changeSet author="Foxel" id="init-sessions-indexes">
+        <createIndex indexName="user_id" tableName="${db.prefix}users_al" unique="false">
+            <column name="user_id"/>
+        </createIndex>
+        <createIndex indexName="lastused" tableName="${db.prefix}users_al" unique="false">
+            <column name="lastused"/>
+        </createIndex>
+        <createIndex indexName="starttime" tableName="${db.prefix}users_al" unique="false">
+            <column name="starttime"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

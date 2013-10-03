@@ -79,15 +79,30 @@ abstract class SOne_Model_Object extends SOne_Model implements I_K3_RSS_Item
             throw new FException('SOne object construct without class specified');
         }
 
-        foreach (self::$_classNamespaces as $namespace) {
-            $className = $namespace.'_'.ucfirst($init['class']);
-
-            if (class_exists($className, true)) {
-                return new $className($init);
-            }
+        if ($className = self::getClassName($init['class'])) {
+            return new $className($init);
         }
 
         return new SOne_Model_Object_Common($init);
+    }
+
+    /**
+     * @param string $class
+     * @return null|string
+     */
+    public static function getClassName($class)
+    {
+        $classNames = array();
+
+        foreach (self::$_classNamespaces as $namespace) {
+            $className = $namespace.'_'.ucfirst($class);
+
+            if (class_exists($className, true)) {
+                $classNames[] = $className;
+            }
+        }
+
+        return reset($classNames);
     }
 
     /**
