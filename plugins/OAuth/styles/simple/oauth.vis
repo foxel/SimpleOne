@@ -42,13 +42,13 @@
       VK.Auth.getLoginStatus(checkLogin);
       return false;
     });
-    VK.UI.button($('#vkAuthLoginButton')[0]);
+//    VK.UI.button($('#vkAuthLoginButton')[0]);
   });
 </script>
-<a href="{IN_vkAuthLink}" id="vkAuthLoginButton" >Войти, используя аккаунт ВКонтакте</a>
+<a href="{!IN_vkAuthLink}" id="vkAuthLoginButton" >Войти, используя аккаунт ВКонтакте</a>
 {/IF}
 {IF:IN_fbAppId}
-    <a href="{IN_fbAuthLink}" id="fbAuthLoginButton" >Войти, используя аккаунт Facebook</a>
+    <a href="{!IN_fbAuthLink}" id="fbAuthLoginButton" >Войти, используя аккаунт Facebook</a>
 {/IF}
 {/IF}
 <<- 'SONE_OBJECT_LOGINPAGE_OAUTH'>>

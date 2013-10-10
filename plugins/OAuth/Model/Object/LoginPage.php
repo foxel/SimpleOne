@@ -43,13 +43,13 @@ class OAuth_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
             if ($config->vkAppId) {
                 $request = array(
                     'client_id'     => $config->vkAppId,
-                    'scope'         => 'notify,offline',
+                    'scope'         => 'notify',
                     'redirect_uri'  => FStr::fullUrl($this->path.'?vkauth'),
                     'response_type' => 'code',
                 );
 
                 $node->addDataArray(array(
-                    'vkAuthLink' => 'http://oauth.vk.com/authorize?'.http_build_query($request, '_', '&amp;'),
+                    'vkAuthLink' => 'https://oauth.vk.com/authorize?'.urldecode(http_build_query($request, '_', '&')),
                     'vkAppId'    => $config->vkAppId,
                 ));
             }
@@ -63,7 +63,7 @@ class OAuth_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
                 );
 
                 $node->addDataArray(array(
-                    'fbAuthLink' => 'https://www.facebook.com/dialog/oauth?'.http_build_query($request, '_', '&amp;'),
+                    'fbAuthLink' => 'https://www.facebook.com/dialog/oauth?'.http_build_query($request, '_', '&'),
                     'fbAppId'    => $config->fbAppId,
                 ));
             }
@@ -93,6 +93,7 @@ class OAuth_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
         $tokenRequest = array(
             'client_id'     => $config->vkAppId,
             'client_secret' => $config->vkAppSecret,
+            'redirect_uri'  => FStr::fullUrl($this->path.'?vkauth'),
             'code'          => $code,
         );
 
