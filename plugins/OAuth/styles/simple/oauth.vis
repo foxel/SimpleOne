@@ -42,7 +42,7 @@
       VK.Auth.getLoginStatus(checkLogin);
       return false;
     });
-//    VK.UI.button($('#vkAuthLoginButton')[0]);
+    VK.UI.button($('#vkAuthLoginButton')[0]);
   });
 </script>
 <a href="{!IN_vkAuthLink}" id="vkAuthLoginButton" >Войти, используя аккаунт ВКонтакте</a>
