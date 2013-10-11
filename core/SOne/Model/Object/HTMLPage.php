@@ -45,7 +45,7 @@ class SOne_Model_Object_HTMLPage extends SOne_Model_Object_PlainPage
         if ($dom->loadHTML(mb_convert_encoding($this->content, 'HTML-ENTITIES', F::INTERNAL_ENCODING))) {
             $dom->encoding = F::INTERNAL_ENCODING;
             if (!$user->adminLevel) {
-                $dom->stripXSSVulnerableCode();
+                $dom->stripXSSVulnerableCode(array('youtube.com'));
             }
             $content       = $dom->saveXML($dom->getElementsByTagName('body')->item(0));
             $this->content = str_replace(array('<body>', '</body>', '&#13;'), '', $content);
