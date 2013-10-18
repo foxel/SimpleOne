@@ -154,7 +154,7 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
         $dom = new K3_DOM('4.0', F::INTERNAL_ENCODING);
         if ($dom->loadHTML(mb_convert_encoding($this->content, 'HTML-ENTITIES', F::INTERNAL_ENCODING))) {
             $dom->encoding = F::INTERNAL_ENCODING;
-            if (true || !$user->adminLevel) {
+            if (!$user->adminLevel) {
                 $dom->stripXSSVulnerableCode(array('youtube.com'));
             }
             // $dom->fixFullUrls();
