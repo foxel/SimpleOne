@@ -25,6 +25,8 @@ plugins.OAuth.vkAppId => 2833416
 plugins.OAuth.vkAppSecret => XxxX
 plugins.OAuth.fbAppId => 161909050641274
 plugins.OAuth.fbAppSecret => XxxX
+plugins.OAuth.gAppId => 751733410580-5luqegjr236n358lhl0jmquhs06f7olr.apps.googleusercontent.com
+plugins.OAuth.gAppSecret => XxxX
 plugins.OAuth.baseDomain => simpleone.dev
 
 #plugins.Google.analytics.accountId => UA-XXXXXXXX-X

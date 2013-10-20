@@ -50,6 +50,9 @@
 {IF:IN_fbAppId}
     <a href="{!IN_fbAuthLink}" id="fbAuthLoginButton" >Войти, используя аккаунт Facebook</a>
 {/IF}
+{IF:IN_gAppId}
+    <a href="{!IN_gAuthLink}" id="gAuthLoginButton" >Войти, используя аккаунт Google</a>
+{/IF}
 {/IF}
 <<- 'SONE_OBJECT_LOGINPAGE_OAUTH'>>
 

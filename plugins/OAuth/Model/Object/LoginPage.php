@@ -60,11 +60,27 @@ class OAuth_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
                     //'scope'         => 'notify,offline',
                     'redirect_uri'  => FStr::fullUrl($this->path.'?fbauth'),
                     'state'         => md5(uniqid()),
+                    'response_type' => 'code',
                 );
 
                 $node->addDataArray(array(
                     'fbAuthLink' => 'https://www.facebook.com/dialog/oauth?'.http_build_query($request, '_', '&'),
                     'fbAppId'    => $config->fbAppId,
+                ));
+            }
+
+            if ($config->gAppId) {
+                $request = array(
+                    'client_id'     => $config->gAppId,
+                    'scope'         => 'https://www.googleapis.com/auth/userinfo.profile',
+                    'redirect_uri'  => FStr::fullUrl($this->path.'?gauth'),
+                    'state'         => md5(uniqid()),
+                    'response_type' => 'code',
+                );
+
+                $node->addDataArray(array(
+                    'gAuthLink' => 'https://accounts.google.com/o/oauth2/auth?'.http_build_query($request, '_', '&'),
+                    'gAppId'    => $config->gAppId,
                 ));
             }
         }
@@ -212,6 +228,80 @@ class OAuth_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
                 'oauth_uid' => $userData->id,
                 'uid'       => $user->id,
                 'api'       => 'fb',
+            ));
+            $app->setAuthUser($user, true);
+            $this->pool['actionState'] = 'redirect';
+        }
+    }
+
+    /**
+     * @param SOne_Environment $env
+     * @param bool $updated
+     * @return mixed
+     */
+    protected function gauthAction(SOne_Environment $env, &$updated = false)
+    {
+        $config = OAuth_Bootstrap::getConfig();
+        /* @var SOne_Application $app */
+        $app = $env->getApp();
+
+        $code = $env->request->getString('code', K3_Request::GET, FStr::LINE);
+        if (!$code) {
+            $this->pool['actionState'] = 'redirect';
+            return;
+        }
+
+        // code ok
+        $tokenRequest = array(
+            'client_id'     => $config->gAppId,
+            'client_secret' => $config->gAppSecret,
+            'code'          => $code,
+            'redirect_uri'  => FStr::fullUrl($this->path.'?gauth'),
+            'grant_type'    => 'authorization_code',
+        );
+
+        $curl = curl_init('https://accounts.google.com/o/oauth2/token');
+        curl_setopt($curl, CURLOPT_POST, 1);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $tokenRequest);
+
+        $tokenData = curl_exec($curl);
+        $tokenData = json_decode($tokenData);
+        if (curl_errno($curl) || empty($tokenData) || !$tokenData->access_token) {
+            $this->pool['actionState'] = 'redirect';
+            return;
+        }
+
+        $userData = file_get_contents('https://www.googleapis.com/oauth2/v1/userinfo?'.http_build_query(array('access_token' => $tokenData->access_token), '_', '&'));
+        $userData = json_decode($userData);
+        if (empty($userData) || !$userData->id) {
+            $this->pool['actionState'] = 'redirect';
+            return;
+        }
+
+        /* @var SOne_Repository_User $users */
+        $users = SOne_Repository_User::getInstance($env->getDb());
+
+        // TODO: move to repository
+        $db = $env->getDb();
+        if ($userId = $db->doSelect('oauth_tokens', 'uid', array('oauth_uid' => $userData->id, 'api' => 'g'))) {
+            $db->doUpdate('oauth_tokens', array('token' => $tokenData->access_token), array('oauth_uid' => $userData->id, 'api' => 'g'));
+            $user = $users->loadOne(array('id' => $userId));
+            $app->setAuthUser($user, true);
+            $this->pool['actionState'] = 'redirect';
+        } else {
+            $user = new SOne_Model_User(array(
+                'name'         => $userData->name,
+                'email'        => '',
+                'accessLevel'  => 1,
+                'registerTime' => time(),
+            ));
+            $users->save($user);
+            $db->doInsert('oauth_tokens', array(
+                'token'     => $tokenData->access_token,
+                'oauth_uid' => $userData->id,
+                'uid'       => $user->id,
+                'api'       => 'g',
             ));
             $app->setAuthUser($user, true);
             $this->pool['actionState'] = 'redirect';
