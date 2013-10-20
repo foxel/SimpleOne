@@ -22,7 +22,7 @@
 <hr />
 {IF:IN_LOGGED_AS}
 {ELSEIF:IN_oauthMoveToLogin}
-Вход посредством аккаунта ВКонтакте возможен только с основного домена:
+Вход посредством аккаунтов в социальных сетях возможен только с основного домена:
 <a href="{IN_oauthMoveToLogin}">{!IN_oauthMoveToLogin}</a>
 {ELSE}
 {IF:IN_vkAppId}
@@ -38,21 +38,48 @@
       }
       console.log(r);
     }
-    $('#vkAuthLoginButton').click(function() {
+
+    var vkLink = $('a.oauth-vk');
+    vkLink.click(function() {
       VK.Auth.getLoginStatus(checkLogin);
       return false;
     });
-    VK.UI.button($('#vkAuthLoginButton')[0]);
+//    VK.UI.button(vkLink[0]);
   });
 </script>
-<a href="{!IN_vkAuthLink}" id="vkAuthLoginButton" >Войти, используя аккаунт ВКонтакте</a>
+    <a href="{!IN_vkAuthLink}" class="btn oauth oauth-vk" title="Войти, используя аккаунт ВКонтакте" ><i></i> ВКонтакте</a>
 {/IF}
 {IF:IN_fbAppId}
-    <a href="{!IN_fbAuthLink}" id="fbAuthLoginButton" >Войти, используя аккаунт Facebook</a>
+    <a href="{!IN_fbAuthLink}" class="btn oauth oauth-fb" title="Войти, используя аккаунт Facebook" ><i></i> Facebook</a>
 {/IF}
 {IF:IN_gAppId}
-    <a href="{!IN_gAuthLink}" id="gAuthLoginButton" >Войти, используя аккаунт Google</a>
+    <a href="{!IN_gAuthLink}" class="btn oauth oauth-g" title="Войти, используя аккаунт Google" ><i></i> Google</a>
 {/IF}
 {/IF}
 <<- 'SONE_OBJECT_LOGINPAGE_OAUTH'>>
+
+<<+ 'CSS'>>
+.oauth  {
+    line-height: 18px;
+}
+.oauth i {
+    background: transparent url("{ROOTURL}static/images/oauth.png") no-repeat top left;
+    padding-left: 18px;
+    height: 16px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.oauth-vk i {
+    background-position: 0 0;
+}
+.oauth-fb i {
+    background-position: 0 -23px;
+}
+.oauth-g i {
+    background-position: 0 -46px;
+}
+
+<<- 'CSS'>>
+
 
