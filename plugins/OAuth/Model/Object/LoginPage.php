@@ -113,7 +113,7 @@ class OAuth_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
             'code'          => $code,
         );
 
-        $tokenData = file_get_contents('https://oauth.vkontakte.ru/access_token?'.http_build_query($tokenRequest, '_', '&'));
+        $tokenData = $this->_httpRequest('https://oauth.vkontakte.ru/access_token', $tokenRequest);
         $tokenData = json_decode($tokenData);
         if (empty($tokenData) || !$tokenData->access_token) {
             $this->pool['actionState'] = 'redirect';
@@ -136,7 +136,7 @@ class OAuth_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
                 'uids'         => $tokenData->user_id,
                 'fields'       => 'nickname',
             );
-            $userInfo    = file_get_contents('https://api.vk.com/method/users.get?'.http_build_query($infoRequest, '_', '&'));
+            $userInfo    = $this->_httpRequest('https://api.vk.com/method/users.get', $infoRequest);
             $userInfo    = json_decode($userInfo);
             if (empty($userInfo) || !$userInfo->response) {
                 $this->pool['actionState'] = 'redirect';
@@ -189,14 +189,14 @@ class OAuth_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
             'redirect_uri'  => FStr::fullUrl($this->path.'?fbauth'),
         );
 
-        $tokenData = file_get_contents('https://graph.facebook.com/oauth/access_token?'.http_build_query($tokenRequest, '_', '&'));
+        $tokenData = $this->_httpRequest('https://graph.facebook.com/oauth/access_token', $tokenRequest);
         parse_str($tokenData, $tokenData);
         if (empty($tokenData) || !$tokenData['access_token']) {
             $this->pool['actionState'] = 'redirect';
             return;
         }
         $tokenData = (object) $tokenData;
-        $userData = file_get_contents('https://graph.facebook.com/me?'.http_build_query(array('access_token' => $tokenData->access_token, 'fields' => 'id,name,username'), '_', '&'));
+        $userData = $this->_httpRequest('https://graph.facebook.com/me', array('access_token' => $tokenData->access_token, 'fields' => 'id,name,username'));
         $userData = json_decode($userData);
         if (empty($userData) || !$userData->id) {
             $this->pool['actionState'] = 'redirect';
@@ -260,19 +260,14 @@ class OAuth_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
             'grant_type'    => 'authorization_code',
         );
 
-        $curl = curl_init('https://accounts.google.com/o/oauth2/token');
-        curl_setopt($curl, CURLOPT_POST, 1);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $tokenRequest);
-
-        $tokenData = curl_exec($curl);
+        $tokenData = $this->_httpRequest('https://accounts.google.com/o/oauth2/token', $tokenRequest, true);
         $tokenData = json_decode($tokenData);
-        if (curl_errno($curl) || empty($tokenData) || !$tokenData->access_token) {
+        if (empty($tokenData) || !$tokenData->access_token) {
             $this->pool['actionState'] = 'redirect';
             return;
         }
 
-        $userData = file_get_contents('https://www.googleapis.com/oauth2/v1/userinfo?'.http_build_query(array('access_token' => $tokenData->access_token), '_', '&'));
+        $userData = $this->_httpRequest('https://www.googleapis.com/oauth2/v1/userinfo', array('access_token' => $tokenData->access_token));
         $userData = json_decode($userData);
         if (empty($userData) || !$userData->id) {
             $this->pool['actionState'] = 'redirect';
@@ -393,5 +388,30 @@ class OAuth_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
         }
 
         return (int) $params['mid'];
+    }
+
+    /**
+     * @param $url
+     * @param array $data
+     * @param bool $doPOST
+     * @return string
+     */
+    protected function _httpRequest($url, array $data = array(), $doPOST = false)
+    {
+        if ($doPOST) {
+            $curl = curl_init($url);
+            curl_setopt($curl, CURLOPT_POST, 1);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+
+            $response = curl_exec($curl);
+            if (curl_errno($curl)) {
+                return false;
+            }
+
+            return $response;
+        } else {
+            return file_get_contents($url.(strpos($url, '?') !== false ? '&' : '?').http_build_query($data, '_', '&'));
+        }
     }
 }
