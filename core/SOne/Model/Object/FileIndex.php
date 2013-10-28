@@ -184,8 +184,9 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object
     protected function saveAction(SOne_Environment $env, &$updated = false)
     {
         parent::saveAction($env, $updated);
-        $this->pool['basePath']   = $env->request->getString('basePath', K3_Request::POST, FStr::PATH);
-        $this->pool['m3uEnabled'] = $env->request->getBinary('m3uEnabled', K3_Request::POST, false);
+        $this->pool['basePath']       = $env->request->getString('basePath', K3_Request::POST, FStr::PATH);
+        $this->pool['m3uEnabled']     = $env->request->getBinary('m3uEnabled', K3_Request::POST, false);
+        $this->pool['xAccelLocation'] = $env->request->getString('xAccelLocation', K3_Request::POST);
 
         $updated = true;
     }

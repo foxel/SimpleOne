@@ -25,6 +25,10 @@
     <input type="text" name="basePath" value="{!IN_basePath}" style="width: 600px;" />
 </label>
 <label>
+    X-Accel-Redirect Location (nginx):
+    <input type="text" name="xAccelLocation" value="{!IN_xAccelLocation}" style="width: 600px;" />
+</label>
+<label>
     Разрешить генерацию m3u-списков:
     <input type="checkbox" name="m3uEnabled" value="1" {IF:IN_m3uEnabled}checked="checked"{/IF} />
 </label>
