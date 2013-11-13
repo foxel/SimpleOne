@@ -27,9 +27,10 @@
   <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta http-equiv="Content-Script-Type" content="text/javascript" />
   <meta name="Generator" content="QuickFox SimpleOne Alpha" />
-  <link href="{FULLURL:"static/css/simple.css"}" rel="stylesheet">
-  {if:IN_RESPONSIVE}<link href="{FULLURL:"static/css/bootstrap-responsive.css"}" rel="stylesheet">{/if}
-  {if:IN_customCss}<link href="{FULLURL:IN_customCss}" rel="stylesheet">{/if}
+  <link href="{FULLURL:"static/css/simple.css"}" rel="stylesheet" />
+  <link href="{FULLURL:"static/css/jquery-ui.custom.css"}" rel="stylesheet" />
+  {if:IN_RESPONSIVE}<link href="{FULLURL:"static/css/bootstrap-responsive.css"}" rel="stylesheet" />{/if}
+  {if:IN_customCss}<link href="{FULLURL:IN_customCss}" rel="stylesheet" />{/if}
   <!--[if IE 7]>
     <link rel="stylesheet" href="{FULLURL:"static/css/font-awesome-ie7.css"}">
   <![endif]-->
@@ -133,7 +134,7 @@
 <body>
 <div id="mp_outer" class="container">
     <div class="row">
-        <div id="mp_head" class="span12">
+        <div id="mp_head" class="col-md-12">
             <!-- <div id="mp_head_site">{!IN_SITE_NAME}</div>
             <div id="mp_head_title">{!IN_PAGE_TITLE}{IF:IN_PAGE_SUBTITLE} :: {!IN_PAGE_SUBTITLE}{ENDIF}</div> -->
             {IN_head_widgets}
@@ -141,11 +142,11 @@
     </div>
     <div class="row">
         {IF:IN_sidebar_widgets}
-        <div id="mp_sidebar" class="span2"><div class="sidebar-widgets">
+        <div id="mp_sidebar" class="col-md-2"><div class="sidebar-widgets">
             {IN_sidebar_widgets}
         </div></div>
         {/IF}
-        <div id="mp_mainpage" class="{IF:IN_sidebar_widgets}{IF:IN_sidebar2_widgets}span8{ELSE}span10{/IF}{ELSEIF:IN_sidebar2_widgets}span10{ELSE}span12{/IF}">
+        <div id="mp_mainpage" class="{IF:IN_sidebar_widgets}{IF:IN_sidebar2_widgets}col-md-8{ELSE}col-md-10{/IF}{ELSEIF:IN_sidebar2_widgets}col-md-10{ELSE}col-md-12{/IF}">
             {IF:IN_PATH_ITEMS}
             <div id="mp_page_pathline">
                 {IN_PATH_ITEMS}
@@ -156,7 +157,7 @@
             </div>
         </div>
         {IF:IN_sidebar2_widgets}
-        <div id="mp_sidebar2" class="span2"><div class="sidebar-widgets">
+        <div id="mp_sidebar2" class="col-md-2"><div class="sidebar-widgets">
             {IN_sidebar2_widgets}
         </div></div>
         {/IF}
@@ -223,15 +224,18 @@
     {IN_ERRORS}
 </div>{/IF}
 <form action="{FULLURL:IN_PATH}/?{IF:IN_saveAction}{!IN_saveAction}{ELSE}save{/IF}" method="post"{IF:IN_formClass} class="{IN_formClass}"{/IF} >
- <label>{L_EDITOR_OBJECT_CAPTION}: <input type="text" name="caption" value="{!IN_caption}" /></label>
+ <div class="form-group">
+    <label for="item-caption-{UNIQID}" class="sr-only">{L_EDITOR_OBJECT_CAPTION}</label>
+    <input id="item-caption-{UNIQID}" type="text" name="caption" class="form-control" value="{!IN_caption}" placeholder="{L_EDITOR_OBJECT_CAPTION}" />
+ </div>
  {IF:IN_formElements}
   <hr />
   {IN_formElements}
  {/IF}
- <div class="form-actions">
+ <div class="form-group">
    {IN_formButtons}
-   <button class="btn btn-primary" type="submit"><i class="icon-ok"></i> {L_EDITOR_SUBMIT_SAVE}</button>
-   <a href="{FULLURL:IN_PATH}" class="btn"><i class="icon-remove"></i> {L_EDITOR_CANCEL}</a>
+   <button class="btn btn-primary" type="submit"><i class="glyphicon glyphicon-ok"></i> {L_EDITOR_SUBMIT_SAVE}</button>
+   <a href="{FULLURL:IN_PATH}" class="btn btn-default"><i class="glyphicon glyphicon-remove"></i> {L_EDITOR_CANCEL}</a>
  </div>
 </form>
 <<- 'SONE_OBJECT_EDITFORM'>>
@@ -250,13 +254,13 @@
 <<+ 'SONE_OBJECT_HTMLPAGE'>>
 {IF:IN_actionState="edit"}
  {!WRITE:formElements}
- <label><textarea class="htmleditor span10" name="content" style="height: 450px;">{!IN_CONTENT}</textarea></label>
+ <label><textarea class="htmleditor col-md-10" name="content" style="height: 450px;">{!IN_CONTENT}</textarea></label>
  <label><input type="checkbox" name="commentsAllowed"{IF:IN_commentsAllowed} checked="checked"{/IF} /> разрешить комментарии</label>
  {WRITE}
  {VIS:SONE_OBJECT_EDITFORM|formElements=formElements|_}
 {ELSE}
 {IF:IN_canEdit}<div class="pull-right">
-    <a class="btn" href="{FULLURL:IN_PATH}?edit"><i class="icon-pencil"></i> Править</a>
+    <a class="btn btn-default" href="{FULLURL:IN_PATH}?edit"><i class="glyphicon glyphicon-pencil"></i> Править</a>
 </div>{/IF}
 <h2>{!IN_CAPTION}</h2>
 <div class="htmlpage clearfix">{IN_CONTENT}</div>
@@ -272,8 +276,8 @@
 <div style="margin-top: 10px;">
 {IF:IN_allowAdd}
 <span{IF:IN_actionState="addComment"} style="display: none;"{/IF}>
-    <a id="add-comment-{UNIQID}" class="btn" href="{FULLURL:IN_PATH}?addComment" onclick="return false;">
-        <i class="icon-plus"></i>
+    <a id="add-comment-{UNIQID}" class="btn btn-default" href="{FULLURL:IN_PATH}?addComment" onclick="return false;">
+        <i class="glyphicon glyphicon-plus"></i>
         Добавить комментарий
     </a>
 </span>
@@ -300,9 +304,9 @@
 <<+ 'SONE_OBJECT_COMMENTS_FORM'>>
 <form action="{FULLURL:IN_PATH}/?saveComment" method="post">
  <label>
-     <textarea class="span7" name="commentText" style="height: 100px;"></textarea>
+     <textarea class="col-md-7" name="commentText" style="height: 100px;"></textarea>
  </label>
- <button class="btn btn-primary" type="submit"><i class="icon-ok"></i> {L_EDITOR_SUBMIT_ADDCOMMENT}</button>
+ <button class="btn btn-primary" type="submit"><i class="glyphicon glyphicon-ok"></i> {L_EDITOR_SUBMIT_ADDCOMMENT}</button>
 </form>
 <<- 'SONE_OBJECT_COMMENTS_FORM'>>
 
@@ -384,11 +388,11 @@
 
 <<+ 'SONE_OBJECT_CONSTRUCTOR'>>
 <h2>{!IN_CAPTION}</h2>
-<form id="constructorForm" action="{FULLURL:IN_PATH}/?prepare" method="POST">
+<form id="constructorForm" action="{FULLURL:IN_PATH}/?prepare" method="POST" class="form-horizontal">
     <fieldset>
         <legend>Параметры объекта:</legend>
         <label>Класс:
-            <select name="class">
+            <select class="form-control" name="class">
                 <option value="HTMLPage">HTML-страница</option>
                 <option value="BlogRoot">Блог</option>
                 <option value="Poll">Опрос/Анкета</option>
@@ -399,19 +403,19 @@
         </label>
         <label>
             Родитель:
-            <select name="parentPath">
+            <select class="form-control" name="parentPath">
                 <option value=""> ---</option>
                 {IN_PATHOPTIONS}
             </select>
         </label>
         <label>
             Путь:
-            <span class="input-prepend">
-                <span class="add-on" id="constructorForm-parentPath">{C_ROOTURL}</span><input class="span3" type="text" name="path" />
+            <span class="input-group col-md-5">
+                <span class="input-group-addon" id="constructorForm-parentPath">{C_ROOTURL}</span><input class="form-control" type="text" name="path" />
             </span>
         </label>
     </fieldset>
-    <div class="form-actions">
+    <div class="form-group">
         <button class="btn btn-primary" type="submit">Создать</button>
     </div>
 </form>
@@ -461,7 +465,7 @@
     {VIS:SONE_OBJECT_EDITFORM|formElements=formElements|_}
 {ELSE}
     {IF:IN_canEdit}<div class="pull-right">
-        <a class="btn" href="{FULLURL:IN_PATH}?edit"><i class="icon-pencil"></i> Править</a>
+        <a class="btn btn-default" href="{FULLURL:IN_PATH}?edit"><i class="glyphicon glyphicon-pencil"></i> Править</a>
     </div>{/IF}
     <h3>{!IN_CAPTION}</h3>
     <a href="{!FULLURL:IN_redirectUrl}">{!IN_redirectUrl}</a>
@@ -477,20 +481,20 @@
 <<- 'SONE_WIDGET_CONTAINER'>>
 
 <<+ 'SONE_WIDGET_NAVBAR'>>
-<div class="navbar {IF:IN_fixed="bottom"}navbar-fixed-bottom{ELSEIF:IN_fixed}navbar-fixed-top{/IF}">
-    <div class="navbar-inner">
-        <div class="container">
-            {IF:IN_brand}
-                <a class="brand" href="{FULLURL:""}">
-                    {IN_brand}
-                </a>
-            {/IF}
-            {IF:IN_links}
-                <ul class="nav">
-                    {IN_links}
-                </ul>
-            {/IF}
-        </div>
+<div class="navbar navbar-default {IF:IN_fixed="bottom"}navbar-fixed-bottom{ELSEIF:IN_fixed}navbar-fixed-top{/IF}">
+    <div {IF:IN_fixed}class="container"{/IF}>
+    {IF:IN_brand}
+    <div class="navbar-header">
+        <a class="navbar-brand" href="{FULLURL:""}">
+            {IN_brand}
+        </a>
+    </div>
+    {/IF}
+    {IF:IN_links}
+        <ul class="nav navbar-nav">
+            {IN_links}
+        </ul>
+    {/IF}
     </div>
 </div>
 {IF:IN_fixed}
@@ -558,7 +562,7 @@ require(['jquery'], function($) {
             $('#timecheck-{cid}')
                     .html('Похоже, часы на вашем компьютере настроены неверно. \
                 Верное время для вашего часового пояса: <span>' + new Date(serverTime).format('dd mmm yyyy HH:MM') + '</span>\
-                <a class="close" href="#"><i class="icon-remove"></i></a>')
+                <a class="close" href="#"><i class="glyphicon glyphicon-remove"></i></a>')
                     .addClass('alert alert-error').show();
 
             var interval = setInterval(function () {

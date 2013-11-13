@@ -7,17 +7,17 @@
 // Submit bugfixes to: http://github.com/alxlit/bootstrap-chosen
 //
 
-@chznBackground: @inputBackground;
-@chznBorder: @inputBorder;
-@chznBorderRadius: @inputBorderRadius;
+@chznBackground: @input-bg;
+@chznBorder: @input-border;
+@chznBorderRadius: @input-border-radius;
 @chznBoxShadow: ~"inset 0 1px 1px rgba(0, 0, 0, .075)";
-@chznDropBorder: @grayLight;
+@chznDropBorder: @gray-light;
 @chznDropBoxShadow: ~"0 8px 8px rgba(0, 0, 0, .25)";
 @chznDropZIndex: 1060;
 @chznFocusBorder: rgba(82, 168, 236, .8);
 @chznFocusBoxShadow: ~"0 1px 1px rgba(0, 0, 0, .075) inset, 0 0 8px rgba(82, 168, 236, .6)";
 @chznFocusTransition: ~"border linear .2s, box-shadow linear .2s";
-@chznHeight: @baseLineHeight + 8px; // 4px padding
+@chznHeight: @line-height-base + 8px; // 4px padding
 
 .chosen            { width: 220px; }
 .chosen-mini       { width: 70px; }
@@ -29,8 +29,8 @@
 
 .chzn-container {
   display: inline-block;
-  .ie7-inline-block;
-  font-size: @baseFontSize;
+//  .ie7-inline-block;
+  font-size: @font-size-base;
   position: relative;
   vertical-align: middle;
   margin-bottom: 5px;
@@ -39,7 +39,7 @@
     background: @chznBackground;
     border: 1px solid @chznDropBorder;
     border-top-color: lighten(@chznDropBorder, 25%);
-    .border-radius(@chznBorderRadius);
+    border-radius: @chznBorderRadius;
     -webkit-border-top-left-radius: 0;
     -webkit-border-top-right-radius: 0;
     -moz-border-radius-topleft: 0;
@@ -66,7 +66,7 @@
 
     li {
       display: none;
-      line-height: @baseLineHeight; // 15px;
+      line-height: @line-height-base; // 15px;
       list-style: none;
       margin: 0;
       padding: 5px 6px;
@@ -87,8 +87,8 @@
     }
 
     .highlighted {
-      background-color: @linkColor;
-      color: @white;
+      background-color: @link-color;
+      color: #fff;
 
       em {
         background: transparent;
@@ -96,7 +96,7 @@
     }
 
     .no-results {
-      background: @grayLighter;
+      background: @gray-lighter;
       display: list-item;
     }
 
@@ -112,7 +112,7 @@
   }
 
   .chzn-results-scroll {
-    background: @white;
+    background: #fff;
     margin: 0 4px;
     position: absolute;
     text-align: center;
@@ -121,7 +121,7 @@
 
     span {
       display: inline-block;
-      height: @baseLineHeight; // 17px;
+      height: @line-height-base; // 17px;
       text-indent: -5000px;
       width: 9px;
     }
@@ -132,19 +132,19 @@
 .input-prepend {
   .chzn-container .chzn-single {
     margin-bottom: 0px;
-    .border-radius(0 @inputBorderRadius @inputBorderRadius 0);
+    .border-right-radius(@input-border-radius);
   }
 }
 
 .input-append {
   .chzn-container .chzn-single {
-    .border-radius(@inputBorderRadius 0 0 @inputBorderRadius);
+    .border-left-radius(@input-border-radius);
   }
 }
 
 .input-append.input-prepend {
   .chzn-container .chzn-single {
-    .border-radius(0);
+    border-radius: 0;
   }
 }
 
@@ -152,8 +152,8 @@
 .chzn-container-single {
   .chzn-single {
     background-color: @chznBackground;
-    #gradient > .vertical(@white, @grayLighter);
-    .border-radius(@chznBorderRadius);
+    #gradient > .vertical(#fff, @gray-lighter);
+    border-radius: @chznBorderRadius;
     -webkit-background-clip: padding-box;
        -moz-background-clip: padding;
             background-clip: padding-box;
@@ -183,14 +183,14 @@
         content: '\00D7';
         font-family: FontAwesome;
         font-weight: bold;
-        color: @black;
+        color: #000;
         text-shadow: 0 1px 0 rgba(255, 255, 255, 1);
         .opacity(20);
       }
       &:hover {
         text-decoration: none;
         &:before {
-          color: @black;
+          color: #000;
           text-decoration: none;
           cursor: pointer;
           .opacity(40);
@@ -223,7 +223,7 @@
   }
 
   .chzn-default {
-    color: @grayLight;
+    color: @gray-light;
   }
 
   .chzn-search {
@@ -231,11 +231,11 @@
     padding: 3px 4px;
     position: relative;
     white-space: nowrap;
-    z-index: @zindexDropdown;
+    z-index: @zindex-dropdown;
 
     input {
       border: 1px solid @chznBorder;
-      .border-radius(@chznBorderRadius);
+      border-radius: @chznBorderRadius;
       .box-shadow(@chznBoxShadow);
       margin: 1px 0;
       padding: 4px 20px 4px 4px;
@@ -249,7 +249,7 @@
   }
 
   .chzn-drop {
-    .border-radius(@chznBorderRadius);
+    border-radius: @chznBorderRadius;
     -webkit-border-top-left-radius: 0;
     -webkit-border-top-right-radius: 0;
     -moz-border-radius-topleft: 0;
@@ -275,7 +275,7 @@
   .chzn-choices {
     background-color: @chznBackground;
     border: 1px solid @chznBorder;
-    .border-radius(@chznBorderRadius);
+    border-radius: @chznBorderRadius;
     .box-shadow(@chznBoxShadow);
     cursor: text;
     height: auto !important;
@@ -315,12 +315,12 @@
       -webkit-background-clip: padding-box;
          -moz-background-clip: padding;
               background-clip: padding-box;
-      background-color: @grayLighter;
+      background-color: @gray-lighter;
       border: 1px solid @chznBorder;
-      .border-radius(@chznBorderRadius);
-      #gradient > .vertical(@white, @grayLighter);
+      border-radius: @chznBorderRadius;
+      #gradient > .vertical(#fff, @gray-lighter);
       .box-shadow(@chznBoxShadow);
-      color: @grayDark;
+      color: @gray-dark;
       cursor: default;
       line-height: 13px;
       margin: 3px 5px;
@@ -335,14 +335,14 @@
           content: '\00D7';
           font-family: FontAwesome;
           font-weight: bold;
-          color: @black;
+          color: #000;
           text-shadow: 0 1px 0 rgba(255, 255, 255, 1);
           .opacity(20);
         }
         &:hover {
           text-decoration: none;
           &:before {
-            color: @black;
+            color: #000;
             text-decoration: none;
             cursor: pointer;
             .opacity(40);
@@ -380,7 +380,7 @@
   }
 
   .chzn-single-with-drop {
-    background-color: @grayLighter;
+    background-color: @gray-lighter;
     border: 1px solid @chznFocusBorder;
     .box-shadow(@chznFocusBoxShadow);
     .transition(@chznFocusTransition);

@@ -80,8 +80,8 @@
 
 #cboxLoadedContent {
   .modal-body();
-  margin-top: @baseLineHeight + 16px;
-  margin-bottom: @baseLineHeight + 10px;
+  margin-top: @line-height-base + 16px;
+  margin-bottom: @line-height-base + 10px;
   max-height: none;
 }
 
@@ -91,10 +91,10 @@
   top: 0;
   left: 0;
   right: 0;
-  padding-right: @baseLineHeight + 10px;
+  padding-right: @line-height-base + 10px;
   font-weight: bold;
-  color: @green;
-  height: @baseLineHeight;
+  color: @link-color;
+  height: @line-height-base;
 }
 
 .cb-icon {
@@ -102,17 +102,17 @@
   text-shadow: none;
   background-color: transparent;
   position: absolute;
-  width: @baseLineHeight + 2px;
+  width: @line-height-base + 2px;
   font-size: 0;
   color: transparent;
-  height: @baseLineHeight;
-  line-height: @baseLineHeight;
-  .ie7-restore-right-whitespace();
+  height: @line-height-base;
+  line-height: @line-height-base;
+  // .ie7-restore-right-whitespace();
 }
 .cb-icon-before {
   font-family: FontAwesome;
-  font-size: @baseFontSize;
-  color: @textColor;
+  font-size: @font-size-base;
+  color: @text-color;
   font-weight: normal;
   font-style: normal;
   display: inline-block;
@@ -123,18 +123,18 @@
 #cboxCurrent {
   position: absolute;
   bottom: 8px;
-  left: @baseLineHeight*4 + 9px;
-  color: @grayDark;
+  left: @line-height-base*4 + 9px;
+  color: @gray-dark;
 }
 
 #cboxSlideshow {
   .cb-icon();
   bottom: 8px;
-  right: @baseLineHeight;
+  right: @line-height-base;
 }
 #cboxSlideshow:before {
   .cb-icon-before();
-  color: @grayDark;
+  color: @gray-dark;
   content: "\f009";
 }
 
@@ -151,7 +151,7 @@
 #cboxNext {
   .cb-icon();
   bottom: 8px;
-  left: @baseLineHeight + 10px;
+  left: @line-height-base + 10px;
 }
 #cboxNext:before {
   .cb-icon-before();

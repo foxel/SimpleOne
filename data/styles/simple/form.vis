@@ -20,8 +20,14 @@
 <<+ 'SONE_OBJECT_FORM'>>
 {IF:IN_actionState="edit"}
     {!WRITE:formElements}
-    <label><textarea class="htmleditor span10" name="description" style="height: 450px;">{!IN_DESCRIPTION}</textarea></label>
-    <label>e-Main для отправки результатов: <input type="text" name="target_email" value="{IN_targetEmail}"></label>
+    <div class="form-group">
+        <label for="form-text-{UNIQID}"></label>
+        <textarea id="form-text-{UNIQID}" class="htmleditor form-control" name="description" style="height: 450px;">{!IN_DESCRIPTION}</textarea>
+    </div>
+    <div class="form-group">
+        <label for="form-email-{UNIQID}">e-Main для отправки результатов</label>
+        <input id="form-email-{UNIQID}" class="form-control" type="text" name="target_email" value="{IN_targetEmail}" />
+    </div>
     <div class="pollEditQuestionsContainer">
     {IF:IN_question_items}{IN_question_items}{ELSE}
         {VIS:SONE_OBJECT_POLL_ITEM_EDIT|ID="0"}
@@ -31,8 +37,8 @@
         {VIS:SONE_OBJECT_POLL_ITEM_EDIT|ID="{id}"}
     </div>
     {!WRITE:formButtons}
-    <a class="btn" href="#" onclick="var c = $(this).closest('form.pollEditor').find('div.pollEditQuestionTemplateContainer').find('div.pollEditQuestion').last().clone(); var i = c.find('input, select').val(''); var r = (new Date).getTime()+Math.random(); i.each(function() { $(this).attr('name', $(this).attr('name').replace(/\{id\}/, r));}); $(this).closest('form.pollEditor').find('div.pollEditQuestionsContainer').append(c); return false;">
-        <i class="icon-plus"></i>
+    <a class="btn btn-default" href="#" onclick="var c = $(this).closest('form.pollEditor').find('div.pollEditQuestionTemplateContainer').find('div.pollEditQuestion').last().clone(); var i = c.find('input, select').val(''); var r = (new Date).getTime()+Math.random(); i.each(function() { $(this).attr('name', $(this).attr('name').replace(/\{id\}/, r));}); $(this).closest('form.pollEditor').find('div.pollEditQuestionsContainer').append(c); return false;">
+        <i class="glyphicon glyphicon-plus"></i>
         Добавить вопрос
     </a>
     {WRITE}
@@ -41,7 +47,7 @@
 {ELSE}
     {IF:IN_canEdit}
         <div class="pull-right btn-group">
-            <a class="btn" href="{FULLURL:IN_PATH}?edit"><i class="icon-pencil"></i> Править</a>
+            <a class="btn btn-default" href="{FULLURL:IN_PATH}?edit"><i class="glyphicon glyphicon-pencil"></i> Править</a>
         </div>
     {/IF}
     <h2>{!IN_CAPTION}</h2>
@@ -61,7 +67,7 @@
                     Введите код с картинки
                 </legend>
                 <div class="pollQuestionAnswersContainer">
-                    <input class="input-small" type="text" name="captchaString" value=""/>
+                    <input class="form-control input-small" type="text" name="captchaString" value=""/>
                     <a class="captcha-update" href="#" onclick="return false;">
                         <img src="{FULLURL:IN_path}?captcha&rand={RANDOM:100|10000}" alt="code" />
                     </a>

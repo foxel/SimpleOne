@@ -61,10 +61,10 @@
             </div>
         </div>
     </fieldset>
-    <div class="form-actions">
+    <div class="form-group">
         {IN_formButtons}
-        <button class="btn btn-primary" type="submit"><i class="icon-ok"></i> {L_EDITOR_SUBMIT_SAVE}</button>
-        <a href="{FULLURL:IN_PATH}" class="btn"><i class="icon-remove"></i> {L_EDITOR_CANCEL}</a>
+        <button class="btn btn-primary" type="submit"><i class="glyphicon glyphicon-ok"></i> {L_EDITOR_SUBMIT_SAVE}</button>
+        <a href="{FULLURL:IN_PATH}" class="btn btn-default"><i class="glyphicon glyphicon-remove"></i> {L_EDITOR_CANCEL}</a>
     </div>
 </form>
 <<- 'SONE_OBJECT_SYSTEM_PROFILE'>>
