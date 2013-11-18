@@ -30,12 +30,17 @@ require.config({
         "bootstrap.carousel": ["jquery", "bootstrap.transition"],
         "bootstrap.ie6": ["jquery"],
         "jquery.chosen": ["jquery"],
-        "jquery.colorbox": ["jquery"],
+        "jquery.colorbox": ["jquery", "css!static/css/colorbox"],
         "jquery.tagcloud": ["jquery"],
-        "jquery.ui": ["jquery"],
+        "jquery.ui": ["jquery", "css!static/css/jquery-ui.custom"],
         "jquery.timepicker": ["jquery.ui"],
-        "elrte": ["jquery.ui"],
+        "elrte": ["jquery.ui", "css!static/css/elrte.min"],
         "i18n/elrte.ru": ["elrte"]
+    },
+    map: {
+        '*': {
+            'css': 'require.css'
+        }
     },
     waitSeconds: 15
 });

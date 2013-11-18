@@ -26,7 +26,7 @@ require.config({
         "elfinder": "elfinder.min"
     },
     shim: {
-        "elfinder": ["jquery.ui"],
+        "elfinder": ["jquery.ui", "css!static/css/elfinder.full"],
         "i18n/elfinder.ru": ["elfinder"]
     }
 });

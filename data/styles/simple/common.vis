@@ -28,17 +28,8 @@
   <meta http-equiv="Content-Script-Type" content="text/javascript" />
   <meta name="Generator" content="QuickFox SimpleOne Alpha" />
   <link href="{FULLURL:"static/css/simple.css"}" rel="stylesheet" />
-  <link href="{FULLURL:"static/css/jquery-ui.custom.css"}" rel="stylesheet" />
-  <link href="{FULLURL:"static/css/colorbox.css"}" rel="stylesheet" />
   {if:IN_customCss}<link href="{FULLURL:IN_customCss}" rel="stylesheet" />{/if}
-  <!--[if IE 7]>
-    <link rel="stylesheet" href="{FULLURL:"static/css/font-awesome-ie7.css"}">
-  <![endif]-->
 
-  <link rel="stylesheet" href="{FULLURL:"static/css/elrte.min.css"}" type="text/css" media="screen" charset="utf-8">
-  <!--[if IE 6]>
-  <link rel="stylesheet" href="{FULLURL:"static/css/bootstrap-ie6.css"}" type="text/css" media="screen" charset="utf-8">
-  <![endif]-->
   {IN_META}
 
   {IF:IN_META_DESCRIPTION}<meta name="Description" content="{!IN_META_DESCRIPTION}" />{ENDIF}
@@ -82,12 +73,14 @@
   <script type="text/javascript">
   // JavaScript Starts Here <![CDATA[
       require.config({
-          baseUrl: "{FULLURL:"static/jscripts"}",
+          "baseUrl": "{FULLURL:"static/jscripts"}",
+          "paths": {
+              "static": "{FULLURL:"static"}"
+          }
       });
   //]]> JavaScript ends here
   </script>
 
-  <!--[if lt IE 7]><script type="text/javascript">require(['bootstrap.ie6']);</script><![endif]-->
   <script type="text/javascript">
   // JavaScript Starts Here <![CDATA[
       define('SOne', ['jquery', 'sone.misc'], function($) {
