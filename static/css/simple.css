@@ -215,7 +215,7 @@ table {
   img {
     max-width: 100% !important;
   }
-  @page {
+  @page  {
     margin: 2cm .5cm;
   }
   p,
@@ -557,8 +557,10 @@ dd {
   .dl-horizontal dd:after {
     content: " ";
     /* 1 */
+  
     display: table;
     /* 2 */
+  
   }
   .dl-horizontal dd:after {
     clear: both;
@@ -567,8 +569,10 @@ dd {
   .dl-horizontal dd:after {
     content: " ";
     /* 1 */
+  
     display: table;
     /* 2 */
+  
   }
   .dl-horizontal dd:after {
     clear: both;
@@ -681,8 +685,10 @@ pre code {
 .container:after {
   content: " ";
   /* 1 */
+
   display: table;
   /* 2 */
+
 }
 .container:after {
   clear: both;
@@ -691,8 +697,10 @@ pre code {
 .container:after {
   content: " ";
   /* 1 */
+
   display: table;
   /* 2 */
+
 }
 .container:after {
   clear: both;
@@ -705,8 +713,10 @@ pre code {
 .row:after {
   content: " ";
   /* 1 */
+
   display: table;
   /* 2 */
+
 }
 .row:after {
   clear: both;
@@ -715,8 +725,10 @@ pre code {
 .row:after {
   content: " ";
   /* 1 */
+
   display: table;
   /* 2 */
+
 }
 .row:after {
   clear: both;
@@ -1598,6 +1610,7 @@ input[type="checkbox"] {
   margin: 4px 0 0;
   margin-top: 1px \9;
   /* IE8-9 */
+
   line-height: normal;
 }
 input[type="file"] {
@@ -1879,8 +1892,10 @@ textarea.input-lg {
 .form-horizontal .form-group:after {
   content: " ";
   /* 1 */
+
   display: table;
   /* 2 */
+
 }
 .form-horizontal .form-group:after {
   clear: both;
@@ -1889,8 +1904,10 @@ textarea.input-lg {
 .form-horizontal .form-group:after {
   content: " ";
   /* 1 */
+
   display: table;
   /* 2 */
+
 }
 .form-horizontal .form-group:after {
   clear: both;
@@ -3056,8 +3073,10 @@ input[type="button"].btn-block {
 .btn-toolbar:after {
   content: " ";
   /* 1 */
+
   display: table;
   /* 2 */
+
 }
 .btn-toolbar:after {
   clear: both;
@@ -3066,8 +3085,10 @@ input[type="button"].btn-block {
 .btn-toolbar:after {
   content: " ";
   /* 1 */
+
   display: table;
   /* 2 */
+
 }
 .btn-toolbar:after {
   clear: both;
@@ -3171,8 +3192,10 @@ input[type="button"].btn-block {
 .btn-group-vertical > .btn-group:after {
   content: " ";
   /* 1 */
+
   display: table;
   /* 2 */
+
 }
 .btn-group-vertical > .btn-group:after {
   clear: both;
@@ -3181,8 +3204,10 @@ input[type="button"].btn-block {
 .btn-group-vertical > .btn-group:after {
   content: " ";
   /* 1 */
+
   display: table;
   /* 2 */
+
 }
 .btn-group-vertical > .btn-group:after {
   clear: both;
@@ -3383,8 +3408,10 @@ textarea.input-group-sm > .input-group-btn > .btn {
 .nav:after {
   content: " ";
   /* 1 */
+
   display: table;
   /* 2 */
+
 }
 .nav:after {
   clear: both;
@@ -3393,8 +3420,10 @@ textarea.input-group-sm > .input-group-btn > .btn {
 .nav:after {
   content: " ";
   /* 1 */
+
   display: table;
   /* 2 */
+
 }
 .nav:after {
   clear: both;
@@ -3616,8 +3645,10 @@ textarea.input-group-sm > .input-group-btn > .btn {
 .navbar:after {
   content: " ";
   /* 1 */
+
   display: table;
   /* 2 */
+
 }
 .navbar:after {
   clear: both;
@@ -3626,8 +3657,10 @@ textarea.input-group-sm > .input-group-btn > .btn {
 .navbar:after {
   content: " ";
   /* 1 */
+
   display: table;
   /* 2 */
+
 }
 .navbar:after {
   clear: both;
@@ -3641,8 +3674,10 @@ textarea.input-group-sm > .input-group-btn > .btn {
 .navbar-header:after {
   content: " ";
   /* 1 */
+
   display: table;
   /* 2 */
+
 }
 .navbar-header:after {
   clear: both;
@@ -3651,8 +3686,10 @@ textarea.input-group-sm > .input-group-btn > .btn {
 .navbar-header:after {
   content: " ";
   /* 1 */
+
   display: table;
   /* 2 */
+
 }
 .navbar-header:after {
   clear: both;
@@ -3675,8 +3712,10 @@ textarea.input-group-sm > .input-group-btn > .btn {
 .navbar-collapse:after {
   content: " ";
   /* 1 */
+
   display: table;
   /* 2 */
+
 }
 .navbar-collapse:after {
   clear: both;
@@ -3685,8 +3724,10 @@ textarea.input-group-sm > .input-group-btn > .btn {
 .navbar-collapse:after {
   content: " ";
   /* 1 */
+
   display: table;
   /* 2 */
+
 }
 .navbar-collapse:after {
   clear: both;
@@ -4248,8 +4289,10 @@ textarea.input-group-sm > .input-group-btn > .btn {
 .pager:after {
   content: " ";
   /* 1 */
+
   display: table;
   /* 2 */
+
 }
 .pager:after {
   clear: both;
@@ -4258,8 +4301,10 @@ textarea.input-group-sm > .input-group-btn > .btn {
 .pager:after {
   content: " ";
   /* 1 */
+
   display: table;
   /* 2 */
+
 }
 .pager:after {
   clear: both;
@@ -4738,8 +4783,10 @@ a.list-group-item.active:focus .list-group-item-text {
 .panel-body:after {
   content: " ";
   /* 1 */
+
   display: table;
   /* 2 */
+
 }
 .panel-body:after {
   clear: both;
@@ -4748,8 +4795,10 @@ a.list-group-item.active:focus .list-group-item-text {
 .panel-body:after {
   content: " ";
   /* 1 */
+
   display: table;
   /* 2 */
+
 }
 .panel-body:after {
   clear: both;
@@ -5107,8 +5156,10 @@ button.close {
 .modal-footer:after {
   content: " ";
   /* 1 */
+
   display: table;
   /* 2 */
+
 }
 .modal-footer:after {
   clear: both;
@@ -5117,8 +5168,10 @@ button.close {
 .modal-footer:after {
   content: " ";
   /* 1 */
+
   display: table;
   /* 2 */
+
 }
 .modal-footer:after {
   clear: both;
@@ -5549,8 +5602,10 @@ button.close {
 .clearfix:after {
   content: " ";
   /* 1 */
+
   display: table;
   /* 2 */
+
 }
 .clearfix:after {
   clear: both;
@@ -6437,261 +6492,6 @@ td.visible-print {
   position: absolute;
   left: 11px;
   top: 11px;
-}
-/*
-    ColorBox Core Style:
-    The following CSS is consistent between example themes and should not be altered.
-*/
-#colorbox,
-#cboxOverlay,
-#cboxWrapper {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 10001;
-  overflow: hidden;
-}
-#cboxOverlay {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-}
-#cboxMiddleLeft,
-#cboxBottomLeft {
-  clear: left;
-}
-#cboxContent {
-  position: relative;
-}
-#cboxLoadedContent {
-  overflow: auto;
-}
-#cboxTitle {
-  margin: 0;
-}
-#cboxLoadingOverlay,
-#cboxLoadingGraphic {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-#cboxPrevious,
-#cboxNext,
-#cboxClose,
-#cboxSlideshow {
-  cursor: pointer;
-}
-.cboxPhoto {
-  float: left;
-  margin: auto;
-  border: 0;
-  display: block;
-}
-.cboxIframe {
-  width: 100%;
-  height: 100%;
-  display: block;
-  border: 0;
-}
-#cboxLoadedContent img {
-  max-width: none;
-}
-/*
-    User Style:
-    Change the following styles to modify the appearance of ColorBox.  They are
-    ordered & tabbed in a way that represents the nesting of the generated HTML.
-*/
-#cboxOverlay {
-  background: #222;
-}
-#colorbox {
-  display: none;
-  overflow: auto;
-  overflow-y: scroll;
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 740;
-  margin: 0 !important;
-  z-index: 10002;
-}
-#colorbox.fade .modal-dialog {
-  -webkit-transform: translate(0, -25%);
-  -ms-transform: translate(0, -25%);
-  transform: translate(0, -25%);
-  -webkit-transition: -webkit-transform 0.3s ease-out;
-  -moz-transition: -moz-transform 0.3s ease-out;
-  -o-transition: -o-transform 0.3s ease-out;
-  transition: transform 0.3s ease-out;
-}
-#colorbox.in .modal-dialog {
-  -webkit-transform: translate(0, 0);
-  -ms-transform: translate(0, 0);
-  transform: translate(0, 0);
-}
-#cboxLoadedContent {
-  position: relative;
-  padding: 20px;
-  margin-top: 17.428571429px;
-  margin-bottom: 11.428571429px;
-  max-height: none;
-}
-#cboxTitle {
-  padding: 15px;
-  border-bottom: 1px solid #e5e5e5;
-  min-height: 16.428571429px;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  padding-right: 11.428571429px;
-  font-weight: bold;
-  color: #0044a0;
-  height: 1.428571429;
-}
-.cb-icon {
-  border: 0;
-  text-shadow: none;
-  background-color: transparent;
-  position: absolute;
-  width: 3.428571429px;
-  font-size: 0;
-  color: transparent;
-  height: 1.428571429;
-  line-height: 1.428571429;
-}
-.cb-icon-before {
-  font-family: FontAwesome;
-  font-size: 12px;
-  color: #111420;
-  font-weight: normal;
-  font-style: normal;
-  display: inline-block;
-  width: 1em;
-  text-decoration: inherit;
-}
-#cboxCurrent {
-  position: absolute;
-  bottom: 8px;
-  left: 14.714285716px;
-  color: #333333;
-}
-#cboxSlideshow {
-  border: 0;
-  text-shadow: none;
-  background-color: transparent;
-  position: absolute;
-  width: 3.428571429px;
-  font-size: 0;
-  color: transparent;
-  height: 1.428571429;
-  line-height: 1.428571429;
-  bottom: 8px;
-  right: 1.428571429;
-}
-#cboxSlideshow:before {
-  font-family: FontAwesome;
-  font-size: 12px;
-  color: #111420;
-  font-weight: normal;
-  font-style: normal;
-  display: inline-block;
-  width: 1em;
-  text-decoration: inherit;
-  color: #333333;
-  content: "\f009";
-}
-#cboxPrevious {
-  border: 0;
-  text-shadow: none;
-  background-color: transparent;
-  position: absolute;
-  width: 3.428571429px;
-  font-size: 0;
-  color: transparent;
-  height: 1.428571429;
-  line-height: 1.428571429;
-  bottom: 8px;
-  left: 8px;
-}
-#cboxPrevious:before {
-  font-family: FontAwesome;
-  font-size: 12px;
-  color: #111420;
-  font-weight: normal;
-  font-style: normal;
-  display: inline-block;
-  width: 1em;
-  text-decoration: inherit;
-  content: "\f060";
-}
-#cboxNext {
-  border: 0;
-  text-shadow: none;
-  background-color: transparent;
-  position: absolute;
-  width: 3.428571429px;
-  font-size: 0;
-  color: transparent;
-  height: 1.428571429;
-  line-height: 1.428571429;
-  bottom: 8px;
-  left: 11.428571429px;
-}
-#cboxNext:before {
-  font-family: FontAwesome;
-  font-size: 12px;
-  color: #111420;
-  font-weight: normal;
-  font-style: normal;
-  display: inline-block;
-  width: 1em;
-  text-decoration: inherit;
-  content: "\f061";
-}
-#cboxClose {
-  border: 0;
-  text-shadow: none;
-  background-color: transparent;
-  position: absolute;
-  width: 3.428571429px;
-  font-size: 0;
-  color: transparent;
-  height: 1.428571429;
-  line-height: 1.428571429;
-  top: 8px;
-  right: 8px;
-}
-#cboxClose:before {
-  font-family: FontAwesome;
-  font-size: 12px;
-  color: #111420;
-  font-weight: normal;
-  font-style: normal;
-  display: inline-block;
-  width: 1em;
-  text-decoration: inherit;
-  content: "\f00d";
-}
-#cboxLoadingGraphic {
-  background: url("../images/loading.gif") no-repeat center center;
-}
-#cboxLoadingOverlay {
-  background: url("../images/loading_background.png") no-repeat center center;
-}
-.cboxIE #cboxTopLeft,
-.cboxIE #cboxTopCenter,
-.cboxIE #cboxTopRight,
-.cboxIE #cboxBottomLeft,
-.cboxIE #cboxBottomCenter,
-.cboxIE #cboxBottomRight,
-.cboxIE #cboxMiddleLeft,
-.cboxIE #cboxMiddleRight {
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#00FFFFFF,endColorstr=#00FFFFFF);
 }
 /* custom */
 .ui-dialog,

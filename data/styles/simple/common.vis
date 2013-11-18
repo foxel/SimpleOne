@@ -29,7 +29,7 @@
   <meta name="Generator" content="QuickFox SimpleOne Alpha" />
   <link href="{FULLURL:"static/css/simple.css"}" rel="stylesheet" />
   <link href="{FULLURL:"static/css/jquery-ui.custom.css"}" rel="stylesheet" />
-  {if:IN_RESPONSIVE}<link href="{FULLURL:"static/css/bootstrap-responsive.css"}" rel="stylesheet" />{/if}
+  <link href="{FULLURL:"static/css/colorbox.css"}" rel="stylesheet" />
   {if:IN_customCss}<link href="{FULLURL:IN_customCss}" rel="stylesheet" />{/if}
   <!--[if IE 7]>
     <link rel="stylesheet" href="{FULLURL:"static/css/font-awesome-ie7.css"}">
