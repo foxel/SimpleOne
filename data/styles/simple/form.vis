@@ -20,14 +20,8 @@
 <<+ 'SONE_OBJECT_FORM'>>
 {IF:IN_actionState="edit"}
     {!WRITE:formElements}
-    <div class="form-group">
-        <label for="form-text-{UNIQID}"></label>
-        <textarea id="form-text-{UNIQID}" class="htmleditor form-control" name="description" style="height: 450px;">{!IN_DESCRIPTION}</textarea>
-    </div>
-    <div class="form-group">
-        <label for="form-email-{UNIQID}">e-Main для отправки результатов</label>
-        <input id="form-email-{UNIQID}" class="form-control" type="text" name="target_email" value="{IN_targetEmail}" />
-    </div>
+    {VIS:SONE_HTML_WIDGET_FORM_TEXTAREA|name="description"|class="htmleditor"|value=IN_DESCRIPTION}
+    {VIS:SONE_HTML_WIDGET_FORM_INPUT|name="target_email"|label="e-Main для отправки результатов:"|type="text"|value=IN_targetEmail}
     <div class="pollEditQuestionsContainer">
     {IF:IN_question_items}{IN_question_items}{ELSE}
         {VIS:SONE_OBJECT_POLL_ITEM_EDIT|ID="0"}
@@ -52,7 +46,7 @@
     {/IF}
     <h2>{!IN_CAPTION}</h2>
     <div class="htmlcontent">{IN_DESCRIPTION}</div>
-    {IF:IN_ERRORS}<div class="alert alert-error">
+    {IF:IN_ERRORS}<div class="alert alert-danger">
         {IN_ERRORS}
     </div>{/IF}
     {IF:IN_formSent}<div class="alert alert-success">
@@ -62,17 +56,17 @@
         <div class="poll-items">
             {IN_question_items}
             {IF:IN_captchaNeeded}
-            <fieldset>
+            <div class="well well-sm"><fieldset>
                 <legend>
                     Введите код с картинки
                 </legend>
-                <div class="pollQuestionAnswersContainer">
-                    <input class="form-control input-small" type="text" name="captchaString" value=""/>
-                    <a class="captcha-update" href="#" onclick="return false;">
+                <div class="pollQuestionAnswersContainer row">
+                    <div class="col-sm-3"><input class="form-control input-sm" type="text" name="captchaString" value=""/></div>
+                    <div class="col-sm-8"><a class="captcha-update" href="#" onclick="return false;">
                         <img src="{FULLURL:IN_path}?captcha&rand={RANDOM:100|10000}" alt="code" />
-                    </a>
+                    </a></div>
                 </div>
-            </fieldset>
+            </fieldset></div>
             {/IF}
         </div>
         <hr />

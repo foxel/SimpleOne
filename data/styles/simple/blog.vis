@@ -22,14 +22,17 @@
  {!WRITE:formElements}
  {IF:IN_canSetPubTime}
  {VIS:SONE_WIDGET_TIMECHECK_BLOCK}
- <label style="display: none;">Время публикации: <span class="input-group">
-     <input class="blogTime" type="text" value="" autocomplete="off" />
-     <input type="hidden" name="pubTime" />
-     <button class="btn btn-default blogTimeReset" onclick="return false;"><i class="glyphicon glyphicon-remove"></i></button>
- </span></label>{/IF}
- <label><textarea class="htmleditor col-md-10" name="content" style="height: 450px;">{!IN_CONTENT}</textarea></label>
- <label>Метки (через запятую): <input class="blogTags" type="text" name="tags" value="{!IN_tags}" style="width: 70%;" /></label>
- <label><input type="checkbox" name="commentsAllowed"{IF:IN_commentsAllowed} checked="checked"{/IF} /> разрешить комментарии</label>
+<div id="blog-time-div-{UNIQID}" class="form-group" style="display: none;">
+    <label for="blog-time-{UNIQID}">Время публикации:</label>
+    <span class="input-group">
+        <input id="blog-time-{UNIQID}" class="blogTime form-control" type="text" value="" autocomplete="off" />
+        <span class="input-group-btn"><button class="btn btn-default blogTimeReset" onclick="return false;"><i class="glyphicon glyphicon-remove"></i></button></span>
+    </span>
+    <input type="hidden" name="pubTime" />
+</div>{/IF}
+    {VIS:SONE_HTML_WIDGET_FORM_TEXTAREA|name="content"|class="htmleditor"|value=IN_CONTENT}
+    {VIS:SONE_HTML_WIDGET_FORM_INPUT|name="tags"|label="Метки (через запятую):"|type="text"|class="blogTags"|value=IN_tags}
+    {VIS:SONE_HTML_WIDGET_FORM_CHECKBOX|name="commentsAllowed"|label="разрешить комментарии"|checked=IN_commentsAllowed}
  {WRITE}
  {VIS:SONE_OBJECT_EDITFORM|formElements=formElements|_}
 {IF:IN_allTagsJson}<script type="text/javascript">
@@ -77,12 +80,12 @@
 </script>{/IF}
 {IF:IN_canSetPubTime}<script type="text/javascript">
     require(['jquery', 'jquery.timepicker', 'date.iso'], function ($) {
-        $('input.blogTime')
+        var timeDiv = $('#blog-time-div-{UNIQID}');
+        timeDiv.find('input.blogTime')
             .datetimepicker({
                 dateFormat: 'yy-mm-dd',
-                showOn: 'both',
+                showOn: 'focus',
                 constrainInput: true,
-                buttonText: '<i class="glyphicon glyphicon-time"></i>',
                 minDate: new Date()
             })
             .on('change', function() {
@@ -94,12 +97,11 @@
                 }
             })
             {IF:IN_ID}.datetimepicker('setDate', new Date(Date.parseISOString('{FTIME:IN_createTime|"c"|false|true}'))){/IF}
-            .closest('span').addClass('input-group')
-            .find('.ui-datepicker-trigger').addClass('btn')
-            .closest('label').show();
-        $('button.blogTimeReset').click(function() {
-            $(this).closest('span').find('input.blogTime').val('').trigger('keyup').trigger('change');
+            ;
+        timeDiv.find('button.blogTimeReset').click(function() {
+            timeDiv.find('input.blogTime').val('').trigger('keyup').trigger('change');
         });
+        timeDiv.show();
     });
 </script>{/IF}
 {ELSE}
@@ -211,14 +213,18 @@
 <h2>{!IN_CAPTION}</h2>
 {IF:IN_carouselItems}
 <div class="row">
-    <div id="carousel{UNIQID}" class="carousel slide col-md-8 blog-carousel">
+    <div id="carousel{UNIQID}" class="carousel slide blog-carousel">
         <!-- Carousel items -->
         <div class="carousel-inner">
             {IN_carouselItems}
         </div>
         <!-- Carousel nav -->
-        <a class="carousel-control left" href="#carousel{UNIQID}" data-slide="prev">&lsaquo;</a>
-        <a class="carousel-control right" href="#carousel{UNIQID}" data-slide="next">&rsaquo;</a>
+        <a class="carousel-control left" href="#carousel{UNIQID}" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+        </a>
+        <a class="carousel-control right" href="#carousel{UNIQID}" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+        </a>
     </div>
 
 </div>
@@ -253,7 +259,7 @@
     <a href="{FULLURL:IN_path}" title="{!IN_caption}"><img src="{IN_image}" /></a>
 
     <div class="carousel-caption">
-        <a href="{FULLURL:IN_path}"><h4>{!IN_caption}</h4></a>
+        <h3>{!IN_caption}</h3>
     </div>
 </div>
 <<- 'SONE_OBJECT_BLOG_FRONT_CAROUSEL_ITEM'>>
