@@ -183,7 +183,7 @@
 <<- 'SONE_OBJECT_BLOG_LIST'>>
 
 <<+ 'SONE_OBJECT_BLOG_LISTITEM'>>
-<div class="blog-item well well-small clearfix" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+<div class="blog-item well well-sm clearfix" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
     <div class="clearfix" style="border-bottom: 1px solid #E5E5E5; margin-bottom: 5px;">
         <div class="pull-right" style="text-align: right; padding-top: 5px;">
             {IN_userTag}

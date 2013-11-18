@@ -20,7 +20,7 @@
 <<+ 'SONE_DESIGNHELPER_WIDGET_CSSEDIT'>>
 <style type="text/css" id="{UNIQID}_style"></style>
 
-<div id="{UNIQID}_container" class="well well-small cssEditContainer">
+<div id="{UNIQID}_container" class="well well-sm cssEditContainer">
     <legend>
         <label for="{UNIQID}_data">Quick CSS apply</label>
     </legend>

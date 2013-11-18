@@ -281,7 +281,7 @@
         Добавить комментарий
     </a>
 </span>
-<div class="well well-small objectCommentsFormContainer"{!IF:IN_actionState="addComment"} style="display: none;"{/IF}>
+<div class="well well-sm objectCommentsFormContainer"{!IF:IN_actionState="addComment"} style="display: none;"{/IF}>
 {VIS:SONE_OBJECT_COMMENTS_FORM|PATH=IN_PATH}
 </div>
 {ELSE}
@@ -303,15 +303,13 @@
 
 <<+ 'SONE_OBJECT_COMMENTS_FORM'>>
 <form action="{FULLURL:IN_PATH}/?saveComment" method="post">
- <label>
-     <textarea class="col-md-7" name="commentText" style="height: 100px;"></textarea>
- </label>
- <button class="btn btn-primary" type="submit"><i class="glyphicon glyphicon-ok"></i> {L_EDITOR_SUBMIT_ADDCOMMENT}</button>
+    {VIS:SONE_HTML_WIDGET_FORM_TEXTAREA|name="commentText"|style="height: 100px;"}
+    <button class="btn btn-primary" type="submit"><i class="glyphicon glyphicon-ok"></i> {L_EDITOR_SUBMIT_ADDCOMMENT}</button>
 </form>
 <<- 'SONE_OBJECT_COMMENTS_FORM'>>
 
 <<+ 'SONE_OBJECT_COMMENTS_ITEM'>>
-<div class="well well-small">
+<div class="well well-sm">
 <strong style="font-size: 85%">{IF:IN_author_name}{!IN_author_name} @ {/IF}<time datetime="{FTIME:IN_TIME|"c"|false|true}">{FTIME:IN_TIME}</time>:</strong>
  <div style="padding-left: 10px;">{BBPARSE:IN_TEXT}</div>
 </div>
@@ -453,7 +451,7 @@
 <<- 'SONE_OBJECT_REDIRECTOR'>>
 
 <<+ 'SONE_WIDGET_PANEL'>>
-<div class="well well-small">{IN_content}</div>
+<div class="well well-sm">{IN_content}</div>
 <<- 'SONE_WIDGET_PANEL'>>
 
 <<+ 'SONE_WIDGET_CONTAINER'>>
@@ -512,7 +510,7 @@
 <<+ 'SONE_WIDGET_TAGCLOUD_BLOCK'>>
 {IF:IN_tags}
 {WRITE:blockId}{RANDOM:100|999}{WRITE}
-<div id="tagcloud_{blockId}" class="well well-small">
+<div id="tagcloud_{blockId}" class="well well-sm">
     <legend>{IF:IN_title}{IN_title}{ELSE}Облако тегов{/IF}</legend>
     <div style="overflow: hidden; text-overflow: ellipsis;">{IN_tags}</div>
 </div>

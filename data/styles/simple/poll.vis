@@ -70,7 +70,7 @@
             <div style="color: darkred;">Авторизируйтесь, чтобы сохранить ответы.</div>
         {ELSE}
             <button class="btn btn-primary" type="submit"{IF:IN_ANSWERED} disabled="disabled" title="Вы уже ответили на все вопросы данной анкеты"{/IF}>{L_EDITOR_SUBMIT_FILL}</button>
-            {IF:IN_ANSWERED}<span title="Вы уже ответили на все вопросы данной анкеты">*</span>{/IF}
+            {IF:IN_ANSWERED}<span class="label label-info" title="Вы уже ответили на все вопросы данной анкеты"><i class="glyphicon glyphicon-saved"></i></span>{/IF}
         {/IF}
     </form>
 {/IF}

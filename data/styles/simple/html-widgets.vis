@@ -1,3 +1,23 @@
+<!--
+ Copyright (C) 2013 Andrey F. Kupreychik (Foxel)
+
+ This file is part of QuickFox SimpleOne.
+
+ SimpleOne is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ SimpleOne is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
+-->
+
+
 <<+ 'SONE_HTML_WIDGET_FORM_HORISONTAL'>>
 <form class="form-horizontal {IN_CLASS}" action="{!IN_ACTION}" method="{IF:IN_METHOD}{!IN_METHOD}{ELSE}post{/IF}" {IF:IN_ID}id="{!IN_ID}"{/IF}>
     {IN_CONTROLS}
@@ -67,8 +87,8 @@
 <<+ 'SONE_HTML_WIDGET_FORM_TEXTAREA'>>
 {WRITE:ID}{IF:IN_ID}{IN_ID}{ELSE}textarea-{!TYPE}-{UNIQID}{/IF}{WRITE}
 <div class="form-group">
-    <label for="{!ID}">{!IN_LABEL}</label>
-    <textarea class="form-control {IN_CLASS}" id="{!ID}" name="{!IN_NAME}" {IF:IN_noAutocomplete}autocomplete="off"{/IF} style="height: 450px;" >{!IN_VALUE}</textarea>
+    {IF:IN_LABEL}<label for="{!ID}">{!IN_LABEL}</label>{/IF}
+    <textarea class="form-control {IN_CLASS}" id="{!ID}" name="{!IN_NAME}" {IF:IN_noAutocomplete}autocomplete="off"{/IF} style="{IF:IN_STYLE}{!IN_STYLE}{ELSE}height: 450px;{/IF}" >{!IN_VALUE}</textarea>
 </div>
 <<- 'SONE_HTML_WIDGET_FORM_TEXTAREA'>>
 
