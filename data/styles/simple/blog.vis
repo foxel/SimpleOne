@@ -134,10 +134,7 @@
 <<+ 'SONE_OBJECT_BLOG_LIST'>>
 {IF:IN_actionState="edit"}
 {!WRITE:formElements}
-<label>
-    Разрешить генерацию RSS-потока:
-    <input type="checkbox" name="rssEnabled" value="1" {IF:IN_rssEnabled}checked="checked"{/IF} />
-</label>
+    {VIS:SONE_HTML_WIDGET_FORM_CHECKBOX|label="Разрешить генерацию RSS-потока"|name="rssEnabled"|checked=IN_rssEnabled}
 {WRITE}
 {VIS:SONE_OBJECT_EDITFORM|formElements=formElements|_}
 {ELSEIF:IN_actionState="new"}

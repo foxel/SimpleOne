@@ -423,13 +423,10 @@
 
 <<+ 'SONE_OBJECT_REDIRECTOR'>>
 {IF:IN_actionState="edit"}
-    {!WRITE:formElements}
-    <label>
-        Ссылка для перехода:
-        <input type="text" name="redirectUrl" value="{!IN_redirectUrl}" style="width: 600px;" />
-    </label>
-    {WRITE}
-    {VIS:SONE_OBJECT_EDITFORM|formElements=formElements|_}
+{!WRITE:formElements}
+    {VIS:SONE_HTML_WIDGET_FORM_INPUT|label="Ссылка для перехода:"|name="redirectUrl"|type="text"|value=IN_redirectUrl}
+{WRITE}
+{VIS:SONE_OBJECT_EDITFORM|formElements=formElements|_}
 {ELSE}
     {IF:IN_canEdit}<div class="pull-right">
         <a class="btn btn-default" href="{FULLURL:IN_PATH}?edit"><i class="glyphicon glyphicon-pencil"></i> Править</a>

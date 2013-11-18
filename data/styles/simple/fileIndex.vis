@@ -20,18 +20,9 @@
 <<+ 'SONE_FILES_FILEINDEX'>>
 {IF:IN_actionState="edit"}
 {!WRITE:formElements}
-<label>
-    Базовый путь для обзора файлов:
-    <input type="text" name="basePath" value="{!IN_basePath}" style="width: 600px;" />
-</label>
-<label>
-    X-Accel-Redirect Location (nginx):
-    <input type="text" name="xAccelLocation" value="{!IN_xAccelLocation}" style="width: 600px;" />
-</label>
-<label>
-    Разрешить генерацию m3u-списков:
-    <input type="checkbox" name="m3uEnabled" value="1" {IF:IN_m3uEnabled}checked="checked"{/IF} />
-</label>
+    {VIS:SONE_HTML_WIDGET_FORM_INPUT|label="Базовый путь для обзора файлов:"|name="basePath"|type="text"|value=IN_basePath}
+    {VIS:SONE_HTML_WIDGET_FORM_INPUT|label="X-Accel-Redirect Location (nginx):"|name="xAccelLocation"|type="text"|value=IN_xAccelLocation}
+    {VIS:SONE_HTML_WIDGET_FORM_CHECKBOX|label="Разрешить генерацию m3u-списков"|name="m3uEnabled"|checked=IN_m3uEnabled}
 {WRITE}
 {VIS:SONE_OBJECT_EDITFORM|formElements=formElements|_}
 {ELSE}
