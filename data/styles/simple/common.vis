@@ -64,12 +64,12 @@
   {ENDIF}
   
   <!-- Load require -->
-  <script type="text/javascript" src="static/jscripts/require.js" charset="utf-8"></script>
-  <script type="text/javascript" src="static/jscripts/require.config.js" charset="utf-8"></script>
+  <script type="text/javascript" src="static/js/require.js" charset="utf-8"></script>
+  <script type="text/javascript" src="static/js/require.config.js" charset="utf-8"></script>
   <script type="text/javascript">
   // JavaScript Starts Here <![CDATA[
       require.config({
-          "baseUrl": "{FULLURL:"static/jscripts"}",
+          "baseUrl": "{FULLURL:"static/js"}",
           "paths": {
               "static": "{FULLURL:"static"}"
           }
