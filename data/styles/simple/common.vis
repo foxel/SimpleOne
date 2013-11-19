@@ -29,7 +29,9 @@
   <meta name="Generator" content="QuickFox SimpleOne Alpha" />
   <link href="{FULLURL:"static/css/simple.css"}" rel="stylesheet" />
   {if:IN_customCss}<link href="{FULLURL:IN_customCss}" rel="stylesheet" />{/if}
-
+  <!--[if lt IE 8]>
+    <link href="{FULLURL:"static/css/bootstrap-ie7.css"}" rel="stylesheet">
+  <![endif]-->
   {IN_META}
 
   {IF:IN_META_DESCRIPTION}<meta name="Description" content="{!IN_META_DESCRIPTION}" />{ENDIF}
