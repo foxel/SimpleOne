@@ -23,18 +23,19 @@
 
 require.config({
     paths: {
-        "elfinder": "elfinder.min"
+        "elfinder": "../libs/elfinder/js/elfinder.min",
+        "elfinder.i18n": ["../libs/elfinder/js/i18n/elfinder.ru", "../libs/elfinder/js/i18n/elfinder.en"]
     },
     shim: {
-        "elfinder": ["jquery.ui", "css!static/css/elfinder.full"],
-        "i18n/elfinder.ru": ["elfinder"]
+        "elfinder": ["jquery.ui", "css!static/libs/elfinder/css/elfinder.full"],
+        "elfinder.i18n": ["elfinder"]
     }
 });
 
 require(['jquery', 'SOne'], function($, SOne) {
     SOne.config.wysiwyg = $.extend(SOne.config.wysiwyg||{ }, {
         fmOpen: function (callback) {
-            require(['elfinder', 'i18n/elfinder.ru'], function() {
+            require(['elfinder', 'elfinder.i18n'], function() {
                 $('<div />').dialogelfinder({
                     lang:   'ru',
                     url:    '{FULLURL:IN_connectorUrl}',

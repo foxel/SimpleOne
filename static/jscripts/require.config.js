@@ -19,9 +19,11 @@
 require.config({
     paths: {
         "jquery": "jquery-1.7.2.min",
-        "jquery.ui": "jquery-ui-1.8.21.custom.min",
-        "jquery.timepicker": "jquery-ui-timepicker-addon",
-        "elrte": "elrte.min"
+        "jquery.ui": "../libs/jquery-ui/js/jquery-ui-1.8.21.custom.min",
+        "jquery.timepicker": "../libs/jquery-ui/js/jquery-ui-timepicker-addon",
+        "jquery.colorbox": "../libs/colorbox/js/jquery.colorbox",
+        "elrte": "../libs/elrte/js/elrte.min",
+        "elrte.i18n": ["../libs/elrte/js/i18n/elrte.ru", "../libs/elrte/js/i18n/elrte.en"]
     },
     shim: {
         "bootstrap.transition": ["jquery"],
@@ -30,12 +32,12 @@ require.config({
         "bootstrap.carousel": ["jquery", "bootstrap.transition"],
         "bootstrap.ie6": ["jquery"],
         "jquery.chosen": ["jquery"],
-        "jquery.colorbox": ["jquery", "css!static/css/colorbox"],
+        "jquery.colorbox": ["jquery", "css!static/libs/colorbox/css/colorbox"],
         "jquery.tagcloud": ["jquery"],
-        "jquery.ui": ["jquery", "css!static/css/jquery-ui.custom"],
+        "jquery.ui": ["jquery", "css!static/libs/jquery-ui/css/jquery-ui.custom"],
         "jquery.timepicker": ["jquery.ui"],
-        "elrte": ["jquery.ui", "css!static/css/elrte.min"],
-        "i18n/elrte.ru": ["elrte"]
+        "elrte": ["jquery.ui", "css!static/libs/elrte/css/elrte.min"],
+        "elrte.i18n": ["elrte"]
     },
     map: {
         '*': {

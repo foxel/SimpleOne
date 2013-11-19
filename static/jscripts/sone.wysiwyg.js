@@ -17,7 +17,7 @@
  * along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
  */
 
-define(['jquery', 'SOne', 'elrte', 'i18n/elrte.ru'], function ($, SOne) {
+define(['jquery', 'SOne', 'elrte', 'elrte.i18n'], function ($, SOne) {
     var SOneWYSIWYG = function(elem, options) {
         if (!elem.length) {
             return;
@@ -63,7 +63,7 @@ define(['jquery', 'SOne', 'elrte', 'i18n/elrte.ru'], function ($, SOne) {
             toolbar: 'sone',
             resizable: true,
             resizeHandle: 's',
-            cssfiles: [SOne.root+'static/css/bootstrap.css', SOne.root+'static/css/elrte.inner.css']
+            cssfiles: [SOne.root+'static/css/bootstrap.css', SOne.root+'static/libs/elrte/css/elrte.inner.css']
         }
     });
 
