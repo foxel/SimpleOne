@@ -73,6 +73,7 @@
   // JavaScript Starts Here <![CDATA[
       require.config({
           "baseUrl": "{FULLURL:"static/js"}",
+          {IF:IN_SITE_BUILD}"urlArgs": "build="+{JS_DEF:IN_SITE_BUILD},{/IF}
           "paths": {
               "static": "{FULLURL:"static"}"
           }
