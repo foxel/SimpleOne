@@ -23,14 +23,18 @@ require.config({
         "jquery.timepicker": "../libs/jquery-ui/js/jquery-ui-timepicker-addon",
         "jquery.colorbox": "../libs/colorbox/js/jquery.colorbox",
         "elrte": "../libs/elrte/js/elrte.min",
-        "elrte.i18n": ["../libs/elrte/js/i18n/elrte.ru", "../libs/elrte/js/i18n/elrte.en"]
+        "elrte.i18n": ["../libs/elrte/js/i18n/elrte.ru", "../libs/elrte/js/i18n/elrte.en"],
+        /* bootstrap */
+        "bootstrap.transition": "../libs/bootstrap/js/transition",
+        "bootstrap.modal": "../libs/bootstrap/js/modal",
+        "bootstrap.tooltip": "../libs/bootstrap/js/tooltip",
+        "bootstrap.carousel": "../libs/bootstrap/js/carousel"
     },
     shim: {
         "bootstrap.transition": ["jquery"],
         "bootstrap.modal": ["jquery", "bootstrap.transition"],
         "bootstrap.tooltip": ["jquery", "bootstrap.transition"],
         "bootstrap.carousel": ["jquery", "bootstrap.transition"],
-        "bootstrap.ie6": ["jquery"],
         "jquery.chosen": ["jquery"],
         "jquery.colorbox": ["jquery", "css!static/libs/colorbox/css/colorbox"],
         "jquery.tagcloud": ["jquery"],

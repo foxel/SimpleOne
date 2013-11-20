@@ -518,28 +518,28 @@
 <<- 'SONE_WIDGET_TAGCLOUD_ITEM'>>
 
 <<+ 'SONE_WIDGET_TIMECHECK_BLOCK'>>
-{WRITE:cid}{RANDOM:100|999}{WRITE}
-<div id="timecheck-{cid}" style="display: none;"></div>
+<div id="timecheck-{UNIQID}" style="display: none;"></div>
 <script type="text/javascript">
 require(['jquery'], function($) {
     $.get('{FULLURL:"/ping.php"}?'+Math.random(), function (serverTime) {
         var clientShift = serverTime - (new Date()).valueOf();
 
         if (Math.abs(clientShift) > 120 * 1000) {
-            $('#timecheck-{cid}')
-                    .html('Похоже, часы на вашем компьютере настроены неверно. \
-                Верное время для вашего часового пояса: <span>' + new Date(serverTime).format('dd mmm yyyy HH:MM') + '</span>\
-                <a class="close" href="#"><i class="glyphicon glyphicon-remove"></i></a>')
+            $('#timecheck-{UNIQID}')
+                    .html('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>\
+                Похоже, часы на вашем компьютере настроены неверно. \
+                Верное время для вашего часового пояса: <span>' + new Date(serverTime).format('dd mmm yyyy HH:MM') + '</span>')
                     .addClass('alert alert-danger').show();
 
             var interval = setInterval(function () {
                 serverTime = (new Date()).valueOf() + clientShift;
-                $('#timecheck-{cid}').find('span').text(new Date(serverTime).format('dd mmm yyyy HH:MM'));
+                $('#timecheck-{UNIQID}').find('span').text(new Date(serverTime).format('dd mmm yyyy HH:MM'));
             }, 10 * 1000);
 
-            $('#timecheck-{cid}').find('a').click(function () {
+            $('#timecheck-{UNIQID}').find('button').click(function () {
                 clearInterval(interval);
-                $('#timecheck-{cid}').remove();
+                $('#timecheck-{UNIQID}').remove();
+                return false;
             })
         }
     })
