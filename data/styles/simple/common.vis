@@ -91,11 +91,7 @@
                   var jq = typeof block !== 'undefined'
                       ? function() { return $.fn.find.apply($(block), arguments); }
                       : $;
-                  jq('select').each(function () {
-                      if ($('option', this).length > 7) {
-                          $(this).sOneSelect({allow_single_deselect: true});
-                      }
-                  });
+                  jq('select').sOneSelect();
                   jq('time').timeFormat();
 
                   if (jq('textarea.htmleditor').length) {

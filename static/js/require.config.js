@@ -24,6 +24,8 @@ require.config({
         "jquery.colorbox": "../libs/colorbox/js/jquery.colorbox",
         "elrte": "../libs/elrte/js/elrte.min",
         "elrte.i18n": ["../libs/elrte/js/i18n/elrte.ru", "../libs/elrte/js/i18n/elrte.en"],
+        "select2": "../libs/select2/js/select2",
+        "select2.i18n": "../libs/select2/js/i18n/select2_locale_ru",
         /* bootstrap */
         "bootstrap.transition": "../libs/bootstrap/js/transition",
         "bootstrap.modal": "../libs/bootstrap/js/modal",
@@ -41,7 +43,9 @@ require.config({
         "jquery.ui": ["jquery", "css!static/libs/jquery-ui/css/jquery-ui.custom"],
         "jquery.timepicker": ["jquery.ui"],
         "elrte": ["jquery.ui", "css!static/libs/elrte/css/elrte.min"],
-        "elrte.i18n": ["elrte"]
+        "elrte.i18n": ["elrte"],
+        "select2": ["jquery", "css!static/libs/select2/css/select2", "css!static/libs/select2/css/select2-bootstrap"],
+        "select2.i18n": ["select2"]
     },
     map: {
         '*': {

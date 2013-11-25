@@ -26,7 +26,7 @@ String.prototype.format = function() {
     });
 };
 
-define(['jquery', 'date.format', 'jquery.chosen', 'i18n/date.format.ru'], function($) {
+define(['jquery', 'date.format', 'select2', 'select2.i18n', 'i18n/date.format.ru'], function($) {
     $.fn.extend({
         sOneSelect: function (options) {
             if ($.browser.msie && ($.browser.version === "6.0" || ($.browser.version === "7.0" && document.documentMode === 7))) {
@@ -39,7 +39,10 @@ define(['jquery', 'date.format', 'jquery.chosen', 'i18n/date.format.ru'], functi
                     $this.attr('data-placeholder', emptyValue);
                     $('option[value=""]', this).text('');
                 }
-                $this.chosen({allow_single_deselect: true});
+                $this.select2({
+                    minimumResultsForSearch: 10,
+                    allowClear: true
+                });
             });
         },
         timeFormat: function (options) {
