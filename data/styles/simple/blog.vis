@@ -262,7 +262,7 @@
 <<- 'SONE_OBJECT_BLOG_FRONT_CAROUSEL_ITEM'>>
 
 <<+ 'SONE_OBJECT_BLOG_FRONT_TAG_BLOCK'>>
-<div class="col-md-4 blog-tag-block">
+<div class="col-lg-4 col-sm-6 blog-tag-block">
     <legend><a href="{FULLURL:IN_path}">{IN_caption}</a></legend>
     <div>
         {IN_items}
@@ -302,11 +302,6 @@ div.blog-keywords a {
 .carousel.blog-carousel .item > a > img {
     width: 100%;
 }
-#mp_mainpage.col-md-8 .blog-tag-block:nth-child(odd),
-#mp_mainpage.col-md-10 .blog-tag-block:nth-child(odd) {
-    clear: left;
-}
-
 @media (min-width: 1200px) {
     .carousel.blog-carousel .item {
         height: 500px;
