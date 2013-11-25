@@ -27,8 +27,8 @@
   <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta http-equiv="Content-Script-Type" content="text/javascript" />
   <meta name="Generator" content="QuickFox SimpleOne Alpha" />
-  <link href="{FULLURL:"static/css/simple.css"}" rel="stylesheet" />
-  {if:IN_customCss}<link href="{FULLURL:IN_customCss}" rel="stylesheet" />{/if}
+  <link href="{FULLURL:"static/css/simple.css"}{IF:IN_SITE_BUILD}?build={!IN_SITE_BUILD}{/IF}" rel="stylesheet" />
+  {if:IN_customCss}<link href="{FULLURL:IN_customCss}{IF:IN_SITE_BUILD}?build={!IN_SITE_BUILD}{/IF}" rel="stylesheet" />{/if}
   <!--[if lt IE 8]><link href="{FULLURL:"static/css/bootstrap-ie7.css"}" rel="stylesheet"><![endif]-->
   {IN_META}
 
@@ -67,8 +67,8 @@
     <script type="text/javascript" src="static/js/respond.min.js" charset="utf-8"></script>
   <![endif]-->
   <!-- Load require -->
-  <script type="text/javascript" src="static/js/require.js" charset="utf-8"></script>
-  <script type="text/javascript" src="static/js/require.config.js" charset="utf-8"></script>
+  <script type="text/javascript" src="static/js/require.js{IF:IN_SITE_BUILD}?build={!IN_SITE_BUILD}{/IF}" charset="utf-8"></script>
+  <script type="text/javascript" src="static/js/require.config.js{IF:IN_SITE_BUILD}?build={!IN_SITE_BUILD}{/IF}" charset="utf-8"></script>
   <script type="text/javascript">
   // JavaScript Starts Here <![CDATA[
       require.config({
