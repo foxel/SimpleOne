@@ -209,22 +209,20 @@
 <<+ 'SONE_OBJECT_BLOG_FRONT'>>
 <h2>{!IN_CAPTION}</h2>
 {IF:IN_carouselItems}
-<div class="row">
-    <div id="carousel{UNIQID}" class="carousel slide blog-carousel">
-        <!-- Carousel items -->
-        <div class="carousel-inner">
-            {IN_carouselItems}
-        </div>
-        <!-- Carousel nav -->
-        <a class="carousel-control left" href="#carousel{UNIQID}" data-slide="prev">
-            <span class="glyphicon glyphicon-chevron-left"></span>
-        </a>
-        <a class="carousel-control right" href="#carousel{UNIQID}" data-slide="next">
-            <span class="glyphicon glyphicon-chevron-right"></span>
-        </a>
+<div id="carousel{UNIQID}" class="carousel slide blog-carousel">
+    <!-- Carousel items -->
+    <div class="carousel-inner">
+        {IN_carouselItems}
     </div>
-
+    <!-- Carousel nav -->
+    <a class="carousel-control left" href="#carousel{UNIQID}" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left"></span>
+    </a>
+    <a class="carousel-control right" href="#carousel{UNIQID}" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right"></span>
+    </a>
 </div>
+
 {else}
 <div class="alert">Нет записей</div>
 {/if}
@@ -302,6 +300,11 @@ div.blog-keywords a {
 .carousel.blog-carousel .item > a > img {
     width: 100%;
 }
+
+.blog-tag-blocks {
+    margin-top: 10px;
+}
+
 @media (min-width: 1200px) {
     .carousel.blog-carousel .item {
         height: 500px;
