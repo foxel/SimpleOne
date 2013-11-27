@@ -93,7 +93,7 @@
                 try {
                     time = (new Date(Date.parseISOString($(this).val().replace(/ /, 'T')))).toISOString();
                 } finally {
-                    $(this).closest('span').find('input[name="pubTime"]').val(time);
+                    timeDiv.find('input[name="pubTime"]').val(time);
                 }
             })
             {IF:IN_ID}.datetimepicker('setDate', new Date(Date.parseISOString('{FTIME:IN_createTime|"c"|false|true}'))){/IF}
