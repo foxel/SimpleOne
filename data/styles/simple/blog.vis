@@ -268,7 +268,7 @@
 </div>
 <<- 'SONE_OBJECT_BLOG_FRONT_TAG_BLOCK'>>
 <<+ 'SONE_OBJECT_BLOG_FRONT_TAG_BLOCK_ITEM'>>
-<div class="clearfix" style="margin-bottom: 10px; height: 60px; overflow: hidden;">
+<div class="clearfix blog-tag-block-item">
     <a href="{FULLURL:IN_path}" title="{!IN_caption}" style="display: block;">
         <img src="{IN_image}?scale&amp;w=90" class="pull-left" style="width: 90px; margin-right: 7px;" />
         <h4>{!IN_caption}</h4>
@@ -303,6 +303,12 @@ div.blog-keywords a {
 
 .blog-tag-blocks {
     margin-top: 10px;
+}
+
+.blog-tag-block-item {
+    margin-bottom: 10px;
+    height: 80px;
+    overflow: hidden;
 }
 
 @media (min-width: 1200px) {
