@@ -44,8 +44,6 @@ class ElFinder_Plugin
     public function addAppVisData(FVISNode $pageNode)
     {
         $pageNode
-            ->addData('META', '<link rel="stylesheet" href="'.FStr::fullUrl('static/css/elfinder.min.css', true).'" type="text/css" media="screen" charset="utf-8">')
-
             ->addNode('ELFINDER_JS_BLOCK', 'JS_BLOCKS', array(
                 'connectorUrl' => $this->_config->connectorUrl,
             ));

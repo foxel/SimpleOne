@@ -1,0 +1,117 @@
+<!--
+ Copyright (C) 2013 Andrey F. Kupreychik (Foxel)
+
+ This file is part of QuickFox SimpleOne.
+
+ SimpleOne is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ SimpleOne is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
+-->
+
+
+<<+ 'SONE_HTML_WIDGET_FORM_HORISONTAL'>>
+<form class="form-horizontal {IN_CLASS}" action="{!IN_ACTION}" method="{IF:IN_METHOD}{!IN_METHOD}{ELSE}post{/IF}" {IF:IN_ID}id="{!IN_ID}"{/IF}>
+    {IN_CONTROLS}
+    {IF:IN_BUTTONS}
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9 {IF:IN_WIDTH}col-md-{IN_WIDTH}{/IF}">
+            {IN_BUTTONS}
+        </div>
+    </div>
+    {/IF}
+</form>
+<<- 'SONE_HTML_WIDGET_FORM_HORISONTAL'>>
+
+<<+ 'SONE_HTML_WIDGET_FORM_HORISONTAL_INPUT'>>
+{WRITE:TYPE}{IF:IN_TYPE}{IN_TYPE}{ELSE}text{/IF}{WRITE}
+{WRITE:ID}{IF:IN_ID}{IN_ID}{ELSE}input-{!TYPE}-{UNIQID}{/IF}{WRITE}
+<div class="form-group">
+    <label class="col-sm-3 control-label" for="{!ID}">{!IN_LABEL}</label>
+    <div class="col-sm-9 {IF:IN_WIDTH}col-md-{IN_WIDTH}{/IF}">
+        <input class="form-control {IN_CLASS}" id="{!ID}" type="{!TYPE}" name="{!IN_NAME}" value="{!IN_VALUE}" {IF:IN_noAutocomplete}autocomplete="off"{/IF} />
+    </div>
+</div>
+<<- 'SONE_HTML_WIDGET_FORM_HORISONTAL_INPUT'>>
+
+<<+ 'SONE_HTML_WIDGET_FORM_HORISONTAL_SELECT'>>
+{WRITE:ID}{IF:IN_ID}{IN_ID}{ELSE}select-{UNIQID}{/IF}{WRITE}
+<div class="form-group">
+    <label class="col-sm-3 control-label" for="{!ID}">{!IN_LABEL}</label>
+    <div class="col-sm-9 {IF:IN_WIDTH}col-md-{IN_WIDTH}{/IF}">
+        <select id="{!ID}" class="form-control {IN_CLASS}" name="{!IN_NAME}" {IF:IN_MULTIPLE}multiple="multiple"{/IF}>
+            {IN_OPTIONS}
+        </select>
+    </div>
+</div>
+<<- 'SONE_HTML_WIDGET_FORM_HORISONTAL_SELECT'>>
+
+<<+ 'SONE_HTML_WIDGET_FORM_HORISONTAL_CONTROL'>>
+<div class="form-group">
+    {IF:IN_LABEL}<label class="col-sm-3 control-label" {IF:IN_labelFor}for="{!IN_labelFor}"{/IF}>{!IN_LABEL}</label>{/IF}
+    <div class="{!IF:IN_LABEL}col-sm-offset-3 {/IF}col-sm-9 {IF:IN_WIDTH}col-md-{IN_WIDTH}{/IF}">
+        {IN_CONTROLS}
+    </div>
+</div>
+<<- 'SONE_HTML_WIDGET_FORM_HORISONTAL_CONTROL'>>
+
+<<+ 'SONE_HTML_WIDGET_FORM_HORISONTAL_CHECKBOX'>>
+{WRITE:ID}{IF:IN_ID}{IN_ID}{ELSE}checkbox-{UNIQID}{/IF}{WRITE}
+<div class="form-group">
+    <div class="col-sm-offset-3 col-sm-9 {IF:IN_WIDTH}col-md-{IN_WIDTH}{/IF}">
+        <div class="checkbox">
+            <label><input class="{IN_CLASS}" id="{!ID}" type="checkbox" name="{!IN_NAME}" value="{IF:IN_VALUE}{!IN_VALUE}{ELSE}1{/IF}" {IF:IN_CHECKED}checked="checked"{/IF} /> {!IN_LABEL}</label>
+        </div>
+    </div>
+</div>
+<<- 'SONE_HTML_WIDGET_FORM_HORISONTAL_CHECKBOX'>>
+
+
+<<+ 'SONE_HTML_WIDGET_FORM_INPUT'>>
+{WRITE:TYPE}{IF:IN_TYPE}{IN_TYPE}{ELSE}text{/IF}{WRITE}
+{WRITE:ID}{IF:IN_ID}{IN_ID}{ELSE}input-{!TYPE}-{UNIQID}{/IF}{WRITE}
+<div class="form-group">
+    <label for="{!ID}">{!IN_LABEL}</label>
+    <input class="form-control {IN_CLASS}" id="{!ID}" type="{!TYPE}" name="{!IN_NAME}" value="{!IN_VALUE}" {IF:IN_noAutocomplete}autocomplete="off"{/IF} />
+</div>
+<<- 'SONE_HTML_WIDGET_FORM_INPUT'>>
+
+<<+ 'SONE_HTML_WIDGET_FORM_TEXTAREA'>>
+{WRITE:ID}{IF:IN_ID}{IN_ID}{ELSE}textarea-{!TYPE}-{UNIQID}{/IF}{WRITE}
+<div class="form-group">
+    {IF:IN_LABEL}<label for="{!ID}">{!IN_LABEL}</label>{/IF}
+    <textarea class="form-control {IN_CLASS}" id="{!ID}" name="{!IN_NAME}" {IF:IN_noAutocomplete}autocomplete="off"{/IF} style="{IF:IN_STYLE}{!IN_STYLE}{ELSE}height: 450px;{/IF}" >{!IN_VALUE}</textarea>
+</div>
+<<- 'SONE_HTML_WIDGET_FORM_TEXTAREA'>>
+
+<<+ 'SONE_HTML_WIDGET_FORM_CONTROL'>>
+<div class="form-group">
+    {IF:IN_LABEL}<label class="control-label" {IF:IN_labelFor}for="{!IN_labelFor}"{/IF}>{!IN_LABEL}</label>{/IF}
+    {IN_CONTROLS}
+</div>
+<<- 'SONE_HTML_WIDGET_FORM_CONTROL'>>
+
+<<+ 'SONE_HTML_WIDGET_FORM_CHECKBOX'>>
+{WRITE:ID}{IF:IN_ID}{IN_ID}{ELSE}checkbox-{!TYPE}-{UNIQID}{/IF}{WRITE}
+<div class="checkbox">
+    <label><input class="{IN_CLASS}" id="{!ID}" type="checkbox" name="{!IN_NAME}" value="{IF:IN_VALUE}{!IN_VALUE}{ELSE}1{/IF}" {IF:IN_CHECKED}checked="checked"{/IF} /> {!IN_LABEL}</label>
+</div>
+<<- 'SONE_HTML_WIDGET_FORM_CHECKBOX'>>
+
+<<+ 'SONE_HTML_WIDGET_FORM_SELECT'>>
+{WRITE:ID}{IF:IN_ID}{IN_ID}{ELSE}select-{UNIQID}{/IF}{WRITE}
+<div class="form-group">
+    <label for="{!ID}">{!IN_LABEL}</label>
+    <select id="{!ID}" class="form-control {IN_CLASS}" name="{!IN_NAME}" {IF:IN_MULTIPLE}multiple="multiple"{/IF}>
+        {IN_OPTIONS}
+    </select>
+</div>
+<<- 'SONE_HTML_WIDGET_FORM_SELECT'>>

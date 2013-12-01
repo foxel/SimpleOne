@@ -20,7 +20,7 @@
 <<+ 'SONE_OBJECT_POLL'>>
 {IF:IN_actionState="edit"}
     {!WRITE:formElements}
-    <label><textarea class="htmleditor span10" name="description" style="height: 450px;">{!IN_DESCRIPTION}</textarea></label>
+    {VIS:SONE_HTML_WIDGET_FORM_TEXTAREA|name="description"|class="htmleditor"|value=IN_DESCRIPTION}
     <div class="pollEditQuestionsContainer">
     {IF:IN_question_items}{IN_question_items}{ELSE}
         {VIS:SONE_OBJECT_POLL_ITEM_EDIT|ID="0"}
@@ -30,8 +30,8 @@
         {VIS:SONE_OBJECT_POLL_ITEM_EDIT|ID="{id}"}
     </div>
     {!WRITE:formButtons}
-    <a class="btn" href="#" onclick="var c = $(this).closest('form.pollEditor').find('div.pollEditQuestionTemplateContainer').find('div.pollEditQuestion').last().clone(); var i = c.find('input, select').val(''); var r = (new Date).getTime()+Math.random(); i.each(function() { $(this).attr('name', $(this).attr('name').replace(/\{id\}/, r));}); $(this).closest('form.pollEditor').find('div.pollEditQuestionsContainer').append(c); return false;">
-        <i class="icon-plus"></i>
+    <a class="btn btn-default" href="#" onclick="var c = $(this).closest('form.pollEditor').find('div.pollEditQuestionTemplateContainer').find('div.pollEditQuestion').last().clone(); var i = c.find('input, select').val(''); var r = (new Date).getTime()+Math.random(); i.each(function() { $(this).attr('name', $(this).attr('name').replace(/\{id\}/, r));}); $(this).closest('form.pollEditor').find('div.pollEditQuestionsContainer').append(c); return false;">
+        <i class="glyphicon glyphicon-plus"></i>
         Добавить вопрос
     </a>
     {WRITE}
@@ -40,8 +40,8 @@
 {ELSEIF:IN_actionState="stat"}
     {IF:IN_canEdit}
         <div class="pull-right btn-group">
-            <a class="btn" href="{FULLURL:IN_PATH}?edit"><i class="icon-pencil"></i> Править</a>
-            <a class="btn" href="{FULLURL:IN_PATH}"><i class="icon-file"></i> Анкета</a>
+            <a class="btn btn-default" href="{FULLURL:IN_PATH}?edit"><i class="glyphicon glyphicon-pencil"></i> Править</a>
+            <a class="btn btn-default" href="{FULLURL:IN_PATH}"><i class="glyphicon glyphicon-file"></i> Анкета</a>
         </div>
     {/IF}
     <h2>{!IN_CAPTION}</h2>
@@ -52,8 +52,8 @@
 {ELSE}
     {IF:IN_canEdit}
         <div class="pull-right btn-group">
-            <a class="btn" href="{FULLURL:IN_PATH}?edit"><i class="icon-pencil"></i> Править</a>
-            <a class="btn" href="{FULLURL:IN_PATH}?stat"><i class="icon-file"></i> Отчет</a>
+            <a class="btn btn-default" href="{FULLURL:IN_PATH}?edit"><i class="glyphicon glyphicon-pencil"></i> Править</a>
+            <a class="btn btn-default" href="{FULLURL:IN_PATH}?stat"><i class="glyphicon glyphicon-file"></i> Отчет</a>
         </div>
     {/IF}
     <h2>{!IN_CAPTION}</h2>
@@ -70,40 +70,40 @@
             <div style="color: darkred;">Авторизируйтесь, чтобы сохранить ответы.</div>
         {ELSE}
             <button class="btn btn-primary" type="submit"{IF:IN_ANSWERED} disabled="disabled" title="Вы уже ответили на все вопросы данной анкеты"{/IF}>{L_EDITOR_SUBMIT_FILL}</button>
-            {IF:IN_ANSWERED}<span title="Вы уже ответили на все вопросы данной анкеты">*</span>{/IF}
+            {IF:IN_ANSWERED}<span class="label label-info" title="Вы уже ответили на все вопросы данной анкеты"><i class="glyphicon glyphicon-saved"></i></span>{/IF}
         {/IF}
     </form>
 {/IF}
 <<- 'SONE_OBJECT_POLL'>>
 
 <<+ 'SONE_OBJECT_POLL_ITEM'>>
-<fieldset>
+<div class="well well-sm"><fieldset>
     <legend>
     {!IN_CAPTION}
     {IF:IN_LOCKED}
-        <sup title="вы не можете изменить ответ на этот вопрос"><i class="icon-lock"></i></sup>
+        <sup title="вы не можете изменить ответ на этот вопрос"><i class="glyphicon glyphicon-lock"></i></sup>
         {ELSEIF:IN_ANSWERED}
-        <a class="btn btn-mini" href="#" onclick="$(this).closest('fieldset').find('div.pollQuestionAnswersContainer:not(.locked) input').removeAttr('disabled').removeAttr('readonly'); $(this).closest('fieldset').find('input[type=&quot;hidden&quot;], textarea').removeAttr('disabled').removeAttr('readonly'); $(this).closest('form').find('button[type=submit]').removeAttr('disabled'); $(this).remove(); return false;" title="вы уже ответили на этот вопрос, но можете изменить свой ответ">
-            <i class="icon-pencil"></i>
+        <a class="btn btn-default btn-xs" href="#" onclick="$(this).closest('fieldset').find('div.pollQuestionAnswersContainer:not(.locked) input').removeAttr('disabled').removeAttr('readonly'); $(this).closest('fieldset').find('input[type=&quot;hidden&quot;], textarea').removeAttr('disabled').removeAttr('readonly'); $(this).closest('form').find('button[type=submit]').removeAttr('disabled'); $(this).remove(); return false;" title="вы уже ответили на этот вопрос, но можете изменить свой ответ">
+            <i class="glyphicon glyphicon-pencil"></i>
             Изменить ответ
         </a>
     {/IF}
     </legend>
     <div class="pollQuestionAnswersContainer">
     {if:IN_type=4}
-        <input class="span9" type="text" name="question_{!IN_ID}_answer"{IF:IN_ANSWERED} readonly="readonly"{ELSEIF:IN_LOCKED} readonly="readonly"{/IF} value="{!in_answerValue}"/>
+        <input class="form-control" type="text" name="question_{!IN_ID}_answer"{IF:IN_ANSWERED} readonly="readonly"{ELSEIF:IN_LOCKED} readonly="readonly"{/IF} value="{!in_answerValue}"/>
     {elseif:IN_type=3}
-        <textarea class="span9" style="resize: vertical;" name="question_{!IN_ID}_answer"{IF:IN_ANSWERED} readonly="readonly"{ELSEIF:IN_LOCKED} readonly="readonly"{/IF}>{!in_answerValue}</textarea>
+        <textarea class="form-control" style="resize: vertical;" name="question_{!IN_ID}_answer"{IF:IN_ANSWERED} readonly="readonly"{ELSEIF:IN_LOCKED} readonly="readonly"{/IF}>{!in_answerValue}</textarea>
     {else}
         {IN_variants}
     {/if}
     <input type="hidden" name="question_{!IN_ID}_active" value="1"{IF:IN_ANSWERED} disabled="disabled"{ELSEIF:IN_LOCKED} disabled="disabled"{/IF} />
     </div>
-</fieldset>
+</fieldset></div>
 <<- 'SONE_OBJECT_POLL_ITEM'>>
 
 <<+ 'SONE_OBJECT_POLL_ITEM_STAT'>>
-<fieldset>
+<div class="well well-sm"><fieldset>
     <legend>
     {!IN_CAPTION}
     </legend>
@@ -111,52 +111,56 @@
     <div class="pollQuestionAnswersContainer">
     {IN_variants}
     </div>
-</fieldset>
+</fieldset></div>
 <<- 'SONE_OBJECT_POLL_ITEM_STAT'>>
 
 <<+ 'SONE_OBJECT_POLL_ITEM_EDIT'>>
-<div class="pollEditQuestion">
-    <hr/>
-    <label>
-        Вопрос: <span class="input-append">
-            <input name="questions[{!IN_ID}][caption]" type="text" value="{!IN_CAPTION}" class="span7" /><a class="btn" href="#"
-                onclick="if ($(this).closest('div.pollEditQuestionsContainer').find('div.pollEditQuestion').length > 1 ) { $(this).closest('div.pollEditQuestion').remove(); } return false;">
-                <i class="icon-minus"></i>
-                </a>
-        </span>
-    </label>
-    <label>
-        Тип:
-        <select name="questions[{!IN_ID}][type]"
-                onchange="var t = $(this).val(); var c = $(this).closest('div.pollEditQuestion').find('.pollEditQuestionAnswersFieldset'); if (t == 1 || t == 2) c.show(); else c.hide();">
-            <option value="1"{IF:IN_type=1} selected="selected"{/IF}>Один из набора</option>
-            <option value="2"{IF:IN_type=2} selected="selected"{/IF}>Несколько из набора</option>
-            <option value="3"{IF:IN_type=3} selected="selected"{/IF}>Текст</option>
-            <option value="4"{IF:IN_type=4} selected="selected"{/IF}>Строка</option>
-        </select>
-    </label>
-    <br/>
-    <fieldset class="pollEditQuestionAnswersFieldset"{if:IN_type=4} style="display: none;"{elseif:IN_type=3} style="display: none;"{/if}>
+<div class="pollEditQuestion well">
+    <fieldset>
         <legend>
-            Ответы: <a class="btn" href="#" onclick="var c = $(this).closest('div.pollEditQuestion').find('div.pollEditQuestionAnswersContainer').find('div.pollEditQuestionAnswer').last().clone(); var i = c.find('input').val(''); i.attr('name', i.attr('name').replace(/\[\w+\]$/, '[]')); $(this).closest('div.pollEditQuestion').find('div.pollEditQuestionAnswersContainer').append(c); return false;">
-            <i class="icon-plus"></i>
+            Вопрос: <a class="btn btn-default btn-sm pull-right" href="#"
+                       onclick="if ($(this).closest('div.pollEditQuestionsContainer').find('div.pollEditQuestion').length > 1 ) { $(this).closest('div.pollEditQuestion').remove(); } return false;">
+                <i class="glyphicon glyphicon-trash"></i>
             </a>
         </legend>
-        <div class="pollEditQuestionAnswersContainer form-horizontal">
+    <div class="form-group row">
+        <div class="col-xs-7">
+            <label for="question-text-{UNIQID}" class="sr-only">Текст вопроса</label>
+            <input id="question-text-{UNIQID}" name="questions[{!IN_ID}][caption]" type="text" value="{!IN_CAPTION}" class="form-control" placeholder="Текст вопроса" />
+        </div>
+        <div class="col-xs-3">
+            <label for="question-type-{UNIQID}" class="sr-only">Тип</label>
+            <select id="question-type-{UNIQID}" name="questions[{!IN_ID}][type]" class="form-control"
+                    onchange="var t = $(this).val(); var c = $(this).closest('div.pollEditQuestion').find('.pollEditQuestionAnswersFieldset'); if (t == 1 || t == 2) c.show(); else c.hide();">
+                <option value="1"{IF:IN_type=1} selected="selected"{/IF}>Один из набора</option>
+                <option value="2"{IF:IN_type=2} selected="selected"{/IF}>Несколько из набора</option>
+                <option value="3"{IF:IN_type=3} selected="selected"{/IF}>Текст</option>
+                <option value="4"{IF:IN_type=4} selected="selected"{/IF}>Строка</option>
+            </select>
+        </div>
+    </div>
+    </fieldset>
+    <fieldset class="pollEditQuestionAnswersFieldset"{if:IN_type=4} style="display: none;"{elseif:IN_type=3} style="display: none;"{/if}>
+        <legend>
+            Ответы: <a class="btn btn-default btn-xs" href="#" onclick="var c = $(this).closest('div.pollEditQuestion').find('div.pollEditQuestionAnswersContainer').find('div.pollEditQuestionAnswer').last().clone(); var i = c.find('input').val(''); i.attr('name', i.attr('name').replace(/\[\w+\]$/, '[]')); $(this).closest('div.pollEditQuestion').find('div.pollEditQuestionAnswersContainer').append(c); return false;">
+            <i class="glyphicon glyphicon-plus"></i>
+            </a>
+        </legend>
+        <div class="pollEditQuestionAnswersContainer">
         {IF:IN_variants}{IN_variants}{ELSE}
             {VIS:SONE_OBJECT_POLL_ITEM_EDIT_VALUEVARIANT|QID=IN_ID}
             {VIS:SONE_OBJECT_POLL_ITEM_EDIT_VALUEVARIANT|QID=IN_ID}
         {/IF}
         </div>
     </fieldset>
-    <div>
+    <div class="checkbox">
         <label><input type="checkbox" name="questions[{!IN_ID}][lockAnswers]" value="1"{IF:IN_lockAnswers} checked="checked"{/IF} /> запретить изменение ответа</label>
     </div>
 </div>
 <<- 'SONE_OBJECT_POLL_ITEM_EDIT'>>
 
 <<+ 'SONE_OBJECT_POLL_ITEM_VALUEVARIANT'>>
-<div class="pollQuestionAnswer{IF:IN_LOCKED} locked{/IF}">
+<div class="pollQuestionAnswer {IF:IN_isCheckbox}checkbox{ELSE}radio{/IF} {IF:IN_LOCKED}locked{/IF}">
     <label>
         <input type="{IF:IN_isCheckbox}checkbox{ELSE}radio{/IF}" name="question_{!IN_QID}_answer{IF:IN_isCheckbox}[]{/IF}" value="{!IN_value}"
                {IF:IN_selected}checked="checked"{/IF}{IF:IN_ANSWERED} disabled="disabled"{ELSEIF:IN_LOCKED} disabled="disabled"{/IF} />
@@ -173,14 +177,14 @@
 <<- 'SONE_OBJECT_POLL_ITEM_STAT_VALUEVARIANT'>>
 
 <<+ 'SONE_OBJECT_POLL_ITEM_EDIT_VALUEVARIANT'>>
-<div class="pollEditQuestionAnswer control-group">
-    <input class="span7" type="text" name="questions[{!IN_QID}][variants][{!IN_VALUE}]" value="{!IN_TITLE}" />
-    <span class="input-append"><input  class="span2" type="text" name="questions[{!IN_QID}][limits][{!IN_VALUE}]" value="{!IN_LIMIT}" style="width: 30px;"
-           title="Максимальное количество таких ответов"/><strong class="add-on">( {IN_statVal} )</strong>
+<div class="pollEditQuestionAnswer row form-group">
+    <span class="col-xs-7"><input class="form-control" type="text" name="questions[{!IN_QID}][variants][{!IN_VALUE}]" value="{!IN_TITLE}" placeholder="Текст ответа" /></span>
+    <span class="input-group col-xs-2"><input class="form-control" type="text" name="questions[{!IN_QID}][limits][{!IN_VALUE}]" value="{!IN_LIMIT}"
+           title="Максимальное количество таких ответов"/><strong class="input-group-addon">( {IN_statVal} )</strong>
     </span>
-    <a class="btn" href="#"
+    <a class="btn btn-default" href="#"
        onclick="if ($(this).closest('div.pollEditQuestionAnswersContainer').find('div.pollEditQuestionAnswer').length > 2) { $(this).closest('div.pollEditQuestionAnswer').remove(); } return false;">
-        <i class="icon-minus"></i>
+        <i class="glyphicon glyphicon-minus"></i>
        </a>
 </div>
 <<- 'SONE_OBJECT_POLL_ITEM_EDIT_VALUEVARIANT'>>

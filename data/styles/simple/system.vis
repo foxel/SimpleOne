@@ -18,7 +18,7 @@
 -->
 
 <<+ 'SONE_OBJECT_SYSTEM_PROFILE'>>
-{IF:IN_ERRORS}<div class="alert alert-error">
+{IF:IN_ERRORS}<div class="alert alert-danger">
 {IN_ERRORS}
 </div>{/IF}
 {IF:IN_dataSaved}<div class="alert alert-success">
@@ -27,44 +27,44 @@
 <form action="{FULLURL:IN_PATH}/?update" method="post" class="form-horizontal" autocomplete="off" >
     <fieldset>
         <legend>Профиль</legend>
-        <div class="control-group">
+        <div class="form-group">
             <label class="control-label" for="profileName{UNIQID}">Имя</label>
             <div class="controls">
                 <input name="user_name" type="text" id="profileName{UNIQID}" value="{!IN_user_name}" />
             </div>
         </div>
-        <div class="control-group">
+        <div class="form-group">
             <label class="control-label" for="profileEMail{UNIQID}">e-mail</label>
             <div class="controls">
-                <span class="input-large uneditable-input" id="profileEMail{UNIQID}">{!IN_user_email}</span>
+                <span class="input-lg uneditable-input" id="profileEMail{UNIQID}">{!IN_user_email}</span>
             </div>
         </div>
     </fieldset>
     <fieldset>
         <legend>Смена пароля</legend>
-        <div class="control-group">
+        <div class="form-group">
             <label class="control-label" for="oldPassword{UNIQID}">Старый пароль</label>
             <div class="controls">
                 <input name="old_password" type="password" id="oldPassword{UNIQID}" value="" autocomplete="off" />
             </div>
         </div>
-        <div class="control-group">
+        <div class="form-group">
             <label class="control-label" for="newPassword1{UNIQID}">Новые пароль</label>
             <div class="controls">
                 <input name="new_password1" type="password" id="newPassword1{UNIQID}" value="" autocomplete="off" />
             </div>
         </div>
-        <div class="control-group">
+        <div class="form-group">
             <label class="control-label" for="newPassword2{UNIQID}">Повторите новый пароль</label>
             <div class="controls">
                 <input name="new_password2" type="password" id="newPassword2{UNIQID}" value="" autocomplete="off" />
             </div>
         </div>
     </fieldset>
-    <div class="form-actions">
+    <div class="form-group">
         {IN_formButtons}
-        <button class="btn btn-primary" type="submit"><i class="icon-ok"></i> {L_EDITOR_SUBMIT_SAVE}</button>
-        <a href="{FULLURL:IN_PATH}" class="btn"><i class="icon-remove"></i> {L_EDITOR_CANCEL}</a>
+        <button class="btn btn-primary" type="submit"><i class="glyphicon glyphicon-ok"></i> {L_EDITOR_SUBMIT_SAVE}</button>
+        <a href="{FULLURL:IN_PATH}" class="btn btn-default"><i class="glyphicon glyphicon-remove"></i> {L_EDITOR_CANCEL}</a>
     </div>
 </form>
 <<- 'SONE_OBJECT_SYSTEM_PROFILE'>>

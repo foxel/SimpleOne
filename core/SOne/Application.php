@@ -244,6 +244,7 @@ class SOne_Application extends K3_Application
 
         $pageNode->appendChild('page_cont', $objectNode);
         $pageNode->addData('site_name', $this->_config->site->name);
+        $pageNode->addData('site_build', $this->_config->site->build);
         if ($this->_config->markup instanceof K3_Config) {
             $pageNode->addDataArray($this->_config->markup->toArray());
         }

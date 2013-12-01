@@ -58,6 +58,33 @@ class SOne_Repository_Tag extends SOne_Repository
     }
 
     /**
+     * @param int $objectId
+     * @param int $limit
+     * @param array $excludeTags
+     * @return mixed
+     */
+    public function getObjectsRelatedByTags($objectId, $limit = 6, array $excludeTags = array())
+    {
+        $select = $this->_db->select('tag_object', 't', array())
+            ->join('tag_object', array('tag_id' => 't.tag_id'), 't1', array('object_id'))
+            ->where('t.object_id', $objectId)
+            ->where('t1.object_id != ?', $objectId)
+            ->group('t1.object_id')
+            ->order('count(t.tag_id)', 'DESC')
+            ->order('t1.object_id', 'DESC')
+            ->limit($limit);
+
+        if ($excludeTags) {
+            $select->where('t.tag_id NOT IN (?)', $excludeTags);
+        }
+
+
+        $ids = $select->fetchAll();
+
+        return $ids;
+    }
+
+    /**
      * @param $objectId
      * @param array $filters
      * @return array|mixed|null

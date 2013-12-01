@@ -22,14 +22,17 @@
  {!WRITE:formElements}
  {IF:IN_canSetPubTime}
  {VIS:SONE_WIDGET_TIMECHECK_BLOCK}
- <label style="display: none;">Время публикации: <span class="input-append">
-     <input class="blogTime" type="text" value="" autocomplete="off" />
-     <input type="hidden" name="pubTime" />
-     <button class="btn blogTimeReset" onclick="return false;"><i class="icon-remove"></i></button>
- </span></label>{/IF}
- <label><textarea class="htmleditor span10" name="content" style="height: 450px;">{!IN_CONTENT}</textarea></label>
- <label>Метки (через запятую): <input class="blogTags" type="text" name="tags" value="{!IN_tags}" style="width: 70%;" /></label>
- <label><input type="checkbox" name="commentsAllowed"{IF:IN_commentsAllowed} checked="checked"{/IF} /> разрешить комментарии</label>
+<div id="blog-time-div-{UNIQID}" class="form-group" style="display: none;">
+    <label for="blog-time-{UNIQID}">Время публикации:</label>
+    <span class="input-group">
+        <input id="blog-time-{UNIQID}" class="blogTime form-control" type="text" value="" autocomplete="off" />
+        <span class="input-group-btn"><button class="btn btn-default blogTimeReset" onclick="return false;"><i class="glyphicon glyphicon-remove"></i></button></span>
+    </span>
+    <input type="hidden" name="pubTime" />
+</div>{/IF}
+    {VIS:SONE_HTML_WIDGET_FORM_TEXTAREA|name="content"|class="htmleditor"|value=IN_CONTENT}
+    {VIS:SONE_HTML_WIDGET_FORM_INPUT|name="tags"|label="Метки (через запятую):"|type="text"|class="blogTags"|value=IN_tags}
+    {VIS:SONE_HTML_WIDGET_FORM_CHECKBOX|name="commentsAllowed"|label="разрешить комментарии"|checked=IN_commentsAllowed}
  {WRITE}
  {VIS:SONE_OBJECT_EDITFORM|formElements=formElements|_}
 {IF:IN_allTagsJson}<script type="text/javascript">
@@ -77,12 +80,12 @@
 </script>{/IF}
 {IF:IN_canSetPubTime}<script type="text/javascript">
     require(['jquery', 'jquery.timepicker', 'date.iso'], function ($) {
-        $('input.blogTime')
+        var timeDiv = $('#blog-time-div-{UNIQID}');
+        timeDiv.find('input.blogTime')
             .datetimepicker({
                 dateFormat: 'yy-mm-dd',
-                showOn: 'both',
+                showOn: 'focus',
                 constrainInput: true,
-                buttonText: '<i class="icon-time"></i>',
                 minDate: new Date()
             })
             .on('change', function() {
@@ -90,30 +93,29 @@
                 try {
                     time = (new Date(Date.parseISOString($(this).val().replace(/ /, 'T')))).toISOString();
                 } finally {
-                    $(this).closest('span').find('input[name="pubTime"]').val(time);
+                    timeDiv.find('input[name="pubTime"]').val(time);
                 }
             })
             {IF:IN_ID}.datetimepicker('setDate', new Date(Date.parseISOString('{FTIME:IN_createTime|"c"|false|true}'))){/IF}
-            .closest('span').addClass('input-append')
-            .find('.ui-datepicker-trigger').addClass('btn')
-            .closest('label').show();
-        $('button.blogTimeReset').click(function() {
-            $(this).closest('span').find('input.blogTime').val('').trigger('keyup').trigger('change');
+            ;
+        timeDiv.find('button.blogTimeReset').click(function() {
+            timeDiv.find('input.blogTime').val('').trigger('keyup').trigger('change');
         });
+        timeDiv.show();
     });
 </script>{/IF}
 {ELSE}
 <div itemscope itemtype="http://schema.org/BlogPosting">
     {IF:IN_canEdit}<div class="pull-right btn-group">
-        <a class="btn" href="{FULLURL:IN_PATH}?edit"><i class="icon-pencil"></i> Править</a>
-        <a class="btn btn-danger" href="{FULLURL:IN_PATH}?delete" onclick="return confirm('Вы уверены, что хотите удалить эту запись?');"><i class="icon-remove"></i> Удалить</a>
+        <a class="btn btn-default" href="{FULLURL:IN_PATH}?edit"><i class="glyphicon glyphicon-pencil"></i> Править</a>
+        <a class="btn btn-danger" href="{FULLURL:IN_PATH}?delete" onclick="return confirm('Вы уверены, что хотите удалить эту запись?');"><i class="glyphicon glyphicon-remove"></i> Удалить</a>
     </div>{/IF}
 <h2 itemprop="name">{!IN_CAPTION}</h2>
 <div class="htmlpage clearfix" itemprop="text">{IN_CONTENT}</div>
  <hr />
  <div style="text-align: right;">
   {IN_userTag}
-  <a href="{FULLURL:IN_PARENTPATH}/date/{FTIME:IN_createTime|"Y-m-d"|false|true}"><i class="icon-time"></i> <time itemprop="datePublished" datetime="{FTIME:IN_createTime|"c"|false|true}">{FTIME:IN_createTime}</time></a>
+  <a href="{FULLURL:IN_PARENTPATH}/date/{FTIME:IN_createTime|"Y-m-d"|false|true}"><i class="glyphicon glyphicon-time"></i> <time itemprop="datePublished" datetime="{FTIME:IN_createTime|"c"|false|true}">{FTIME:IN_createTime}</time></a>
  </div>
 {IF:IN_tags}
  <div style="text-align: right;">
@@ -132,10 +134,7 @@
 <<+ 'SONE_OBJECT_BLOG_LIST'>>
 {IF:IN_actionState="edit"}
 {!WRITE:formElements}
-<label>
-    Разрешить генерацию RSS-потока:
-    <input type="checkbox" name="rssEnabled" value="1" {IF:IN_rssEnabled}checked="checked"{/IF} />
-</label>
+    {VIS:SONE_HTML_WIDGET_FORM_CHECKBOX|label="Разрешить генерацию RSS-потока"|name="rssEnabled"|checked=IN_rssEnabled}
 {WRITE}
 {VIS:SONE_OBJECT_EDITFORM|formElements=formElements|_}
 {ELSEIF:IN_actionState="new"}
@@ -145,27 +144,27 @@
 {ELSE}
 {if:in_canAddItem}
 <div class="pull-right">
-    <a class="btn" href="{FULLURL:IN_PATH}?new"><i class="icon-plus"></i> Новая запись</a>
+    <a class="btn btn-default" href="{FULLURL:IN_PATH}?new"><i class="glyphicon glyphicon-plus"></i> Новая запись</a>
 </div>
 {/if}
 <div itemscope itemtype="http://schema.org/Blog">
 <h2 itemprop="name">{!IN_CAPTION}</h2>
 {if:in_filter_date}
     <div class="alert alert-info">
-        <i class="icon-time"></i> Записи за {!in_filter_date}
-        <a class="close" href="{FULLURL:in_path}"><i class="icon-remove"></i></a>
+        <i class="glyphicon glyphicon-time"></i> Записи за {!in_filter_date}
+        <a class="close" href="{FULLURL:in_path}"><i class="glyphicon glyphicon-remove"></i></a>
     </div>
 {/if}
 {if:in_filter_tag}
     <div class="alert alert-info">
-        <i class="icon-tag"></i> Записи с меткой "{!in_filter_tag}"
-        <a class="close" href="{FULLURL:in_path}"><i class="icon-remove"></i></a>
+        <i class="glyphicon glyphicon-tag"></i> Записи с меткой "{!in_filter_tag}"
+        <a class="close" href="{FULLURL:in_path}"><i class="glyphicon glyphicon-remove"></i></a>
     </div>
 {/if}
 {if:in_filter_author}
     <div class="alert alert-info">
-        <i class="icon-tag"></i> Записи автора {!in_filter_author}
-        <a class="close" href="{FULLURL:in_path}"><i class="icon-remove"></i></a>
+        <i class="glyphicon glyphicon-tag"></i> Записи автора {!in_filter_author}
+        <a class="close" href="{FULLURL:in_path}"><i class="glyphicon glyphicon-remove"></i></a>
     </div>
 {/if}
 <div class="htmlpage">
@@ -181,11 +180,11 @@
 <<- 'SONE_OBJECT_BLOG_LIST'>>
 
 <<+ 'SONE_OBJECT_BLOG_LISTITEM'>>
-<div class="blog-item well well-small clearfix" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+<div class="blog-item well well-sm clearfix" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
     <div class="clearfix" style="border-bottom: 1px solid #E5E5E5; margin-bottom: 5px;">
         <div class="pull-right" style="text-align: right; padding-top: 5px;">
             {IN_userTag}
-            <a href="{FULLURL:IN_PARENTPATH}/date/{FTIME:IN_createTime|"Y-m-d"|false|true}"><i class="icon-time"></i> <time itemprop="datePublished" datetime="{FTIME:IN_createTime|"c"|false|true}">{FTIME:IN_createTime}</time></a>
+            <a href="{FULLURL:IN_PARENTPATH}/date/{FTIME:IN_createTime|"Y-m-d"|false|true}"><i class="glyphicon glyphicon-time"></i> <time itemprop="datePublished" datetime="{FTIME:IN_createTime|"c"|false|true}">{FTIME:IN_createTime}</time></a>
         </div>
         <h3 itemprop="name"><a href="{FULLURL:IN_PATH}" itemprop="url">{IF:IN_caption}{!IN_CAPTION}{ELSE}{IN_PATH}{/IF}</a>
             <small></small>
@@ -200,28 +199,30 @@
 <<- 'SONE_OBJECT_BLOG_LISTITEM'>>
 
 <<+ 'SONE_OBJECT_BLOG_USERTAG'>>
-<a href="{FULLURL:IN_PARENTPATH}/author/{IN_id}" itemprop="author" itemscope itemtype="http://schema.org/Person"><i class="icon-user"></i> <span itemprop="name">{IN_name}</span></a>
+<a href="{FULLURL:IN_PARENTPATH}/author/{IN_id}" itemprop="author" itemscope itemtype="http://schema.org/Person"><i class="glyphicon glyphicon-user"></i> <span itemprop="name">{IN_name}</span></a>
 <<- 'SONE_OBJECT_BLOG_USERTAG'>>
 
 <<+ 'SONE_OBJECT_BLOG_TAG'>>
-<a href="{FULLURL:IN_PARENTPATH}/tag/{URLENCODE:IN_name}"><i class="icon-tag"></i> {!IN_name}</a>{!IF:IN__IS_LAST}, {/IF}
+<a href="{FULLURL:IN_PARENTPATH}/tag/{URLENCODE:IN_name}"><i class="glyphicon glyphicon-tag"></i> {!IN_name}</a>{!IF:IN__IS_LAST}, {/IF}
 <<- 'SONE_OBJECT_BLOG_TAG'>>
 
 <<+ 'SONE_OBJECT_BLOG_FRONT'>>
 <h2>{!IN_CAPTION}</h2>
 {IF:IN_carouselItems}
-<div class="row">
-    <div id="carousel{UNIQID}" class="carousel slide span8 blog-carousel">
-        <!-- Carousel items -->
-        <div class="carousel-inner">
-            {IN_carouselItems}
-        </div>
-        <!-- Carousel nav -->
-        <a class="carousel-control left" href="#carousel{UNIQID}" data-slide="prev">&lsaquo;</a>
-        <a class="carousel-control right" href="#carousel{UNIQID}" data-slide="next">&rsaquo;</a>
+<div id="carousel{UNIQID}" class="carousel slide blog-carousel">
+    <!-- Carousel items -->
+    <div class="carousel-inner">
+        {IN_carouselItems}
     </div>
-
+    <!-- Carousel nav -->
+    <a class="carousel-control left" href="#carousel{UNIQID}" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left"></span>
+    </a>
+    <a class="carousel-control right" href="#carousel{UNIQID}" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right"></span>
+    </a>
 </div>
+
 {else}
 <div class="alert">Нет записей</div>
 {/if}
@@ -253,13 +254,13 @@
     <a href="{FULLURL:IN_path}" title="{!IN_caption}"><img src="{IN_image}" /></a>
 
     <div class="carousel-caption">
-        <a href="{FULLURL:IN_path}"><h4>{!IN_caption}</h4></a>
+        <h3>{!IN_caption}</h3>
     </div>
 </div>
 <<- 'SONE_OBJECT_BLOG_FRONT_CAROUSEL_ITEM'>>
 
 <<+ 'SONE_OBJECT_BLOG_FRONT_TAG_BLOCK'>>
-<div class="span4 blog-tag-block">
+<div class="col-lg-4 col-sm-6 blog-tag-block">
     <legend><a href="{FULLURL:IN_path}">{IN_caption}</a></legend>
     <div>
         {IN_items}
@@ -299,9 +300,9 @@ div.blog-keywords a {
 .carousel.blog-carousel .item > a > img {
     width: 100%;
 }
-#mp_mainpage.span8 .blog-tag-block:nth-child(odd),
-#mp_mainpage.span10 .blog-tag-block:nth-child(odd) {
-    clear: left;
+
+.blog-tag-blocks {
+    margin-top: 10px;
 }
 
 @media (min-width: 1200px) {

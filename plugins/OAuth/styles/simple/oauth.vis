@@ -47,13 +47,13 @@
 //    VK.UI.button(vkLink[0]);
   });
 </script>
-    <a href="{!IN_vkAuthLink}" class="btn oauth oauth-vk" title="Войти, используя аккаунт ВКонтакте" ><i></i> ВКонтакте</a>
+    <a href="{!IN_vkAuthLink}" class="btn btn-default oauth oauth-vk" title="Войти, используя аккаунт ВКонтакте" ><i></i> ВКонтакте</a>
 {/IF}
 {IF:IN_fbAppId}
-    <a href="{!IN_fbAuthLink}" class="btn oauth oauth-fb" title="Войти, используя аккаунт Facebook" ><i></i> Facebook</a>
+    <a href="{!IN_fbAuthLink}" class="btn btn-default oauth oauth-fb" title="Войти, используя аккаунт Facebook" ><i></i> Facebook</a>
 {/IF}
 {IF:IN_gAppId}
-    <a href="{!IN_gAuthLink}" class="btn oauth oauth-g" title="Войти, используя аккаунт Google" ><i></i> Google</a>
+    <a href="{!IN_gAuthLink}" class="btn btn-default oauth oauth-g" title="Войти, используя аккаунт Google" ><i></i> Google</a>
 {/IF}
 {/IF}
 <<- 'SONE_OBJECT_LOGINPAGE_OAUTH'>>

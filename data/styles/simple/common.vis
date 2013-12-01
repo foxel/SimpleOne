@@ -27,17 +27,9 @@
   <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta http-equiv="Content-Script-Type" content="text/javascript" />
   <meta name="Generator" content="QuickFox SimpleOne Alpha" />
-  <link href="{FULLURL:"static/css/simple.css"}" rel="stylesheet">
-  {if:IN_RESPONSIVE}<link href="{FULLURL:"static/css/bootstrap-responsive.css"}" rel="stylesheet">{/if}
-  {if:IN_customCss}<link href="{FULLURL:IN_customCss}" rel="stylesheet">{/if}
-  <!--[if IE 7]>
-    <link rel="stylesheet" href="{FULLURL:"static/css/font-awesome-ie7.css"}">
-  <![endif]-->
-
-  <link rel="stylesheet" href="{FULLURL:"static/css/elrte.min.css"}" type="text/css" media="screen" charset="utf-8">
-  <!--[if IE 6]>
-  <link rel="stylesheet" href="{FULLURL:"static/css/bootstrap-ie6.css"}" type="text/css" media="screen" charset="utf-8">
-  <![endif]-->
+  <link href="{FULLURL:"static/css/simple.css"}{IF:IN_SITE_BUILD}?build={!IN_SITE_BUILD}{/IF}" rel="stylesheet" />
+  {if:IN_customCss}<link href="{FULLURL:IN_customCss}{IF:IN_SITE_BUILD}?build={!IN_SITE_BUILD}{/IF}" rel="stylesheet" />{/if}
+  <!--[if lt IE 8]><link href="{FULLURL:"static/css/bootstrap-ie7.css"}" rel="stylesheet"><![endif]-->
   {IN_META}
 
   {IF:IN_META_DESCRIPTION}<meta name="Description" content="{!IN_META_DESCRIPTION}" />{ENDIF}
@@ -62,10 +54,6 @@
        margin-bottom: 10px;
    }
 
-   .nav-list .nav-list {
-       padding-right: 0;
-   }
-
    .elfinder-resize-preview img {
        max-width: none;
    }
@@ -74,19 +62,25 @@
   /* ]]> CSS ends here */
   </style>
   {ENDIF}
-  
+
+  <!--[if lt IE 9]>
+    <script type="text/javascript" src="static/js/respond.min.js" charset="utf-8"></script>
+  <![endif]-->
   <!-- Load require -->
-  <script type="text/javascript" src="static/jscripts/require.js" charset="utf-8"></script>
-  <script type="text/javascript" src="static/jscripts/require.config.js" charset="utf-8"></script>
+  <script type="text/javascript" src="static/js/require.js{IF:IN_SITE_BUILD}?build={!IN_SITE_BUILD}{/IF}" charset="utf-8"></script>
+  <script type="text/javascript" src="static/js/require.config.js{IF:IN_SITE_BUILD}?build={!IN_SITE_BUILD}{/IF}" charset="utf-8"></script>
   <script type="text/javascript">
   // JavaScript Starts Here <![CDATA[
       require.config({
-          baseUrl: "{FULLURL:"static/jscripts"}",
+          "baseUrl": "{FULLURL:"static/js"}",
+          {IF:IN_SITE_BUILD}"urlArgs": "build="+{JS_DEF:IN_SITE_BUILD},{/IF}
+          "paths": {
+              "static": "{FULLURL:"static"}"
+          }
       });
   //]]> JavaScript ends here
   </script>
 
-  <!--[if lt IE 7]><script type="text/javascript">require(['bootstrap.ie6']);</script><![endif]-->
   <script type="text/javascript">
   // JavaScript Starts Here <![CDATA[
       define('SOne', ['jquery', 'sone.misc'], function($) {
@@ -97,11 +91,7 @@
                   var jq = typeof block !== 'undefined'
                       ? function() { return $.fn.find.apply($(block), arguments); }
                       : $;
-                  jq('select').each(function () {
-                      if ($('option', this).length > 7) {
-                          $(this).sOneSelect({allow_single_deselect: true});
-                      }
-                  });
+                  jq('select').sOneSelect();
                   jq('time').timeFormat();
 
                   if (jq('textarea.htmleditor').length) {
@@ -133,7 +123,7 @@
 <body>
 <div id="mp_outer" class="container">
     <div class="row">
-        <div id="mp_head" class="span12">
+        <div id="mp_head" class="col-md-12">
             <!-- <div id="mp_head_site">{!IN_SITE_NAME}</div>
             <div id="mp_head_title">{!IN_PAGE_TITLE}{IF:IN_PAGE_SUBTITLE} :: {!IN_PAGE_SUBTITLE}{ENDIF}</div> -->
             {IN_head_widgets}
@@ -141,11 +131,11 @@
     </div>
     <div class="row">
         {IF:IN_sidebar_widgets}
-        <div id="mp_sidebar" class="span2"><div class="sidebar-widgets">
+        <div id="mp_sidebar" class="col-md-2"><div class="sidebar-widgets">
             {IN_sidebar_widgets}
         </div></div>
         {/IF}
-        <div id="mp_mainpage" class="{IF:IN_sidebar_widgets}{IF:IN_sidebar2_widgets}span8{ELSE}span10{/IF}{ELSEIF:IN_sidebar2_widgets}span10{ELSE}span12{/IF}">
+        <div id="mp_mainpage" class="{IF:IN_sidebar_widgets}{IF:IN_sidebar2_widgets}col-md-8{ELSE}col-md-10{/IF}{ELSEIF:IN_sidebar2_widgets}col-md-10{ELSE}col-md-12{/IF}">
             {IF:IN_PATH_ITEMS}
             <div id="mp_page_pathline">
                 {IN_PATH_ITEMS}
@@ -156,7 +146,7 @@
             </div>
         </div>
         {IF:IN_sidebar2_widgets}
-        <div id="mp_sidebar2" class="span2"><div class="sidebar-widgets">
+        <div id="mp_sidebar2" class="col-md-2"><div class="sidebar-widgets">
             {IN_sidebar2_widgets}
         </div></div>
         {/IF}
@@ -219,19 +209,22 @@
 <<- 'SONE_OBJECT_COMMON'>>
 
 <<+ 'SONE_OBJECT_EDITFORM'>>
-{IF:IN_ERRORS}<div class="alert alert-error">
+{IF:IN_ERRORS}<div class="alert alert-danger">
     {IN_ERRORS}
 </div>{/IF}
 <form action="{FULLURL:IN_PATH}/?{IF:IN_saveAction}{!IN_saveAction}{ELSE}save{/IF}" method="post"{IF:IN_formClass} class="{IN_formClass}"{/IF} >
- <label>{L_EDITOR_OBJECT_CAPTION}: <input type="text" name="caption" value="{!IN_caption}" /></label>
+ <div class="form-group">
+    <label for="item-caption-{UNIQID}" class="sr-only">{L_EDITOR_OBJECT_CAPTION}</label>
+    <input id="item-caption-{UNIQID}" type="text" name="caption" class="form-control" value="{!IN_caption}" placeholder="{L_EDITOR_OBJECT_CAPTION}" />
+ </div>
  {IF:IN_formElements}
   <hr />
   {IN_formElements}
  {/IF}
- <div class="form-actions">
+ <div class="form-group">
    {IN_formButtons}
-   <button class="btn btn-primary" type="submit"><i class="icon-ok"></i> {L_EDITOR_SUBMIT_SAVE}</button>
-   <a href="{FULLURL:IN_PATH}" class="btn"><i class="icon-remove"></i> {L_EDITOR_CANCEL}</a>
+   <button class="btn btn-primary" type="submit"><i class="glyphicon glyphicon-ok"></i> {L_EDITOR_SUBMIT_SAVE}</button>
+   <a href="{FULLURL:IN_PATH}" class="btn btn-default"><i class="glyphicon glyphicon-remove"></i> {L_EDITOR_CANCEL}</a>
  </div>
 </form>
 <<- 'SONE_OBJECT_EDITFORM'>>
@@ -250,13 +243,13 @@
 <<+ 'SONE_OBJECT_HTMLPAGE'>>
 {IF:IN_actionState="edit"}
  {!WRITE:formElements}
- <label><textarea class="htmleditor span10" name="content" style="height: 450px;">{!IN_CONTENT}</textarea></label>
- <label><input type="checkbox" name="commentsAllowed"{IF:IN_commentsAllowed} checked="checked"{/IF} /> разрешить комментарии</label>
+    {VIS:SONE_HTML_WIDGET_FORM_TEXTAREA|name="content"|class="htmleditor"|value=IN_CONTENT}
+    {VIS:SONE_HTML_WIDGET_FORM_CHECKBOX|name="commentsAllowed"|label="разрешить комментарии"|checked=IN_commentsAllowed}
  {WRITE}
  {VIS:SONE_OBJECT_EDITFORM|formElements=formElements|_}
 {ELSE}
 {IF:IN_canEdit}<div class="pull-right">
-    <a class="btn" href="{FULLURL:IN_PATH}?edit"><i class="icon-pencil"></i> Править</a>
+    <a class="btn btn-default" href="{FULLURL:IN_PATH}?edit"><i class="glyphicon glyphicon-pencil"></i> Править</a>
 </div>{/IF}
 <h2>{!IN_CAPTION}</h2>
 <div class="htmlpage clearfix">{IN_CONTENT}</div>
@@ -272,12 +265,12 @@
 <div style="margin-top: 10px;">
 {IF:IN_allowAdd}
 <span{IF:IN_actionState="addComment"} style="display: none;"{/IF}>
-    <a id="add-comment-{UNIQID}" class="btn" href="{FULLURL:IN_PATH}?addComment" onclick="return false;">
-        <i class="icon-plus"></i>
+    <a id="add-comment-{UNIQID}" class="btn btn-default" href="{FULLURL:IN_PATH}?addComment" onclick="return false;">
+        <i class="glyphicon glyphicon-plus"></i>
         Добавить комментарий
     </a>
 </span>
-<div class="well well-small objectCommentsFormContainer"{!IF:IN_actionState="addComment"} style="display: none;"{/IF}>
+<div class="well well-sm objectCommentsFormContainer"{!IF:IN_actionState="addComment"} style="display: none;"{/IF}>
 {VIS:SONE_OBJECT_COMMENTS_FORM|PATH=IN_PATH}
 </div>
 {ELSE}
@@ -299,22 +292,20 @@
 
 <<+ 'SONE_OBJECT_COMMENTS_FORM'>>
 <form action="{FULLURL:IN_PATH}/?saveComment" method="post">
- <label>
-     <textarea class="span7" name="commentText" style="height: 100px;"></textarea>
- </label>
- <button class="btn btn-primary" type="submit"><i class="icon-ok"></i> {L_EDITOR_SUBMIT_ADDCOMMENT}</button>
+    {VIS:SONE_HTML_WIDGET_FORM_TEXTAREA|name="commentText"|style="height: 100px;"}
+    <button class="btn btn-primary" type="submit"><i class="glyphicon glyphicon-ok"></i> {L_EDITOR_SUBMIT_ADDCOMMENT}</button>
 </form>
 <<- 'SONE_OBJECT_COMMENTS_FORM'>>
 
 <<+ 'SONE_OBJECT_COMMENTS_ITEM'>>
-<div class="well well-small">
+<div class="well well-sm">
 <strong style="font-size: 85%">{IF:IN_author_name}{!IN_author_name} @ {/IF}<time datetime="{FTIME:IN_TIME|"c"|false|true}">{FTIME:IN_TIME}</time>:</strong>
  <div style="padding-left: 10px;">{BBPARSE:IN_TEXT}</div>
 </div>
 <<- 'SONE_OBJECT_COMMENTS_ITEM'>>
 
 <<+ 'SONE_OBJECT_LOGINPAGE'>>
-{IF:IN_ERRORS}<div class="alert alert-error">
+{IF:IN_ERRORS}<div class="alert alert-danger">
  {IN_ERRORS}
 </div>{/IF}
 {IF:IN_LOGGED_AS}
@@ -325,32 +316,14 @@
   <strong>Вход</strong>
   {IF:IN_registerAllowed} / <a class="loginpageShowRegister" href="#" onclick="return false;">Регистрация</a>{/IF}
  </legend>
- <form class="form-horizontal" action="{FULLURL:IN_PATH}/?login" method="post">
-  <div class="control-group">
-   <label class="control-label" for="inputLogin{UNIQID}">Логин:</label>
-   <div class="controls">
-    <input id="inputLogin{UNIQID}" type="text" name="login" value="" />
-   </div>
-  </div>
-  <div class="control-group">
-   <label class="control-label" for="inputPassword{UNIQID}">Пароль:</label>
-   <div class="controls">
-    <input id="inputPassword{UNIQID}" type="password" name="password" value="" />
-   </div>
-  </div>
-  <div class="control-group">
-   <div class="controls">
-    <label class="checkbox">
-     <input type="checkbox" name="set-auto-login" value="1" /> Запомнить меня
-    </label>
-   </div>
-  </div>
-  <div class="control-group">
-   <div class="controls">
+ {!WRITE:FORM_CONTROLS}
+    {VIS:SONE_HTML_WIDGET_FORM_HORISONTAL_INPUT|label="Логин:"|name="login"|type="text"|width=4}
+    {VIS:SONE_HTML_WIDGET_FORM_HORISONTAL_INPUT|label="Пароль:"|name="password"|type="password"|width=4}
+    {VIS:SONE_HTML_WIDGET_FORM_HORISONTAL_CHECKBOX|label="Запомнить меня"|name="set-auto-login"|width=4}
+ {!WRITE:FORM_BUTTONS}
     <button type="submit" class="btn btn-primary">{L_EDITOR_SUBMIT_LOGIN}</button>
-   </div>
-  </div>
- </form>
+ {!WRITE:FORM_ACTION}{FULLURL:IN_PATH}/?login{WRITE}
+    {VIS:SONE_HTML_WIDGET_FORM_HORISONTAL|controls=FORM_CONTROLS|buttons=FORM_BUTTONS|action=FORM_ACTION}
 </fieldset>
 {IF:IN_registerAllowed}
 <fieldset id="loginpageRegister"{!IF:IN_actionState="register"} style="display: none;"{/IF}>
@@ -358,13 +331,15 @@
   <a href="#" class="loginpageShowLogin" onclick="return false;">Вход</a>
   / <strong>Регистрация</strong>
  </legend>
- <form action="{FULLURL:IN_PATH}/?register" method="post">
-  <label>Имя/ник: <br/><input type="text" name="reg_name" value="{!IN_REG_NAME}" autocomplete="off" /></label>
-  <label>Логин: <br/><input type="text" name="reg_login" value="{!IN_REG_LOGIN}" autocomplete="off" /></label>
-  <label>Пароль: <br/><input type="password" name="reg_password" value="{!IN_REG_PASSWORD}" autocomplete="off" /></label>
-  <label>e-Mail: <br/><input type="text" name="reg_email" value="{!IN_REG_EMAIL}" autocomplete="off" /></label>
-  <button class="btn btn-primary" type="submit">{L_EDITOR_SUBMIT_REGISTER}</button>
- </form>
+  {!WRITE:FORM_CONTROLS}
+    {VIS:SONE_HTML_WIDGET_FORM_HORISONTAL_INPUT|label="Имя/ник:"|name="reg_name"|type="text"|width=4|value=IN_REG_NAME|noAutocomplete=1}
+    {VIS:SONE_HTML_WIDGET_FORM_HORISONTAL_INPUT|label="Логин:"|name="reg_login"|type="text"|width=4|value=IN_REG_LOGIN|noAutocomplete=1}
+    {VIS:SONE_HTML_WIDGET_FORM_HORISONTAL_INPUT|label="Пароль:"|name="reg_password"|type="password"|width=4|value=IN_REG_PASSWORD|noAutocomplete=1}
+    {VIS:SONE_HTML_WIDGET_FORM_HORISONTAL_INPUT|label="e-Mail:"|name="reg_email"|type="text"|width=4|value=IN_REG_EMAIL|noAutocomplete=1}
+  {!WRITE:FORM_BUTTONS}
+    <button class="btn btn-primary" type="submit">{L_EDITOR_SUBMIT_REGISTER}</button>
+  {!WRITE:FORM_ACTION}{FULLURL:IN_PATH}/?register{WRITE}
+    {VIS:SONE_HTML_WIDGET_FORM_HORISONTAL|controls=FORM_CONTROLS|buttons=FORM_BUTTONS|action=FORM_ACTION}
 </fieldset>
 {/IF}
 <script type="text/javascript">
@@ -384,39 +359,35 @@
 
 <<+ 'SONE_OBJECT_CONSTRUCTOR'>>
 <h2>{!IN_CAPTION}</h2>
-<form id="constructorForm" action="{FULLURL:IN_PATH}/?prepare" method="POST">
-    <fieldset>
-        <legend>Параметры объекта:</legend>
-        <label>Класс:
-            <select name="class">
-                <option value="HTMLPage">HTML-страница</option>
-                <option value="BlogRoot">Блог</option>
-                <option value="Poll">Опрос/Анкета</option>
-                <option value="Form">Форма</option>
-                <option value="FileIndex">Обзор файлов</option>
-                <option value="Redirector">Внешняя ссылка</option>
-            </select>
-        </label>
-        <label>
-            Родитель:
-            <select name="parentPath">
-                <option value=""> ---</option>
-                {IN_PATHOPTIONS}
-            </select>
-        </label>
-        <label>
-            Путь:
-            <span class="input-prepend">
-                <span class="add-on" id="constructorForm-parentPath">{C_ROOTURL}</span><input class="span3" type="text" name="path" />
-            </span>
-        </label>
-    </fieldset>
-    <div class="form-actions">
-        <button class="btn btn-primary" type="submit">Создать</button>
-    </div>
-</form>
+<div class="well well-sm"><fieldset>
+    <legend>Параметры объекта:</legend>
 
-<hr/>
+{!WRITE:CLASS_OPTIONS}
+    <option value="HTMLPage">HTML-страница</option>
+    <option value="BlogRoot">Блог</option>
+    <option value="Poll">Опрос/Анкета</option>
+    <option value="Form">Форма</option>
+    <option value="FileIndex">Обзор файлов</option>
+    <option value="Redirector">Внешняя ссылка</option>
+{!WRITE:PARENT_OPTIONS}
+    <option value=""> ---</option>
+    {IN_PATHOPTIONS}
+{!WRITE:PATH_CONTROL}
+    <span class="input-group">
+        <span class="input-group-addon" id="constructorForm-parentPath">{C_ROOTURL}</span>
+        <input class="form-control" type="text" name="path" />
+    </span>
+{!WRITE:FORM_CONTROLS}
+    {VIS:SONE_HTML_WIDGET_FORM_HORISONTAL_SELECT|label="Класс:"|name="class"|options=CLASS_OPTIONS|width=4}
+    {VIS:SONE_HTML_WIDGET_FORM_HORISONTAL_SELECT|label="Родитель:"|name="parentPath"|options=PARENT_OPTIONS|width=4}
+    {VIS:SONE_HTML_WIDGET_FORM_HORISONTAL_CONTROL|label="Путь:"|controls=PATH_CONTROL|width=6}
+{!WRITE:FORM_BUTTONS}
+    <button class="btn btn-primary" type="submit">Создать</button>
+{!WRITE:FORM_ACTION}{FULLURL:IN_PATH}/?prepare{WRITE}
+    {VIS:SONE_HTML_WIDGET_FORM_HORISONTAL|controls=FORM_CONTROLS|buttons=FORM_BUTTONS|action=FORM_ACTION|id="constructorForm"}
+
+</fieldset></div>
+
 <div id="constructorObjectContainer"></div>
 
 <script type="text/javascript">
@@ -426,7 +397,7 @@
         });
         $('select[name="parentPath"]', '#constructorForm').change(function () {
             $('#constructorForm-parentPath').text('{C_ROOTURL}'+$(this).val());
-        }).sOneSelect();
+        }); /* .sOneSelect(); */
         $('#constructorForm').submit(function () {
             $('#constructorObjectContainer').text('Загрузка ...').load(this.action + '&' + $(this).serialize(), function() {
                 $.SOne.prepareContent('#constructorObjectContainer');
@@ -439,7 +410,7 @@
 
 <<+ 'SONE_OBJECT_CONSTRUCTOR_FRAME'>>
 {!IF:IN_hideCaption}<h2>{!IN_CAPTION}</h2>{/IF}
-{IF:IN_ERRORS}<div class="alert alert-error">
+{IF:IN_ERRORS}<div class="alert alert-danger">
     {IN_ERRORS}
 </div>{/IF}
 {IN_CONTENT}
@@ -452,16 +423,13 @@
 
 <<+ 'SONE_OBJECT_REDIRECTOR'>>
 {IF:IN_actionState="edit"}
-    {!WRITE:formElements}
-    <label>
-        Ссылка для перехода:
-        <input type="text" name="redirectUrl" value="{!IN_redirectUrl}" style="width: 600px;" />
-    </label>
-    {WRITE}
-    {VIS:SONE_OBJECT_EDITFORM|formElements=formElements|_}
+{!WRITE:formElements}
+    {VIS:SONE_HTML_WIDGET_FORM_INPUT|label="Ссылка для перехода:"|name="redirectUrl"|type="text"|value=IN_redirectUrl}
+{WRITE}
+{VIS:SONE_OBJECT_EDITFORM|formElements=formElements|_}
 {ELSE}
     {IF:IN_canEdit}<div class="pull-right">
-        <a class="btn" href="{FULLURL:IN_PATH}?edit"><i class="icon-pencil"></i> Править</a>
+        <a class="btn btn-default" href="{FULLURL:IN_PATH}?edit"><i class="glyphicon glyphicon-pencil"></i> Править</a>
     </div>{/IF}
     <h3>{!IN_CAPTION}</h3>
     <a href="{!FULLURL:IN_redirectUrl}">{!IN_redirectUrl}</a>
@@ -469,7 +437,7 @@
 <<- 'SONE_OBJECT_REDIRECTOR'>>
 
 <<+ 'SONE_WIDGET_PANEL'>>
-<div class="well well-small">{IN_content}</div>
+<div class="well well-sm">{IN_content}</div>
 <<- 'SONE_WIDGET_PANEL'>>
 
 <<+ 'SONE_WIDGET_CONTAINER'>>
@@ -477,20 +445,20 @@
 <<- 'SONE_WIDGET_CONTAINER'>>
 
 <<+ 'SONE_WIDGET_NAVBAR'>>
-<div class="navbar {IF:IN_fixed="bottom"}navbar-fixed-bottom{ELSEIF:IN_fixed}navbar-fixed-top{/IF}">
-    <div class="navbar-inner">
-        <div class="container">
-            {IF:IN_brand}
-                <a class="brand" href="{FULLURL:""}">
-                    {IN_brand}
-                </a>
-            {/IF}
-            {IF:IN_links}
-                <ul class="nav">
-                    {IN_links}
-                </ul>
-            {/IF}
-        </div>
+<div class="navbar navbar-default {IF:IN_fixed="bottom"}navbar-fixed-bottom{ELSEIF:IN_fixed}navbar-fixed-top{/IF}">
+    <div {IF:IN_fixed}class="container"{/IF}>
+    {IF:IN_brand}
+    <div class="navbar-header">
+        <a class="navbar-brand" href="{FULLURL:""}">
+            {IN_brand}
+        </a>
+    </div>
+    {/IF}
+    {IF:IN_links}
+        <ul class="nav navbar-nav">
+            {IN_links}
+        </ul>
+    {/IF}
     </div>
 </div>
 {IF:IN_fixed}
@@ -510,7 +478,7 @@
 
 
 <<+ 'SONE_WIDGET_PAGINATOR'>>
-<div class="pagination pagination-centered btn-small"><ul>
+<div class="text-center"><ul class="pagination pagination-sm">
     {in_links}
 </ul></div>
 <<- 'SONE_WIDGET_PAGINATOR'>>
@@ -528,7 +496,7 @@
 <<+ 'SONE_WIDGET_TAGCLOUD_BLOCK'>>
 {IF:IN_tags}
 {WRITE:blockId}{RANDOM:100|999}{WRITE}
-<div id="tagcloud_{blockId}" class="well well-small">
+<div id="tagcloud_{blockId}" class="well well-sm">
     <legend>{IF:IN_title}{IN_title}{ELSE}Облако тегов{/IF}</legend>
     <div style="overflow: hidden; text-overflow: ellipsis;">{IN_tags}</div>
 </div>
@@ -547,28 +515,28 @@
 <<- 'SONE_WIDGET_TAGCLOUD_ITEM'>>
 
 <<+ 'SONE_WIDGET_TIMECHECK_BLOCK'>>
-{WRITE:cid}{RANDOM:100|999}{WRITE}
-<div id="timecheck-{cid}" style="display: none;"></div>
+<div id="timecheck-{UNIQID}" style="display: none;"></div>
 <script type="text/javascript">
 require(['jquery'], function($) {
     $.get('{FULLURL:"/ping.php"}?'+Math.random(), function (serverTime) {
         var clientShift = serverTime - (new Date()).valueOf();
 
         if (Math.abs(clientShift) > 120 * 1000) {
-            $('#timecheck-{cid}')
-                    .html('Похоже, часы на вашем компьютере настроены неверно. \
-                Верное время для вашего часового пояса: <span>' + new Date(serverTime).format('dd mmm yyyy HH:MM') + '</span>\
-                <a class="close" href="#"><i class="icon-remove"></i></a>')
-                    .addClass('alert alert-error').show();
+            $('#timecheck-{UNIQID}')
+                    .html('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>\
+                Похоже, часы на вашем компьютере настроены неверно. \
+                Верное время для вашего часового пояса: <span>' + new Date(serverTime).format('dd mmm yyyy HH:MM') + '</span>')
+                    .addClass('alert alert-danger').show();
 
             var interval = setInterval(function () {
                 serverTime = (new Date()).valueOf() + clientShift;
-                $('#timecheck-{cid}').find('span').text(new Date(serverTime).format('dd mmm yyyy HH:MM'));
+                $('#timecheck-{UNIQID}').find('span').text(new Date(serverTime).format('dd mmm yyyy HH:MM'));
             }, 10 * 1000);
 
-            $('#timecheck-{cid}').find('a').click(function () {
+            $('#timecheck-{UNIQID}').find('button').click(function () {
                 clearInterval(interval);
-                $('#timecheck-{cid}').remove();
+                $('#timecheck-{UNIQID}').remove();
+                return false;
             })
         }
     })
