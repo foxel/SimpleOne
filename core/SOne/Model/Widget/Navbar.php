@@ -45,26 +45,36 @@ class SOne_Model_Widget_Navbar extends SOne_Model_Widget
         if (!empty($this->data['links'])) {
             $app = $env->getApp();
             $currentPath = $app->getRequest()->path;
-            $links = array();
             foreach ($this->data['links'] as $id => $link) {
+                $linkNode = new FVISNode('SONE_WIDGET_NAVBAR_LINK', 0, $env->getVIS());
+
                 if (!is_array($link)) {
                     $link = array(
                         'caption' => $link,
                         'href'    => $id,
                     );
-                } else {
-                    $link += array(
-                        'caption' => $id,
-                        'href'    => $id,
-                    );
+                } elseif (isset($link['links'])) {
+                    $subLinks = array();
+                    $linkNode->setType('SONE_WIDGET_NAVBAR_DROPDOWN');
+                    foreach ($link['links'] as $subId => $subLink) {
+                        if (!is_array($subLink)) {
+                            $subLink = array(
+                                'caption' => $subLink,
+                                'href'    => $subId,
+                            );
+                        }
+                        $subLink['active'] = (trim($currentPath, '/') == trim($subLink['href'], '/'));
+                        $subLinks[] = $subLink;
+                    }
+                    unset($link['links']);
+                    $subLinksNode = new FVISNode('SONE_WIDGET_NAVBAR_LINK', FVISNode::VISNODE_ARRAY, $env->getVIS());
+                    $subLinksNode->addDataArray($subLinks);
+                    $linkNode->appendChild('links', $subLinksNode, true);
                 }
-                $link['active'] = (trim($currentPath, '/').'/' == trim($link['href'], '/').'/');
-                $links[] = $link;
+                $link['active'] = isset($link['href']) && (trim($currentPath, '/') == trim($link['href'], '/'));
+                $linkNode->addDataArray($link);
+                $node->appendChild('links', $linkNode, false);
             }
-
-            $linksNode = new FVISNode('SONE_WIDGET_NAVBAR_LINK', FVISNode::VISNODE_ARRAY, $env->getVIS());
-            $linksNode->addDataArray($links);
-            $node->appendChild('links', $linksNode, true);
         }
         return $node;
     }

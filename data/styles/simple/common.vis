@@ -445,19 +445,34 @@
 <<- 'SONE_WIDGET_CONTAINER'>>
 
 <<+ 'SONE_WIDGET_NAVBAR'>>
-<div class="navbar navbar-default {IF:IN_fixed="bottom"}navbar-fixed-bottom{ELSEIF:IN_fixed}navbar-fixed-top{/IF}">
+<div class="navbar navbar-default {IF:IN_fixed="bottom"}navbar-fixed-bottom{ELSEIF:IN_fixed}navbar-fixed-top{/IF}" role="navigation">
     <div {IF:IN_fixed}class="container"{/IF}>
-    {IF:IN_brand}
+
     <div class="navbar-header">
+        {IF:IN_links}
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-{UNIQID}">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        {/IF}
+        {IF:IN_brand}
         <a class="navbar-brand" href="{FULLURL:""}">
             {IN_brand}
         </a>
+        {/IF}
     </div>
-    {/IF}
+
     {IF:IN_links}
+        <div class="collapse navbar-collapse" id="navbar-collapse-{UNIQID}">
         <ul class="nav navbar-nav">
             {IN_links}
         </ul>
+        </div>
+        <script type="text/javascript">//<!--
+            require(['bootstrap.collapse', 'bootstrap.dropdown']);
+        // --></script>
     {/IF}
     </div>
 </div>
@@ -475,6 +490,15 @@
     <a href="{!FULLURL:IN_href}">{!IN_caption}</a>
 </li>
 <<- 'SONE_WIDGET_NAVBAR_LINK'>>
+
+<<+ 'SONE_WIDGET_NAVBAR_DROPDOWN'>>
+<li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">{!IN_caption} <b class="caret"></b></a>
+    <ul class="dropdown-menu">
+        {IN_links}
+    </ul>
+</li>
+<<- 'SONE_WIDGET_NAVBAR_DROPDOWN'>>
 
 
 <<+ 'SONE_WIDGET_PAGINATOR'>>

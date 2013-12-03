@@ -28,6 +28,8 @@ require.config({
         "select2.i18n": "../libs/select2/js/i18n/select2_locale_ru",
         /* bootstrap */
         "bootstrap.transition": "../libs/bootstrap/js/transition",
+        "bootstrap.collapse": "../libs/bootstrap/js/collapse",
+        "bootstrap.dropdown": "../libs/bootstrap/js/dropdown",
         "bootstrap.modal": "../libs/bootstrap/js/modal",
         "bootstrap.tooltip": "../libs/bootstrap/js/tooltip",
         "bootstrap.carousel": "../libs/bootstrap/js/carousel"
@@ -35,6 +37,8 @@ require.config({
     shim: {
         "bootstrap.transition": ["jquery"],
         "bootstrap.modal": ["jquery", "bootstrap.transition"],
+        "bootstrap.collapse": ["jquery", "bootstrap.transition"],
+        "bootstrap.dropdown": ["jquery", "bootstrap.transition"],
         "bootstrap.tooltip": ["jquery", "bootstrap.transition"],
         "bootstrap.carousel": ["jquery", "bootstrap.transition"],
         "jquery.chosen": ["jquery"],
