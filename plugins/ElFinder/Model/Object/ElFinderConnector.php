@@ -204,12 +204,9 @@ class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
                 : PHP_INT_MAX;
         }
 
-        $addWatermark = $watermarkFont = $watermarkText = $watermarkSize = null;
+        $addWatermark = false;
         if (isset($this->_config['watermarkFont']) && isset($this->_config['watermarkText'])) {
             $imageActionsNeeded = $addWatermark = true;
-            $watermarkFont = realpath($this->_config['watermarkFont']);
-            $watermarkText = $this->_config['watermarkText'];
-            $watermarkSize = isset($this->_config['watermarkSize']) ? $this->_config['watermarkSize'] : 22;
         }
 
         foreach ($result['added'] as &$file) {
@@ -236,7 +233,12 @@ class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
                         }
                     }
                 }
-                if ($addWatermark && $this->_watermark($path, $watermarkText, $watermarkFont, $watermarkSize)) {
+                $watermarkFont  = realpath($this->_config['watermarkFont']);
+                $watermarkText  = $this->_config['watermarkText'];
+                $watermarkSize  = isset($this->_config['watermarkSize']) ? $this->_config['watermarkSize'] : 22;
+                $watermarkAlign = isset($this->_config['watermarkAlign']) ? $this->_getAlignOption($this->_config['watermarkAlign']) : 0;
+                $watermarkAlpha = isset($this->_config['watermarkOpacity']) ? intval($this->_config['watermarkOpacity']) : null;
+                if ($addWatermark && $this->_watermark($path, $watermarkText, $watermarkFont, $watermarkSize, $watermarkAlign, $watermarkAlpha)) {
                     $file['ts'] = filemtime($path);
                     $file['size'] = @filesize($path);
                     $iData = getimagesize($path);
@@ -271,18 +273,50 @@ class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
      * @param string $text
      * @param string $fontFile
      * @param int|string $fontSize
+     * @param int $align
+     * @param int $opacity
      * @return bool
      */
-    protected function _watermark($path, $text, $fontFile, $fontSize = 24)
+    protected function _watermark($path, $text, $fontFile, $fontSize = 24, $align = 0, $opacity = null)
     {
         if ($img = K3_Image::load($path)) {
-            $img->watermark($text, $fontFile, $fontSize);
+            $img->watermark($text, $fontFile, $fontSize, $align, $opacity);
             $result = $img->save($path, null, $img->getFormat() == IMAGETYPE_JPEG ? 100 : 7);
 
             return $result;
         }
 
         return false;
+    }
+
+    /**
+     * @param string $alignName
+     * @return int
+     */
+    protected function _getAlignOption($alignName)
+    {
+        switch (strtolower($alignName)) {
+            case 'top':
+                return K3_Image::ALIGN_TOP + K3_Image::ALIGN_CENTER;
+            case 'top-left':
+                return K3_Image::ALIGN_TOP + K3_Image::ALIGN_LEFT;
+            case 'top-right':
+                return K3_Image::ALIGN_TOP + K3_Image::ALIGN_RIGHT;
+            case 'center':
+                return K3_Image::ALIGN_MIDDLE + K3_Image::ALIGN_CENTER;
+            case 'left':
+                return K3_Image::ALIGN_MIDDLE + K3_Image::ALIGN_LEFT;
+            case 'right':
+                return K3_Image::ALIGN_MIDDLE + K3_Image::ALIGN_RIGHT;
+            case 'bottom':
+                return K3_Image::ALIGN_BOTTOM + K3_Image::ALIGN_CENTER;
+            case 'bottom-left':
+                return K3_Image::ALIGN_BOTTOM + K3_Image::ALIGN_LEFT;
+            case 'bottom-right':
+                return K3_Image::ALIGN_BOTTOM + K3_Image::ALIGN_RIGHT;
+            default:
+                return 0;
+        }
     }
 
 }

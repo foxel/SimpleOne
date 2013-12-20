@@ -81,6 +81,8 @@ staticRoutes.uploader.roots.0.uploadOrder => allow,deny
 #staticRoutes.uploader.watermarkFont  => {F_DATA_ROOT}/font.otf
 #staticRoutes.uploader.watermarkText => Hi there!
 #staticRoutes.uploader.watermarkSize => 20
+#staticRoutes.uploader.watermarkAlign => center
+#staticRoutes.uploader.watermarkOpacity => 70
 
 plugins.ElFinder.connectorUrl => uploader
 
