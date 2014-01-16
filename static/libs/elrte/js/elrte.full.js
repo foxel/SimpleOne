@@ -8910,7 +8910,7 @@ elRTE.prototype.ui.prototype.buttons.tbrowrm = function(rte, name) {
 		}
 
 		this.set = function(url, w, h) {
-			var youtubeID = (url.match(/youtu\.be\/(\w+)/) || url.match(/youtube.com\/watch\?(?:[^&]+&)*v=(\w+)/) || [])[1];
+			var youtubeID = (url.match(/youtu\.be\/([^&\?]+)/) || url.match(/youtube.com\/watch\?(?:[^&]+&)*v=([^&\?]+)/) || [])[1];
 			if (youtubeID) {
 				var toinsert = '<iframe width="'+w+'" height="'+h+'" src="http://www.youtube.com/embed/'+youtubeID+'?wmode=transparent" frameborder="0" allowfullscreen="true"> </iframe>';
 				var id = 'youtube-'+Math.random().toString().substring(2);
