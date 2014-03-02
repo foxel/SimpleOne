@@ -280,7 +280,7 @@
 {IF:IN_actionState="edit"}
     {!WRITE:formElements}
     {VIS:SONE_HTML_WIDGET_FORM_CHECKBOX|label="Разрешить генерацию RSS-потока"|name="rssEnabled"|checked=IN_rssEnabled}
-    {VIS:SONE_HTML_WIDGET_FORM_SELECT|label="Источники сообщений"|name="blogIds"|multiple=1|options=IN_blogOptions}
+    {VIS:SONE_HTML_WIDGET_FORM_SELECT|label="Источники сообщений"|name="blogIds[]"|multiple=1|options=IN_blogOptions}
     {WRITE}
     {VIS:SONE_OBJECT_EDITFORM|formElements=formElements|_}
 {ELSE}
