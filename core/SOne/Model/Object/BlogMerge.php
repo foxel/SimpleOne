@@ -49,8 +49,9 @@ class SOne_Model_Object_BlogMerge extends SOne_Model_Object_BlogRoot
                     continue;
                 }
                 $blogOptions[] = array(
-                    'value'   => $item->id,
-                    'caption' => $item->caption,
+                    'value'    => $item->id,
+                    'caption'  => $item->caption,
+                    'selected' => in_array($item->id, $this->blogIds) ? 1 : null,
                 );
             }
 

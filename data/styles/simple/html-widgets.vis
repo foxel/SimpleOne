@@ -117,5 +117,5 @@
 <<- 'SONE_HTML_WIDGET_FORM_SELECT'>>
 
 <<+ 'SONE_HTML_WIDGET_FORM_SELECT_OPTION'>>
-<option value="{!IN_VALUE}" title="{!IN_TITLE}">{!IN_CAPTION}</option>
+<option value="{!IN_VALUE}" title="{!IN_TITLE}" {IF:IN_SELECTED}selected="selected"{/IF}>{!IN_CAPTION}</option>
 <<- 'SONE_HTML_WIDGET_FORM_SELECT_OPTION'>>
