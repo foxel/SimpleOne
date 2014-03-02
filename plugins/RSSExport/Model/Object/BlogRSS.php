@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2014 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -113,15 +113,16 @@ class RSSExport_Model_Object_BlogRSS extends SOne_Model_Object
             return array();
         }
 
-        /** @var $repo SOne_Repository_Object */
-        $repo = SOne_Repository_Object::getInstance($env->getDb());
-        $filter = array(
-            'parentId='  => $repo->loadIds(array('path=' => $this->blogPath), true),
-            'class='     => 'BlogItem',
-            'published=' => true,
-        );
+        /** @var $blogObject SOne_Model_Object_BlogRoot */
+        $blogObject = SOne_Repository_Object::getInstance($env->db)->loadOne(array(
+            'path=' => $this->blogPath,
+        ));
 
-        $items = $repo->loadAll($filter, false, $perPage, $pageOffset * $perPage, $totalItems);
+        if (!$blogObject instanceof SOne_Model_Object_BlogRoot) {
+            return array();
+        }
+
+        $items = $blogObject->loadListItems($env, $perPage, $pageOffset*$perPage, $totalItems);
 
         $userIds = array();
         foreach ($items as $item) {
