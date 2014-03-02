@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2014 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -88,7 +88,7 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
             ));
 
             foreach ($items as $item) {
-                $node->appendChild('items', $item->visualizeForList($env));
+                $node->appendChild('items', $item->visualizeForList($env, $this->path));
             }
             $node->addData('totalItems', $totalItems, true)
                 ->addData('itemsCount', count($items));
@@ -155,6 +155,29 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
         }
 
         $repo = SOne_Repository_Object::getInstance($this->_db);
+        $filter = $this->_prepareFilter($env);
+
+        // $cloud = SOne_Repository_Tag::getInstance($this->_db)->getTagsCloud(array('parentId=' => $this->id));
+        $items = $repo->loadAll($filter, false, $perPage, $pageOffset*$perPage, $totalItems);
+
+        $userIds = array();
+        foreach ($items as $item) {
+            $userIds[] = $item->ownerId;
+        }
+
+        /** @var $usersRepo SOne_Repository_User */
+        $usersRepo = SOne_Repository_User::getInstance($this->_db);
+        $usersRepo->prepareFetch(array('id=' => array_unique($userIds)));
+
+        return $items;
+    }
+
+    /**
+     * @param SOne_Environment $env
+     * @return array
+     */
+    public function _prepareFilter(SOne_Environment $env)
+    {
         $filter = array(
             'parentId=' => $this->id,
             'class='    => 'BlogItem',
@@ -197,19 +220,7 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
             }
         }
 
-        // $cloud = SOne_Repository_Tag::getInstance($this->_db)->getTagsCloud(array('parentId=' => $this->id));
-        $items = $repo->loadAll($filter, false, $perPage, $pageOffset*$perPage, $totalItems);
-
-        $userIds = array();
-        foreach ($items as $item) {
-            $userIds[] = $item->ownerId;
-        }
-
-        /** @var $usersRepo SOne_Repository_User */
-        $usersRepo = SOne_Repository_User::getInstance($this->_db);
-        $usersRepo->prepareFetch(array('id=' => array_unique($userIds)));
-
-        return $items;
+        return $filter;
     }
 
     /**

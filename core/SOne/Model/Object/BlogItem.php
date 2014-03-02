@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2014 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -86,13 +86,16 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
 
     /**
      * @param SOne_Environment $env
+     * @param string $parentPath
      * @return FVISNode
      */
-    public function visualizeForList(SOne_Environment $env)
+    public function visualizeForList(SOne_Environment $env, $parentPath = null)
     {
         $node = new FVISNode('SONE_OBJECT_BLOG_LISTITEM', 0, $env->getVIS());
         $data = $this->pool;
-        $parentPath = preg_replace('#/[^/]+$#', '', $this->path);
+        if (is_null($parentPath)) {
+            $parentPath = preg_replace('#/[^/]+$#', '', $this->path);
+        }
 
         unset($data['comments']);
 

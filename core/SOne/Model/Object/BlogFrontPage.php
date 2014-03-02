@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2013 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2013 - 2014 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -40,10 +40,9 @@ class SOne_Model_Object_BlogFrontPage extends SOne_Model_Object
         /** @var $blogObject SOne_Model_Object_BlogRoot */
         $blogObject = SOne_Repository_Object::getInstance($env->db)->loadOne(array(
             'path='  => $this->blogPath,
-            'class=' => BlogRoot,
         ));
 
-        if (!$blogObject) {
+        if (!$blogObject instanceof SOne_Model_Object_BlogRoot) {
             return $node;
         }
 
