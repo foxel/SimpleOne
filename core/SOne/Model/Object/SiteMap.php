@@ -46,8 +46,13 @@ class SOne_Model_Object_SiteMap extends SOne_Model_Object
             $urlNode->addChild('loc', FStr::fullUrl($item, true));
         }
 
+        $today = new DateTime();
+        $today->setTime(0, 0, 0);
+
         $env->response->write($xml->asXML())->sendBuffer(F::INTERNAL_ENCODING, array(
-            'contentType' => 'text/xml'
+            'contentType' => 'text/xml',
+            'contentTime' => $today->getTimestamp(),
+            'contentCacheTime' => 3600,
         ));
     }
 }
