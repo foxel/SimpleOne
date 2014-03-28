@@ -48,8 +48,11 @@ class Google_Model_Widget_BlogPopular extends SOne_Model_Widget
         $container = new FVISNode('SONE_GOOGLE_WIDGET_POPULAR_BLOCK', 0, $vis);
         $container->addDataArray($this->pool);
 
-        if ($pageObject instanceof SOne_Model_Object_BlogMerge && $pageObject->blogIds) {
-            $blogObject = SOne_Repository_Object::getInstance($db)->loadOne(array('id=' => reset($pageObject->blogIds)));
+        if ($pageObject instanceof SOne_Model_Object_BlogMerge) {
+            $blogObject = SOne_Repository_Object::getInstance($db)->loadOne($this->blogPath
+                ? array('path=' => $this->blogPath)
+                : array('id=' => reset($pageObject->blogIds))
+            );
         } elseif ($pageObject instanceof SOne_Model_Object_BlogRoot) {
             $blogObject = $pageObject;
         } elseif ($pageObject instanceof SOne_Model_Object_BlogItem) {
