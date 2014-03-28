@@ -48,30 +48,38 @@ class Google_Model_Widget_BlogPopular extends SOne_Model_Widget
         $container = new FVISNode('SONE_GOOGLE_WIDGET_POPULAR_BLOCK', 0, $vis);
         $container->addDataArray($this->pool);
 
-        if ($this->blogPath) {
+        if ($pageObject instanceof SOne_Model_Object_BlogMerge && $pageObject->blogIds) {
+            $blogObject = SOne_Repository_Object::getInstance($db)->loadOne(array('id=' => reset($pageObject->blogIds)));
+        } elseif ($pageObject instanceof SOne_Model_Object_BlogRoot) {
+            $blogObject = $pageObject;
+        } elseif ($pageObject instanceof SOne_Model_Object_BlogItem) {
+            $blogObject = SOne_Repository_Object::getInstance($db)->loadOne(array('id=' => $pageObject->parentId));
+        } elseif ($this->blogPath) {
             $blogObject = SOne_Repository_Object::getInstance($db)->loadOne(array('path=' => $this->blogPath));
         } else {
-            $blogObject = $pageObject;
+            return $container;
         }
 
-        if ($blogObject instanceof SOne_Model_Object_BlogRoot || $blogObject instanceof SOne_Model_Object_BlogItem) {
-            $topObjects = $this->_getTopObjects($blogObject, $db, $this->limit);
+        if (!$blogObject instanceof SOne_Model_Object_BlogRoot) {
+            return $container;
+        }
 
-            $items = array();
-            foreach ($topObjects as $object) {
-                $items[] = array(
-                    'id'      => $object->id,
-                    'path'    => $object->path,
-                    'caption' => $object->caption,
-                    'image'   => $object->thumbnailImage,
-                );
-            }
+        $topObjects = $this->_getTopObjects($blogObject, $db, $this->limit);
 
-            if ($items) {
-                $tagsNode = new FVISNode('SONE_GOOGLE_WIDGET_POPULAR_ITEM', FVISNode::VISNODE_ARRAY, $vis);
-                $tagsNode->addDataArray($items);
-                $container->appendChild('items', $tagsNode);
-            }
+        $items = array();
+        foreach ($topObjects as $object) {
+            $items[] = array(
+                'id'      => $object->id,
+                'path'    => $object->path,
+                'caption' => $object->caption,
+                'image'   => $object->thumbnailImage,
+            );
+        }
+
+        if ($items) {
+            $tagsNode = new FVISNode('SONE_GOOGLE_WIDGET_POPULAR_ITEM', FVISNode::VISNODE_ARRAY, $vis);
+            $tagsNode->addDataArray($items);
+            $container->appendChild('items', $tagsNode);
         }
 
         return $container;
@@ -81,14 +89,12 @@ class Google_Model_Widget_BlogPopular extends SOne_Model_Widget
      * @param SOne_Model_Object_BlogRoot $blogObject
      * @param FDataBase $db
      * @param int|null $limit
-     * @internal param int $blogId
-     * @internal param string $blogPath
      * @return SOne_Model_Object
      */
     protected function _getTopObjects(SOne_Model_Object_BlogRoot $blogObject, FDataBase $db, $limit = null)
     {
-        $blogId   = $blogObject instanceof SOne_Model_Object_BlogRoot ? $blogObject->id   : $blogObject->parentId;
-        $blogPath = $blogObject instanceof SOne_Model_Object_BlogRoot ? $blogObject->path : preg_replace('#/[^/]+$#', '', trim($blogObject->path, '/'));
+        $blogId   = $blogObject->id;
+        $blogPath = $blogObject->path;
 
         $rawStats = Google_Bootstrap::getPluginInstance()->fetchStats($blogPath.'/', false);
 
