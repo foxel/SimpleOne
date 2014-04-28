@@ -20,26 +20,28 @@
 <<+ 'SONE_GOOGLE_ANALYTICS_JS'>>
 <script type="text/javascript">
 // JavaScript Starts Here <![CDATA[
-    var _gaq = _gaq || [];
-    _gaq.push(
-        ['_setAccount', {JS_DEF:IN_accountId}],
-        {IF:IN_sampleRate}['_setSampleRate', {STRFORMAT:"%d"|IN_sampleRate}],{/IF}
-        {IF:IN_sessionCookieTimeout}['_setSessionCookieTimeout', {STRFORMAT:"%d"|IN_sessionCookieTimeout}],{/IF}
-        {IF:IN_visitorCookieTimeout}['_setVisitorCookieTimeout', {STRFORMAT:"%d"|IN_visitorCookieTimeout}],{/IF}
-        {IF:IN_siteSpeedSampleRate}['_setSiteSpeedSampleRate', {STRFORMAT:"%d"|IN_siteSpeedSampleRate}],{/IF}
-        {IF:IN_userId}['_setCustomVar', 1, 'User ID', '{IN_userId}', 2],{/IF}
-        ['_setCustomVar', 2, 'Page Class', '{IN_pageClass}', 3],
-        ['_trackPageview']
-    );
-
-    (function () {
-        var ga = document.createElement('script');
-        ga.type = 'text/javascript';
-        ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0];
-        s.parentNode.insertBefore(ga, s);
+    (function(){
+        window.GoogleAnalyticsObject = 'ga';
+        window.ga = window.ga || function(){
+            (window.ga.q=window.ga.q||[]).push(arguments);
+        };
+        window.ga.l=1*new Date();
+        var a = document.createElement('script'),
+            m = document.getElementsByTagName('script')[0];
+        a.async = 1;
+        a.src = '//www.google-analytics.com/analytics.js';
+        m.parentNode.insertBefore(a,m);
     })();
+
+    ga('create', {JS_DEF:IN_accountId}, {
+        {IF:IN_cookieTimeout}'cookieExpires': {STRFORMAT:"%d"|IN_cookieTimeout},{/IF}
+        {IF:IN_siteSpeedSampleRate}'siteSpeedSampleRate': {STRFORMAT:"%d"|IN_siteSpeedSampleRate},{/IF}
+        'sampleRate': {IF:IN_sampleRate}{STRFORMAT:"%d"|IN_sampleRate}{ELSE}100{/IF}
+    });
+
+    {IF:IN_userId}{IF:IN_userIdDimension}ga('set', {JS_DEF:IN_userIdDimension}, '{IN_userId}');{/IF}{/IF}
+    {IF:IN_pageClassDimension}ga('set', {JS_DEF:IN_pageClassDimension}, '{IN_pageClass}');{/IF}
+    ga('send', 'pageview');
 
 //]]> JavaScript ends here
 </script>

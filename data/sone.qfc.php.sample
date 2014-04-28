@@ -31,9 +31,10 @@ plugins.OAuth.baseDomain => simpleone.dev
 
 #plugins.Google.analytics.accountId => UA-XXXXXXXX-X
 #plugins.Google.analytics.sampleRate => 100
-#plugins.Google.analytics.sessionCookieTimeout => 1800000
-#plugins.Google.analytics.visitorCookieTimeout => 63072000000
+#plugins.Google.analytics.cookieTimeout => 63072000
 #plugins.Google.analytics.siteSpeedSampleRate => 1
+#plugins.Google.analytics.userIdDimension => dimension1
+#plugins.Google.analytics.pageClassDimension => dimension2
 
 #plugins.Google.cron.statPaths => blog
 
