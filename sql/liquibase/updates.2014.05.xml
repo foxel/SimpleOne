@@ -21,10 +21,10 @@
                    logicalFilePath="updates.2014.05">
     <changeSet id="data_binary" author="Foxel">
         <sql>
-            ALTER TABLE ${db.prefix}objects_data MODIFY data LONGBLOB;
+            ALTER TABLE ${db.prefix}objects_data MODIFY data LONGBLOB NOT NULL;
         </sql>
         <rollback>
-            ALTER TABLE ${db.prefix}objects_data MODIFY data LONGTEXT;
+            ALTER TABLE ${db.prefix}objects_data MODIFY data LONGTEXT NOT NULL;
         </rollback>
     </changeSet>
 </databaseChangeLog>
