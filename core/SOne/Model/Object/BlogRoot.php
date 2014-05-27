@@ -54,7 +54,7 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
                 ->write($rss->toXML())
                 ->sendBuffer(F::INTERNAL_ENCODING, array(
                     'contentType' => 'text/xml',
-                    'filename' => FStr::basename($this->path).'.xml',
+                    'filename' => K3_Util_File::basename($this->path).'.xml',
                 ));
         }
 
@@ -69,7 +69,7 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
         $currentPath = $this->path;
         if ($this->_filterParams) {
             foreach ($this->_filterParams as $key => $param) {
-                $currentPath .= '/'.FStr::urlencode($key).'/'.FStr::urlencode($param);
+                $currentPath .= '/'.K3_Util_Url::urlencode($key).'/'.K3_Util_Url::urlencode($param);
                 if ($key == 'author') {
                     $param = reset(SOne_Repository_User::getInstance($env->getDb())->loadNames(array('id' => (int)$param)));
                 }
@@ -83,8 +83,8 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
             $rootNode = $vis->getRootNode();
             $rootNode->addData('META', sprintf(
                 '<link rel="alternate" type="application/rss+xml" title="%s" href="%s?rss" />',
-                FStr::htmlschars($this->caption),
-                FStr::fullUrl($this->path)
+                K3_Util_String::escapeXML($this->caption),
+                K3_Util_Url::fullUrl($this->path, $env)
             ));
 
             foreach ($items as $item) {
@@ -106,7 +106,7 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
         }
 
         if ($this->actionState == 'new') {
-            $node->addData('newPath', $this->path.'/'.FStr::shortUID());
+            $node->addData('newPath', $this->path.'/'.K3_Util_String::shortUID());
             /*$lastOne = $this->_loadLastPublished($env);
             $node->addData('lastPubTime', $lastOne->createTime);*/
             $allTags = SOne_Repository_Tag::getInstance($this->_db)->loadNames();
@@ -134,8 +134,8 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
 
         $rss = new K3_RSS(array(
             'title'    => $this->caption,
-            'link'     => FStr::fullUrl($path, false, '', $env),
-            'feedLink' => FStr::fullUrl($path.'?rss', false, '', $env),
+            'link'     => K3_Util_Url::fullUrl($path, $env),
+            'feedLink' => K3_Util_Url::fullUrl($path.'?rss', $env),
         ), $items, $env);
 
         return $rss;
@@ -287,7 +287,7 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
             $this->pool['actionState'] = '';
         }
 
-        $this->_filterParams = FStr::getZendStyleURLParams($subPath);
+        $this->_filterParams = K3_Util_Url::parseZendStyleURLParams($subPath);
         $this->_subPath = $subPath;
         if (array_diff(array_keys($this->_filterParams), array('date', 'tag', 'author'))) {
             return new SOne_Model_Object_Page404(array('path' => $this->path.'/'.$subPath));

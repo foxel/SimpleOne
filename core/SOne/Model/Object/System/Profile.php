@@ -41,8 +41,8 @@ class SOne_Model_Object_System_Profile extends SOne_Model_Object
             ->addDataArray($this->pool)
             ->addDataArray((array)$this->refills + $user->toArray(), 'user_');
 
-        if ($env->session->get('dataSaved'.FStr::shortHash($this->path))) {
-            $env->session->drop('dataSaved'.FStr::shortHash($this->path));
+        if ($env->session->get('dataSaved'.K3_Util_String::shortHash($this->path))) {
+            $env->session->drop('dataSaved'.K3_Util_String::shortHash($this->path));
             $node->addData('dataSaved', 1);
         }
         return $node;
@@ -55,13 +55,13 @@ class SOne_Model_Object_System_Profile extends SOne_Model_Object
         $lang = $env->getLang();
         $user = $env->getUser();
 
-        $password = $env->request->getString('new_password1', K3_Request::POST, FStr::LINE);
-        $password2 = $env->request->getString('new_password2', K3_Request::POST, FStr::LINE);
-        $oldPassword = $env->request->getString('old_password', K3_Request::POST, FStr::LINE);
-        $username = $env->request->getString('user_name', K3_Request::POST, FStr::LINE);
+        $password = $env->request->getString('new_password1', K3_Request::POST, K3_Util_String::FILTER_LINE);
+        $password2 = $env->request->getString('new_password2', K3_Request::POST, K3_Util_String::FILTER_LINE);
+        $oldPassword = $env->request->getString('old_password', K3_Request::POST, K3_Util_String::FILTER_LINE);
+        $username = $env->request->getString('user_name', K3_Request::POST, K3_Util_String::FILTER_LINE);
 
         $errors = array();
-        $nameLen = FStr::strLen($username);
+        $nameLen = K3_String::strLength($username);
         if ($nameLen < 3 || $nameLen > 16) {
             $errors[] = $lang->lang('SONE_REGISTER_ERROR_NAME_INCORRECT');
         } elseif ($users->loadOne(array('name' => $username, 'id!=' => $user->id))) {
@@ -72,7 +72,7 @@ class SOne_Model_Object_System_Profile extends SOne_Model_Object
             if (!$user->checkPassword($oldPassword)) {
                 $errors[] = $lang->lang('SONE_PROFILE_ERROR_PASSWORD_INCORRECT');
             }
-            if (FStr::strLen($password) < 8) {
+            if (K3_String::strLength($password) < 8) {
                 $errors[] = $lang->lang('SONE_REGISTER_ERROR_PASSWORD_SHORT');
             }
             if ($password2 != $password) {
@@ -88,7 +88,7 @@ class SOne_Model_Object_System_Profile extends SOne_Model_Object
 
             $users->save($user);
             $this->pool['actionState'] = 'redirect';
-            $env->session->set('dataSaved'.FStr::shortHash($this->path), true);
+            $env->session->set('dataSaved'.K3_Util_String::shortHash($this->path), true);
         } else {
             $this->pool['errors'] = '<ul><li>'.implode('</li><li>', $errors).'</li></ul>';
             $this->pool['refills'] = array(

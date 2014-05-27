@@ -53,11 +53,11 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object
             unset($iterator);
             sort($out);
             foreach ($out as &$item) {
-                $item = FStr::fullUrl(implode('/', array_map('rawurlencode', explode('/', $item))));
+                $item = K3_Util_Url::fullUrl(implode('/', array_map('rawurlencode', explode('/', $item))), $env);
             }
             $env->getResponse()->write(implode(PHP_EOL, $out))->sendBuffer(F::INTERNAL_ENCODING, array(
                 'contentType' => 'audio/x-mpegurl',
-                'filename'    => FStr::basename($realPath).'.m3u',
+                'filename'    => K3_Util_File::basename($realPath).'.m3u',
             ), K3_Response::DISPOSITION_ATTACHMENT);
 
             return null;
@@ -83,7 +83,7 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object
                 $w = $env->request->getNumber('w', K3_Request::GET);
                 $h = $env->request->getNumber('h', K3_Request::GET);
                 if (!$w && !$h) {
-                    $env->response->sendRedirect(FStr::fullUrl($this->path.'/'.$this->_subPath));
+                    $env->response->sendRedirect($this->path.'/'.$this->_subPath);
                 }
                 $img = new K3_Image($realPath);
                 $img->resize(min($img->width(), $w), min($img->height(), $h));
@@ -93,7 +93,7 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object
                     ->sendBuffer('', $params);
             } elseif ($this->xAccelLocation && ($env->getResponse() instanceof K3_Response_HTTP)) {
                 $accelRedirectPath = $this->xAccelLocation.'/'.$this->_subPath;
-                $params['filename'] = FStr::basename($realPath);
+                $params['filename'] = K3_Util_File::basename($realPath);
                 $env->getResponse()
                     ->write('nGinx redirected to '.$accelRedirectPath)
                     ->setHeader('X-Accel-Redirect', $accelRedirectPath)
@@ -184,7 +184,7 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object
     protected function saveAction(SOne_Environment $env, &$updated = false)
     {
         parent::saveAction($env, $updated);
-        $this->pool['basePath']       = $env->request->getString('basePath', K3_Request::POST, FStr::PATH);
+        $this->pool['basePath']       = $env->request->getString('basePath', K3_Request::POST, K3_Util_String::FILTER_PATH);
         $this->pool['m3uEnabled']     = $env->request->getBinary('m3uEnabled', K3_Request::POST, false);
         $this->pool['xAccelLocation'] = $env->request->getString('xAccelLocation', K3_Request::POST);
 

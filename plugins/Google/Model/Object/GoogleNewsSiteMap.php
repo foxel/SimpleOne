@@ -49,7 +49,7 @@ class Google_Model_Object_GoogleNewsSiteMap extends SOne_Model_Object_SiteMap im
         $xml = new SimpleXMLElement('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="'.self::NEWS_SITEMAP_NAMESPACE.'" />');
         foreach ($objects as $item) {
             $urlNode = $xml->addChild('url');
-            $urlNode->addChild('loc', FStr::fullUrl($item->path, true));
+            $urlNode->addChild('loc', K3_Util_Url::fullUrl($item->path, $env));
 
             $newsNode = $urlNode->addChild('news', null, self::NEWS_SITEMAP_NAMESPACE);
 

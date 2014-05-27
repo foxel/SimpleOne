@@ -184,7 +184,7 @@ abstract class SOne_Model_Object extends SOne_Model implements I_K3_RSS_Item
     public function setPath($path)
     {
         if (is_string($path)) {
-            $path = FStr::cast(trim($path, '/'), FStr::PATH);
+            $path = K3_Util_String::filter(trim($path, '/'), K3_Util_String::FILTER_PATH);
             $this->pool['path'] = $path;
             $this->pool['pathHash'] = md5($path);
         } else {
@@ -270,7 +270,7 @@ abstract class SOne_Model_Object extends SOne_Model implements I_K3_RSS_Item
      */
     protected function saveAction(SOne_Environment $env, &$objectUpdated = false)
     {
-        $newCaption = $env->request->getString('caption', K3_Request::POST, FStr::LINE);
+        $newCaption = $env->request->getString('caption', K3_Request::POST, K3_Util_String::FILTER_LINE);
         if ($newCaption) {
             $this->pool['caption'] = $newCaption;
             $this->pool['updateTime'] = time();
@@ -312,7 +312,8 @@ abstract class SOne_Model_Object extends SOne_Model implements I_K3_RSS_Item
      */
     public function getGUID()
     {
-        return md5(FStr::fullUrl('object~'.$this->id));
+        // TODO: fix dependency injection
+        return md5(K3_Util_Url::fullUrl('object~'.$this->id, F()->appEnv));
     }
 
     /**
@@ -320,7 +321,8 @@ abstract class SOne_Model_Object extends SOne_Model implements I_K3_RSS_Item
      */
     public function getLink()
     {
-        return FStr::fullUrl($this->path);
+        // TODO: fix dependency injection
+        return K3_Util_Url::fullUrl($this->path, F()->appEnv);
     }
 
     /**

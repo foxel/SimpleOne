@@ -37,9 +37,9 @@ class RSSExport_RSS_Yandex extends RSSExport_RSS_FullText
         $this->_xml->documentElement->setAttribute('xmlns:yandex', 'http://news.yandex.ru');
         $this->_channel->appendChild($image = $this->_xml->createElement('image'));
 
-        $image->appendChild($this->_xml->createElement('url', FStr::fullUrl($params['siteImage'], false, '', $this->_env)));
+        $image->appendChild($this->_xml->createElement('url', K3_Util_Url::fullUrl($params['siteImage'], $this->_env)));
         $image->appendChild($this->_xml->createElement('title', $params['siteName']));
-        $image->appendChild($this->_xml->createElement('link', FStr::fullUrl($params['siteUrl'], false, '', $this->_env)));
+        $image->appendChild($this->_xml->createElement('link', K3_Util_Url::fullUrl($params['siteUrl'], $this->_env)));
 
         if (!empty($items)) {
             $this->addItems($items);

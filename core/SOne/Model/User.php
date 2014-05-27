@@ -88,7 +88,7 @@ class SOne_Model_User extends SOne_Model
      */
     public function setPassword($password)
     {
-        $this->pool['cryptedPassword'] = crypt($password, '$1$'.FStr::shortUID());
+        $this->pool['cryptedPassword'] = crypt($password, '$1$'.K3_Util_String::shortUID());
         $this->pool['authUpdated']     = true;
         return $this;
     }

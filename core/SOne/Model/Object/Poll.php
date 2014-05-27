@@ -361,7 +361,7 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
                 $oldVariants = (array) $oldQuestions[$qId]['valueVariants'];
             } else {
                 $oldVariants = array();
-                $qId         = FStr::shortUID();
+                $qId         = K3_Util_String::shortUID();
             }
 
             // collecting value variants
@@ -379,7 +379,7 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
                         }
                         $aId = isset($oldVariants[$aIdRaw])
                             ? $aIdRaw
-                            : FStr::shortUID();
+                            : K3_Util_String::shortUID();
 
                         $newVariants[$aId] = $aTitle;
                         if (isset($newLimitsRaw[$aIdRaw]) && $newLimitsRaw[$aIdRaw]) {

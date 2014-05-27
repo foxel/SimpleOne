@@ -237,7 +237,7 @@ class SOne_Repository_Tag extends SOne_Repository
      */
     public function compareTags($tag1, $tag2)
     {
-        return strcmp(FStr::strToLower($tag1), FStr::strToLower($tag2));
+        return strcmp(K3_String::strToLower($tag1), K3_String::strToLower($tag2));
     }
 
     /**
@@ -246,8 +246,8 @@ class SOne_Repository_Tag extends SOne_Repository
      */
     public function stripTagName($tagName)
     {
-        if (FStr::strLen($tagName) > self::MAX_TAG_NAME_LENGTH) {
-            $tagName = FStr::subStr($tagName, 0, self::MAX_TAG_NAME_LENGTH);
+        if (K3_String::strLength($tagName) > self::MAX_TAG_NAME_LENGTH) {
+            $tagName = K3_String::strSubString($tagName, 0, self::MAX_TAG_NAME_LENGTH);
         }
 
         return $tagName;

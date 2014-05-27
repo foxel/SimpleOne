@@ -60,9 +60,9 @@ class SOne_Model_Object_Constructor extends SOne_Model_Object implements SOne_In
      */
     protected function prepareAction(SOne_Environment $env, &$objectUpdated = false)
     {
-        $class = $env->request->getString('class', K3_Request::ALL, FStr::WORD);
-        $path  = $env->request->getString('path',  K3_Request::ALL, FStr::WORD);
-        $parentPath = $env->request->getString('parentPath', K3_Request::ALL, FStr::PATH);
+        $class = $env->request->getString('class', K3_Request::ALL, K3_Util_String::FILTER_WORD);
+        $path  = $env->request->getString('path',  K3_Request::ALL, K3_Util_String::FILTER_WORD);
+        $parentPath = $env->request->getString('parentPath', K3_Request::ALL, K3_Util_String::FILTER_PATH);
 
         if (!$path) {
             $this->pool['errors'] = 'Путь является обязательным';
@@ -71,7 +71,7 @@ class SOne_Model_Object_Constructor extends SOne_Model_Object implements SOne_In
 
         $parentObject = null;
         if ($parentPath) {
-            $path = FStr::cast($parentPath.'/'.$path, FStr::PATH);
+            $path = K3_Util_String::filter($parentPath.'/'.$path, K3_Util_String::FILTER_PATH);
             $parentObject = SOne_Repository_Object::getInstance($env->getDb())->loadOne(array('pathHash' => md5($parentPath)));
             if (!$parentObject) {
                 $this->pool['errors'] = 'Невозможно загрузить указанный родительсвий объект';

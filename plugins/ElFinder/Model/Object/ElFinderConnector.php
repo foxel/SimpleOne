@@ -168,9 +168,9 @@ class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
     {
         switch ($attr) {
             case 'locked':
-                return (!$this->_writeAccess || strpos(FStr::basename($path), '.') === 0) ? true : null;
+                return (!$this->_writeAccess || strpos(K3_Util_File::basename($path), '.') === 0) ? true : null;
             case 'hidden':
-                return (strpos(FStr::basename($path), '.') === 0) ? true : null;
+                return (strpos(K3_Util_File::basename($path), '.') === 0) ? true : null;
             case 'write':
                 return !$this->_writeAccess ? false : null;
             case 'read':
@@ -258,12 +258,12 @@ class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
             case 'upload':
                 foreach ($args['FILES'] as &$file) {
                     foreach ($file['name'] as &$name) {
-                        $name = FStr::cast($name, FStr::PATH);
+                        $name = K3_Util_String::filter($name, K3_Util_String::FILTER_PATH);
                     }
                 }
                 break;
             case 'rename':
-                $args['name'] = FStr::cast($args['name'], FStr::PATH);
+                $args['name'] = K3_Util_String::filter($args['name'], K3_Util_String::FILTER_PATH);
                 break;
         };
     }

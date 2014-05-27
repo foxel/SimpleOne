@@ -86,7 +86,7 @@ class SOne_Model_Object_BlogMerge extends SOne_Model_Object_BlogRoot
     public function routeSubPath($subPath, SOne_Request $request, SOne_Environment $env)
     {
         $this->pool['actionState'] = '';
-        $this->_filterParams = FStr::getZendStyleURLParams($subPath);
+        $this->_filterParams = K3_Util_Url::parseZendStyleURLParams($subPath);
         $this->_subPath = $subPath;
         if (array_diff(array_keys($this->_filterParams), array('date', 'tag', 'author'))) {
             return new SOne_Model_Object_Page404(array('path' => $this->path.'/'.$subPath));

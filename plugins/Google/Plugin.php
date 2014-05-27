@@ -122,7 +122,7 @@ class Google_Plugin
     public function fetchStats($path, $updateData = false)
     {
         $config  = $this->getConfig();
-        $cacheId = FStr::shortHash($path);
+        $cacheId = K3_Util_String::shortHash($path);
 
         $rawStats = null;
         if ($statsCache = FCache::get('googleStats.'.$cacheId)) {

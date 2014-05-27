@@ -103,7 +103,7 @@ class SOneImages_Plugin
 
         $url = &$vars[2];
         $url = trim($url, '\'"');
-        if ($this->_config->scale && strpos($url, '?') == false && (strpos($url, $env->server->rootUrl) === 0 || FStr::isUrl($url) == 2)) {
+        if ($this->_config->scale && strpos($url, '?') == false && (strpos($url, $env->server->rootUrl) === 0 || K3_String::isUrl($url) == 2)) {
             $scaleParams = array();
             if (preg_match('#width\s*[:=]\s*"?(\d+)(px|"|\s)#i', $vars[0], $matches)) {
                 $scaleParams['w'] = (int) $matches[1];
@@ -117,7 +117,7 @@ class SOneImages_Plugin
         }
 
         if ($this->_config->lazyload && strpos($vars[0], 'width') && strpos($vars[0], 'height')) {
-            $t = '<%1$ssrc="'.FStr::fullUrl('/static/images/pixel.gif', true, '', $env).'" data-lazyload-src="%2$s"%3$s /><noscript>'.$t.'</noscript>';
+            $t = '<%1$ssrc="'.K3_Util_Url::fullUrl('/static/images/pixel.gif', $env).'" data-lazyload-src="%2$s"%3$s /><noscript>'.$t.'</noscript>';
         }
 
         return vsprintf($t, array_slice($vars, 1));

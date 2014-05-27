@@ -43,7 +43,7 @@ class SOne_Model_Object_SiteMap extends SOne_Model_Object
         $xml = new SimpleXMLElement('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" />');
         foreach ($paths as $item) {
             $urlNode = $xml->addChild('url');
-            $urlNode->addChild('loc', FStr::fullUrl($item, true));
+            $urlNode->addChild('loc', K3_Util_Url::fullUrl($item, $env));
         }
 
         $today = new DateTime();

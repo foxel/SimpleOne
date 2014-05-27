@@ -50,7 +50,7 @@ class SOne_Model_Object_Redirector extends SOne_Model_Object
     {
         parent::saveAction($env, $updated);
         // TODO: validation
-        $this->pool['redirectUrl'] = $env->request->getString('redirectUrl', K3_Request::POST, FStr::LINE);
+        $this->pool['redirectUrl'] = $env->request->getString('redirectUrl', K3_Request::POST, K3_Util_String::FILTER_LINE);
         $this->pool['updateTime']  = time();
 
         $updated = true;

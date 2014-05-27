@@ -36,9 +36,9 @@ class SOne_Request extends FBaseClass
         $query = $env->getRequest()->getURLParams();
         $action = null;
         if (reset($query) === '') { // for queries like foo/bar?edit
-            $action = FStr::cast(key($query), FStr::WORD);
+            $action = K3_Util_String::filter(key($query), K3_Util_String::FILTER_WORD);
         } else {
-            $action = $env->getRequest()->getString('action', K3_Request::POST, FStr::WORD);
+            $action = $env->getRequest()->getString('action', K3_Request::POST, K3_Util_String::FILTER_WORD);
         }
         
         if (!$path) {
@@ -49,7 +49,7 @@ class SOne_Request extends FBaseClass
 
         $this->pool = array(
             'request' => $env->request,
-            'path'    => FStr::cast($path, FStr::PATH),
+            'path'    => K3_Util_String::filter($path, K3_Util_String::FILTER_PATH),
             'action'  => $action,
         );
     }

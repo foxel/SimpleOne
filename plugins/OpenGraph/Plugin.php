@@ -53,11 +53,11 @@ class OpenGraph_Plugin
     public function addAppVisData(FVISNode $pageNode)
     {
         $pageNode
-            ->addData('META', sprintf('<meta property="og:title" content="%s"/>', FStr::htmlschars($this->_pageObject->caption)))
+            ->addData('META', sprintf('<meta property="og:title" content="%s"/>', K3_Util_String::escapeXML($this->_pageObject->caption)))
             ->addData('META', sprintf('<meta property="og:type" content="%s"/>', 'article'))
-            ->addData('META', sprintf('<meta property="og:url" content="%s"/>', FStr::htmlschars(FStr::fullUrl($this->_pageObject->path))))
+            ->addData('META', sprintf('<meta property="og:url" content="%s"/>', K3_Util_String::escapeXML(K3_Util_Url::fullUrl($this->_pageObject->path, $this->_app->getEnv()))))
             ->addData('META', sprintf('<meta property="og:image" content="%s"/>', !empty($this->_pageObject->thumbnailImage)
-                ? FStr::htmlschars(FStr::fullUrl($this->_pageObject->thumbnailImage, false, '', $this->_app->getEnv()))
+                ? K3_Util_String::escapeXML(K3_Util_Url::fullUrl($this->_pageObject->thumbnailImage, $this->_app->getEnv()))
                 : ''))
             ;
     }

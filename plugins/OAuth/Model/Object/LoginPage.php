@@ -44,7 +44,7 @@ class OAuth_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
                 $request = array(
                     'client_id'     => $config->vkAppId,
                     'scope'         => 'notify',
-                    'redirect_uri'  => FStr::fullUrl($this->path.'?vkauth'),
+                    'redirect_uri'  => K3_Util_Url::fullUrl($this->path.'?vkauth', $env),
                     'response_type' => 'code',
                 );
 
@@ -58,7 +58,7 @@ class OAuth_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
                 $request = array(
                     'client_id'     => $config->fbAppId,
                     //'scope'         => 'notify,offline',
-                    'redirect_uri'  => FStr::fullUrl($this->path.'?fbauth'),
+                    'redirect_uri'  => K3_Util_Url::fullUrl($this->path.'?fbauth', $env),
                     'state'         => md5(uniqid()),
                     'response_type' => 'code',
                 );
@@ -73,7 +73,7 @@ class OAuth_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
                 $request = array(
                     'client_id'     => $config->gAppId,
                     'scope'         => 'https://www.googleapis.com/auth/userinfo.profile',
-                    'redirect_uri'  => FStr::fullUrl($this->path.'?gauth'),
+                    'redirect_uri'  => K3_Util_Url::fullUrl($this->path.'?gauth', $env),
                     'state'         => md5(uniqid()),
                     'response_type' => 'code',
                 );
@@ -99,7 +99,7 @@ class OAuth_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
         /* @var SOne_Application $app */
         $app = $env->getApp();
 
-        $code = $env->request->getString('code', K3_Request::GET, FStr::LINE);
+        $code = $env->request->getString('code', K3_Request::GET, K3_Util_String::FILTER_LINE);
         if (!$code) {
             $this->pool['actionState'] = 'redirect';
             return;
@@ -109,7 +109,7 @@ class OAuth_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
         $tokenRequest = array(
             'client_id'     => $config->vkAppId,
             'client_secret' => $config->vkAppSecret,
-            'redirect_uri'  => FStr::fullUrl($this->path.'?vkauth'),
+            'redirect_uri'  => K3_Util_Url::fullUrl($this->path.'?vkauth', $env),
             'code'          => $code,
         );
 
@@ -175,7 +175,7 @@ class OAuth_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
         /* @var SOne_Application $app */
         $app = $env->getApp();
 
-        $code = $env->request->getString('code', K3_Request::GET, FStr::LINE);
+        $code = $env->request->getString('code', K3_Request::GET, K3_Util_String::FILTER_LINE);
         if (!$code) {
             $this->pool['actionState'] = 'redirect';
             return;
@@ -186,7 +186,7 @@ class OAuth_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
             'client_id'     => $config->fbAppId,
             'client_secret' => $config->fbAppSecret,
             'code'          => $code,
-            'redirect_uri'  => FStr::fullUrl($this->path.'?fbauth'),
+            'redirect_uri'  => K3_Util_Url::fullUrl($this->path.'?fbauth', $env),
         );
 
         $tokenData = $this->_httpRequest('https://graph.facebook.com/oauth/access_token', $tokenRequest);
@@ -245,7 +245,7 @@ class OAuth_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
         /* @var SOne_Application $app */
         $app = $env->getApp();
 
-        $code = $env->request->getString('code', K3_Request::GET, FStr::LINE);
+        $code = $env->request->getString('code', K3_Request::GET, K3_Util_String::FILTER_LINE);
         if (!$code) {
             $this->pool['actionState'] = 'redirect';
             return;
@@ -256,7 +256,7 @@ class OAuth_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
             'client_id'     => $config->gAppId,
             'client_secret' => $config->gAppSecret,
             'code'          => $code,
-            'redirect_uri'  => FStr::fullUrl($this->path.'?gauth'),
+            'redirect_uri'  => K3_Util_Url::fullUrl($this->path.'?gauth', $env),
             'grant_type'    => 'authorization_code',
         );
 
@@ -337,7 +337,7 @@ class OAuth_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
             $request = array(
                 'client_id'     => $config->vkAppId,
                 'scope'         => 'notify,offline',
-                'redirect_uri'  => FStr::fullUrl($this->path.'?vkauth'),
+                'redirect_uri'  => K3_Util_Url::fullUrl($this->path.'?vkauth', $env),
                 'response_type' => 'code',
             );
             $env->response->sendRedirect('http://oauth.vk.com/authorize?'.http_build_query($request, '_', '&amp;'));

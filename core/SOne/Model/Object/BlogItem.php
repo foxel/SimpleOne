@@ -149,7 +149,7 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
     protected function saveAction(SOne_Environment $env, &$updated = false)
     {
         parent::saveAction($env, $updated);
-        $this->pool['tags'] = array_unique(array_map('trim', explode(',', $env->request->getString('tags', K3_Request::POST, FStr::LINE))));
+        $this->pool['tags'] = array_unique(array_map('trim', explode(',', $env->request->getString('tags', K3_Request::POST, K3_Util_String::FILTER_LINE))));
         /** @var $user SOne_Model_User */
         $user = $env->getUser();
 
@@ -174,7 +174,7 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
         }
 
         if (!$this->id || $this->createTime > time()) {
-            $pubTime = $env->request->getString('pubTime', K3_Request::POST, FStr::LINE);
+            $pubTime = $env->request->getString('pubTime', K3_Request::POST, K3_Util_String::FILTER_LINE);
             $this->pool['createTime'] = max(strtotime($pubTime), time());
         }
 
@@ -274,7 +274,7 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
     public function fixFullUrls(SOne_Environment $env)
     {
         if ($this->thumbnailImage) {
-            $this->pool['thumbnailImage'] = FStr::fullUrl($this->thumbnailImage, false, '', $env);
+            $this->pool['thumbnailImage'] = K3_Util_Url::fullUrl($this->thumbnailImage, $env);
         }
 
         $this->pool['content'] = SOne_Tools::getInstance($env)->HTML_FullURLs($this->content);

@@ -72,9 +72,9 @@ class SOne_Model_Widget_Navigator extends SOne_Model_Widget
                     $parentNode->addData('isCurrent', null, true);
                 }
                 $node->addDataArray(array(
-                    'href'         => FStr::fullUrl(ltrim($item->path, '/')),
+                    'href'         => K3_Util_Url::fullUrl(ltrim($item->path, '/'), $env),
                     'caption'      => $item->caption,
-                    'shortCaption' => FStr::smartTrim($item->caption, 23 - $item->treeLevel),
+                    'shortCaption' => K3_String::strSmartTrim($item->caption, 23 - $item->treeLevel),
                     'isCurrent'    => $isActive ? 1 : null,
                 ));
                 $parentNode->appendChild('subs', $node);

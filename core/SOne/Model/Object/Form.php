@@ -43,8 +43,8 @@ class SOne_Model_Object_Form extends SOne_Model_Object_Poll
         $node = parent::visualize($env);
 
         $node->addData('captchaNeeded', $env->user->id ? null : 1);
-        if ($env->session->get('formFilled'.FStr::shortHash($this->path))) {
-            $env->session->drop('formFilled'.FStr::shortHash($this->path));
+        if ($env->session->get('formFilled'.K3_Util_String::shortHash($this->path))) {
+            $env->session->drop('formFilled'.K3_Util_String::shortHash($this->path));
             $node->addData('formSent', 1);
         }
 
@@ -69,14 +69,14 @@ class SOne_Model_Object_Form extends SOne_Model_Object_Poll
                 $mail->addTo($this->targetEmail);
                 $mail->setBody($this->_formatMailBody($env, $curAnswers), true);
                 if ($mail->send()) {
-                    $env->session->drop('formAnswers'.FStr::shortHash($this->path));
-                    $env->session->set('formFilled'.FStr::shortHash($this->path), true);
+                    $env->session->drop('formAnswers'.K3_Util_String::shortHash($this->path));
+                    $env->session->set('formFilled'.K3_Util_String::shortHash($this->path), true);
                 } else {
                     $this->pool['errors'] = '<ul><li>Ошибка отправки</ul></li>';
                     $this->pool['actionState'] = '';
                 }
             } else {
-                $env->session->set('formAnswers'.FStr::shortHash($this->path), $curAnswers);
+                $env->session->set('formAnswers'.K3_Util_String::shortHash($this->path), $curAnswers);
                 $this->pool['errors'] = '<ul><li>Неверно введен код защиты</ul></li>';
                 $this->pool['actionState'] = '';
             }
@@ -128,7 +128,7 @@ class SOne_Model_Object_Form extends SOne_Model_Object_Poll
         parent::saveAction($env, $updated);
 
         if ($updated) {
-            $this->pool['targetEmail'] = $env->request->getString('target_email', K3_Request::POST, FStr::LINE);
+            $this->pool['targetEmail'] = $env->request->getString('target_email', K3_Request::POST, K3_Util_String::FILTER_LINE);
         }
     }
 
@@ -139,7 +139,7 @@ class SOne_Model_Object_Form extends SOne_Model_Object_Poll
      */
     protected function _getCurrentAnswers(SOne_Environment $env)
     {
-        return (array)$env->session->get('formAnswers'.FStr::shortHash($this->path));
+        return (array)$env->session->get('formAnswers'.K3_Util_String::shortHash($this->path));
     }
 
     /**

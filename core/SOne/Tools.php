@@ -70,8 +70,8 @@ class SOne_Tools extends K3_Environment_Element
             $bounds = '';
         }
 
-        if (FStr::isUrl($url) == 2) {
-            $url = FStr::fullUrl($url, true, false, $this->env);
+        if (K3_String::isUrl($url) == 2) {
+            $url = K3_Util_Url::fullUrl($url, $this->env);
         }
 
         return $vars[1].$vars[3].'='.$bounds.$url.$bounds;
