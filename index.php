@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012, 2014 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -18,11 +18,6 @@
  * along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
  */
 
-define ('STARTED', true);
-define ('F_DEBUG', (boolean) getenv('F_DEBUG'));
-define ('F_PROFILE', (boolean) getenv('F_PROFILE'));
-
-require_once 'kernel3/kernel3.php';
 require_once 'core/bootstrap.php';
 
 $app = new SOne_Application(F()->appEnv);

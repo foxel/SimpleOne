@@ -19,8 +19,10 @@
 #
 # usage: bash setup_kernel.sh [{path/to/download/kernel3}]
 
+SIMPLEONE_DIR="${PWD}"
+
 if [ -L "kernel3" ]; then
-    KERNEL3_PATH=`readlink "kernel3" | sed 's#/kernel3/$##'`;
+    KERNEL3_PATH=`readlink "kernel3" | sed 's#/kernel3/\?$##'`;
 else
     if [ "$1" ]; then
         KERNEL3_PATH="$1"
@@ -32,6 +34,16 @@ else
     ln -s "${KERNEL3_PATH}/kernel3"
 fi;
 
+echo "kernel dir is ${KERNEL3_PATH}"
+
 cd "${KERNEL3_PATH}"
 git checkout dev
 git pull
+
+# get back to Simple One
+cd "${SIMPLEONE_DIR}"
+
+if [ -f "${KERNEL3_PATH}/makePhar.php" ]; then
+    echo "making phars"
+    php -d phar.readonly=0 -f "${KERNEL3_PATH}/makePhar.php"
+fi;

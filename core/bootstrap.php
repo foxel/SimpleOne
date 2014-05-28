@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012, 2014 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -17,6 +17,16 @@
  * You should have received a copy of the GNU General Public License
  * along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
  */
+
+define ('STARTED', true);
+define ('F_DEBUG', (boolean) getenv('F_DEBUG'));
+define ('F_PROFILE', (boolean) getenv('F_PROFILE'));
+
+if (file_exists('kernel3.phar')) {
+    require_once 'phar://kernel3.phar';
+} else {
+    require_once 'kernel3/kernel3.php';
+}
 
 F()->Autoloader->registerClassPath(dirname(__FILE__).DIRECTORY_SEPARATOR.'SOne', 'SOne');
 //F()->Autoloader->registerClassPath(F_SITE_ROOT.DIRECTORY_SEPARATOR.'plugins');
