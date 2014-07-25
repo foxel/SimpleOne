@@ -51,7 +51,7 @@
 {IF:IN_items}
 <div class="well well-sm">
     <legend>{IF:IN_title}{IN_title}{ELSE}Популярное{/IF}</legend>
-    <div style="overflow: hidden; text-overflow: ellipsis;">{IN_items}</div>
+    <div class="blog-popular-items" style="overflow: hidden; text-overflow: ellipsis;">{IN_items}</div>
 </div>
 {/IF}
 <<- 'SONE_GOOGLE_WIDGET_POPULAR_BLOCK'>>
