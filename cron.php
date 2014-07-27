@@ -18,6 +18,8 @@
  * along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
  */
 
+set_include_path(realpath(dirname(__FILE__)).PATH_SEPARATOR.get_include_path());
+
 require_once 'core/bootstrap.php';
 
 $app = new SOne_Cron(F()->appEnv);
