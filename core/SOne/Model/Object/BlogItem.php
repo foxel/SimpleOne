@@ -158,7 +158,7 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
         if ($dom->loadHTML(mb_convert_encoding($this->content, 'HTML-ENTITIES', F::INTERNAL_ENCODING))) {
             $dom->encoding = F::INTERNAL_ENCODING;
             if (!$user->adminLevel) {
-                $dom->stripXSSVulnerableCode(array('youtube.com'));
+                $dom->stripXSSVulnerableCode(array('youtube.com', 'vimeo.com', 'rutube.ru', 'instagram.com'));
             }
             // $dom->fixFullUrls();
             $images = $dom->getElementsByTagName('img');
