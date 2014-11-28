@@ -43,8 +43,17 @@ class SOne_Model_Widget_TagCloud extends SOne_Model_Widget
         $container = new FVISNode('SONE_WIDGET_TAGCLOUD_BLOCK', 0, $vis);
         $container->addDataArray($this->pool);
         if ($pageObject instanceof SOne_Model_Object_BlogRoot || $pageObject instanceof SOne_Model_Object_BlogItem) {
-            $blogId = $pageObject instanceof SOne_Model_Object_BlogRoot ? $pageObject->id : $pageObject->parentId;
-            $blogPath = $pageObject instanceof SOne_Model_Object_BlogRoot ? $pageObject->path : preg_replace('#/[^/]+$#', '', trim($pageObject->path, '/'));
+            if ($pageObject instanceof SOne_Model_Object_BlogMerge) {
+                $blogId = $pageObject->blogIds;
+                $blogPath = $pageObject->path;
+            } elseif ($pageObject instanceof SOne_Model_Object_BlogRoot) {
+                $blogId   = $pageObject->id;
+                $blogPath = $pageObject->path;
+            } else {
+                $blogId = $pageObject->parentId;
+                $blogPath = preg_replace('#/[^/]+$#', '', trim($pageObject->path, '/'));
+            }
+
             $cloud = SOne_Repository_Tag::getInstance($db)->getTagsCloud(array('parentId=' => $blogId), $this->limit);
 
             $tagsNode = new FVISNode('SONE_WIDGET_TAGCLOUD_ITEM', FVISNode::VISNODE_ARRAY, $vis);

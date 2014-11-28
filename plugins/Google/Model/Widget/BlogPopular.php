@@ -76,6 +76,7 @@ class Google_Model_Widget_BlogPopular extends SOne_Model_Widget
                 'path'    => $object->path,
                 'caption' => $object->caption,
                 'image'   => $object->thumbnailImage,
+                'createTime' => $object->createTime,
             );
         }
 
@@ -92,7 +93,7 @@ class Google_Model_Widget_BlogPopular extends SOne_Model_Widget
      * @param SOne_Model_Object_BlogRoot $blogObject
      * @param FDataBase $db
      * @param int|null $limit
-     * @return SOne_Model_Object
+     * @return SOne_Model_Object[]
      */
     protected function _getTopObjects(SOne_Model_Object_BlogRoot $blogObject, FDataBase $db, $limit = null)
     {
