@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2014 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -142,21 +142,41 @@ class SOne_Application extends K3_Application
     {
         $object = $this->routeRequest($this->_request, true);
 
-        F()->Timer->logEvent('App Action end');
+        F()->Timer->logEvent('Object routed');
 
-        $response = $this->renderPage($object);
+        // performing action
+        if ($action = $this->_request->action) {
+            if ($object->isActionAllowed($action, $this->_env->getUser())) {
+                $object->doAction($action, $this->_env, $objectUpdated);
+                // TODO: think about deleting
+                // NOTE: static objects are not for save
+                if ($objectUpdated && !$object->isStatic) {
+                    $this->_objects->save($object);
+                }
+            } else {
+                $object = new SOne_Model_Object_Page403(array('path' => $this->_request->path));
+            }
 
-        $this->getResponse()->clearBuffer()
-            ->write($response)
-            ->sendBuffer();
+            F()->Timer->logEvent('App Action end');
+        }
+
+        if ($this->_env->request->isAjax && $object instanceof SOne_Interface_Object_WithAjaxResponse) {
+            $object->ajaxResponse($this->getResponse());
+        } else {
+            $response = $this->renderPage($object);
+            $this->getResponse()
+                ->clearBuffer()
+                ->write($response);
+        }
+
+        $this->getResponse()->sendBuffer();
     }
 
     /**
      * @param SOne_Request $request
-     * @param bool $performAction
      * @return SOne_Model_Object
      */
-    public function routeRequest(SOne_Request $request, $performAction = true)
+    public function routeRequest(SOne_Request $request)
     {
         /** @var $tipObject SOne_Model_Object */
         $tipObject = null;
@@ -191,12 +211,11 @@ class SOne_Application extends K3_Application
             $tipObject = $tipObjectNavi ? $this->_objects->loadOne($tipObjectNavi['id']) : null;
         }
 
-
         if (($tipObject instanceof SOne_Model_Object) && (trim($tipObject->path, '/') == $request->path)) {
             // Routed OK
         } elseif ($tipObject instanceof SOne_Interface_Object_WithSubRoute) {
-            /** @var $tipObject SOne_Interface_Object_WithSubRoute */
             $subPath = preg_replace('#'.preg_quote(trim($tipObject->path, '/').'/', '#').'#i', '', $request->path);
+            /** @var $tipObject SOne_Interface_Object_WithSubRoute */
             $tipObject = $tipObject->routeSubPath($subPath, $request, $this->_env);
         } else {
             $tipObject = new SOne_Model_Object_Page404(array('path' => $request->path));
@@ -204,20 +223,6 @@ class SOne_Application extends K3_Application
 
         if ($tipObject->accessLevel > $this->_env->getUser()->accessLevel) {
             $tipObject = new SOne_Model_Object_Page403(array('path' => $request->path));
-        }
-
-        // performing action
-        if ($performAction && $request->action) {
-            if ($tipObject->isActionAllowed($request->action, $this->_env->getUser())) {
-                $tipObject->doAction($request->action, $this->_env, $objectUpdated);
-                // TODO: think about deleting
-                // NOTE: static objects are not for save
-                if ($objectUpdated && !$tipObject->isStatic) {
-                    $this->_objects->save($tipObject);
-                }
-            } else {
-                $tipObject = new SOne_Model_Object_Page403(array('path' => $request->path));
-            }
         }
 
         $this->throwEvent(self::EVENT_PAGE_OBJECT_ROUTED, $tipObject);
@@ -231,9 +236,6 @@ class SOne_Application extends K3_Application
      */
     protected function renderPage(SOne_Model_Object $pageObject)
     {
-        $pageNode = new FVISNode('GLOBAL_HTMLPAGE', 0, $this->_VIS);
-        $this->_VIS->setRootNode($pageNode);
-
         $objectNode = $pageObject->visualize($this->_env);
 
         $this->throwEvent(self::EVENT_PAGE_OBJECT_VISUALIZED, $objectNode, $pageObject);
@@ -241,6 +243,9 @@ class SOne_Application extends K3_Application
         if ($this->_env->request->isAjax) {
             return $objectNode->parse();
         }
+
+        $pageNode = new FVISNode('GLOBAL_HTMLPAGE', 0, $this->_VIS);
+        $this->_VIS->setRootNode($pageNode);
 
         $pageNode->appendChild('page_cont', $objectNode);
         $pageNode->addData('site_name', $this->_config->site->name);
