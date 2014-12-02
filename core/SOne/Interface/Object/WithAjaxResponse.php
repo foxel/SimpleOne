@@ -21,8 +21,8 @@
 interface SOne_Interface_Object_WithAjaxResponse
 {
     /**
-     * @param I_K3_Response $response
+     * @param K3_Response $response
      * @return void
      */
-    public function ajaxResponse(I_K3_Response $response);
+    public function ajaxResponse(K3_Response $response);
 }
