@@ -161,7 +161,7 @@ class SOne_Application extends K3_Application
         }
 
         if ($this->_env->request->isAjax && $object instanceof SOne_Interface_Object_WithAjaxResponse) {
-            $object->ajaxResponse($this->getResponse());
+            $object->ajaxResponse($this->_env, $this->getResponse());
         } else {
             $response = $this->renderPage($object);
             $this->getResponse()

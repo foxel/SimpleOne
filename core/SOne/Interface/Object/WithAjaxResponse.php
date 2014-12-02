@@ -21,8 +21,9 @@
 interface SOne_Interface_Object_WithAjaxResponse
 {
     /**
+     * @param SOne_Environment $env
      * @param K3_Response $response
      * @return void
      */
-    public function ajaxResponse(K3_Response $response);
+    public function ajaxResponse(SOne_Environment $env, K3_Response $response);
 }
