@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2014 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -77,7 +77,7 @@ class SOne_Model_Object_LoginPage extends SOne_Model_Object
         if ($action == 'login') {
             $user = $users->loadOne(array('login' => $env->request->getString('login', K3_Request::POST, K3_Util_String::FILTER_WORD)));
             if ($user && $user->checkPassword($env->request->getString('password', K3_Request::POST, K3_Util_String::FILTER_LINE))) {
-                $app->setAuthUser($user, $env->request->getBinary('set-auto-login', K3_Request::POST));
+                $app->setAuthUser($user, true, $env->request->getBinary('set-auto-login', K3_Request::POST));
             } else {
                 $this->pool['errors'] = '<ul><li>'.$lang->lang('SONE_LOGIN_ERROR_LOGIN_INCORRECT').'</li></ul>';
             }
@@ -119,7 +119,7 @@ class SOne_Model_Object_LoginPage extends SOne_Model_Object
                 ));
                 $user->password = $password;
                 $users->save($user);
-                $app->setAuthUser($user);
+                $app->setAuthUser($user, true);
                 $this->pool['actionState'] = 'redirect';
             } else {
                 $this->pool['errors'] = '<ul><li>'.implode('</li><li>', $errors).'</li></ul>';

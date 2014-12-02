@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2014 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -128,7 +128,7 @@ class OAuth_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
         if ($userId = $db->doSelect('oauth_tokens', 'uid', array('oauth_uid' => $tokenData->user_id, 'api' => 'vk'))) {
             $db->doUpdate('oauth_tokens', array('token' => $tokenData->access_token), array('oauth_uid' => $tokenData->user_id, 'api' => 'vk'));
             $user = $users->loadOne(array('id' => $userId));
-            $app->setAuthUser($user, true);
+            $app->setAuthUser($user, true, true);
             $this->pool['actionState'] = 'redirect';
         } else {
             $infoRequest = array(
@@ -159,7 +159,7 @@ class OAuth_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
                 'uid'       => $user->id,
                 'api'       => 'vk',
             ));
-            $app->setAuthUser($user, true);
+            $app->setAuthUser($user, true, true);
             $this->pool['actionState'] = 'redirect';
         }
     }
@@ -211,7 +211,7 @@ class OAuth_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
         if ($userId = $db->doSelect('oauth_tokens', 'uid', array('oauth_uid' => $userData->id, 'api' => 'fb'))) {
             $db->doUpdate('oauth_tokens', array('token' => $tokenData->access_token), array('oauth_uid' => $userData->id, 'api' => 'fb'));
             $user = $users->loadOne(array('id' => $userId));
-            $app->setAuthUser($user, true);
+            $app->setAuthUser($user, true, true);
             $this->pool['actionState'] = 'redirect';
         } else {
             $user = new SOne_Model_User(array(
@@ -229,7 +229,7 @@ class OAuth_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
                 'uid'       => $user->id,
                 'api'       => 'fb',
             ));
-            $app->setAuthUser($user, true);
+            $app->setAuthUser($user, true, true);
             $this->pool['actionState'] = 'redirect';
         }
     }
@@ -282,7 +282,7 @@ class OAuth_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
         if ($userId = $db->doSelect('oauth_tokens', 'uid', array('oauth_uid' => $userData->id, 'api' => 'g'))) {
             $db->doUpdate('oauth_tokens', array('token' => $tokenData->access_token), array('oauth_uid' => $userData->id, 'api' => 'g'));
             $user = $users->loadOne(array('id' => $userId));
-            $app->setAuthUser($user, true);
+            $app->setAuthUser($user, true, true);
             $this->pool['actionState'] = 'redirect';
         } else {
             $user = new SOne_Model_User(array(
@@ -298,7 +298,7 @@ class OAuth_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
                 'uid'       => $user->id,
                 'api'       => 'g',
             ));
-            $app->setAuthUser($user, true);
+            $app->setAuthUser($user, true, true);
             $this->pool['actionState'] = 'redirect';
         }
     }
@@ -331,7 +331,7 @@ class OAuth_Model_Object_LoginPage extends SOne_Model_Object_LoginPage
         $db = $env->getDb();
         if ($userId = $db->doSelect('oauth_tokens', 'uid', array('oauth_uid' => $vkUserId, 'api' => 'vk'))) {
             $user = $users->loadOne(array('id' => $userId));
-            $app->setAuthUser($user, true);
+            $app->setAuthUser($user, true, true);
             $this->pool['actionState'] = 'redirect';
         } else {
             $request = array(

@@ -384,15 +384,17 @@ class SOne_Application extends K3_Application
 
     /**
      * @param SOne_Model_User $user
+     * @param bool $setSession
      * @param bool $setAutoLogin
      */
-    public function setAuthUser(SOne_Model_User $user, $setAutoLogin = false)
+    public function setAuthUser(SOne_Model_User $user, $setSession = true, $setAutoLogin = false)
     {
         /* @var SOne_Repository_User $users */
         $users = SOne_Repository_User::getInstance($this->_db);
 
         $this->_env->session->open();
         $users->save($user->updateLastSeen($this->_env));
+
         if ($setAutoLogin) {
             /** @var SOne_Repository_User_AutoLogin $alRepo */
             $alRepo = SOne_Repository_User_AutoLogin::getInstance($this->_db);
@@ -407,7 +409,11 @@ class SOne_Application extends K3_Application
                 $this->_env->client->setCookie(self::COOKIE_AUTO_LOGIN, $alData->id, time() + SOne_Model_User_AutoLogin::LIFETIME);
             }
         }
-        $this->_env->session->set('userId', $user->id);
+
+        if ($setSession) {
+            $this->_env->session->set('userId', $user->id);
+        }
+
         $this->_env->setUser($user);
     }
 
