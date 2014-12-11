@@ -64,6 +64,11 @@ class SOne_Application extends K3_Application
     protected $_lang    = null;
 
     /**
+     * @var string[]
+     */
+    protected $_loadedPlugins = array();
+
+    /**
      * @param K3_Environment $env
      */
     public function __construct(K3_Environment $env = null)
@@ -277,6 +282,19 @@ class SOne_Application extends K3_Application
         return $this->_VIS->makeHTML();
     }
 
+    /**
+     * @param string[] $plugins
+     * @throws FException
+     */
+    public function requirePlugins(array $plugins)
+    {
+        $notLoadedPlugins = array_diff($plugins, $this->_loadedPlugins);
+
+        if (!empty($notLoadedPlugins)) {
+            throw new FException('Plugins required: '.implode(', ', $notLoadedPlugins));
+        }
+    }
+
     protected function _bootstrapPlugins()
     {
         $pluginsDir = isset($this->_config->pluginsDir)
@@ -291,7 +309,13 @@ class SOne_Application extends K3_Application
                         ? $pluginConfig->bootstrapClass
                         : $pluginName.'_Bootstrap';
                     if (class_exists($pluginBootstrapClass, true)) {
-                        $pluginBootstrapClass::bootstrap($this, ($pluginConfig instanceof K3_Config) ? $pluginConfig : new K3_Config((array) $pluginConfig));
+                        try {
+                            $pluginBootstrapClass::bootstrap($this, ($pluginConfig instanceof K3_Config) ? $pluginConfig : new K3_Config((array) $pluginConfig));
+                        } catch (Exception $e) {
+                            throw new FException(sprintf('Error loading plugin "%s": %s', $pluginName, $e->getMessage()), 0, $e);
+                        }
+
+                        $this->_loadedPlugins[] = $pluginName;
                     }
                 }
             }
