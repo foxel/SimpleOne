@@ -10,6 +10,7 @@
         }
     ],
     "require": {
+        "alcaeus/liquibase": "~2.0.5",
         "foxel/kernel3": "@dev"
     },
     "repositories": [
