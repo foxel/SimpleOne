@@ -22,11 +22,7 @@ define ('STARTED', true);
 define ('F_DEBUG', (boolean) getenv('F_DEBUG'));
 define ('F_PROFILE', (boolean) getenv('F_PROFILE'));
 
-if (file_exists('kernel3.phar')) {
-    require_once 'phar://kernel3.phar';
-} else {
-    require_once 'kernel3/kernel3.php';
-}
+$loader = require_once __DIR__.'/../vendor/autoload.php';
 
 F()->Autoloader->registerClassPath(dirname(__FILE__).DIRECTORY_SEPARATOR.'SOne', 'SOne');
 //F()->Autoloader->registerClassPath(F_SITE_ROOT.DIRECTORY_SEPARATOR.'plugins');

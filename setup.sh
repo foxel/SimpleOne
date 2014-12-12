@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+# Copyright (C) 2014 Andrey F. Kupreychik (Foxel)
 #
 # This file is part of QuickFox SimpleOne.
 #
@@ -17,33 +17,18 @@
 # You should have received a copy of the GNU General Public License
 # along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
 #
-# usage: bash setup_kernel.sh [{path/to/download/kernel3}]
+# usage: bash setup.sh
 
 SIMPLEONE_DIR="${PWD}"
 
-if [ -L "kernel3" ]; then
-    KERNEL3_PATH=`readlink "kernel3" | sed 's#/kernel3/\?$##'`;
-else
-    if [ "$1" ]; then
-        KERNEL3_PATH="$1"
-    else
-        KERNEL3_PATH="../K3"
-    fi
+php -r "readfile('https://getcomposer.org/installer');" | php
 
-    git clone "git://github.com/foxel/Kernel3.git" "${KERNEL3_PATH}"
-    ln -s "${KERNEL3_PATH}/kernel3"
-fi;
+./composer.phar install
 
+KERNEL3_PATH="vendor/foxel/kernel3"
 echo "kernel dir is ${KERNEL3_PATH}"
-
 cd "${KERNEL3_PATH}"
-git checkout dev
-git pull
-
+echo "making phars"
+php -d phar.readonly=0 -f "makePhar.php"
 # get back to Simple One
 cd "${SIMPLEONE_DIR}"
-
-if [ -f "${KERNEL3_PATH}/makePhar.php" ]; then
-    echo "making phars"
-    php -d phar.readonly=0 -f "${KERNEL3_PATH}/makePhar.php"
-fi;
