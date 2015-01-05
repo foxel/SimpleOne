@@ -25,7 +25,7 @@ php -r "readfile('https://getcomposer.org/installer');" | php
 
 ./composer.phar update
 
-KERNEL3_PATH="vendor/foxel/kernel3"
+KERNEL3_PATH="lib/vendor/foxel/kernel3"
 echo "kernel dir is ${KERNEL3_PATH}"
 cd "${KERNEL3_PATH}"
 echo "making phars"
