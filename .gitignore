@@ -1,4 +1,5 @@
-vendor/
+lib/vendor/
+lib/bin/
 *.swp
 data/cache/
 tags

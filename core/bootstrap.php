@@ -22,10 +22,13 @@ define ('STARTED', true);
 define ('F_DEBUG', (boolean) getenv('F_DEBUG'));
 define ('F_PROFILE', (boolean) getenv('F_PROFILE'));
 
-$loader = require_once __DIR__.'/../vendor/autoload.php';
+define ('SONE_BASE_DIR', dirname(__DIR__));
+define ('F_DATA_ROOT', SONE_BASE_DIR.'/data');
+define ('F_LOGS_ROOT', SONE_BASE_DIR.'/logs');
+
+$loader = require_once SONE_BASE_DIR.'/lib/vendor/autoload.php';
 
 F()->Autoloader->registerClassPath(dirname(__FILE__).DIRECTORY_SEPARATOR.'SOne', 'SOne');
-//F()->Autoloader->registerClassPath(F_SITE_ROOT.DIRECTORY_SEPARATOR.'plugins');
 
 if (F_DEBUG) {
     FCache::clear();

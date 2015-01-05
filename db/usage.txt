@@ -1,4 +1,4 @@
 Sample usage:
 
 cp liquibase.properties.sample liquibase.properties
-../vendor/bin/liquibase update -Ddb.prefix=qfso_
+../lib/bin/liquibase update -Ddb.prefix=qfso_
