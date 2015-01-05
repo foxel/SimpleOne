@@ -87,7 +87,7 @@ class SOne_Application extends K3_Application
      */
     public function bootstrap()
     {
-        F()->Timer->logEvent('App Bootstrap start');
+        F()->Profiler->logEvent('App Bootstrap start');
 
         $this->_config = new K3_Config($c = $this->_parseConfigLines((array) FMisc::loadDatafile(F_DATA_ROOT.DIRECTORY_SEPARATOR.'sone.qfc.php', FMisc::DF_SLINE)));
 
@@ -131,7 +131,7 @@ class SOne_Application extends K3_Application
 
         $this->_bootstrapPlugins();
 
-        F()->Timer->logEvent('App Bootstrap end');
+        F()->Profiler->logEvent('App Bootstrap end');
 
         return $this;
     }
@@ -147,7 +147,7 @@ class SOne_Application extends K3_Application
     {
         $object = $this->routeRequest($this->_request, true);
 
-        F()->Timer->logEvent('Object routed');
+        F()->Profiler->logEvent('Object routed');
 
         // performing action
         if ($action = $this->_request->action) {
@@ -162,7 +162,7 @@ class SOne_Application extends K3_Application
                 $object = new SOne_Model_Object_Page403(array('path' => $this->_request->path));
             }
 
-            F()->Timer->logEvent('App Action end');
+            F()->Profiler->logEvent('App Action end');
         }
 
         if ($this->_env->request->isAjax && $object instanceof SOne_Interface_Object_WithAjaxResponse) {
@@ -277,7 +277,7 @@ class SOne_Application extends K3_Application
 
         $this->throwEvent(self::EVENT_PAGE_RENDERED, $this->_VIS->getRootNode());
 
-        F()->Timer->logEvent('App Page Construct complete');
+        F()->Profiler->logEvent('App Page Construct complete');
 
         return $this->_VIS->makeHTML();
     }

@@ -25,7 +25,7 @@ class SOne_Cron extends SOne_Application
         $this->throwEvent(self::EVENT_CRON_PROCESS, $this->getEnv());
 
         $this->getResponse()
-            ->write(sprintf('Finished in %f seconds.', F()->Timer->timeSpent()))
+            ->write(sprintf('Finished in %f seconds.', $this->_env->clock->timeSpent))
             ->sendBuffer();
     }
 }

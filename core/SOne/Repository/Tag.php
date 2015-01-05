@@ -191,7 +191,7 @@ class SOne_Repository_Tag extends SOne_Repository
     {
         $bind = array(
             'name' => $tagName,
-            'time' => F()->Timer->qTime(),
+            'time' => F()->appEnv->clock->startTime,
             'user_id' => $userId,
         );
 

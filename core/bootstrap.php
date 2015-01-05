@@ -34,4 +34,4 @@ if (F_DEBUG) {
     FCache::clear();
 }
 
-F()->Timer->logEvent('Bootstrap complete');
+F()->Profiler->logEvent('Bootstrap complete');
