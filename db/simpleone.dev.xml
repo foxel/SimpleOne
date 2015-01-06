@@ -27,4 +27,5 @@
     <include file="updates.2013.04.xml" relativeToChangelogFile="true" />
     <include file="updates.2013.09.xml" relativeToChangelogFile="true" />
     <include file="updates.2014.05.xml" relativeToChangelogFile="true" />
+    <include file="../plugins/Google/db/main.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

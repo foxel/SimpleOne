@@ -217,15 +217,16 @@ class SOne_Repository_Object extends SOne_Repository
      */
     public function loadIds(array $filters, $noExecute = false)
     {
-        $select = $this->_db->select('objects', 'o', array('id'))
-            ->joinLeft('objects_navi', array('id' => 'o.id'), 'n', array())
-            ->joinLeft('objects_data', array('o_id' => 'o.id'), 'd', array());
+        $select = $this->_db->select('objects', 'o', array('id'));
 
         foreach (self::mapFilters($filters, self::$dbMap, 'o') as $key => $filter) {
             $select->where($key, $filter);
         }
-        foreach (self::mapFilters($filters, self::$dbMapNavi, 'n') as $key => $filter) {
-            $select->where($key, $filter);
+        if ($naviFilters = self::mapFilters($filters, self::$dbMapNavi, 'n')) {
+            $select->joinLeft('objects_navi', array('id' => 'o.id'), 'n', array());
+            foreach ($naviFilters as $key => $filter) {
+                $select->where($key, $filter);
+            }
         }
 
         return $noExecute
@@ -254,6 +255,24 @@ class SOne_Repository_Object extends SOne_Repository
         return $noExecute
             ? $select
             : $select->fetchAll();
+    }
+
+    /**
+     * @param array $filters
+     * @return array
+     */
+    public function loadPathToIdMap(array $filters)
+    {
+        $select = $this->loadPaths($filters, true)
+            ->column('o.id', 'id');
+
+        $rows = $select->fetchAll();
+        $out = array();
+        while ($row = array_shift($rows)) {
+            $out[$row['path']] = $row['id'];
+        }
+
+        return $out;
     }
 
     public function save(SOne_Model_Object $object)

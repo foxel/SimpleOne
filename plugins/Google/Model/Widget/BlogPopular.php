@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 - 2014 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2015 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -94,54 +94,29 @@ class Google_Model_Widget_BlogPopular extends SOne_Model_Widget
      */
     protected function _getTopObjects($blogIds, FDataBase $db, $limit = null)
     {
-        $rawStats = Google_Bootstrap::getPluginInstance()->fetchStats(false);
+        $topIdsOrdered = SOne_Repository_Object::getInstance($db)->loadIds(array(
+            'parentId=' => $blogIds,
+            'class='    => 'BlogItem',
+        ), true)
+            ->join('google_stats', array('object_id' => 'id'), 's', array())
+            ->where('s.period', 'D')
+            ->order('s.pageviews', true)
+            ->order('s.visitors', true)
+            ->order('s.visits', true)
+            ->limit($limit)
+            ->fetchAll();
 
-        $blogPaths = SOne_Repository_Object::getInstance($db)->loadPaths(array('id=' => $blogIds));
-        $blogPathsRegExp = '#^('.implode('|', array_map(function($path) {
-            return preg_quote(rtrim($path, '/'), '#');
-        }, $blogPaths)).')/#';
-
-        $stats = array();
-        foreach ($rawStats as $rawRow) {
-            $path = preg_replace('#^/+|[?\#]+.*$#', '', $rawRow['ga:pagePath']);
-            unset($rawRow['ga:pagePath']);
-            // non ascii paths to be ignored
-            if (preg_match('#[\x80-\xFF]#', $path) || !preg_match($blogPathsRegExp, $path)) {
-                continue;
-            }
-
-            if (isset($stats[$path])) {
-                foreach ($rawRow as $k => $v) {
-                    $stats[$path][$k] += $v;
-                }
-            } elseif ($limit && count($stats) >= $limit) {
-                break;
-            } else {
-                $stats[$path] = $rawRow;
-            }
-        }
-        unset($rawStats);
-
-        $paths = array_keys($stats);
-
-        if (empty($paths)) {
+        if (empty($topIdsOrdered)) {
             return array();
         }
 
         $objects = SOne_Repository_Object::getInstance($db)->loadAll(array(
-            'parentId=' => $blogIds,
-            'path='     => $paths,
-            'class='    => 'BlogItem',
+            'id=' => $topIdsOrdered,
         ));
 
         $topObjects = array();
-        foreach ($paths as $path) {
-            foreach ($objects as $object) {
-                if ($object->path == $path) {
-                    $topObjects[$object->id] = $object;
-                    continue;
-                }
-            }
+        foreach ($topIdsOrdered as $id) {
+            $topObjects[] = $objects[$id];
         }
 
         return $topObjects;

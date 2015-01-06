@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013, 2015 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -103,39 +103,81 @@ class Google_Plugin
     }
 
     /**
-     * @param bool $updateData
-     * @return array
+     * @return bool
      */
-    public function fetchStats($updateData = false)
+    public function fetchStats()
     {
         $config  = $this->getConfig();
-        $cacheId = 'googleStats';
+        $cacheId = 'googleStatsTS';
 
         $rawStats = null;
-        if ($statsCache = FCache::get($cacheId)) {
-            if (!$updateData || $statsCache['timestamp'] >= time() - 900) {
-                $rawStats = $statsCache['stats'];
-            }
+        if (($statsTimeStamp = FCache::get($cacheId)) && $statsTimeStamp >= time() - 900) {
+            return true;
         }
 
-        if ($rawStats === null) {
-            if ($updateData) {
-                try {
-                    $auth = Google_Bootstrap::getPluginInstance()->getAPIAuth(Google_API_Analytics::SCOPE_URL);
-                    $analytics = new Google_API_Analytics($auth);
-                    $rawStats = $analytics->getMostVisitedPagesStats($analytics->getFistProfileId($config->analytics->accountId));
-                } catch (Exception $e) {
-                    $rawStats = array();
+        try {
+            $auth = Google_Bootstrap::getPluginInstance()->getAPIAuth(Google_API_Analytics::SCOPE_URL);
+            $analytics = new Google_API_Analytics($auth);
+            $rawStats = $analytics->getMostVisitedPagesStats($analytics->getFistProfileId($config->analytics->accountId));
+        } catch (Exception $e) {
+            return false;
+        }
+
+        $pathToIdMap = $this->_app->getObjects()->loadPathToIdMap(array());
+
+        $statsById = array();
+        foreach ($rawStats as $rawRow) {
+            $path = trim(preg_replace('#[?\#]+.*$#', '', $rawRow['ga:pagePath']), '/');
+            unset($rawRow['ga:pagePath']);
+            // non ascii paths to be ignored
+            if (preg_match('#[\x80-\xFF]#', $path)) {
+                continue;
+            }
+
+            $subPaths = array();
+
+            while (!isset($pathToIdMap[$path]) && strlen($path)) {
+                $subPaths[] = $path;
+                $path = implode('/', array_slice(explode('/', $path), 0, -1));
+            }
+
+            if (!isset($pathToIdMap[$path])) {
+                continue;
+            }
+
+            $id = $pathToIdMap[$path];
+
+            foreach($subPaths as $subPath) {
+                $pathToIdMap[$subPath] = $id;
+            }
+
+            if (isset($statsById[$id])) {
+                foreach ($rawRow as $k => $v) {
+                    $statsById[$id][$k] += $v;
                 }
-                FCache::set($cacheId, array(
-                    'timestamp' => time(),
-                    'stats' => $rawStats,
-                ));
             } else {
-                $rawStats = array();
+                $statsById[$id] = $rawRow;
             }
         }
+        unset($rawStats);
 
-        return $rawStats;
+        $rows = array();
+        foreach($statsById as $id => $row) {
+            $rows[] = array(
+                'period' => 'D',
+                'object_id' => $id,
+                'pageviews' => $row['ga:pageviews'],
+                'visitors'  => $row['ga:visitors'],
+                'visits'    => $row['ga:visits'],
+            );
+        }
+        unset($statsById);
+
+        $this->_app->getEnv()->db->doDelete('google_stats');
+        $this->_app->getEnv()->db->doInsert('google_stats', $rows, false, FDataBase::SQL_MULINSERT);
+
+        FCache::set($cacheId, time());
+
+        return true;
     }
 }
