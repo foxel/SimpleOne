@@ -77,19 +77,7 @@ class Google_Plugin
      */
     public function processCronJob(SOne_Environment $env)
     {
-        $config = ($this->_config->cron instanceof K3_Config)
-            ? $this->_config->cron->toArray()
-            : (array) $this->_config->cron;
-
-        if (isset($config['statPaths'])) {
-            $paths = is_array($config['statPaths'])
-                ? $config['statPaths']
-                : explode(',', $config['statPaths']);
-
-            foreach ($paths as $path) {
-                $this->fetchStats(rtrim($path, '/').'/', true);
-            }
-        }
+        $this->fetchStats(true);
     }
 
     /**
@@ -115,17 +103,16 @@ class Google_Plugin
     }
 
     /**
-     * @param $path
      * @param bool $updateData
      * @return array
      */
-    public function fetchStats($path, $updateData = false)
+    public function fetchStats($updateData = false)
     {
         $config  = $this->getConfig();
-        $cacheId = K3_Util_String::shortHash($path);
+        $cacheId = 'googleStats';
 
         $rawStats = null;
-        if ($statsCache = FCache::get('googleStats.'.$cacheId)) {
+        if ($statsCache = FCache::get($cacheId)) {
             if (!$updateData || $statsCache['timestamp'] >= time() - 900) {
                 $rawStats = $statsCache['stats'];
             }
@@ -136,11 +123,11 @@ class Google_Plugin
                 try {
                     $auth = Google_Bootstrap::getPluginInstance()->getAPIAuth(Google_API_Analytics::SCOPE_URL);
                     $analytics = new Google_API_Analytics($auth);
-                    $rawStats = $analytics->getMostVisitedPagesStats($analytics->getFistProfileId($config->analytics->accountId), $path);
+                    $rawStats = $analytics->getMostVisitedPagesStats($analytics->getFistProfileId($config->analytics->accountId));
                 } catch (Exception $e) {
                     $rawStats = array();
                 }
-                FCache::set('googleStats.'.$cacheId, array(
+                FCache::set($cacheId, array(
                     'timestamp' => time(),
                     'stats' => $rawStats,
                 ));

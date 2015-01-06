@@ -35,7 +35,7 @@ class Google_API_Analytics
     /**
      * @param int $profileId
      * @param int $daysToFetch
-     * @param string $pathFilter
+     * @param string|string[] $pathFilter
      * @throws FException
      * @return array
      */
@@ -52,6 +52,7 @@ class Google_API_Analytics
         );
 
         if ($pathFilter) {
+            $pathFilter = '('.implode('|', array_map('preg_quote', (array) $pathFilter)).')';
             $query['filters'].= ';ga:pagePath=~^/?'.preg_quote($pathFilter);
         }
 

@@ -49,25 +49,22 @@ class Google_Model_Widget_BlogPopular extends SOne_Model_Widget
         $container->addDataArray($this->pool);
 
         if ($pageObject instanceof SOne_Model_Object_BlogMerge) {
-            $blogObject = SOne_Repository_Object::getInstance($db)->loadOne($this->blogPath
-                ? array('path=' => $this->blogPath)
-                : array('id=' => reset($pageObject->blogIds))
-            );
+            $blogIds = $pageObject->blogIds;
         } elseif ($pageObject instanceof SOne_Model_Object_BlogRoot) {
-            $blogObject = $pageObject;
+            $blogIds = $pageObject->id;
         } elseif ($pageObject instanceof SOne_Model_Object_BlogItem) {
-            $blogObject = SOne_Repository_Object::getInstance($db)->loadOne(array('id=' => $pageObject->parentId));
+            $blogIds = $pageObject->parentId;
         } elseif ($this->blogPath) {
-            $blogObject = SOne_Repository_Object::getInstance($db)->loadOne(array('path=' => $this->blogPath));
+            $blogIds = SOne_Repository_Object::getInstance($db)->loadIds(array('path=' => $this->blogPath));
         } else {
             return $container;
         }
 
-        if (!$blogObject instanceof SOne_Model_Object_BlogRoot) {
+        if (empty($blogIds)) {
             return $container;
         }
 
-        $topObjects = $this->_getTopObjects($blogObject, $db, $this->limit);
+        $topObjects = $this->_getTopObjects($blogIds, $db, $this->limit);
 
         $items = array();
         foreach ($topObjects as $object) {
@@ -90,24 +87,26 @@ class Google_Model_Widget_BlogPopular extends SOne_Model_Widget
     }
 
     /**
-     * @param SOne_Model_Object_BlogRoot $blogObject
+     * @param int|int[] $blogIds
      * @param FDataBase $db
      * @param int|null $limit
-     * @return SOne_Model_Object[]
+     * @return SOne_Model_Object_BlogItem[]
      */
-    protected function _getTopObjects(SOne_Model_Object_BlogRoot $blogObject, FDataBase $db, $limit = null)
+    protected function _getTopObjects($blogIds, FDataBase $db, $limit = null)
     {
-        $blogId   = $blogObject->id;
-        $blogPath = $blogObject->path;
+        $rawStats = Google_Bootstrap::getPluginInstance()->fetchStats(false);
 
-        $rawStats = Google_Bootstrap::getPluginInstance()->fetchStats($blogPath.'/', false);
+        $blogPaths = SOne_Repository_Object::getInstance($db)->loadPaths(array('id=' => $blogIds));
+        $blogPathsRegExp = '#^('.implode('|', array_map(function($path) {
+            return preg_quote(rtrim($path, '/'), '#');
+        }, $blogPaths)).')/#';
 
         $stats = array();
         foreach ($rawStats as $rawRow) {
             $path = preg_replace('#^/+|[?\#]+.*$#', '', $rawRow['ga:pagePath']);
             unset($rawRow['ga:pagePath']);
             // non ascii paths to be ignored
-            if (preg_match('#[\x80-\xFF]#', $path)) {
+            if (preg_match('#[\x80-\xFF]#', $path) || !preg_match($blogPathsRegExp, $path)) {
                 continue;
             }
 
@@ -130,7 +129,7 @@ class Google_Model_Widget_BlogPopular extends SOne_Model_Widget
         }
 
         $objects = SOne_Repository_Object::getInstance($db)->loadAll(array(
-            'parentId=' => $blogId,
+            'parentId=' => $blogIds,
             'path='     => $paths,
             'class='    => 'BlogItem',
         ));
