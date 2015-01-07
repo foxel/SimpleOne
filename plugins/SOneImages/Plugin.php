@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012, 2015 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -45,14 +45,16 @@ class SOneImages_Plugin
      */
     public function addAppVisData(FVISNode $pageNode)
     {
+        $selector = $this->_config->containerSelector ?: '#mp_pagecont .htmlpage';
+        $selectorJS = json_encode($selector);
         if ($this->_config->lazyload) {
             $pageNode
                 ->addData('CSS', 'img[data-lazyload-src] { display: none; }')
                 ->addData('BOTT_JS_BLOCKS', '<script type="text/javascript">//<!--
                     require(["jquery", "sone.lazyload", "sone.misc"], function ($) {
                         $("img[data-lazyload-src]").show().lazyload();
-                        $("#mp_pagecont").find("img:not([data-lazyload-src])").each(function () {
-                            if ($(this).attr("src").match(/(\?|&)scale/)) {
+                        $('.$selectorJS.').find("img:not([data-lazyload-src])").each(function () {
+                            if ($(this).attr("src").match(/(\\?|&)scale/)) {
                                 $(this).imageModal();
                             }
                         });
@@ -62,8 +64,8 @@ class SOneImages_Plugin
             $pageNode
                 ->addData('BOTT_JS_BLOCKS', '<script type="text/javascript">//<!--
                     require(["jquery", "sone.misc"], function ($) {
-                        $("#mp_pagecont").find("img").each(function () {
-                            if ($(this).attr("src").match(/(\?|&)scale/)) {
+                        $('.$selectorJS.').find("img:not(.thumbnail)").each(function () {
+                            if ($(this).attr("src").match(/(\\?|&)scale/)) {
                                 $(this).imageModal();
                             }
                         });

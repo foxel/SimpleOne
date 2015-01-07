@@ -19,6 +19,7 @@ markup.responsive => 1
 
 #plugins.SOneImages.scale => 1
 #plugins.SOneImages.lazyload => 1
+#plugins.SOneImages.containerSelector => #mp_pagecont .htmlpage
 
 #OAuth integration for Facebook/VK
 plugins.OAuth.vkAppId => 2833416
