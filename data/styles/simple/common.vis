@@ -300,7 +300,7 @@
 <<+ 'SONE_OBJECT_COMMENTS_ITEM'>>
 <div class="media">
     <div class="media-left" href="#">
-        <img src="{!FULLURL:IN_author_avatar}" alt="{!IN_author_name}" />
+        <img src="{!FULLURL:IN_author_avatar}" alt="{!IN_author_name}" style="width: 64px;" />
     </div>
     <div class="media-body">
         <h4 class="media-heading">{IF:IN_author_name}{!IN_author_name} @ {/IF}<time datetime="{FTIME:IN_TIME|"c"|false|true}">{FTIME:IN_TIME}</time></h4>
