@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 - 2014 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2015 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -312,7 +312,7 @@ class SOne_Application extends K3_Application
                         try {
                             $pluginBootstrapClass::bootstrap($this, ($pluginConfig instanceof K3_Config) ? $pluginConfig : new K3_Config((array) $pluginConfig));
                         } catch (Exception $e) {
-                            throw new FException(sprintf('Error loading plugin "%s": %s', $pluginName, $e->getMessage()), 0, $e);
+                            throw new FException(array('Error loading plugin "%s": %s', $pluginName, $e->getMessage()), 0, $e);
                         }
 
                         $this->_loadedPlugins[] = $pluginName;

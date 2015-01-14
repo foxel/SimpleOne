@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013, 2015 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -137,11 +137,15 @@ abstract class SOne_Model_Object_Commentable extends SOne_Model_Object implement
             }
 
             $uIds = array_unique(F2DArray::cols($comments, 'author_id'));
-            /* @var SOne_Repository_User $users */
-            $users = SOne_Repository_User::getInstance($env->getDb());
-            $userNames = $users->loadNames(array('id' => $uIds));
+            $users = SOne_Repository_User::getInstance($env->getDb())->prepareFetch(array('id=' => $uIds));
+
+            F2DArray::keycol($users, 'id');
             foreach ($comments as &$comment) {
-                $comment['author_name'] = isset($userNames[$comment['author_id']]) ? $userNames[$comment['author_id']] : null;
+                if ($user = $users->get($comment['author_id'])) {
+                    $comment['author_name']   = $user->name;
+                    $comment['author_email']  = $user->email;
+                    $comment['author_avatar'] = $user->avatar;
+                }
             }
 
             $node->appendChild('comments', $commentsNode = new FVISNode('SONE_OBJECT_COMMENTS_ITEM', FVISNode::VISNODE_ARRAY, $env->getVIS()));

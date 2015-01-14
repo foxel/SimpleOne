@@ -1,5 +1,5 @@
 <!--
- Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
+ Copyright (C) 2012 - 2013, 2015 Andrey F. Kupreychik (Foxel)
 
  This file is part of QuickFox SimpleOne.
 
@@ -298,9 +298,14 @@
 <<- 'SONE_OBJECT_COMMENTS_FORM'>>
 
 <<+ 'SONE_OBJECT_COMMENTS_ITEM'>>
-<div class="well well-sm">
-<strong style="font-size: 85%">{IF:IN_author_name}{!IN_author_name} @ {/IF}<time datetime="{FTIME:IN_TIME|"c"|false|true}">{FTIME:IN_TIME}</time>:</strong>
- <div style="padding-left: 10px;">{BBPARSE:IN_TEXT}</div>
+<div class="media">
+    <div class="media-left" href="#">
+        <img src="{!FULLURL:IN_author_avatar}" alt="{!IN_author_name}" />
+    </div>
+    <div class="media-body">
+        <h4 class="media-heading">{IF:IN_author_name}{!IN_author_name} @ {/IF}<time datetime="{FTIME:IN_TIME|"c"|false|true}">{FTIME:IN_TIME}</time></h4>
+        {BBPARSE:IN_TEXT}
+    </div>
 </div>
 <<- 'SONE_OBJECT_COMMENTS_ITEM'>>
 

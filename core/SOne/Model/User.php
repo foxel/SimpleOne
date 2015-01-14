@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013, 2015 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -71,6 +71,14 @@ class SOne_Model_User extends SOne_Model
         );
 
         $this->pool['authUpdated'] = !$this->pool['id'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getAvatar()
+    {
+        return $this->pool['avatar'] ?: sprintf('//www.gravatar.com/avatar/%s?s=63&d=mm', md5(strtolower($this->email)));
     }
 
     /**
