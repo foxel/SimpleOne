@@ -35,7 +35,7 @@ class SOneImages_Plugin
         $this->_config = $config;
 
         $this->_app->getEnv()->getResponse()
-            ->addEventHandler('HTML_parse', array($this, 'HTML_Images'));
+            ->addEventHandler(K3_Response::EVENT_HTML_PARSE, array($this, 'HTML_Images'));
 
         $this->_app->addEventHandler(SOne_Application::EVENT_PAGE_RENDERED, array($this, 'addAppVisData'));
     }

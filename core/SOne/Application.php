@@ -97,7 +97,7 @@ class SOne_Application extends K3_Application
 
         if ($this->_config->app->useTransaction) {
             $this->_db->beginTransaction();
-            $this->getResponse()->addEventHandler('closeAndExit', array($this, 'commitOnResponseSent'));
+            $this->getResponse()->addEventHandler(K3_Response::EVENT_CLOSE_AND_EXIT, array($this, 'commitOnResponseSent'));
         }
 
         $this->_env->session->setDBase($this->_db, 'sessions');
@@ -111,7 +111,7 @@ class SOne_Application extends K3_Application
 
         $tools = SOne_Tools::getInstance($this->_env);
         $this->getResponse()
-            ->addEventHandler('HTML_parse', array($tools, 'HTML_FullURLs'));
+            ->addEventHandler(K3_Response::EVENT_HTML_PARSE, array($tools, 'HTML_FullURLs'));
 
         F()->Parser->initStdTags();
         $this->_VIS->addFuncParser('BBPARSE', array(F()->Parser, 'parse'));
