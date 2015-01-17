@@ -10,8 +10,8 @@
         }
     ],
     "require": {
-        "alcaeus/liquibase": "~2.0.5",
-        "foxel/kernel3": "~0.1.2"
+        "alcaeus/liquibase": "~3.3.0",
+        "foxel/kernel3": "~0.1.3"
     },
     "require-dev": {
     },

@@ -1,8 +1,0 @@
-#liquibase.properties
-driver: com.mysql.jdbc.Driver
-classpath: mysql-connector-java-5.1.18-bin.jar
-changeLogFile: simpleone.dev.xml
-url: jdbc:mysql://localhost/dev.simpleone
-username: username
-password: password
-#db.prefix: qf_
