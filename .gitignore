@@ -2,6 +2,7 @@ lib/vendor/
 lib/bin/
 data/cache/
 composer.lock
+composer.phar
 tags
 sess
 .idea

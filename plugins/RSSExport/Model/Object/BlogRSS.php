@@ -90,14 +90,14 @@ class RSSExport_Model_Object_BlogRSS extends SOne_Model_Object
             $class = 'RSSExport_RSS_FullText';
         }
 
-        return new $class(array(
+        return new $class(array_merge((array) $this->data, array(
             'title'     => $this->caption,
             'link'      => K3_Util_Url::fullUrl($this->blogPath, $env),
             'feedLink'  => K3_Util_Url::fullUrl($this->path, $env),
             'siteUrl'   => K3_Util_Url::fullUrl('/', $env),
             'siteName'  => $appConfig->site ? (string) $appConfig->site->name : 'SimpleOne',
             'siteImage' => $this->imageUrl ? $this->imageUrl : '/static/images/sone.ico.png',
-        ), $items, $env);
+        )), $items, $env);
     }
 
     /**

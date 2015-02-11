@@ -28,13 +28,21 @@ class RSSExport_RSS_Yandex extends RSSExport_RSS_FullText
      */
     public function __construct(array $params, array $items = array(), SOne_Environment $env = null)
     {
-        if (!isset($params['siteUrl'], $params['siteName'], $params['siteImage'])) {
-            throw new FException('siteUrl, siteName, siteImage are required to produce Yandex capable RSS feed');
+        if (!isset($params['siteUrl'], $params['siteName'], $params['siteImage'], $params['squareImage'])) {
+            throw new FException('siteUrl, siteName, siteImage, squareImage are required to produce Yandex capable RSS feed');
         }
 
         parent::__construct($params, array(), $env);
 
         $this->_xml->documentElement->setAttribute('xmlns:yandex', 'http://news.yandex.ru');
+        $this->_channel->appendChild($logo = $this->_xml->createElement('yandex:logo'));
+        $this->_channel->appendChild($square = $this->_xml->createElement('yandex:logo'));
+
+        $logo->nodeValue   = K3_Util_Url::fullUrl($params['siteImage'], $this->_env);
+        $square->nodeValue = K3_Util_Url::fullUrl($params['squareImage'], $this->_env);
+        $square->setAttribute('type', 'square');
+
+        // legacy
         $this->_channel->appendChild($image = $this->_xml->createElement('image'));
 
         $image->appendChild($this->_xml->createElement('url', K3_Util_Url::fullUrl($params['siteImage'], $this->_env)));
