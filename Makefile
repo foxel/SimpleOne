@@ -1,9 +1,9 @@
 SUBDIRS = db
 
 all: setup $(SUBDIRS)
-setup: dummy
+setup:
 	./setup.sh
 
 $(SUBDIRS):
 	$(MAKE) -C $@
-.PHONY: $(SUBDIRS)
+.PHONY: $(SUBDIRS) setup
