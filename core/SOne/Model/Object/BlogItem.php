@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 - 2014 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2015 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -210,9 +210,9 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
     }
 
     /**
-     * @param FDataBase $db
+     * @param K3_Db_Abstract $db
      */
-    public function loadExtraData(FDataBase $db)
+    public function loadExtraData(K3_Db_Abstract $db)
     {
         parent::loadExtraData($db);
 
@@ -221,9 +221,9 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
     }
 
     /**
-     * @param FDataBase $db
+     * @param K3_Db_Abstract $db
      */
-    public function saveExtraData(FDataBase $db)
+    public function saveExtraData(K3_Db_Abstract $db)
     {
         parent::saveExtraData($db);
 
@@ -252,6 +252,9 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
         return $this->tags;
     }
 
+    /**
+     * @return I_K3_RSS_Item_Enclosure[]|null
+     */
     public function getEnclosures()
     {
         if ($this->thumbnailImage) {

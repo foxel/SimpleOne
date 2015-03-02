@@ -19,9 +19,9 @@
  */
 
 /**
- * @property FDataBase     $db
- * @property FVISInterface $VIS
- * @property FLNGData      $lang
+ * @property K3_Db_Abstract $db
+ * @property FVISInterface  $VIS
+ * @property FLNGData       $lang
  *
  * @property SOne_Model_User  $user
  * @property SOne_Application $app
@@ -29,7 +29,7 @@
  */
 class SOne_Environment extends K3_Environment
 {
-    /** @var FDataBase */
+    /** @var K3_Db_Abstract */
     protected $_db;
     /** @var FVISInterface */
     protected $_vis;
@@ -80,17 +80,17 @@ class SOne_Environment extends K3_Environment
     }
 
     /**
-     * @param FDataBase $db
+     * @param K3_Db_Abstract $db
      * @return $this
      */
-    public function setDb(FDataBase $db)
+    public function setDb(K3_Db_Abstract $db)
     {
         $this->_db = $db;
         return $this;
     }
 
     /**
-     * @return FDataBase
+     * @return K3_Db_Abstract
      */
     public function getDb()
     {

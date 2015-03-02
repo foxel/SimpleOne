@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 - 2014 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2015 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -29,10 +29,13 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
      */
     protected $aclEditActionsList = array('edit', 'save', 'new');
 
-    /** @var FDataBase */
+    /** @var K3_Db_Abstract */
     protected $_db;
+    /** @var null|array */
     protected $_filterParams = null;
+    /** @var string */
     protected $_subPath = '';
+    /** @var int */
     protected $_itemPerPage  = 10;
 
     /**
@@ -191,7 +194,6 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
             $filter['published='] = true;
         }
 
-        $lang = $env->getLang();
         if ($this->_filterParams) {
             foreach ($this->_filterParams as $filterType => $filterValue) {
                 switch ($filterType) {
@@ -199,14 +201,14 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
                         if (preg_match('#^\d{4}(-\d{2}){0,2}$#', $filterValue)) {
                             $dateParts = explode('-', $filterValue);
                             if (count($dateParts) == 3) {
-                                $filter['createTime>='] = gmmktime(0, 0, 0, $dateParts[1], $dateParts[2], $dateParts[0]) - $lang->timeZone*3600;
-                                $filter['createTime<='] = gmmktime(23, 59, 59, $dateParts[1], $dateParts[2], $dateParts[0]) - $lang->timeZone*3600;
+                                $filter['createTime>='] = gmmktime(0, 0, 0, $dateParts[1], $dateParts[2], $dateParts[0]);
+                                $filter['createTime<='] = gmmktime(23, 59, 59, $dateParts[1], $dateParts[2], $dateParts[0]);
                             } elseif (count($dateParts) == 2) {
-                                $filter['createTime>='] = gmmktime(0, 0, 0, $dateParts[1], 1, $dateParts[0]) - $lang->timeZone*3600;
-                                $filter['createTime<='] = gmmktime(23, 59, 59, $dateParts[1]+1, 0, $dateParts[0]) - $lang->timeZone*3600;
+                                $filter['createTime>='] = gmmktime(0, 0, 0, $dateParts[1], 1, $dateParts[0]);
+                                $filter['createTime<='] = gmmktime(23, 59, 59, $dateParts[1]+1, 0, $dateParts[0]);
                             } else {
-                                $filter['createTime>='] = gmmktime(0, 0, 0, 1, 1, $dateParts[0]) - $lang->timeZone*3600;
-                                $filter['createTime<='] = gmmktime(23, 59, 59, 12, 31, $dateParts[0]) - $lang->timeZone*3600;
+                                $filter['createTime>='] = gmmktime(0, 0, 0, 1, 1, $dateParts[0]);
+                                $filter['createTime<='] = gmmktime(23, 59, 59, 12, 31, $dateParts[0]);
                             }
                         }
                         break;
@@ -234,7 +236,7 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
         }
 
         /** @var $repo SOne_Repository_Object */
-        $repo = SOne_Repository_Object::getInstance($this->_db);
+        $repo = SOne_Repository_Object::getInstance($env->getDb());
         $filter = array(
             'parentId='  => $this->id,
             'class='     => 'BlogItem',
@@ -247,18 +249,18 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
     }
 
     /**
-     * @param FDataBase $db
+     * @param K3_Db_Abstract $db
      */
-    public function loadExtraData(FDataBase $db)
+    public function loadExtraData(K3_Db_Abstract $db)
     {
         // we'll grab db adapter for future
         $this->_db = $db;
     }
 
     /**
-     * @param FDataBase $db
+     * @param K3_Db_Abstract $db
      */
-    public function saveExtraData(FDataBase $db)
+    public function saveExtraData(K3_Db_Abstract $db)
     {
         // we'll grab db adapter for future
         $this->_db = $db;

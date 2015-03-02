@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012, 2015 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -23,6 +23,9 @@
  */
 class SOne_Repository_Object extends SOne_Repository
 {
+    /**
+     * @var array
+     */
     protected static $dbMap = array(
         'id'          => 'id',
         'parentId'    => 'parent_id',
@@ -36,12 +39,19 @@ class SOne_Repository_Object extends SOne_Repository
         'orderId'     => 'order_id',
     );
 
+    /**
+     * @var array
+     */
     protected static $dbMapNavi = array(
         'path'        => 'path',
         'pathHash'    => 'path_hash',
         'hideInTree'  => 'hide_in_tree',
     );
 
+    /**
+     * @param string $path
+     * @return array
+     */
     public function loadNavigationByPath($path)
     {
         $path = trim($path, ' \\/');
@@ -80,6 +90,10 @@ class SOne_Repository_Object extends SOne_Repository
         return ($this->_cache[$pathHash] = $navis);
     }
 
+    /**
+     * @param string $path
+     * @return string
+     */
     protected function parsePath($path)
     {
         $path = explode('/', trim($path, '/'));
@@ -87,6 +101,12 @@ class SOne_Repository_Object extends SOne_Repository
         return preg_replace('#\W+#', '_', $path);
     }
 
+    /**
+     * @param string $path
+     * @param bool $withChildrenAndSiblings
+     * @param bool $withData
+     * @return SOne_Model_Object[]|null
+     */
     public function loadObjectsTreeByPath($path, $withChildrenAndSiblings = false, $withData = false)
     {
         $navis = $this->loadNavigationByPath($path);
@@ -195,6 +215,7 @@ class SOne_Repository_Object extends SOne_Repository
         foreach ($rows as $row) {
             $row['data'] = unserialize($row['data']);
 
+            /** @var SOne_Model_Object $object */
             $object = SOne_Model_Object::construct($row);
             if ($object instanceof SOne_Interface_Object_WithExtraData) {
                 /** @var SOne_Interface_Object_WithExtraData $object */
@@ -213,7 +234,7 @@ class SOne_Repository_Object extends SOne_Repository
     /**
      * @param array $filters
      * @param bool $noExecute
-     * @return int[]|FDBSelect
+     * @return int[]|K3_Db_Select
      */
     public function loadIds(array $filters, $noExecute = false)
     {
@@ -237,7 +258,7 @@ class SOne_Repository_Object extends SOne_Repository
     /**
      * @param array $filters
      * @param bool $noExecute
-     * @return string[]|FDBSelect
+     * @return string[]|K3_Db_Select
      */
     public function loadPaths(array $filters, $noExecute = false)
     {
@@ -275,6 +296,9 @@ class SOne_Repository_Object extends SOne_Repository
         return $out;
     }
 
+    /**
+     * @param SOne_Model_Object $object
+     */
     public function save(SOne_Model_Object $object)
     {
         $objData = self::mapModelToDb($object, self::$dbMap, 'id');
@@ -323,6 +347,9 @@ class SOne_Repository_Object extends SOne_Repository
         return $this->_db->doDelete('objects', array('id' => $objectId));
     }
 
+    /**
+     * @param SOne_Model_Object[] $objects
+     */
     public function saveAll(array $objects)
     {
         foreach ($objects as $object) {

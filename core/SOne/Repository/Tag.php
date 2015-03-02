@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012, 2015 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -22,6 +22,9 @@ class SOne_Repository_Tag extends SOne_Repository
 {
     const MAX_TAG_NAME_LENGTH = 125;
 
+    /**
+     * @var array
+     */
     protected static $dbMap = array(
         'id'     => 'id',
         'userId' => 'user_id',
@@ -29,6 +32,10 @@ class SOne_Repository_Tag extends SOne_Repository
         'time'   => 'time',
     );
 
+    /**
+     * @param array $filters
+     * @return array|null
+     */
     public function loadAll(array $filters = array())
     {
         $select = $this->_db->select('tag', 't', self::$dbMap)
@@ -43,6 +50,10 @@ class SOne_Repository_Tag extends SOne_Repository
         return $rows;
     }
 
+    /**
+     * @param array $filters
+     * @return string[]
+     */
     public function loadNames(array $filters = array())
     {
         $select = $this->_db->select('tag', 't', array('name' => self::$dbMap['name']))
@@ -109,7 +120,7 @@ class SOne_Repository_Tag extends SOne_Repository
     /**
      * @param array|string $tags
      * @param bool $noExecute
-     * @return array|FDBSelect
+     * @return array|K3_Db_Select
      */
     public function getObjectIdsByTags($tags, $noExecute = false)
     {
@@ -145,7 +156,7 @@ class SOne_Repository_Tag extends SOne_Repository
             );
         }
 
-        $this->_db->doInsert('tag_object', $bind, false, FDataBase::SQL_MULINSERT);
+        $this->_db->doInsert('tag_object', $bind, false, K3_Db::SQL_INSERT_MULTI);
 
         if ($useTransaction) {
             $this->_db->commit();

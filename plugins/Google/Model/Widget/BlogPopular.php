@@ -88,11 +88,11 @@ class Google_Model_Widget_BlogPopular extends SOne_Model_Widget
 
     /**
      * @param int|int[] $blogIds
-     * @param FDataBase $db
+     * @param K3_Db_Abstract $db
      * @param int|null $limit
      * @return SOne_Model_Object_BlogItem[]
      */
-    protected function _getTopObjects($blogIds, FDataBase $db, $limit = null)
+    protected function _getTopObjects($blogIds, K3_Db_Abstract $db, $limit = null)
     {
         $topIdsOrdered = SOne_Repository_Object::getInstance($db)->loadIds(array(
             'parentId=' => $blogIds,

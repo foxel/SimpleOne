@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012, 2015 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -20,9 +20,13 @@
 
 abstract class SOne_Repository
 {
-    protected $_db    = null;
+    /** @var K3_Db_Abstract */
+    protected $_db;
+    /** @var array */
     protected $_cache = array();
+    /** @var array */
     protected $_preparedFetches = array();
+    /** @var array */
     protected $_fetchedItems = array();
 
     /**
@@ -31,19 +35,19 @@ abstract class SOne_Repository
     protected static $instances = array();
 
     /**
-     * @param FDataBase $db
+     * @param K3_Db_Abstract $db
      */
-    public function __construct(FDataBase $db)
+    public function __construct(K3_Db_Abstract $db)
     {
         $this->_db = $db;
     }
 
     /**
      * @static
-     * @param FDataBase $db
+     * @param K3_Db_Abstract $db
      * @return static
      */
-    public static function getInstance(FDataBase $db)
+    public static function getInstance(K3_Db_Abstract $db)
     {
         $class = get_called_class();
         $UID = $class.'_'.$db->UID;

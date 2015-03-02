@@ -38,7 +38,7 @@ class SOne_Application extends K3_Application
     protected $_config  = null;
 
     /**
-     * @var FDataBase
+     * @var K3_Db_Abstract
      */
     protected $_db      = null;
 
@@ -92,7 +92,7 @@ class SOne_Application extends K3_Application
         $this->_config = new K3_Config($c = $this->_parseConfigLines((array) FMisc::loadDatafile(F_DATA_ROOT.DIRECTORY_SEPARATOR.'sone.qfc.php', FMisc::DF_SLINE)));
 
         // preparing DB
-        $this->_db = F()->DBase; //new FDataBase('mysql');
+        $this->_db = new K3_Db_MySQL();
         $this->_db->connect($this->_config->db);
 
         if ($this->_config->app->useTransaction) {
@@ -109,10 +109,6 @@ class SOne_Application extends K3_Application
         //    ->loadECSS(F_DATA_ROOT.'/styles/simple/common.ecss')
         ;
 
-        $tools = SOne_Tools::getInstance($this->_env);
-        $this->getResponse()
-            ->addEventHandler(K3_Response::EVENT_HTML_PARSE, array($tools, 'HTML_FullURLs'));
-
         F()->Parser->initStdTags();
         $this->_VIS->addFuncParser('BBPARSE', array(F()->Parser, 'parse'));
 
@@ -120,7 +116,6 @@ class SOne_Application extends K3_Application
 
         $this->_lang = F()->LNG;
         $this->_lang->addAutoLoadDir(F_DATA_ROOT.DIRECTORY_SEPARATOR.'lang/ru');
-        $this->_lang->timeZone = 7;
 
         // putting to environment
         $this->_env
@@ -128,6 +123,21 @@ class SOne_Application extends K3_Application
             ->setVIS($this->_VIS)
             ->setLang($this->_lang)
             ->setUser($this->_bootstrapUser());
+
+        // HTML post processing
+        $env = $this->_env;
+        $tools = SOne_Tools::getInstance($this->_env);
+        $this->getResponse()->addEventHandler(K3_Response::EVENT_HTML_PARSE, array($tools, 'HTML_FullURLs'));
+        $this->getResponse()->addEventHandler(K3_Response::EVENT_HTML_PARSE, function(&$buffer) use ($env) {
+            $statString = sprintf($env->lang->lang('FOOT_STATS_PAGETIME'), $env->clock->timeSpent).' ';
+            if ($env->db->queriesCount) {
+                $statString .= sprintf($env->lang->lang('FOOT_STATS_SQLSTAT'), $env->db->queriesCount, $env->db->queriesTime).' ';
+            }
+
+            $buffer = str_replace('<!--Page-Stats-->', $statString, $buffer);
+
+            return $buffer;
+        });
 
         $this->_bootstrapPlugins();
 

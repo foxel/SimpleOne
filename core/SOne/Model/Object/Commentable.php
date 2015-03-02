@@ -66,6 +66,12 @@ abstract class SOne_Model_Object_Commentable extends SOne_Model_Object implement
         }
     }
 
+    /**
+     * @param string $text
+     * @param int|null $answerTo
+     * @param array $params
+     * @return $this
+     */
     public function addComment($text, $answerTo = null, array $params = array())
     {
         $tmpId = '_'.count($this->pool['comments']);
@@ -100,11 +106,20 @@ abstract class SOne_Model_Object_Commentable extends SOne_Model_Object implement
         return $this;
     }
 
+    /**
+     * @param array $comments
+     */
     public function setComments(array $comments)
     {
         $this->pool['comments'] = F2DArray::tree($comments, 'id', 'answer_to');
     }
 
+    /**
+     * @param SOne_Environment $env
+     * @param bool $allowAddComment
+     * @param bool $commentsPerPage
+     * @return FVISNode
+     */
     public function visualizeComments(SOne_Environment $env, $allowAddComment = true, $commentsPerPage = false)
     {
         $node = new FVISNode('SONE_OBJECT_COMMENTS', 0, $env->getVIS());
@@ -156,7 +171,10 @@ abstract class SOne_Model_Object_Commentable extends SOne_Model_Object implement
         return $node;
     }
 
-    public function loadExtraData(FDataBase $db)
+    /**
+     * @param K3_Db_Abstract $db
+     */
+    public function loadExtraData(K3_Db_Abstract $db)
     {
         if (!$this->pool['id']) {
             return;
@@ -165,7 +183,10 @@ abstract class SOne_Model_Object_Commentable extends SOne_Model_Object implement
         $this->setComments(SOne_Repository_Comment::getInstance($db)->loadAll(array('object_id' => $this->pool['id'])));
     }
 
-    public function saveExtraData(FDataBase $db)
+    /**
+     * @param K3_Db_Abstract $db
+     */
+    public function saveExtraData(K3_Db_Abstract $db)
     {
         if (!$this->pool['id']) {
             return;

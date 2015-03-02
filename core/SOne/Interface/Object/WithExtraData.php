@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012, 2015 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -22,13 +22,13 @@ interface SOne_Interface_Object_WithExtraData
 {
     /**
      * @abstract
-     * @param FDataBase $db
+     * @param K3_Db_Abstract $db
      */
-    public function loadExtraData(FDataBase $db);
+    public function loadExtraData(K3_Db_Abstract $db);
 
     /**
      * @abstract
-     * @param FDataBase $db
+     * @param K3_Db_Abstract $db
      */
-    public function saveExtraData(FDataBase $db);
+    public function saveExtraData(K3_Db_Abstract $db);
 }

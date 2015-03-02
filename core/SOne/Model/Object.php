@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013, 2015 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -350,7 +350,7 @@ abstract class SOne_Model_Object extends SOne_Model implements I_K3_RSS_Item
     }
 
     /**
-     * @return I_K3_RSS_Item_Enclosure|null
+     * @return I_K3_RSS_Item_Enclosure[]|null
      */
     public function getEnclosures()
     {

@@ -174,7 +174,7 @@ class Google_Plugin
         unset($statsById);
 
         $this->_app->getEnv()->db->doDelete('google_stats');
-        $this->_app->getEnv()->db->doInsert('google_stats', $rows, false, FDataBase::SQL_MULINSERT);
+        $this->_app->getEnv()->db->doInsert('google_stats', $rows, false, K3_Db::SQL_INSERT_MULTI);
 
         FCache::set($cacheId, time());
 

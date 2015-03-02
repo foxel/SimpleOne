@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2013 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2013, 2015 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -28,9 +28,13 @@ class ElFinder_SOneVolumeDriver extends elFinderVolumeLocalFileSystem
     /** @var SOne_Environment */
     protected $_env;
 
+    /** @var array */
     protected $_fileInfoCache = array();
+    /** @var array */
     protected $_addedHashes   = array();
+    /** @var array */
     protected $_removedHashes = array();
+    /** @var int */
     protected $_accessLevel   = 0;
 
     /**
@@ -188,7 +192,7 @@ class ElFinder_SOneVolumeDriver extends elFinderVolumeLocalFileSystem
                     );
                 }
             }
-            $this->_env->db->doInsert('files', $inserts, false, FDataBase::SQL_MULINSERT);
+            $this->_env->db->doInsert('files', $inserts, false, K3_Db::SQL_INSERT_MULTI);
         }
     }
 
