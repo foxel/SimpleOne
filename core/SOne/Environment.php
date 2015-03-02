@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2013 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2013, 2015 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -50,6 +50,7 @@ class SOne_Environment extends K3_Environment
             $env = F()->appEnv;
         }
 
+        /** @var SOne_Environment $instance */
         $instance = new static();
         $instance->setClient($env->getClient());
         $instance->setServer($env->getServer());

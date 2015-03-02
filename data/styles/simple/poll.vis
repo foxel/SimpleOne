@@ -1,5 +1,5 @@
 <!--
- Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
+ Copyright (C) 2012 - 2013, 2015 Andrey F. Kupreychik (Foxel)
 
  This file is part of QuickFox SimpleOne.
 
@@ -19,6 +19,7 @@
 
 <<+ 'SONE_OBJECT_POLL'>>
 {IF:IN_actionState="edit"}
+    {!WRITE:questionTemplate}{VIS:SONE_OBJECT_POLL_ITEM_EDIT|ID="{id}"}
     {!WRITE:formElements}
     {VIS:SONE_HTML_WIDGET_FORM_TEXTAREA|name="description"|class="htmleditor"|value=IN_DESCRIPTION}
     <div class="pollEditQuestionsContainer">
@@ -26,11 +27,9 @@
         {VIS:SONE_OBJECT_POLL_ITEM_EDIT|ID="0"}
     {/IF}
     </div>
-    <div class="pollEditQuestionTemplateContainer" style="display: none;">
-        {VIS:SONE_OBJECT_POLL_ITEM_EDIT|ID="{id}"}
-    </div>
+    <div class="pollEditQuestionTemplateContainer" style="display: none;">{!questionTemplate}</div>
     {!WRITE:formButtons}
-    <a class="btn btn-default" href="#" onclick="var c = $(this).closest('form.pollEditor').find('div.pollEditQuestionTemplateContainer').find('div.pollEditQuestion').last().clone(); var i = c.find('input, select').val(''); var r = (new Date).getTime()+Math.random(); i.each(function() { $(this).attr('name', $(this).attr('name').replace(/\{id\}/, r));}); $(this).closest('form.pollEditor').find('div.pollEditQuestionsContainer').append(c); return false;">
+    <a class="btn btn-default" href="#" onclick="var c = $($(this).closest('form.pollEditor').find('div.pollEditQuestionTemplateContainer').text()); var i = c.find('input, select').val(''); var r = (new Date).getTime()+Math.random(); i.each(function() { $(this).attr('name') && $(this).attr('name', $(this).attr('name').replace(/\{id\}/, r));}); $(this).closest('form.pollEditor').find('div.pollEditQuestionsContainer').append(c); return false;">
         <i class="glyphicon glyphicon-plus"></i>
         Добавить вопрос
     </a>
@@ -115,16 +114,16 @@
 <<- 'SONE_OBJECT_POLL_ITEM_STAT'>>
 
 <<+ 'SONE_OBJECT_POLL_ITEM_EDIT'>>
-<div class="pollEditQuestion well">
+<div class="pollEditQuestion well well-sm">
     <fieldset>
         <legend>
-            Вопрос: <a class="btn btn-default btn-sm pull-right" href="#"
+            Вопрос: <a class="btn btn-danger btn-xs pull-right" href="#"
                        onclick="if ($(this).closest('div.pollEditQuestionsContainer').find('div.pollEditQuestion').length > 1 ) { $(this).closest('div.pollEditQuestion').remove(); } return false;">
-                <i class="glyphicon glyphicon-trash"></i>
+                <i class="glyphicon glyphicon-remove"></i>
             </a>
         </legend>
     <div class="form-group row">
-        <div class="col-xs-7">
+        <div class="col-xs-9">
             <label for="question-text-{UNIQID}" class="sr-only">Текст вопроса</label>
             <input id="question-text-{UNIQID}" name="questions[{!IN_ID}][caption]" type="text" value="{!IN_CAPTION}" class="form-control" placeholder="Текст вопроса" />
         </div>
@@ -178,14 +177,23 @@
 
 <<+ 'SONE_OBJECT_POLL_ITEM_EDIT_VALUEVARIANT'>>
 <div class="pollEditQuestionAnswer row form-group">
-    <span class="col-xs-7"><input class="form-control" type="text" name="questions[{!IN_QID}][variants][{!IN_VALUE}]" value="{!IN_TITLE}" placeholder="Текст ответа" /></span>
-    <span class="input-group col-xs-2"><input class="form-control" type="text" name="questions[{!IN_QID}][limits][{!IN_VALUE}]" value="{!IN_LIMIT}"
-           title="Максимальное количество таких ответов"/><strong class="input-group-addon">( {IN_statVal} )</strong>
-    </span>
-    <a class="btn btn-default" href="#"
-       onclick="if ($(this).closest('div.pollEditQuestionAnswersContainer').find('div.pollEditQuestionAnswer').length > 2) { $(this).closest('div.pollEditQuestionAnswer').remove(); } return false;">
-        <i class="glyphicon glyphicon-minus"></i>
-       </a>
+    <div class="col-sm-10 col-xs-9">
+        <span class="input-group">
+            <input class="form-control" type="text" name="questions[{!IN_QID}][variants][{!IN_VALUE}]" value="{!IN_TITLE}" placeholder="Текст ответа" />
+            <span class="input-group-btn"><a class="btn btn-danger pull-right" href="#"
+               onclick="if ($(this).closest('div.pollEditQuestionAnswersContainer').find('div.pollEditQuestionAnswer').length > 2) { $(this).closest('div.pollEditQuestionAnswer').remove(); } return false;">
+                <i class="glyphicon glyphicon-remove"></i>
+            </a></span>
+        </span>
+    </div>
+    <div class="col-sm-2 col-xs-3">
+        <span class="input-group">
+            <input class="form-control" type="text" name="questions[{!IN_QID}][limits][{!IN_VALUE}]" value="{!IN_LIMIT}" title="Максимальное количество таких ответов"/>
+            <strong class="input-group-addon">( {IN_statVal} )</strong>
+        </span>
+    </div>
+    <div class="col-sm-1 col-xs-2">
+    </div>
 </div>
 <<- 'SONE_OBJECT_POLL_ITEM_EDIT_VALUEVARIANT'>>
 

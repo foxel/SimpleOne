@@ -1,5 +1,5 @@
 <!--
- Copyright (C) 2013 Andrey F. Kupreychik (Foxel)
+ Copyright (C) 2013, 2015 Andrey F. Kupreychik (Foxel)
 
  This file is part of QuickFox SimpleOne.
 
@@ -19,6 +19,7 @@
 
 <<+ 'SONE_OBJECT_FORM'>>
 {IF:IN_actionState="edit"}
+    {!WRITE:questionTemplate}{VIS:SONE_OBJECT_POLL_ITEM_EDIT|ID="{id}"}
     {!WRITE:formElements}
     {VIS:SONE_HTML_WIDGET_FORM_TEXTAREA|name="description"|class="htmleditor"|value=IN_DESCRIPTION}
     {VIS:SONE_HTML_WIDGET_FORM_INPUT|name="target_email"|label="e-Main для отправки результатов:"|type="text"|value=IN_targetEmail}
@@ -27,11 +28,9 @@
         {VIS:SONE_OBJECT_POLL_ITEM_EDIT|ID="0"}
     {/IF}
     </div>
-    <div class="pollEditQuestionTemplateContainer" style="display: none;">
-        {VIS:SONE_OBJECT_POLL_ITEM_EDIT|ID="{id}"}
-    </div>
+    <div class="pollEditQuestionTemplateContainer" style="display: none;">{!questionTemplate}</div>
     {!WRITE:formButtons}
-    <a class="btn btn-default" href="#" onclick="var c = $(this).closest('form.pollEditor').find('div.pollEditQuestionTemplateContainer').find('div.pollEditQuestion').last().clone(); var i = c.find('input, select').val(''); var r = (new Date).getTime()+Math.random(); i.each(function() { $(this).attr('name', $(this).attr('name').replace(/\{id\}/, r));}); $(this).closest('form.pollEditor').find('div.pollEditQuestionsContainer').append(c); return false;">
+    <a class="btn btn-default" href="#" onclick="var c = $($(this).closest('form.pollEditor').find('div.pollEditQuestionTemplateContainer').text()); var i = c.find('input, select').val(''); var r = (new Date).getTime()+Math.random(); i.each(function() { $(this).attr('name') && $(this).attr('name', $(this).attr('name').replace(/\{id\}/, r));}); $(this).closest('form.pollEditor').find('div.pollEditQuestionsContainer').append(c); return false;">
         <i class="glyphicon glyphicon-plus"></i>
         Добавить вопрос
     </a>
