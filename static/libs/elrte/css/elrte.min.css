@@ -137,7 +137,7 @@
 .el-rte-rtl .tabsbar .tab{float:right}
 .el-rte .toolbar ul li.el-select{height:22px;width:120px;border:1px solid #ccc;font-size:.82em;cursor:default;background-position:-475px -30px}
 .el-rte .toolbar ul li.el-select.hover{background-color:#fefefe}
-.el-rte .toolbar ul li.el-select label{height:19px;padding:3px 5px 0 5px;float:none;width:96px}
+.el-rte .toolbar ul li.el-select label{height:19px;line-height:15px;padding:3px 5px 0 5px;float:none;width:96px}
 .el-rte-paste-input{width:99%;height:250px;border:1px solid #ccc;padding:0;margin:0;outline:0}
 .el-rte .toolbar ul li div.color-indicator{width:18px;height:4px;margin:16px 0 2px 2px;background-color:#000}
 .el-rte-rtl .toolbar ul li div.color-indicator{margin:16px 2px 2px 0}
