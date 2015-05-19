@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013, 2015 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -20,9 +20,13 @@
 
 class DesignHelper_Bootstrap implements SOne_Interface_PluginBootstrap
 {
+    /**
+     * @param SOne_Application $app
+     * @param K3_Config $config
+     */
     public static function bootstrap(SOne_Application $app, K3_Config $config)
     {
-        SOne_Model_Widget::addNamespace('DesignHelper_Model_Widget');
+        SOne_Model_Widget::addNamespace('DesignHelper_Model_Widget', $config->classPrefix);
     }
 
 }
