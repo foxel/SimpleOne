@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013, 2015 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -28,46 +28,10 @@
  *
  * @property bool   $isStatic
  */
-abstract class SOne_Model_Widget extends SOne_Model
+abstract class SOne_Model_Widget extends SOne_Model_WithFactory
 {
-    /**
-     * @var array
-     */
-    protected static $_classNamespaces = array(__CLASS__);
-
-    /**
-     * adds new namespace for object classes lookup
-     * @param  string $namespace
-     */
-    public static function addNamespace($namespace)
-    {
-        $namespace = (string) $namespace;
-        if (!in_array($namespace, self::$_classNamespaces)) {
-            array_unshift(self::$_classNamespaces, $namespace);
-        }
-    }
-
-    /**
-     * @param  array $init
-     * @throws FException
-     * @return SOne_Model_Object
-     */
-    public static function construct(array $init)
-    {
-        if (!isset($init['class'])) {
-            throw new FException('SOne widget construct without class specified');
-        }
-
-        foreach (self::$_classNamespaces as &$namespace) {
-            $className = $namespace.'_'.ucfirst($init['class']);
-
-            if (class_exists($className, true)) {
-                return new $className($init);
-            }
-        }
-
-        return new SOne_Model_Widget_Panel($init);
-    }
+    /** @var string */
+    protected static $_defaultClass = 'SOne_Model_Widget_Panel';
 
     /**
      * @param  array $init
@@ -76,7 +40,7 @@ abstract class SOne_Model_Widget extends SOne_Model
     {
         $this->pool = array(
             'id'          => isset($init['id'])          ? (string) $init['id']          : K3_Util_String::shortUID(),
-            'class'       => isset($init['class'])       ? (string) $init['class']       : lcfirst(strtr(get_class($this), array(__CLASS__.'_' => ''))),
+            'class'       => isset($init['class'])       ? (string) $init['class']       : lcfirst(strtr(get_class($this), self::_getClassReplaceMap(__CLASS__))),
             'caption'     => isset($init['caption'])     ? (string) $init['caption']     : '',
             'block'       => isset($init['block'])       ? (string) $init['block']       : '',
 
@@ -130,6 +94,9 @@ abstract class SOne_Model_Widget extends SOne_Model
      */
     abstract public function visualize(SOne_Environment $env, SOne_Model_Object $pageObject = null);
 
+    /**
+     * @return array
+     */
     public function __sleep()
     {
         return array('pool');

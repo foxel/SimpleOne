@@ -41,81 +41,16 @@
  *
  * @property int|null $treeLevel
  */
-abstract class SOne_Model_Object extends SOne_Model implements I_K3_RSS_Item
+abstract class SOne_Model_Object extends SOne_Model_WithFactory implements I_K3_RSS_Item
 {
     const DEFAULT_ACCESS_LEVEL = 0;
     const DEFAULT_EDIT_LEVEL   = 3;
 
-    /**
-     * @var array
-     */
+    /** @var string */
+    protected static $_defaultClass = 'SOne_Model_Object_Common';
+
+    /** @var array */
     protected $aclEditActionsList = array('edit', 'save', 'delete');
-
-    /**
-     * @var array
-     */
-    protected static $_classNamespaces = array(__CLASS__);
-
-    /**
-     * adds new namespace for object classes lookup
-     * @param  string $namespace
-     */
-    public static function addNamespace($namespace)
-    {
-        $namespace = (string) $namespace;
-        if (!in_array($namespace, self::$_classNamespaces)) {
-            array_unshift(self::$_classNamespaces, $namespace);
-        }
-    }
-
-    /**
-     * @param  array $init
-     * @throws FException
-     * @return SOne_Model_Object
-     */
-    public static function construct(array $init)
-    {
-        if (!isset($init['class'])) {
-            throw new FException('SOne object construct without class specified');
-        }
-
-        if ($className = self::getClassName($init['class'])) {
-            return new $className($init);
-        }
-
-        return new SOne_Model_Object_Common($init);
-    }
-
-    /**
-     * @param string $class
-     * @return null|string
-     */
-    public static function getClassName($class)
-    {
-        $classNames = array();
-
-        foreach (self::$_classNamespaces as $namespace) {
-            $className = $namespace.'_'.ucfirst($class);
-
-            if (class_exists($className, true)) {
-                $classNames[] = $className;
-            }
-        }
-
-        return reset($classNames);
-    }
-
-    /**
-     * @return array
-     */
-    protected static function _getClassReplaceMap()
-    {
-        $out = array();
-        foreach (self::$_classNamespaces as $namespace) {
-            $out[$namespace.'_'] = '';
-        }
-        return $out;
-    }
 
     /**
      * @param  array $init
@@ -125,7 +60,7 @@ abstract class SOne_Model_Object extends SOne_Model implements I_K3_RSS_Item
         $this->pool = array(
             'id'          => isset($init['id'])          ? (int)    $init['id']          : null,
             'parentId'    => isset($init['parentId'])    ? (int)    $init['parentId']    : null,
-            'class'       => isset($init['class'])       ? (string) $init['class']       : lcfirst(strtr(get_class($this), self::_getClassReplaceMap())),
+            'class'       => isset($init['class'])       ? (string) $init['class']       : lcfirst(strtr(get_class($this), self::_getClassReplaceMap(__CLASS__))),
             'caption'     => isset($init['caption'])     ? (string) $init['caption']     : '',
             'ownerId'     => isset($init['ownerId'])     ? (int)    $init['ownerId']     : null,
             'createTime'  => isset($init['createTime'])  ? (int)    $init['createTime']  : time(),
@@ -284,6 +219,9 @@ abstract class SOne_Model_Object extends SOne_Model implements I_K3_RSS_Item
      */
     abstract public function visualize(SOne_Environment $env);
 
+    /**
+     * @return array
+     */
     public function __sleep()
     {
         return array('pool');
