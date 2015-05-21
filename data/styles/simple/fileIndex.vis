@@ -29,7 +29,50 @@
     <div class="pull-right btn-group">
         {IF:IN_m3uEnabled}<a class="btn btn-default" href="{FULLURL:IN_PATH}{IF:IN_curPath}/{!IN_curPath}{/IF}?m3u"><i class="glyphicon glyphicon-music"></i> M3U</a>{/IF}
         {IF:IN_canEdit}<a class="btn btn-default" href="{FULLURL:IN_PATH}?edit"><i class="glyphicon glyphicon-pencil"></i> Править</a>{/IF}
+        {IF:IN_canUpload}<a class="btn btn-default" id="btn-upload-{UNIQID}" href="#"><i class="glyphicon glyphicon-upload"></i> Загрузить</a>{/IF}
     </div>
+    <script type="text/javascript">
+        require(['elfinder', 'elfinder.i18n'], function() {
+            $('#btn-upload-{UNIQID}').click(function() {
+                $('<div />').dialogelfinder({
+                    lang:   'ru',
+                    url:    '{FULLURL:IN_path}?uploader',
+                    width:  $(window).width()-200,
+                    height: Math.max(400, $(window).height()-80),
+                    commandsOptions: {
+                        getfile: {
+                            onlyURL:    true,
+                            oncomplete: 'destroy'
+                        },
+                        help: {view: ['shortcuts', null, null]}
+                    },
+                    uiOptions:{
+                        // toolbar configuration
+                        toolbar:[
+                            ['back', 'forward'],
+                            ['home', 'up'],
+                            ['mkdir', 'upload'],
+                            ['open', 'download', 'getfile'],
+                            ['info'],
+                            ['quicklook'],
+                            ['copy', 'cut', 'paste'],
+                            ['rm'],
+                            ['duplicate', 'rename', 'resize'],
+                            ['search'],
+                            ['view', 'sort'],
+                            ['help']
+                        ]
+                    },
+                    cwd: {oldSchool: true},
+                    getFileCallback: function (url) {
+
+                    }
+                });
+
+                return false;
+            });
+        });
+    </script>
 <h3>{!IN_CAPTION}{IF:IN_curPath} :: {!IN_curPath}{/IF}</h3>
 <table class="table table-striped">
     <thead>

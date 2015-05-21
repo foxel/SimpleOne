@@ -112,6 +112,8 @@
           return SOne;
       });
 
+      require(['SOne']);
+
       {IN_JS}
 
   //]]> JavaScript ends here

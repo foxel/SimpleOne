@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013, 2015 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -18,7 +18,21 @@
  * along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
  */
 
-class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
+define ('ELFINDER_LIB_PATH', F_SITE_ROOT.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'elFinder');
+
+F()->Autoloader
+    ->registerClassFile('elFinder', ELFINDER_LIB_PATH.DIRECTORY_SEPARATOR.'elFinder.class.php')
+    ->registerClassFile('elFinderVolumeDriver', ELFINDER_LIB_PATH.DIRECTORY_SEPARATOR.'elFinderVolumeDriver.class.php')
+    ->registerClassFile('elFinderVolumeLocalFileSystem', ELFINDER_LIB_PATH.DIRECTORY_SEPARATOR.'elFinderVolumeLocalFileSystem.class.php')
+    ->registerClassFile('elFinderVolumeMySQL', ELFINDER_LIB_PATH.DIRECTORY_SEPARATOR.'elFinderVolumeMySQL.class.php')
+    ->registerClassFile('elFinderVolumeFTP', ELFINDER_LIB_PATH.DIRECTORY_SEPARATOR.'elFinderVolumeFTP.class.php')
+    ->registerClassFile('elFinderVolumeSOneFileSystem', SONE_BASE_DIR.DIRECTORY_SEPARATOR.'core'.DIRECTORY_SEPARATOR.'SOne'.DIRECTORY_SEPARATOR.'ElFinderVolumeDriver.php');
+
+/**
+ * Class ElFinder_Model_Object_ElFinderConnector
+ * @author Andrey F. Kupreychik
+ */
+class SOne_Model_Object_ElFinderConnector extends SOne_Model_Object
 {
     /** @var array */
     protected $_config = array();
@@ -103,7 +117,7 @@ class ElFinder_Model_Object_ElFinderConnector extends SOne_Model_Object
         $response = $finder->exec($cmd, $args);
 
         if (F_DEBUG) {
-            $response['dbQueries'] = $env->db->history;
+//            $response['dbQueries'] = $env->db->history;
         }
 
         $env->response

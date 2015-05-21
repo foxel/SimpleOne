@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013, 2015 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -22,10 +22,12 @@
  * @property-read string $basePath
  * @property-read string $xAccelLocation
  * @property-read bool   $m3uEnabled
+ * @property-read int    $uploadLevel
  */
 class SOne_Model_Object_FileIndex extends SOne_Model_Object
     implements SOne_Interface_Object_WithSubRoute, SOne_Interface_Object_Structured
 {
+    /** @var string */
     protected $_subPath = '';
 
     /**
@@ -34,6 +36,22 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object
      */
     public function visualize(SOne_Environment $env)
     {
+        if ($this->actionState == 'uploader' && $this->canUpload($env->user)) {
+            $uploaderConfig = array('roots' => array(array(
+                'alias' => $this->caption,
+                'path'  => $this->basePath,
+                'startPath' => $this->basePath,
+                'URL'   => K3_Util_Url::fullUrl($this->path, $env),
+                'uploadAllow' => 'image,application/x-shockwave-flash,video,audio',
+                'uploadOrder' => 'allow,deny',
+            )));
+            if (!empty($this->data['uploader']) && is_array($this->data['uploader'])) {
+                $uploaderConfig += $this->data['uploader'];
+            }
+            $sub = new SOne_Model_Object_ElFinderConnector($uploaderConfig);
+            return $sub->visualize($env);
+        }
+
         if (in_array($this->actionState, array('save'))) {
             $env->response->sendRedirect($this->path);
         }
@@ -146,6 +164,7 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object
             }
 
             $node->addData('canEdit', $this->isActionAllowed('edit', $env->getUser()) ? 1 : null);
+            $node->addData('canUpload', $this->canUpload($env->user) ? 1 : null);
 
             return $node;
         }
@@ -178,6 +197,15 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object
     }
 
     /**
+     * @param SOne_Model_User $user
+     * @return bool
+     */
+    public function canUpload(SOne_Model_User $user)
+    {
+        return $this->uploadLevel <= $user->accessLevel;
+    }
+
+    /**
      * @param SOne_Environment $env
      * @param bool $updated
      */
@@ -202,11 +230,13 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object
             'disposition' => 'attachment',
             'xAccelLocation' => false,
             'm3uEnabled' => false,
+            'uploadLevel' => $this->editLevel,
         );
 
         $this->pool['basePath'] =& $this->pool['data']['basePath'];
         $this->pool['xAccelLocation'] =& $this->pool['data']['xAccelLocation'];
         $this->pool['m3uEnabled'] =& $this->pool['data']['m3uEnabled'];
+        $this->pool['uploadLevel'] =& $this->pool['data']['uploadLevel'];
 
         return $this;
     }

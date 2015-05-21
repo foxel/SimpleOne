@@ -29,6 +29,18 @@ define(['jquery', 'SOne', 'elrte', 'elrte.i18n'], function ($, SOne) {
         }
         options = $.extend({}, SOneWYSIWYG.config, SOne.config.wysiwyg||{}, options);
 
+        if (options.finderConnector) {
+            options.fmOpen = function (callback) {
+                require(['sone.finder'], function(finder) {
+                    finder({
+                        url:    options.finderConnector,
+                        getFileCallback: function (url) {
+                            callback(url);
+                        }
+                    });
+                });
+            };
+        }
 
         $(elem).each(function () {
             if ($(this).val() == '') {

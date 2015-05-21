@@ -24,6 +24,8 @@ require.config({
         "jquery.colorbox": "../libs/colorbox/js/jquery.colorbox",
         "elrte": "../libs/elrte/js/elrte.min",
         "elrte.i18n": ["../libs/elrte/js/i18n/elrte.ru", "../libs/elrte/js/i18n/elrte.en"],
+        "elfinder": "../libs/elfinder/js/elfinder.full",
+        "elfinder.i18n": ["../libs/elfinder/js/i18n/elfinder.ru", "../libs/elfinder/js/i18n/elfinder.en"],
         "select2": "../libs/select2/js/select2",
         "select2.i18n": "../libs/select2/js/i18n/select2_locale_ru",
         /* bootstrap */
@@ -48,6 +50,8 @@ require.config({
         "jquery.timepicker": ["jquery.ui"],
         "elrte": ["jquery.ui", "css!static/libs/elrte/css/elrte.min"],
         "elrte.i18n": ["elrte"],
+        "elfinder": ["jquery.ui", "css!static/libs/elfinder/css/elfinder.full"],
+        "elfinder.i18n": ["elfinder"],
         "select2": ["jquery", "css!static/libs/select2/css/select2", "css!static/libs/select2/css/select2-bootstrap"],
         "select2.i18n": ["select2"]
     },
