@@ -37,19 +37,22 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object
      */
     public function visualize(SOne_Environment $env)
     {
-        if ($this->actionState == 'uploader' && $this->canUpload($env->user)) {
+        if ($this->actionState == 'uploader') {
             $startPath = $basePath = rtrim($this->basePath, DIRECTORY_SEPARATOR);
             if ($this->_subPath) {
                 $startPath.= DIRECTORY_SEPARATOR.strtr($this->_subPath, array('/' => DIRECTORY_SEPARATOR));
             }
-            $uploaderConfig = array('roots' => array(array(
-                'alias' => $this->caption,
-                'path'  => $basePath,
-                'startPath' => $startPath,
-                'URL'   => K3_Util_Url::fullUrl($this->path, $env),
-                'uploadAllow' => 'image,application/x-shockwave-flash,video,audio',
-                'uploadOrder' => 'allow,deny',
-            )));
+            $uploaderConfig = array(
+                'roots' => array(array(
+                    'alias' => $this->caption,
+                    'path'  => $basePath,
+                    'startPath' => $startPath,
+                    'URL'   => K3_Util_Url::fullUrl($this->path, $env),
+                    'uploadAllow' => 'image,application/x-shockwave-flash,video,audio',
+                    'uploadOrder' => 'allow,deny',
+                )),
+                'editLevel' => $this->uploadAllowed ? $this->uploadLevel : 999,
+            );
             if (!empty($this->data['uploader']) && is_array($this->data['uploader'])) {
                 $uploaderConfig += $this->data['uploader'];
             }
