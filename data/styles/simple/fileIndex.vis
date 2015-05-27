@@ -36,7 +36,7 @@
         require(['jquery', 'sone.finder'], function($, finder) {
             $('#btn-upload-{UNIQID}').click(function() {
                 finder({
-                    url:    '{FULLURL:IN_path}?uploader',
+                    url:    '{FULLURL:IN_path}{IF:IN_curPath}/{!IN_curPath}{/IF}?uploader',
                     commandsOptions: {
                         getfile: {
                             onlyURL: true
@@ -46,6 +46,7 @@
                     handlers: {
                         "destroy": function() { window.location.reload(true); }
                     },
+                    rememberLastDir: false,
                     getFileCallback: function (url) { }
                 });
 
