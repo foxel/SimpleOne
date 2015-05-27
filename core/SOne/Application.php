@@ -268,6 +268,9 @@ class SOne_Application extends K3_Application
         if ($this->_config->markup instanceof K3_Config) {
             $pageNode->addDataArray($this->_config->markup->toArray());
         }
+        if ($this->_config->front instanceof K3_Config) {
+            $pageNode->addData('SONE_CONFIG', K3_Util_Value::defineJSON($this->_config->front->toArray()));
+        }
         $pageNode->addData('page_title', $pageObject->caption);
         //$pageNode->addData('page_cont', '<pre>'.print_r(get_included_files(), true).'</pre>');
         //$pageNode->addData('page_cont', '<pre>'.print_r($this->env, true).'</pre>');

@@ -86,7 +86,7 @@ staticRoutes.uploader.roots.0.uploadOrder => allow,deny
 #staticRoutes.uploader.watermarkAlign => center
 #staticRoutes.uploader.watermarkOpacity => 70
 
-plugins.ElFinder.connectorUrl => uploader
+front.wysiwyg.finderConnector => /uploader
 
 # sample access controlled uploads
 # this is for elfinder - replase corresponding lines above
