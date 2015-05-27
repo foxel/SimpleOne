@@ -28,7 +28,7 @@ define(['jquery', 'SOne', 'elfinder', 'elfinder.i18n'], function ($, SOne) {
             height: Math.max(400, $(window).height()-80)
         }, options);
 
-        $('<div />').dialogelfinder(options);
+        $('<div />').dialogelfinder(options).zIndex(1100);
     };
 
     $.extend(SOneFinder, {

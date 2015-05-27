@@ -24,7 +24,7 @@ require.config({
         "jquery.colorbox": "../libs/colorbox/js/jquery.colorbox",
         "elrte": "../libs/elrte/js/elrte.min",
         "elrte.i18n": ["../libs/elrte/js/i18n/elrte.ru", "../libs/elrte/js/i18n/elrte.en"],
-        "elfinder": "../libs/elfinder/js/elfinder.full",
+        "elfinder": "../libs/elfinder/js/elfinder.min",
         "elfinder.i18n": ["../libs/elfinder/js/i18n/elfinder.ru", "../libs/elfinder/js/i18n/elfinder.en"],
         "select2": "../libs/select2/js/select2",
         "select2.i18n": "../libs/select2/js/i18n/select2_locale_ru",
