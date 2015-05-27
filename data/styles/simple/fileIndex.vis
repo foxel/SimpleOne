@@ -23,6 +23,7 @@
     {VIS:SONE_HTML_WIDGET_FORM_INPUT|label="Базовый путь для обзора файлов:"|name="basePath"|type="text"|value=IN_basePath}
     {VIS:SONE_HTML_WIDGET_FORM_INPUT|label="X-Accel-Redirect Location (nginx):"|name="xAccelLocation"|type="text"|value=IN_xAccelLocation}
     {VIS:SONE_HTML_WIDGET_FORM_CHECKBOX|label="Разрешить генерацию m3u-списков"|name="m3uEnabled"|checked=IN_m3uEnabled}
+    {VIS:SONE_HTML_WIDGET_FORM_CHECKBOX|label="Разрешить загрузку файлов"|name="uploadAllowed"|checked=IN_uploadAllowed}
 {WRITE}
 {VIS:SONE_OBJECT_EDITFORM|formElements=formElements|_}
 {ELSE}
@@ -32,41 +33,20 @@
         {IF:IN_canUpload}<a class="btn btn-default" id="btn-upload-{UNIQID}" href="#"><i class="glyphicon glyphicon-upload"></i> Загрузить</a>{/IF}
     </div>
     <script type="text/javascript">
-        require(['elfinder', 'elfinder.i18n'], function() {
+        require(['jquery', 'sone.finder'], function($, finder) {
             $('#btn-upload-{UNIQID}').click(function() {
-                $('<div />').dialogelfinder({
-                    lang:   'ru',
+                finder({
                     url:    '{FULLURL:IN_path}?uploader',
-                    width:  $(window).width()-200,
-                    height: Math.max(400, $(window).height()-80),
                     commandsOptions: {
                         getfile: {
-                            onlyURL:    true,
-                            oncomplete: 'destroy'
+                            onlyURL: true
                         },
                         help: {view: ['shortcuts', null, null]}
                     },
-                    uiOptions:{
-                        // toolbar configuration
-                        toolbar:[
-                            ['back', 'forward'],
-                            ['home', 'up'],
-                            ['mkdir', 'upload'],
-                            ['open', 'download', 'getfile'],
-                            ['info'],
-                            ['quicklook'],
-                            ['copy', 'cut', 'paste'],
-                            ['rm'],
-                            ['duplicate', 'rename', 'resize'],
-                            ['search'],
-                            ['view', 'sort'],
-                            ['help']
-                        ]
+                    handlers: {
+                        "destroy": function() { window.location.reload(true); }
                     },
-                    cwd: {oldSchool: true},
-                    getFileCallback: function (url) {
-
-                    }
+                    getFileCallback: function (url) { }
                 });
 
                 return false;

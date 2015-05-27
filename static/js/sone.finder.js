@@ -58,7 +58,8 @@ define(['jquery', 'SOne', 'elfinder', 'elfinder.i18n'], function ($, SOne) {
                     ['help']
                 ]
             },
-            cwd: {oldSchool: true}
+            cwd: {oldSchool: true},
+            destroyOnClose: true
         }
     });
 

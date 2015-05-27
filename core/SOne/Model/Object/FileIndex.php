@@ -22,6 +22,7 @@
  * @property-read string $basePath
  * @property-read string $xAccelLocation
  * @property-read bool   $m3uEnabled
+ * @property-read bool   $uploadAllowed
  * @property-read int    $uploadLevel
  */
 class SOne_Model_Object_FileIndex extends SOne_Model_Object
@@ -202,7 +203,7 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object
      */
     public function canUpload(SOne_Model_User $user)
     {
-        return $this->uploadLevel <= $user->accessLevel;
+        return $this->uploadAllowed && $this->uploadLevel <= $user->accessLevel;
     }
 
     /**
@@ -226,16 +227,18 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object
     public function setData(array $data)
     {
         $this->pool['data'] = $data + array(
-            'basePath' => F_SITE_ROOT,
-            'disposition' => 'attachment',
+            'basePath'       => F_SITE_ROOT,
+            'disposition'    => 'attachment',
             'xAccelLocation' => false,
-            'm3uEnabled' => false,
-            'uploadLevel' => $this->editLevel,
+            'm3uEnabled'    => false,
+            'uploadAllowed' => false,
+            'uploadLevel'   => $this->editLevel,
         );
 
         $this->pool['basePath'] =& $this->pool['data']['basePath'];
         $this->pool['xAccelLocation'] =& $this->pool['data']['xAccelLocation'];
         $this->pool['m3uEnabled'] =& $this->pool['data']['m3uEnabled'];
+        $this->pool['uploadAllowed'] =& $this->pool['data']['uploadAllowed'];
         $this->pool['uploadLevel'] =& $this->pool['data']['uploadLevel'];
 
         return $this;
