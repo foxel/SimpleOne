@@ -143,6 +143,18 @@ define(['jquery', 'date.format', 'select2', 'select2.i18n', 'i18n/date.format.ru
                     });
                 }
             })
+        },
+        /**
+         * @param {Object} [options]
+         */
+        postButton: function(options) {
+            $(this).click(function() {
+                var opts = $.extend({}, options, $(this).data());
+                if (!opts.confirm || confirm(opts.confirm)) {
+                    $('<form />', {action: this.href, method: 'POST'}).submit();
+                }
+                return false;
+            })
         }
     });
 });

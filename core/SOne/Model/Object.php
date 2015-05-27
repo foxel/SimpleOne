@@ -176,7 +176,7 @@ abstract class SOne_Model_Object extends SOne_Model_WithFactory implements I_K3_
     public function isActionAllowed($action, SOne_Model_User $user)
     {
         if (in_array($action, $this->aclEditActionsList) && (!$user->id || $user->id != $this->ownerId)) {
-            return !$this->isStatic && $this->pool['editLevel'] <= $user->accessLevel;
+            return !$this->isStatic && ($this->pool['editLevel'] ?: 1) <= $user->modLevel;
         }
 
         return $this->pool['accessLevel'] <= $user->accessLevel;
@@ -293,5 +293,24 @@ abstract class SOne_Model_Object extends SOne_Model_WithFactory implements I_K3_
     public function getEnclosures()
     {
         return array();
+    }
+
+    /**
+     * @param SOne_Environment $env
+     * @param bool $updated
+     */
+    protected function deleteAction(SOne_Environment $env, &$updated = false)
+    {
+        if (!$env->request->isPost) {
+            $env->response->sendRedirect($this->path);
+        }
+
+        $db      = $env->getDb();
+        $objects = SOne_Repository_Object::getInstance($db);
+        $objects->delete($this->id);
+        $updated = false;
+
+        $parentPath = preg_replace('#(/|^)[^/]+$#', '', $this->path) ? : '/';
+        $env->response->sendRedirect($parentPath);
     }
 }

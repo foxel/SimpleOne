@@ -11,7 +11,7 @@
     ],
     "require": {
         "foxel/liquibase": "dev-master",
-        "foxel/kernel3": "~0.2.0"
+        "foxel/kernel3": "dev-dev"
     },
     "require-dev": {
     },

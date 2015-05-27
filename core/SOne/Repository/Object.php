@@ -339,12 +339,16 @@ class SOne_Repository_Object extends SOne_Repository
     }
 
     /**
-     * @param int $objectId
+     * @param int|array $where
      * @return int|null
      */
-    public function delete($objectId)
+    public function delete($where)
     {
-        return $this->_db->doDelete('objects', array('id' => $objectId));
+        if (!is_array($where)) {
+            $where = array('id' => $where);
+        }
+
+        return $this->_db->doDelete('objects', $where);
     }
 
     /**

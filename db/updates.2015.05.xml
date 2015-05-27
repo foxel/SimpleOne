@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
- Copyright (C) 2012 - 2014 Andrey F. Kupreychik (Foxel)
+ Copyright (C) 2015 Andrey F. Kupreychik (Foxel)
 
  This file is part of QuickFox SimpleOne.
 
@@ -18,15 +18,15 @@
  along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
 -->
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd"
-                   logicalFilePath="simpleone.dev">
-    <property name="db.prefix" value="qfso_" />
-    <property name="admin.email" value="admin@example.com" />
-
-    <include file="initial.xml" relativeToChangelogFile="true" />
-    <include file="updates.2013.03.xml" relativeToChangelogFile="true" />
-    <include file="updates.2013.04.xml" relativeToChangelogFile="true" />
-    <include file="updates.2013.09.xml" relativeToChangelogFile="true" />
-    <include file="updates.2014.05.xml" relativeToChangelogFile="true" />
-    <include file="updates.2015.05.xml" relativeToChangelogFile="true" />
-    <include file="../plugins/Google/db/main.xml" relativeToChangelogFile="true" />
+                   logicalFilePath="updates.2015.05">
+    <changeSet id="data_binary" author="Foxel">
+        <dropForeignKeyConstraint baseTableName="${db.prefix}objects" constraintName="${db.prefix}objects_parent_id_fk" />
+        <addForeignKeyConstraint constraintName="${db.prefix}objects_parent_id_fk"
+                                 baseColumnNames="parent_id" baseTableName="${db.prefix}objects"
+                                 referencedColumnNames="id" referencedTableName="${db.prefix}objects"
+                                 deferrable="false"
+                                 initiallyDeferred="false"
+                                 onDelete="CASCADE" onUpdate="CASCADE" />
+        <rollback />
+    </changeSet>
 </databaseChangeLog>

@@ -93,6 +93,7 @@
                       : $;
                   jq('select').sOneSelect();
                   jq('time').timeFormat();
+                  jq('a.post-button').postButton();
 
                   if (jq('textarea.htmleditor').length) {
                       require(['sone.wysiwyg'], function () {

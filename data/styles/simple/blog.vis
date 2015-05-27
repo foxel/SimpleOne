@@ -114,7 +114,7 @@ require(['jquery', 'sone.wysiwyg'], function ($) {
 <div itemscope itemtype="http://schema.org/BlogPosting">
     {IF:IN_canEdit}<div class="pull-right btn-group">
         <a class="btn btn-default" href="{FULLURL:IN_PATH}?edit"><i class="glyphicon glyphicon-pencil"></i> Править</a>
-        <a class="btn btn-danger" href="{FULLURL:IN_PATH}?delete" onclick="return confirm('Вы уверены, что хотите удалить эту запись?');"><i class="glyphicon glyphicon-remove"></i> Удалить</a>
+        <a class="btn btn-danger post-button" href="{FULLURL:IN_PATH}?delete" data-confirm="Вы уверены, что хотите удалить эту запись?"><i class="glyphicon glyphicon-remove"></i> Удалить</a>
     </div>{/IF}
 <h2 itemprop="name">{!IN_CAPTION}</h2>
 <div class="htmlpage clearfix" itemprop="text">{IN_CONTENT}</div>

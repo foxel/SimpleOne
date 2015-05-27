@@ -45,10 +45,6 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
     {
         $parentPath = preg_replace('#/[^/]+$#', '', $this->path);
 
-        if ($this->actionState == 'delete') {
-            $env->response->sendRedirect($parentPath);
-        }
-
         $node = parent::visualize($env);
         $node->setType('SONE_OBJECT_BLOG_ITEM')
             ->addData('canSetPubTime', !$this->id || $this->createTime > time(), true)
@@ -181,17 +177,6 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
         $this->pool['thumbnailImage'] = (string) $imageSrc;
     }
 
-    /**
-     * @param SOne_Environment $env
-     * @param bool $updated
-     */
-    protected function deleteAction(SOne_Environment $env, &$updated = false)
-    {
-        $db = $env->getDb();
-        $objects = SOne_Repository_Object::getInstance($db);
-        $objects->delete($this->id);
-        $updated = false;
-    }
 
     /**
      * @param array $data

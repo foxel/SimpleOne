@@ -2,7 +2,7 @@
 --  Update Database Script
 --  *********************************************************************
 --  Change Log: simpleone.dev.xml
---  Ran at: 19.05.15 15:36
+--  Ran at: 27.05.15 12:02
 --  Against: null@offline:mysql?version=5.0.0&outputLiquibaseSql=true
 --  Liquibase version: 3.4.0-SNAPSHOT
 --  *********************************************************************
@@ -250,13 +250,20 @@ ALTER TABLE qfso_objects_data MODIFY data LONGBLOB NOT NULL;
 
 INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE) VALUES ('data_binary', 'Foxel', 'updates.2014.05', NOW(), 59, '7:09a4f9bca39cbda3c79f52f2038d3457', 'sql', '', 'EXECUTED', NULL, NULL, '3.4.0-SNP');
 
+--  Changeset updates.2015.05::data_binary::Foxel
+ALTER TABLE qfso_objects DROP FOREIGN KEY qfso_objects_parent_id_fk;
+
+ALTER TABLE qfso_objects ADD CONSTRAINT qfso_objects_parent_id_fk FOREIGN KEY (parent_id) REFERENCES qfso_objects (id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE) VALUES ('data_binary', 'Foxel', 'updates.2015.05', NOW(), 61, '7:33fcc946d18a8376109c52375b615e68', 'dropForeignKeyConstraint, addForeignKeyConstraint', '', 'EXECUTED', NULL, NULL, '3.4.0-SNP');
+
 --  Changeset Google.db.main::create-stat-table::Foxel
 CREATE TABLE qfso_google_stats (period CHAR(1) CHARACTER SET ascii NOT NULL, object_id INT UNSIGNED NOT NULL, pageviews INT UNSIGNED NOT NULL, visitors INT UNSIGNED NOT NULL, visits INT UNSIGNED NOT NULL) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE) VALUES ('create-stat-table', 'Foxel', 'Google.db.main', NOW(), 61, '7:9c9f91ebf6a93601adc91ff45816742d', 'createTable', '', 'EXECUTED', NULL, NULL, '3.4.0-SNP');
+INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE) VALUES ('create-stat-table', 'Foxel', 'Google.db.main', NOW(), 63, '7:9c9f91ebf6a93601adc91ff45816742d', 'createTable', '', 'EXECUTED', NULL, NULL, '3.4.0-SNP');
 
 --  Changeset Google.db.main::stat-table-constraints::Foxel
 ALTER TABLE qfso_google_stats ADD PRIMARY KEY (period, object_id);
 
-INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE) VALUES ('stat-table-constraints', 'Foxel', 'Google.db.main', NOW(), 63, '7:e65c77622d9de30da54a74ec56fc4a0b', 'addPrimaryKey', '', 'EXECUTED', NULL, NULL, '3.4.0-SNP');
+INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE) VALUES ('stat-table-constraints', 'Foxel', 'Google.db.main', NOW(), 65, '7:e65c77622d9de30da54a74ec56fc4a0b', 'addPrimaryKey', '', 'EXECUTED', NULL, NULL, '3.4.0-SNP');
 
