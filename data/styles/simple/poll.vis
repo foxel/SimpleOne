@@ -39,8 +39,9 @@
 {ELSEIF:IN_actionState="stat"}
     {IF:IN_canEdit}
         <div class="pull-right btn-group">
-            <a class="btn btn-default" href="{FULLURL:IN_PATH}?edit"><i class="glyphicon glyphicon-pencil"></i> Править</a>
             <a class="btn btn-default" href="{FULLURL:IN_PATH}"><i class="glyphicon glyphicon-file"></i> Анкета</a>
+            <a class="btn btn-default" href="{FULLURL:IN_PATH}?grid"><i class="glyphicon glyphicon-file"></i> Таблица</a>
+            <a class="btn btn-danger post-button" href="{FULLURL:IN_PATH}?clean" data-confirm="Вы уверены, что хотите очистить результаты?"><i class="glyphicon glyphicon-trash"></i> Очистить</a>
         </div>
     {/IF}
     <h2>{!IN_CAPTION}</h2>
@@ -210,8 +211,9 @@
 <<+ 'SONE_OBJECT_POLL_GRID'>>
 {IF:IN_canEdit}
     <div class="pull-right btn-group">
-        <a class="btn btn-default" href="{FULLURL:IN_PATH}?edit"><i class="glyphicon glyphicon-pencil"></i> Править</a>
         <a class="btn btn-default" href="{FULLURL:IN_PATH}"><i class="glyphicon glyphicon-file"></i> Анкета</a>
+        <a class="btn btn-default" href="{FULLURL:IN_PATH}?stat"><i class="glyphicon glyphicon-file"></i> Отчет</a>
+        <a class="btn btn-danger post-button" href="{FULLURL:IN_PATH}?clean" data-confirm="Вы уверены, что хотите очистить результаты?"><i class="glyphicon glyphicon-trash"></i> Очистить</a>
     </div>
 {/IF}
 <h2>{!IN_CAPTION}</h2>

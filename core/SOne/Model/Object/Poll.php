@@ -41,7 +41,7 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
     /**
      * @var array
      */
-    protected $aclEditActionsList = array('edit', 'save', 'stat', 'drop', 'grid');
+    protected $aclEditActionsList = array('edit', 'save', 'stat', 'drop', 'grid', 'clean');
 
     /**
      * @param SOne_Environment $env
@@ -49,7 +49,7 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
      */
     public function visualize(SOne_Environment $env)
     {
-        if (in_array($this->actionState, array('save', 'fill', 'drop'))) {
+        if (in_array($this->actionState, array('save', 'fill', 'drop', 'clean'))) {
             $env->response->sendRedirect($this->path);
         }
 
@@ -466,6 +466,21 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
             unset($data['answers'][$userId]);
             $updated = true;
         }
+    }
+
+    /**
+     * @param SOne_Environment $env
+     * @param bool $updated
+     */
+    protected function cleanAction(SOne_Environment $env, &$updated = false)
+    {
+        if (!$env->request->isPost) {
+            $env->response->sendRedirect($this->path);
+        }
+
+        $data =& $this->pool['data'];
+        $data['answers'] = array();
+        $updated = true;
     }
 
     /**
