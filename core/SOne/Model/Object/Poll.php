@@ -188,7 +188,59 @@ class SOne_Model_Object_Poll extends SOne_Model_Object
      */
     public function visualizeGrid(SOne_Environment $env)
     {
-        return new FVISNode('SONE_OBJECT_POLL_GRID', 0, $env->getVIS());
+        $node = new FVISNode('SONE_OBJECT_POLL_GRID', 0, $env->getVIS());
+
+        $answers   =& $this->pool['answers'];
+        $questions =& $this->pool['questions'];
+        $statUsers = !empty($answers) ? SOne_Repository_User::getInstance($env->getDb())->loadAll(array('id' => array_keys($answers))) : array();
+
+        $node->appendChild('gridHeaders', $gridHeaders = new FVISNode('SONE_OBJECT_POLL_GRID_HEADER', FVISNode::VISNODE_ARRAY, $env->getVIS()));
+        $gridHeaders->addDataArray($questions);
+
+        foreach ($answers as $uId => &$uAnswers) {
+            $uName = isset($statUsers[$uId]) ? $statUsers[$uId]->name : $uId;
+
+            $node->appendChild('gridRows', $gridRow = new FVISNode('SONE_OBJECT_POLL_GRID_ROW', 0, $env->getVIS()));
+            $gridRow->addData('userName', $uName);
+
+            $values = array();
+            foreach ($questions as $qId => $question) {
+                if (!isset($uAnswers[$qId])) {
+                    $values[] = array();
+                    continue;
+                }
+
+                $answerValue = $uAnswers[$qId];
+                switch ($question['type']) {
+                    case self::QUESTION_TYPE_TEXT:
+                    case self::QUESTION_TYPE_STRING:
+                        $values[] = array(
+                            'value' => $answerValue,
+                        );
+                        break;
+                    case self::QUESTION_TYPE_MULTI:
+                    case self::QUESTION_TYPE_SELECT:
+                    default:
+                        $value = array();
+                        foreach ((array) $answerValue as $aId) {
+                            if (isset($question['valueVariants'][$aId])) {
+                                $value[] = $question['valueVariants'][$aId];
+                            }
+                        }
+                        $values[] = array(
+                            'value' => implode(', ', $value),
+                        );
+                }
+            }
+            $gridRow->appendChild('answers', $gridAnswers = new FVISNode('SONE_OBJECT_POLL_GRID_COL', FVISNode::VISNODE_ARRAY, $env->getVIS()));
+            $gridAnswers->addDataArray($values);
+        }
+
+        $node->addDataArray($this->pool + array(
+            'canEdit'       => $this->isActionAllowed('edit', $env->getUser()) ? 1 : null,
+        ));
+
+        return $node;
     }
 
     /**

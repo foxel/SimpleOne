@@ -53,6 +53,7 @@
         <div class="pull-right btn-group">
             <a class="btn btn-default" href="{FULLURL:IN_PATH}?edit"><i class="glyphicon glyphicon-pencil"></i> Править</a>
             <a class="btn btn-default" href="{FULLURL:IN_PATH}?stat"><i class="glyphicon glyphicon-file"></i> Отчет</a>
+            <a class="btn btn-default" href="{FULLURL:IN_PATH}?grid"><i class="glyphicon glyphicon-th"></i> Таблица</a>
         </div>
     {/IF}
     <h2>{!IN_CAPTION}</h2>
@@ -61,7 +62,7 @@
         {IF:IN_ASK_FOR_LOGIN}
             <div style="color: darkred;">Авторизируйтесь, чтобы сохранить ответы.</div>
         {/IF}
-        <div class="poll-items well well-sm">
+        <div class="poll-items">
             {IN_question_items}
         </div>
         <hr />
@@ -79,19 +80,19 @@
 <<- 'SONE_OBJECT_POLL'>>
 
 <<+ 'SONE_OBJECT_POLL_ITEM'>>
-<div class="form-group">
-    <label>
+<div class="well well-sm"><fieldset>
+    <legend>
     {!IN_CAPTION}
     {IF:IN_LOCKED}
         <small title="вы не можете изменить ответ на этот вопрос"><i class="glyphicon glyphicon-lock"></i></small>
         {ELSEIF:IN_ANSWERED}
-        <a class="btn btn-default btn-xs" href="#" onclick="$(this).closest('.form-group').find('div.pollQuestionAnswersContainer:not(.locked) input').removeAttr('disabled').removeAttr('readonly'); $(this).closest('.form-group').find('input[type=&quot;hidden&quot;], textarea').removeAttr('disabled').removeAttr('readonly'); $(this).closest('form').find('button[type=submit]').removeAttr('disabled'); $(this).remove(); return false;" title="вы уже ответили на этот вопрос, но можете изменить свой ответ">
+        <a class="btn btn-default btn-xs" href="#" onclick="$(this).closest('fieldset').find('div.pollQuestionAnswersContainer:not(.locked) input').removeAttr('disabled').removeAttr('readonly'); $(this).closest('fieldset').find('input[type=&quot;hidden&quot;], textarea').removeAttr('disabled').removeAttr('readonly'); $(this).closest('form').find('button[type=submit]').removeAttr('disabled'); $(this).remove(); return false;" title="вы уже ответили на этот вопрос, но можете изменить свой ответ">
             <i class="glyphicon glyphicon-pencil"></i>
             Изменить ответ
         </a>
     {/IF}
-    </label>
-    <div class="pollQuestionAnswersContainer">
+    </legend>
+    <div class="pollQuestionAnswersContainer form-group">
     {if:IN_type=4}
         <input class="form-control" type="text" name="question_{!IN_ID}_answer"{IF:IN_ANSWERED} readonly="readonly"{ELSEIF:IN_LOCKED} readonly="readonly"{/IF} value="{!in_answerValue}"/>
     {elseif:IN_type=3}
@@ -117,7 +118,7 @@
 <<- 'SONE_OBJECT_POLL_ITEM_STAT'>>
 
 <<+ 'SONE_OBJECT_POLL_ITEM_EDIT'>>
-<div class="pollEditQuestion">
+<div class="pollEditQuestion well well-sm">
     <fieldset>
         <legend>
             Вопрос: <a class="btn btn-danger btn-xs pull-right" href="#"
@@ -205,3 +206,37 @@
     <strong>{!IN_userName}</strong>: {!in_answerValue}
 </div>
 <<- 'SONE_OBJECT_POLL_ITEM_STAT_TEXTANSWER'>>
+
+<<+ 'SONE_OBJECT_POLL_GRID'>>
+{IF:IN_canEdit}
+    <div class="pull-right btn-group">
+        <a class="btn btn-default" href="{FULLURL:IN_PATH}?edit"><i class="glyphicon glyphicon-pencil"></i> Править</a>
+        <a class="btn btn-default" href="{FULLURL:IN_PATH}"><i class="glyphicon glyphicon-file"></i> Анкета</a>
+    </div>
+{/IF}
+<h2>{!IN_CAPTION}</h2>
+<!-- div class="htmlcontent">{IN_DESCRIPTION}</div -->
+<table class="table table-striped">
+    <thead><tr>
+        <th></th>
+        {IN_gridHeaders}
+    </tr></thead>
+    {IN_gridRows}
+</table>
+<<- 'SONE_OBJECT_POLL_GRID'>>
+
+<<+ 'SONE_OBJECT_POLL_GRID_HEADER'>>
+<th>{!IN_caption}</th>
+<<- 'SONE_OBJECT_POLL_GRID_HEADER'>>
+
+<<+ 'SONE_OBJECT_POLL_GRID_ROW'>>
+<tr>
+    <td>{!IN_userName}</td>
+    {IN_answers}
+</tr>
+<<- 'SONE_OBJECT_POLL_GRID_ROW'>>
+
+<<+ 'SONE_OBJECT_POLL_GRID_COL'>>
+<td>{!IN_value}</td>
+<<- 'SONE_OBJECT_POLL_GRID_COL'>>
+
