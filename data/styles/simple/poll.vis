@@ -44,7 +44,7 @@
         </div>
     {/IF}
     <h2>{!IN_CAPTION}</h2>
-    <div class="htmlcontent">{IN_DESCRIPTION}</div>
+    <!-- div class="htmlcontent">{IN_DESCRIPTION}</div -->
     <div class="poll-items">
         {IN_question_items}
     </div>
@@ -61,33 +61,36 @@
         {IF:IN_ASK_FOR_LOGIN}
             <div style="color: darkred;">Авторизируйтесь, чтобы сохранить ответы.</div>
         {/IF}
-        <div class="poll-items">
+        <div class="poll-items well well-sm">
             {IN_question_items}
         </div>
         <hr />
         {IF:IN_ASK_FOR_LOGIN}
             <div style="color: darkred;">Авторизируйтесь, чтобы сохранить ответы.</div>
         {ELSE}
+            {IF:IN_ANSWERED}<div class="alert alert-info">
+                <i class="glyphicon glyphicon-saved"></i>
+                Вы уже ответили на все вопросы данной анкеты
+            </div>{/IF}
             <button class="btn btn-primary" type="submit"{IF:IN_ANSWERED} disabled="disabled" title="Вы уже ответили на все вопросы данной анкеты"{/IF}>{L_EDITOR_SUBMIT_FILL}</button>
-            {IF:IN_ANSWERED}<span class="label label-info" title="Вы уже ответили на все вопросы данной анкеты"><i class="glyphicon glyphicon-saved"></i></span>{/IF}
         {/IF}
     </form>
 {/IF}
 <<- 'SONE_OBJECT_POLL'>>
 
 <<+ 'SONE_OBJECT_POLL_ITEM'>>
-<div class="well well-sm"><fieldset>
-    <legend>
+<div class="form-group">
+    <label>
     {!IN_CAPTION}
     {IF:IN_LOCKED}
-        <sup title="вы не можете изменить ответ на этот вопрос"><i class="glyphicon glyphicon-lock"></i></sup>
+        <small title="вы не можете изменить ответ на этот вопрос"><i class="glyphicon glyphicon-lock"></i></small>
         {ELSEIF:IN_ANSWERED}
-        <a class="btn btn-default btn-xs" href="#" onclick="$(this).closest('fieldset').find('div.pollQuestionAnswersContainer:not(.locked) input').removeAttr('disabled').removeAttr('readonly'); $(this).closest('fieldset').find('input[type=&quot;hidden&quot;], textarea').removeAttr('disabled').removeAttr('readonly'); $(this).closest('form').find('button[type=submit]').removeAttr('disabled'); $(this).remove(); return false;" title="вы уже ответили на этот вопрос, но можете изменить свой ответ">
+        <a class="btn btn-default btn-xs" href="#" onclick="$(this).closest('.form-group').find('div.pollQuestionAnswersContainer:not(.locked) input').removeAttr('disabled').removeAttr('readonly'); $(this).closest('.form-group').find('input[type=&quot;hidden&quot;], textarea').removeAttr('disabled').removeAttr('readonly'); $(this).closest('form').find('button[type=submit]').removeAttr('disabled'); $(this).remove(); return false;" title="вы уже ответили на этот вопрос, но можете изменить свой ответ">
             <i class="glyphicon glyphicon-pencil"></i>
             Изменить ответ
         </a>
     {/IF}
-    </legend>
+    </label>
     <div class="pollQuestionAnswersContainer">
     {if:IN_type=4}
         <input class="form-control" type="text" name="question_{!IN_ID}_answer"{IF:IN_ANSWERED} readonly="readonly"{ELSEIF:IN_LOCKED} readonly="readonly"{/IF} value="{!in_answerValue}"/>
@@ -106,7 +109,7 @@
     <legend>
     {!IN_CAPTION}
     </legend>
-    {IF:IN_statVal}Ответил(и) <span title="{!IN_statUsers}">{IN_statVal} чел.{IF:IN_ANSWERED}, включая вас{/IF}</span>{/if}
+    {IF:IN_statVal}Ответил(и) <span title="{!IN_statUsers}">{IN_statVal} чел.</span>{/if}
     <div class="pollQuestionAnswersContainer">
     {IN_variants}
     </div>
@@ -114,7 +117,7 @@
 <<- 'SONE_OBJECT_POLL_ITEM_STAT'>>
 
 <<+ 'SONE_OBJECT_POLL_ITEM_EDIT'>>
-<div class="pollEditQuestion well well-sm">
+<div class="pollEditQuestion">
     <fieldset>
         <legend>
             Вопрос: <a class="btn btn-danger btn-xs pull-right" href="#"
@@ -170,7 +173,7 @@
 
 <<+ 'SONE_OBJECT_POLL_ITEM_STAT_VALUEVARIANT'>>
 <div class="pollQuestionAnswer" style="margin: 5px 0;">
-{!IN_title} - <span title="{!IN_statUsers}">{IN_statVal} чел.{IF:IN_selected}, включая вас{/IF}</span>
+{!IN_title} - <span title="{!IN_statUsers}">{IN_statVal} чел.</span>
 {IF:IN_available} (осталось {IN_available}){/IF}
 </div>
 <<- 'SONE_OBJECT_POLL_ITEM_STAT_VALUEVARIANT'>>
