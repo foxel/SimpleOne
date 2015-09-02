@@ -22,7 +22,8 @@ define ('STARTED', true);
 define ('F_DEBUG', (boolean) getenv('F_DEBUG'));
 define ('F_PROFILE', (boolean) getenv('F_PROFILE'));
 
-define ('SONE_BASE_DIR', dirname(__DIR__));
+define ('SONE_CORE_DIR', __DIR__);
+define ('SONE_BASE_DIR', dirname(SONE_CORE_DIR));
 define ('F_DATA_ROOT', SONE_BASE_DIR.'/data');
 define ('F_LOGS_ROOT', SONE_BASE_DIR.'/logs');
 

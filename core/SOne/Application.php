@@ -105,8 +105,8 @@ class SOne_Application extends K3_Application
         $this->_request = new SOne_Request($this->_env, $this->_config);
 
         $this->_VIS = new FVISInterface($this->_env);
-        $this->_VIS->addAutoLoadDir(F_DATA_ROOT.'/styles/simple')
-        //    ->loadECSS(F_DATA_ROOT.'/styles/simple/common.ecss')
+        $this->_VIS->addAutoLoadDir(SONE_CORE_DIR.'/styles/simple')
+        //    ->loadECSS(SONE_CORE_DIR.'/styles/simple/common.ecss')
         ;
 
         F()->Parser->initStdTags();
