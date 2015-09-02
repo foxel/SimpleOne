@@ -1,4 +1,4 @@
-SUBDIRS = db
+SUBDIRS = db docker
 
 all: setup $(SUBDIRS)
 setup:
