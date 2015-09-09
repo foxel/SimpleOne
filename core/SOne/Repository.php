@@ -18,7 +18,7 @@
  * along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
  */
 
-abstract class SOne_Repository
+abstract class SOne_Repository extends FEventDispatcher
 {
     /** @var K3_Db_Abstract */
     protected $_db;

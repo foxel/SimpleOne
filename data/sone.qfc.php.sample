@@ -39,6 +39,10 @@ plugins.OAuth.baseDomain => simpleone.dev
 
 #plugins.Google.cron.statPaths => blog
 
+#plugins.SiteSearch.server.host => localhost
+#plugins.SiteSearch.server.port => 9200
+#plugins.SiteSearch.indexName => simpleone
+
 # widgets
 # don't remove navigator widget if you have no other navigation
 widgets.navigator.class => Navigator

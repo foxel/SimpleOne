@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright (C) 2012 - 2013, 2015 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2015 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -18,13 +19,16 @@
  * along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
  */
 
-class Google_Bootstrap implements SOne_Interface_PluginBootstrap
+/**
+ * Class SiteSearch_Bootstrap
+ */
+class SiteSearch_Bootstrap implements SOne_Interface_PluginBootstrap
 {
-    /** @var Google_Plugin */
+    /** @var SiteSearch_Plugin */
     protected static $_pluginInstance;
 
     /**
-     * @return \Google_Plugin
+     * @return \SiteSearch_Plugin
      */
     public static function getPluginInstance()
     {
@@ -37,9 +41,8 @@ class Google_Bootstrap implements SOne_Interface_PluginBootstrap
      */
     public static function bootstrap(SOne_Application $app, K3_Config $config)
     {
-        self::$_pluginInstance = new Google_Plugin($app, $config);
-        SOne_Model_Widget::addNamespace('Google_Model_Widget');
-        SOne_Model_Object::addNamespace('Google_Model_Object');
+        self::$_pluginInstance = new SiteSearch_Plugin($app, $config);
+        SOne_Model_Widget::addNamespace('SiteSearch_Model_Object');
     }
 
 }

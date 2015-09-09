@@ -23,6 +23,8 @@
  */
 class SOne_Repository_Object extends SOne_Repository
 {
+    const EVENT_OBJECT_SAVED = 'objectSaved';
+
     /**
      * @var array
      */
@@ -336,6 +338,8 @@ class SOne_Repository_Object extends SOne_Repository
             /** @var SOne_Interface_Object_WithSubObjects $object */
             $this->saveAll($object->getSubObjects());
         }
+
+        $this->throwEventRef(self::EVENT_OBJECT_SAVED, $object);
     }
 
     /**
