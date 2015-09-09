@@ -115,7 +115,7 @@ class SOne_Application extends K3_Application
         $this->_objects = SOne_Repository_Object::getInstance($this->_db);
 
         $this->_lang = F()->LNG;
-        $this->_lang->addAutoLoadDir(F_DATA_ROOT.DIRECTORY_SEPARATOR.'lang/ru');
+        $this->_lang->addAutoLoadDir(SONE_CORE_DIR.'/lang/ru');
 
         // putting to environment
         $this->_env
