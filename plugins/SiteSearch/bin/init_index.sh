@@ -27,7 +27,8 @@ curl -XPUT "http://${HOST}:9200/${INDEX}/object/_mapping" -d '{
     "object": {
         "_all" : {"analyzer" : "russian_morphology"},
         "properties" : {
-            "caption" : { "type" : "string", "index" : "not_analyzed" },
+            "path" : { "type" : "string", "index" : "no" },
+            "class" : { "type" : "string", "index" : "not_analyzed" },
             "caption" : { "type" : "string", "analyzer" : "sone_analyzer" },
             "content" : { "type" : "string", "analyzer" : "sone_analyzer" },
             "tags" : { "type" : "string", "analyzer" : "russian_morphology" }

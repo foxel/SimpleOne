@@ -31,6 +31,8 @@ class SiteSearch_Dump extends SOne_Application
 {
     public function run()
     {
+        $this->requirePlugins(array('SiteSearch'));
+
         $offset = 0;
 
         while ($objects = $this->getObjects()->loadAll(array(), 'id', 1000, $offset)) {

@@ -1,0 +1,41 @@
+<!--
+ Copyright (C) 2015 Andrey F. Kupreychik (Foxel)
+
+ This file is part of QuickFox SimpleOne.
+
+ SimpleOne is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ SimpleOne is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<<+ 'SONE_OBJECT_SITESEARCH'>>
+<h2>{!IN_CAPTION}</h2>
+<form action="{!FULLURL:IN_path}" method="get">
+    <div class="form-group">
+        <label class="sr-only" for="{UNIQID}-query">Query</label>
+        <div class="input-group">
+            <input type="text" class="form-control" id="{UNIQID}-query" name="q" value="{!IN_query}"/>
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+            </span>
+        </div>
+    </div>
+</form>
+{IN_items}
+<<- 'SONE_OBJECT_SITESEARCH'>>
+
+<<+ 'SONE_OBJECT_SITESEARCH_ITEM'>>
+<div>
+    <a href="{!FULLURL:IN_path}">{IN_CAPTION}</a>
+    {IN_CONTENT}
+</div>
+<<- 'SONE_OBJECT_SITESEARCH_ITEM'>>

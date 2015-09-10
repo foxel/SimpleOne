@@ -47,8 +47,9 @@ class SiteSearch_Plugin
     public function updateIndex(SOne_Model_Object $object)
     {
         $data = array(
-            'caption' => $object->caption,
             'class'   => $object->class,
+            'path'    => $object->path,
+            'caption' => $object->caption,
         );
 
         if ($object instanceof SOne_Model_Object_PlainPage) {
@@ -72,10 +73,65 @@ class SiteSearch_Plugin
         curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
         curl_setopt($ch, CURLOPT_TIMEOUT, 1);
 //        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-        $chleadresult = curl_exec($ch);
+        curl_exec($ch);
 //        $chleadapierr = curl_errno($ch);
 //        $chleaderrmsg = curl_error($ch);
         curl_close($ch);
+    }
+
+    /**
+     * @param $query
+     * @return string
+     * @throws FException
+     */
+    public function search($query)
+    {
+        $post = array(
+            'fields' => array('path', 'caption', 'content'),
+            'query' => array('filtered' => array(
+                'query' => array('multi_match' => array(
+                    'query'  => $query,
+                    'fields' => array('caption', 'content', 'tags'),
+                )),
+                'filter' => array('exists' => array(
+                    'field' => 'content'
+                )),
+//                'filter' => array('term' => array(
+//                    'class' => 'BlogItem',
+//                    '_cache' => false
+//                )),
+            )),
+            'highlight' => array(
+                'fields' => array(
+                    'caption' => (object) array(),
+                    'content' => (object) array(),
+                ),
+            ),
+            'from' => 0,
+            'size' => 10,
+        );
+
+        $payload = json_encode($post, JSON_UNESCAPED_UNICODE);
+
+        $ch = curl_init();
+
+        $indexName = $this->_config->indexName ?: 'simpleone';
+
+        curl_setopt($ch, CURLOPT_URL, 'http://'.$this->_config->server->host.':9200/'.rawurlencode($indexName).'/object/_search');
+        curl_setopt($ch, CURLOPT_USERAGENT, 'QuickFox SimpleOne');
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Content-Length: '.strlen($payload)));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 1);
+//        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        $result = curl_exec($ch);
+        if ($result === false) {
+            throw new FException(curl_error($ch), curl_errno($ch));
+        }
+        curl_close($ch);
+
+        return $result;
     }
 
     /**

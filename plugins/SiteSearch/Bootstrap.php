@@ -42,7 +42,8 @@ class SiteSearch_Bootstrap implements SOne_Interface_PluginBootstrap
     public static function bootstrap(SOne_Application $app, K3_Config $config)
     {
         self::$_pluginInstance = new SiteSearch_Plugin($app, $config);
-        SOne_Model_Widget::addNamespace('SiteSearch_Model_Object');
+        $app->getEnv()->getVIS()->addAutoLoadDir(realpath(dirname(__FILE__)).'/styles/simple');
+        SOne_Model_Object::addNamespace('SiteSearch_Model_Object');
     }
 
 }
