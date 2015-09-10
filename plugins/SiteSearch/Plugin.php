@@ -103,7 +103,7 @@ class SiteSearch_Plugin
             )),
             'highlight' => array(
                 'fields' => array(
-                    'caption' => (object) array(),
+                    'caption' => array('number_of_fragments' => 0),
                     'content' => (object) array(),
                 ),
             ),

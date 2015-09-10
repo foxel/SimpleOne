@@ -34,8 +34,11 @@
 <<- 'SONE_OBJECT_SITESEARCH'>>
 
 <<+ 'SONE_OBJECT_SITESEARCH_ITEM'>>
-<div>
-    <a href="{!FULLURL:IN_path}">{IN_CAPTION}</a>
-    {IN_CONTENT}
+<div class="clearfix">
+    <hr/>
+    <h4><a href="{!FULLURL:IN_path}">{IN_CAPTION}</a></h4>
+    <div>
+        {IN_CONTENT}
+    </div>
 </div>
 <<- 'SONE_OBJECT_SITESEARCH_ITEM'>>
