@@ -77,7 +77,7 @@ class Google_Plugin
      */
     public function processCronJob(SOne_Environment $env)
     {
-        $this->fetchStats(true);
+        $this->fetchStats();
     }
 
     /**

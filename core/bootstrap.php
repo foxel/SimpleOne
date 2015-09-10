@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012, 2014 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012, 2014 - 2015 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
