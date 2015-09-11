@@ -81,12 +81,12 @@ class SiteSearch_Plugin
 
     /**
      * @param string $query
-     * @param int $from
-     * @param int $count
+     * @param int $limit
+     * @param int $offset
      * @throws FException
      * @return string
      */
-    public function search($query, $from = 0, $count = 20)
+    public function search($query, $limit = 20, $offset = 0)
     {
         $post = array(
             'fields' => array('path', 'caption', 'content'),
@@ -116,8 +116,8 @@ class SiteSearch_Plugin
                     ),
                 ),
             ),
-            'from' => $from,
-            'size' => $count,
+            'from' => $offset,
+            'size' => $limit,
         );
 
         $payload = json_encode($post, JSON_UNESCAPED_UNICODE);

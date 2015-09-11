@@ -38,7 +38,7 @@
     <hr/>
     <h4><a href="{!FULLURL:IN_path}">{IN_CAPTION}</a></h4>
     <p>
-        {NL2BR:IN_CONTENT}
+        {NL2BR:IN_CONTENT}...
     </p>
 </div>
 <<- 'SONE_OBJECT_SITESEARCH_ITEM'>>

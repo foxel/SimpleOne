@@ -20,8 +20,10 @@
 
 /**
  * Class SiteSearch_Model_Object_SiteSearch
+ * @property-read int $limit
  */
 class SiteSearch_Model_Object_SiteSearch extends SOne_Model_Object
+    implements SOne_Interface_Object_Structured
 {
     /**
      * @param  SOne_Environment $env
@@ -40,31 +42,46 @@ class SiteSearch_Model_Object_SiteSearch extends SOne_Model_Object
         ));
 
         if ($query) {
-            $data = json_decode($plugin->search($query), true);
-            $index = 1;
-            $items = array_map(function($item) use(&$index) {
-                $data = isset($item['highlight'])
-                    ? $item['highlight']
-                    : array();
-                $data += $item['fields'];
-                $data = array_map(function($value) {
-                    if (is_array($value)) {
-                        $value = reset($value);
-                    }
-                    return (string) $value;
-                }, $data);
-                $data['index'] = $index++;
+            $data = json_decode($plugin->search($query, $this->limit), true);
+            if (isset($data['hits']['hits'])) {
+                $index = 1;
+                $items = array_map(function($item) use(&$index) {
+                    $data = isset($item['highlight'])
+                        ? $item['highlight']
+                        : array();
+                    $data += $item['fields'];
+                    $data = array_map(function($value) {
+                        if (is_array($value)) {
+                            $value = reset($value);
+                        }
+                        return (string) $value;
+                    }, $data);
+                    $data['index'] = $index++;
 
-                return $data;
-            }, (array) $data['hits']['hits']);
+                    return $data;
+                }, (array) $data['hits']['hits']);
 
-            if (!empty($items)) {
-                $node->appendChild('items', $contNode = new FVISNode('SONE_OBJECT_SITESEARCH_ITEM', FVISNode::VISNODE_ARRAY, $env->getVIS()));
-                $contNode->addDataArray($items);
+                if (!empty($items)) {
+                    $node->appendChild('items', $contNode = new FVISNode('SONE_OBJECT_SITESEARCH_ITEM', FVISNode::VISNODE_ARRAY, $env->getVIS()));
+                    $contNode->addDataArray($items);
+                }
             }
         }
 
 
         return $node;
+    }
+
+    /**
+     * @param array $data
+     * @return static
+     */
+    public function setData(array $data)
+    {
+        $this->pool['data'] = $data + array(
+            'limit'    => 20,
+        );
+        $this->pool['limit']    =& $this->pool['data']['limit'];
+        return $this;
     }
 }
