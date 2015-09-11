@@ -18,6 +18,8 @@
  * along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
  */
 
+defined('JSON_UNESCAPED_UNICODE') || define('JSON_UNESCAPED_UNICODE', 256);
+
 /**
  * Class SiteSearch_Plugin
  */
