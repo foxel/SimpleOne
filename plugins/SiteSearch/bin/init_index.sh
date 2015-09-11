@@ -3,6 +3,7 @@
 HOST=$1
 INDEX=$2
 
+curl -XDELETE "http://${HOST}:9200/${INDEX}" && echo
 curl -XPUT "http://${HOST}:9200/${INDEX}" -d '{
     "settings": {
         "analysis": {

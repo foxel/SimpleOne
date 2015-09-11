@@ -37,8 +37,8 @@
 <div class="clearfix">
     <hr/>
     <h4><a href="{!FULLURL:IN_path}">{IN_CAPTION}</a></h4>
-    <div>
-        {IN_CONTENT}
-    </div>
+    <p>
+        {NL2BR:IN_CONTENT}
+    </p>
 </div>
 <<- 'SONE_OBJECT_SITESEARCH_ITEM'>>

@@ -37,14 +37,14 @@ class SiteSearch_Dump extends SOne_Application
 
         while ($objects = $this->getObjects()->loadAll(array(), 'id', 1000, $offset)) {
             $offset += count($objects);
+            set_time_limit(20);
             foreach($objects as $object) {
                 SiteSearch_Bootstrap::getPluginInstance()->updateIndex($object);
             }
+            printf('%d items done'.PHP_EOL, $offset);
         }
 
-        $this->getResponse()
-            ->write(sprintf('Finished in %f seconds.', $this->_env->clock->timeSpent))
-            ->sendBuffer();
+        printf('Finished in %f seconds.'.PHP_EOL, $this->_env->clock->timeSpent);
     }
 }
 

@@ -53,7 +53,7 @@ class SiteSearch_Plugin
         );
 
         if ($object instanceof SOne_Model_Object_PlainPage) {
-            $data['content'] = $object->content;
+            $data['content'] = $this->_prepareText($object->content);
             if ($object instanceof SOne_Model_Object_BlogItem) {
                 $data['tags'] = $object->tags;
             }
@@ -133,6 +133,39 @@ class SiteSearch_Plugin
 
         return $result;
     }
+
+    /**
+     * @param $text
+     * @return string
+     */
+    protected function _prepareText($text)
+    {
+        $text = preg_replace('#\r?\n#', ' ', $text);
+
+        foreach ($this->_blockLevelHtmlElements as $el) {
+            $text = preg_replace("#</?{$el}[^>]*?/?>#i", "$1\n", $text);
+        }
+
+        $text = strip_tags($text);
+
+        $text = trim(preg_replace('#\n\s*#i', "\n", $text));
+
+        return $text;
+    }
+
+    /** @var string[]  */
+    protected $_blockLevelHtmlElements = array(
+        'article', 'aside', 'blockquote', 'body', 'br',
+        'button', 'canvas', 'caption', 'col', 'colgroup',
+        'dd', 'div', 'dl', 'dt', 'embed',
+        'fieldset', 'figcaption', 'figure', 'footer', 'form',
+        'h{1,6}',
+        'header', 'hgroup', 'hr', 'li', 'map',
+        'object', 'ol', 'output', 'p', 'pre',
+        'progress', 'section', 'table', 'tbody', 'textarea',
+        'tfoot', 'th', 'thead', 'tr', 'ul',
+        'video',
+    );
 
     /**
      * @return K3_Config
