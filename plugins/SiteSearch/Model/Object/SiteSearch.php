@@ -41,9 +41,21 @@ class SiteSearch_Model_Object_SiteSearch extends SOne_Model_Object
 
         if ($query) {
             $data = json_decode($plugin->search($query), true);
-            $items = array_map(function($item) {
-                return ($item['highlight'] ?: array())
-                    + $item['fields'];
+            $index = 1;
+            $items = array_map(function($item) use(&$index) {
+                $data = isset($item['highlight'])
+                    ? $item['highlight']
+                    : array();
+                $data += $item['fields'];
+                $data = array_map(function($value) {
+                    if (is_array($value)) {
+                        $value = reset($value);
+                    }
+                    return (string) $value;
+                }, $data);
+                $data['index'] = $index++;
+
+                return $data;
             }, (array) $data['hits']['hits']);
 
             if (!empty($items)) {

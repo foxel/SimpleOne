@@ -80,11 +80,13 @@ class SiteSearch_Plugin
     }
 
     /**
-     * @param $query
-     * @return string
+     * @param string $query
+     * @param int $from
+     * @param int $count
      * @throws FException
+     * @return string
      */
-    public function search($query)
+    public function search($query, $from = 0, $count = 20)
     {
         $post = array(
             'fields' => array('path', 'caption', 'content'),
@@ -102,13 +104,20 @@ class SiteSearch_Plugin
 //                )),
             )),
             'highlight' => array(
+                'encoder' => 'html',
+                'pre_tags' => array('<strong>', '<em>'),
+                'post_tags' => array('</strong>', '</em>'),
                 'fields' => array(
                     'caption' => array('number_of_fragments' => 0),
-                    'content' => (object) array(),
+                    'content' => array(
+                        'fragment_size' => 300,
+                        'number_of_fragments' => 1,
+                        'no_match_size' => 300
+                    ),
                 ),
             ),
-            'from' => 0,
-            'size' => 10,
+            'from' => $from,
+            'size' => $count,
         );
 
         $payload = json_encode($post, JSON_UNESCAPED_UNICODE);
@@ -142,9 +151,8 @@ class SiteSearch_Plugin
     {
         $text = preg_replace('#\r?\n#', ' ', $text);
 
-        foreach ($this->_blockLevelHtmlElements as $el) {
-            $text = preg_replace("#</?{$el}[^>]*?/?>#i", "$1\n", $text);
-        }
+        $replace = '('.implode('|', $this->_blockLevelHtmlElements).')';
+        $text = preg_replace("#</?{$replace}[^>]*?/?>#i", "$0\n", $text);
 
         $text = strip_tags($text);
 
