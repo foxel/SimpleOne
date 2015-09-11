@@ -30,7 +30,16 @@
         </div>
     </div>
 </form>
-{IN_items}
+{IF:IN_items}{IN_items}
+{ELSE}<div class="alert alert-warning">
+    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+    На сайте ничего похожего не найдено.
+</div>
+<a class="pull-right btn btn-default" href="https://www.google.com/search?q={!URLENCODE:IN_query}" target="_blank">
+    <i class="glyphicon glyphicon-search"></i>
+    Искать "{!IN_query}" в интернете
+</a>
+{/IF}
 <<- 'SONE_OBJECT_SITESEARCH'>>
 
 <<+ 'SONE_OBJECT_SITESEARCH_ITEM'>>
