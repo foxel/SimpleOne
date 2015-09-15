@@ -11,23 +11,32 @@ RUN \
   update-locale LANG=C.UTF-8 && \
   rm -rf /var/lib/apt/lists/*
 
+COPY core /var/www/core
+COPY db /var/www/db
+COPY lib /var/www/lib
+COPY plugins /var/www/plugins
+COPY static /var/www/static
+COPY composer.json cron.php index.php ping.php setup.sh  /var/www/
+
+ADD data/sone.qfc.php.sample /etc/simpleone/
+
 RUN \
-    mkdir /var/www && \
-    wget --no-check-certificate -O- https://github.com/foxel/SimpleOne/archive/dev.tar.gz | \
-        tar --strip-components=1 -xzC /var/www/ && \
+    mkdir /data && \
     cd /var/www && \
+    ln -s /data ./data && \
     bash ./setup.sh && \
-    chown -R www-data:www-data data logs
+    rm setup.sh && \
+    mkdir ./logs
 
 # config
 RUN \
     rm -f /etc/php5/fpm/pool.d/* /etc/nginx/sites-enabled/* && \
     ln -s /etc/nginx/sites-available/simpleone.conf /etc/nginx/sites-enabled/simpleone.conf
 
-ADD etc /etc
-ADD sone.qfc.php /var/www/data/
+ADD docker/ /
 
 EXPOSE 80
-VOLUME /var/www/data
 
-CMD ["supervisord", "-nc", "/etc/supervisor/supervisord.conf"]
+VOLUME /data
+
+CMD ["/bin/start.sh"]

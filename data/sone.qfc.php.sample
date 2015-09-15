@@ -1,9 +1,9 @@
 <?php /*
 
-db.dataSource.host => localhost
-db.dataSource.dbname => dev.simpleone
-db.username => developer
-db.password => 
+db.dataSource.host => mysql
+db.dataSource.dbname => simpleone
+db.username => simpleone
+db.password => simpleone
 db.prefix => qfso_
 
 systemRoute => ~

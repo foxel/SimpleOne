@@ -1,6 +1,6 @@
 lib/vendor/
 lib/bin/
-data/cache/
+data/
 composer.lock
 composer.phar
 tags

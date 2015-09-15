@@ -1,0 +1,6 @@
+lib/vendor/
+lib/bin/
+data/
+!data/sone.qfc.php.sample
+Dockerfile
+.*
