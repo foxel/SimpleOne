@@ -115,13 +115,9 @@ class Google_Plugin
             return true;
         }
 
-        try {
-            $auth = Google_Bootstrap::getPluginInstance()->getAPIAuth(Google_API_Analytics::SCOPE_URL);
-            $analytics = new Google_API_Analytics($auth);
-            $rawStats = $analytics->getMostVisitedPagesStats($analytics->getFistProfileId($config->analytics->accountId));
-        } catch (Exception $e) {
-            return false;
-        }
+        $auth = Google_Bootstrap::getPluginInstance()->getAPIAuth(Google_API_Analytics::SCOPE_URL);
+        $analytics = new Google_API_Analytics($auth);
+        $rawStats = $analytics->getMostVisitedPagesStats($analytics->getFistProfileId($config->analytics->accountId));
 
         $pathToIdMap = $this->_app->getObjects()->loadPathToIdMap(array());
 
