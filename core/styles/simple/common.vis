@@ -520,7 +520,7 @@
 <<+ 'SONE_WIDGET_PAGINATOR_LINK'>>
 {IF:IN_page}
 <li {IF:IN_current}class="active"{/IF}>
-    <a href="{FULLURL:IN_objectPath}?{IF:IN_actionState}{!IN_actionState}&amp;{/IF}{IF:IN_addParams}{IN_addParams}&amp;{/IF}{IF:IN_pageVarName}{IN_pageVarName}{ELSE}page{/IF}={IN_page}{IF:IN_fragment}#{IN_fragment}{/IF}">{IN_page}</a>
+    <a href="{FULLURL:IN_objectPath}?{IF:IN_actionState}{!IN_actionState}&amp;{/IF}{IF:IN_urlParams}{!IN_urlParams}&amp;{/IF}{IF:IN_pageVarName}{!IN_pageVarName}{ELSE}page{/IF}={!IN_page}{IF:IN_fragment}#{!IN_fragment}{/IF}">{!IN_page}</a>
 </li>
 {ELSE}
 <li class="disabled"><a>&#133;</a></li>

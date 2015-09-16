@@ -43,7 +43,7 @@ class SOne_VIS_Paginator extends FBaseClass
             'pageVarName' => isset($init['pageVarName']) ? (string)$init['pageVarName'] : 'page',
             'actionState' => isset($init['actionState']) ? (string)$init['actionState'] : null,
             'fragment'    => isset($init['fragment'])    ? (string)$init['fragment'] : null,
-            'urlParams'   => array(),
+            'urlParams'   => isset($init['urlParams'])   ? (array)$init['urlParams'] : array(),
         );
     }
 
@@ -60,7 +60,7 @@ class SOne_VIS_Paginator extends FBaseClass
         $container->appendChild('links', $pagesNode = new FVISNode('SONE_WIDGET_PAGINATOR_LINK', FVISNode::VISNODE_ARRAY, $vis));
         $pages     = array();
         $urlParams = $this->urlParams
-            ? http_build_query($this->urlParams, null, '&amp;')
+            ? http_build_query($this->urlParams, null, '&')
             : null;
 
         $collapse = false;

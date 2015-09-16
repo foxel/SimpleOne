@@ -31,6 +31,7 @@
     </div>
 </form>
 {IF:IN_items}{IN_items}
+{in_paginator}
 {ELSEIF:IN_query}<div class="alert alert-warning">
     <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
     На сайте ничего похожего не найдено.

@@ -25,6 +25,9 @@
 class SiteSearch_Model_Object_SiteSearch extends SOne_Model_Object
     implements SOne_Interface_Object_Structured
 {
+    /** @var int */
+    protected $_itemPerPage  = 10;
+
     /**
      * @param  SOne_Environment $env
      * @return FVISNode
@@ -42,9 +45,14 @@ class SiteSearch_Model_Object_SiteSearch extends SOne_Model_Object
         ));
 
         if ($query) {
-            $data = json_decode($plugin->search($query, $this->limit), true);
+            $curPage = max((int) $env->request->getNumber('page'), 1);
+
+            $data = json_decode($plugin->search($query, $this->_itemPerPage, ($curPage - 1)*$this->_itemPerPage), true);
+
             if (isset($data['hits']['hits'])) {
                 $index = 1;
+                $totalItems = (int) $data['hits']['total'];
+
                 $items = array_map(function($item) use(&$index) {
                     $data = isset($item['highlight'])
                         ? $item['highlight']
@@ -70,6 +78,18 @@ class SiteSearch_Model_Object_SiteSearch extends SOne_Model_Object
                 if (!empty($items)) {
                     $node->appendChild('items', $contNode = new FVISNode('SONE_OBJECT_SITESEARCH_ITEM', FVISNode::VISNODE_ARRAY, $env->getVIS()));
                     $contNode->addDataArray($items);
+
+                    $totalPages = ceil($totalItems/$this->_itemPerPage);
+                    if ($totalPages > 1) {
+                        $paginator = new SOne_VIS_Paginator(array(
+                            'objectPath'  => $this->path,
+                            'urlParams'   => array('q' => $query),
+                            'totalPages'  => $totalPages,
+                            'currentPage' => $curPage,
+                            'actionState' => $this->actionState,
+                        ));
+                        $node->appendChild('paginator', $paginator->visualize($env));
+                    }
                 }
             }
         }
