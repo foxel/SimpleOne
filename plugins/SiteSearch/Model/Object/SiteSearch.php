@@ -50,13 +50,19 @@ class SiteSearch_Model_Object_SiteSearch extends SOne_Model_Object
                         ? $item['highlight']
                         : array();
                     $data += $item['fields'];
+
                     $data = array_map(function($value) {
                         if (is_array($value)) {
                             $value = reset($value);
                         }
                         return (string) $value;
                     }, $data);
+
                     $data['index'] = $index++;
+
+                    if (isset($data['createTime'])) {
+                        $data['createTime'] = strtotime($data['createTime']);
+                    }
 
                     return $data;
                 }, (array) $data['hits']['hits']);

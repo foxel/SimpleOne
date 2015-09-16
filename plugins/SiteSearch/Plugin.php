@@ -49,9 +49,10 @@ class SiteSearch_Plugin
     public function updateIndex(SOne_Model_Object $object)
     {
         $data = array(
-            'class'   => $object->class,
-            'path'    => $object->path,
-            'caption' => $object->caption,
+            'class'      => $object->class,
+            'path'       => $object->path,
+            'createTime' => date('c', $object->createTime),
+            'caption'    => $object->caption,
         );
 
         if ($object instanceof SOne_Model_Object_PlainPage) {
@@ -91,19 +92,30 @@ class SiteSearch_Plugin
     public function search($query, $limit = 20, $offset = 0)
     {
         $post = array(
-            'fields' => array('path', 'caption', 'content'),
-            'query' => array('filtered' => array(
-                'query' => array('multi_match' => array(
-                    'query'  => $query,
-                    'fields' => array('caption', 'content', 'tags'),
+            'fields' => array('path', 'caption', 'content', 'createTime'),
+            'query' => array('function_score' => array(
+                'query' => array('filtered' => array(
+                    'query' => array('multi_match' => array(
+                        'query'  => $query,
+                        'fields' => array('caption', 'content^0.6', 'tags^0.8'),
+                    )),
+                    'filter' => array('exists' => array(
+                        'field' => 'content'
+                    )),
+//                    'filter' => array('term' => array(
+//                        'class' => 'BlogItem',
+//                        '_cache' => false
+//                    )),
                 )),
-                'filter' => array('exists' => array(
-                    'field' => 'content'
-                )),
-//                'filter' => array('term' => array(
-//                    'class' => 'BlogItem',
-//                    '_cache' => false
-//                )),
+                'functions'=> array(
+                    array('gauss'=> array(
+                        'createTime'=> array(
+                            'scale'  => '20w',
+                            'offset' => '2w',
+                            'decay'  => 0.5
+                        )
+                    ))
+                ),
             )),
             'highlight' => array(
                 'encoder' => 'html',
