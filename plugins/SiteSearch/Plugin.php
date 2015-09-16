@@ -95,10 +95,21 @@ class SiteSearch_Plugin
             'fields' => array('path', 'caption', 'content', 'createTime'),
             'query' => array('function_score' => array(
                 'query' => array('filtered' => array(
-                    'query' => array('multi_match' => array(
-                        'query'  => $query,
-                        'fields' => array('caption', 'content^0.6', 'tags^0.8'),
-                    )),
+                    'query' => array('bool' => array('should'  => array(
+                        array('multi_match' => array(
+                            'query'  => $query,
+                            'fields' => array('caption', 'content^0.5'),
+                            'type'   => 'phrase',
+                            'boost'  => 3,
+                        )),
+                        array('multi_match' => array(
+                            'query'  => $query,
+                            'fields' => array('caption', 'content^0.5'),
+                        )),
+                        array('term' => array(
+                            'tags' => $query
+                        )),
+                    ))),
                     'filter' => array('exists' => array(
                         'field' => 'content'
                     )),
@@ -108,12 +119,12 @@ class SiteSearch_Plugin
 //                    )),
                 )),
                 'functions'=> array(
-                    array('gauss'=> array(
+                    array('exp'=> array(
                         'createTime'=> array(
-                            'scale'  => '20w',
-                            'offset' => '2w',
+                            'scale'  => '52w',
+                            'offset' => '4w',
                             'decay'  => 0.5
-                        )
+                        ),
                     ))
                 ),
             )),
@@ -153,6 +164,14 @@ class SiteSearch_Plugin
             throw new FException(curl_error($ch), curl_errno($ch));
         }
         curl_close($ch);
+
+        $result = json_decode($result, true);
+        if ($result === false) {
+            throw new FException(json_last_error_msg(), json_last_error());
+        }
+        if (!empty($result['error'])) {
+            throw new FException($result['error']);
+        }
 
         return $result;
     }

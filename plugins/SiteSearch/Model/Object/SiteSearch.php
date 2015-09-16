@@ -47,7 +47,7 @@ class SiteSearch_Model_Object_SiteSearch extends SOne_Model_Object
         if ($query) {
             $curPage = max((int) $env->request->getNumber('page'), 1);
 
-            $data = json_decode($plugin->search($query, $this->_itemPerPage, ($curPage - 1)*$this->_itemPerPage), true);
+            $data = $plugin->search($query, $this->_itemPerPage, ($curPage - 1)*$this->_itemPerPage);
 
             if (isset($data['hits']['hits'])) {
                 $index = 1;
@@ -91,6 +91,8 @@ class SiteSearch_Model_Object_SiteSearch extends SOne_Model_Object
                         $node->appendChild('paginator', $paginator->visualize($env));
                     }
                 }
+            } else {
+                $node->addData('items', json_encode($data));
             }
         }
 
