@@ -105,6 +105,7 @@ class SiteSearch_Plugin
                         array('multi_match' => array(
                             'query'  => $query,
                             'fields' => array('caption', 'content^0.5'),
+                            'minimum_should_match' => '-40%'
                         )),
                         array('term' => array(
                             'tags' => $query
