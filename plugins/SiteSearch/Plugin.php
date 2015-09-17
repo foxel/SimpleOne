@@ -62,6 +62,7 @@ class SiteSearch_Plugin
             }
         }
 
+        // ACL here?
         $payload = json_encode($data, JSON_UNESCAPED_UNICODE);
 
         $ch = curl_init();
