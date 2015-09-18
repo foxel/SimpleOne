@@ -9,6 +9,7 @@ RUN \
     wget curl ca-certificates dnsutils supervisor cron \
     nginx php5-cli php5-curl php5-fpm php5-gd php5-mcrypt php5-mysql && \
   update-locale LANG=C.UTF-8 && \
+  rm -f /etc/php5/fpm/pool.d/* /etc/nginx/sites-enabled/* && \
   rm -rf /var/lib/apt/lists/*
 
 COPY core /var/www/core
@@ -29,11 +30,11 @@ RUN \
     mkdir ./logs
 
 # config
-RUN \
-    rm -f /etc/php5/fpm/pool.d/* /etc/nginx/sites-enabled/* && \
-    ln -s /etc/nginx/sites-available/simpleone.conf /etc/nginx/sites-enabled/simpleone.conf
-
 ADD docker/ /
+
+RUN \
+    chmod 0600 /etc/crontab && \
+    ln -s /etc/nginx/sites-available/simpleone.conf /etc/nginx/sites-enabled/simpleone.conf
 
 EXPOSE 80
 
