@@ -25,6 +25,9 @@ defined('JSON_UNESCAPED_UNICODE') || define('JSON_UNESCAPED_UNICODE', 256);
  */
 class SiteSearch_Plugin
 {
+    /** @var callable */
+    protected $_customQueryFunction = null;
+
     /** @var SOne_Application */
     protected $_app;
     /** @var K3_Config */
@@ -84,65 +87,29 @@ class SiteSearch_Plugin
     }
 
     /**
-     * @param string $query
+     * @param string $queryString
      * @param int $limit
      * @param int $offset
      * @throws FException
      * @return string
      */
-    public function search($query, $limit = 20, $offset = 0)
+    public function search($queryString, $limit = 20, $offset = 0)
     {
+        $query = $this->_customQueryFunction !== null
+            ? call_user_func($this->_customQueryFunction, $queryString)
+            : $this->prepareDefaultQuery($queryString);
+
+        if (!empty($this->_scoringFunctions)) {
+            $query = array('function_score' => array(
+                'query' => $query,
+                'functions' => $this->_scoringFunctions,
+            ));
+        }
+
         $post = array(
             'fields' => array('path', 'caption', 'content', 'createTime'),
-            'query' => array('function_score' => array(
-                'query' => array('filtered' => array(
-                    'query' => array('bool' => array('should'  => array(
-                        array('multi_match' => array(
-                            'query'  => $query,
-                            'fields' => array('caption', 'content^0.5'),
-                            'type'   => 'phrase',
-                            'boost'  => 3,
-                        )),
-                        array('multi_match' => array(
-                            'query'  => $query,
-                            'fields' => array('caption', 'content^0.5'),
-                            'minimum_should_match' => '-40%'
-                        )),
-                        array('term' => array(
-                            'tags' => $query
-                        )),
-                    ))),
-                    'filter' => array('exists' => array(
-                        'field' => 'content'
-                    )),
-//                    'filter' => array('term' => array(
-//                        'class' => 'BlogItem',
-//                        '_cache' => false
-//                    )),
-                )),
-                'functions'=> array(
-                    array('exp'=> array(
-                        'createTime'=> array(
-                            'scale'  => '52w',
-                            'offset' => '4w',
-                            'decay'  => 0.5
-                        ),
-                    ))
-                ),
-            )),
-            'highlight' => array(
-                'encoder' => 'html',
-                'pre_tags' => array('<strong>', '<em>'),
-                'post_tags' => array('</strong>', '</em>'),
-                'fields' => array(
-                    'caption' => array('number_of_fragments' => 0),
-                    'content' => array(
-                        'fragment_size' => 300,
-                        'number_of_fragments' => 1,
-                        'no_match_size' => 300
-                    ),
-                ),
-            ),
+            'query' => $query,
+            'highlight' => $this->_highlightConfig,
             'from' => $offset,
             'size' => $limit,
         );
@@ -179,6 +146,57 @@ class SiteSearch_Plugin
     }
 
     /**
+     * @param callable $customQueryFunction
+     * @throws FException
+     * @return $this
+     */
+    public function setCustomQueryFunction($customQueryFunction)
+    {
+        if ($customQueryFunction !== null && !is_callable($customQueryFunction)) {
+            throw new FException('customFilterFunction should be callable or null');
+        }
+
+        $this->_customQueryFunction = $customQueryFunction;
+
+        return $this;
+    }
+
+    /**
+     * @param string $queryString
+     * @return array
+     */
+    public function prepareDefaultQuery($queryString)
+    {
+        return array('filtered' => array(
+            'query'  => array('bool' => array('should' => array(
+                array('constant_score' => array(
+                    'query' => array('match_phrase' => array(
+                        'caption' => $queryString,
+                    )),
+                    'boost' => 100,
+                )),
+                array('constant_score' => array(
+                    'query' => array('match_phrase' => array(
+                        'content' => $queryString,
+                    )),
+                    'boost' => 50,
+                )),
+                array('multi_match' => array(
+                    'query'                => $queryString,
+                    'fields'               => array('caption', 'content^0.5'),
+                    'minimum_should_match' => '-40%',
+                )),
+                array('match' => array(
+                    'tags' => $queryString,
+                )),
+            ))),
+            'filter' => array('exists' => array(
+                'field' => 'content'
+            )),
+        ));
+    }
+
+    /**
      * @param $text
      * @return string
      */
@@ -208,6 +226,32 @@ class SiteSearch_Plugin
         'progress', 'section', 'table', 'tbody', 'textarea',
         'tfoot', 'th', 'thead', 'tr', 'ul',
         'video',
+    );
+
+    /** @var array */
+    protected $_highlightConfig = array(
+        'encoder'   => 'html',
+        'pre_tags'  => array('<strong>', '<em>'),
+        'post_tags' => array('</strong>', '</em>'),
+        'fields'    => array(
+            'caption' => array('number_of_fragments' => 0),
+            'content' => array(
+                'fragment_size'       => 300,
+                'number_of_fragments' => 1,
+                'no_match_size'       => 300
+            ),
+        ),
+    );
+
+    /** @var array  */
+    protected $_scoringFunctions = array(
+        array('exp' => array(
+            'createTime' => array(
+                'scale'  => '52w',
+                'offset' => '1d',
+                'decay'  => 0.5,
+            ),
+        ))
     );
 
     /**
