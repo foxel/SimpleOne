@@ -38,6 +38,6 @@ RUN \
 
 EXPOSE 80
 
-VOLUME /data
+VOLUME /data /var/www/logs /var/log
 
 CMD ["/bin/start.sh"]
