@@ -3,4 +3,5 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
 # m h dom mon dow user command
 */5 * * * * www-data /usr/bin/php -f /var/www/cron.php < /dev/null > /dev/null
+25  6 * * * root     /etc/cron.daily/logrotate
 #

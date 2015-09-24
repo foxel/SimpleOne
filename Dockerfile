@@ -6,10 +6,11 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN \
   apt-get update && \
   apt-get -y --no-install-recommends install \
-    wget curl ca-certificates dnsutils supervisor cron \
+    wget curl ca-certificates supervisor cron \
     nginx php5-cli php5-curl php5-fpm php5-gd php5-mcrypt php5-mysql && \
   update-locale LANG=C.UTF-8 && \
   rm -f /etc/php5/fpm/pool.d/* /etc/nginx/sites-enabled/* && \
+  rm -rf /etc/logrotate.d/* && \
   rm -rf /var/lib/apt/lists/*
 
 COPY core /var/www/core

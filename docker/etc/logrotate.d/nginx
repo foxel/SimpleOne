@@ -1,0 +1,13 @@
+/var/www/logs/nginx.*.log {
+	rotate 12
+	weekly
+	missingok
+	notifempty
+	compress
+	delaycompress
+	create 0640 www-data www-data
+	sharedscripts
+	postrotate
+		[ -s /run/nginx.pid ] && kill -USR1 `cat /run/nginx.pid`
+	endscript
+}
