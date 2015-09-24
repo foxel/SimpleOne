@@ -111,7 +111,7 @@ class Google_Plugin
         $cacheId = 'googleStatsTS';
 
         $rawStats = null;
-        if (($statsTimeStamp = FCache::get($cacheId)) && $statsTimeStamp >= time() - 900) {
+        if (($statsTimeStamp = F()->Cache->get($cacheId)) && $statsTimeStamp >= time() - 900) {
             return true;
         }
 
@@ -172,7 +172,7 @@ class Google_Plugin
         $this->_app->getEnv()->db->doDelete('google_stats');
         $this->_app->getEnv()->db->doInsert('google_stats', $rows, false, K3_Db::SQL_INSERT_MULTI);
 
-        FCache::set($cacheId, time());
+        F()->Cache->set($cacheId, time());
 
         return true;
     }

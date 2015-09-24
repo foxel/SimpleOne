@@ -32,7 +32,7 @@ $loader = require_once SONE_BASE_DIR.'/lib/vendor/autoload.php';
 F()->Autoloader->registerClassPath(dirname(__FILE__).DIRECTORY_SEPARATOR.'SOne', 'SOne');
 
 if (F_DEBUG) {
-    FCache::clear();
+    F()->Cache->clear();
 }
 
 F()->Profiler->logEvent('Bootstrap complete');
