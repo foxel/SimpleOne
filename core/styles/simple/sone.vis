@@ -1,5 +1,5 @@
 <!--
- Copyright (C) 2012 Andrey F. Kupreychik (Foxel)
+ Copyright (C) 2012, 2015 Andrey F. Kupreychik (Foxel)
 
  This file is part of QuickFox SimpleOne.
 
@@ -17,14 +17,60 @@
  along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
 -->
 
+<<+ 'HTMLPAGE_BOOTSTRAP_JS'>>
+<!--[if lt IE 9]>
+<script type="text/javascript" src="static/js/respond.min.js" charset="utf-8"></script>
+<![endif]-->
+<!-- Load require -->
+<script type="text/javascript" src="static/js/require.js{IF:IN_SITE_BUILD}?build={!IN_SITE_BUILD}{/IF}" charset="utf-8"></script>
+<script type="text/javascript" src="static/js/require.config.js{IF:IN_SITE_BUILD}?build={!IN_SITE_BUILD}{/IF}" charset="utf-8"></script>
+<script type="text/javascript">
+    // JavaScript Starts Here <![CDATA[
+    require.config({
+        "baseUrl": "{FULLURL:"static/js"}",
+        {IF:IN_SITE_BUILD}"urlArgs": "build="+{JS_DEF:IN_SITE_BUILD},{/IF}
+        "paths": {
+            "static": "{FULLURL:"static"}"
+        }
+    });
+
+    define('SOne', ['jquery', 'sone.misc'], function($) {
+        var SOne = {
+            root: '{ROOTURL}',
+            config: {IF:IN_SONE_CONFIG}{IN_SONE_CONFIG}{ELSE}{ }{/IF},
+            prepareContent: function(block) {
+                var jq = typeof block !== 'undefined'
+                        ? function() { return $.fn.find.apply($(block), arguments); }
+                        : $;
+                jq('select').sOneSelect();
+                jq('time').timeFormat();
+                jq('a.post-button').postButton();
+
+                if (jq('textarea.htmleditor').length) {
+                    require(['sone.wysiwyg'], function () {
+                        // create editor
+                        jq('textarea.htmleditor').wysiwyg();
+                    });
+                }
+            }
+        };
+
+        $().ready(function() {
+            SOne.prepareContent();
+        });
+
+        $.SOne = SOne;
+
+        return SOne;
+    });
+
+    require(['SOne']);
+    //]]> JavaScript ends here
+</script>
+<<- 'HTMLPAGE_BOOTSTRAP_JS'>>
+
+<!-- override please :) -->
 <<+ 'HTMLPAGE_HEAD_INCLUDES'>>
-  <style type="text/css">
-  /* extra CSS <![CDATA[ */
-   div#mp_head {
-     min-height: 30px;
-   }
-  /* ]]> */
-  </style>
 <<- 'HTMLPAGE_HEAD_INCLUDES'>>
 
 

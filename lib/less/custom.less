@@ -3,6 +3,8 @@
 @text-color:            #111420;
 @font-size-base:          12px;
 
+script { display: none; }
+
 h1, .h1,
 h2, .h2,
 h3, .h3 {
@@ -11,19 +13,23 @@ h3, .h3 {
 
 .ui-dialog,
 .dialogelfinder {
-    .box-shadow(0 0 10px rgba(0,0,0,.2));
+  .box-shadow(0 0 10px rgba(0,0,0,.2));
 }
 
 .elfinder-dialog input,
 .elfinder-dialog select {
-    width: auto;
+  width: auto;
+}
+
+.elfinder-resize-preview img {
+  max-width: none;
 }
 
 span.input-append,
 span.input-prepend {
-    display: inline-block;
-    vertical-align: middle;
-    padding-top: 1px;
+  display: inline-block;
+  vertical-align: middle;
+  padding-top: 1px;
 }
 
 .ui-datepicker {

@@ -28,7 +28,7 @@
   <meta http-equiv="Content-Script-Type" content="text/javascript" />
   <meta name="Generator" content="QuickFox SimpleOne Alpha" />
   <link href="{FULLURL:"static/css/simple.css"}{IF:IN_SITE_BUILD}?build={!IN_SITE_BUILD}{/IF}" rel="stylesheet" />
-  {if:IN_customCss}<link href="{FULLURL:IN_customCss}{IF:IN_SITE_BUILD}?build={!IN_SITE_BUILD}{/IF}" rel="stylesheet" />{/if}
+  {IF:IN_customCss}<link href="{FULLURL:IN_customCss}{IF:IN_SITE_BUILD}?build={!IN_SITE_BUILD}{/IF}" rel="stylesheet" />{/IF}
   <!--[if lt IE 8]><link href="{FULLURL:"static/css/bootstrap-ie7.css"}" rel="stylesheet"><![endif]-->
   {IN_META}
 
@@ -39,89 +39,25 @@
 
   <link rel="shortcut icon" href="{IF:IN_FAVICON}{FULLURL:IN_FAVICON}{ELSE}{FULLURL:"static/images/sone.ico"}{/IF}" />
 
-  {IF:IN_CSS}
   <style type="text/css">
   /* CSS starts here <![CDATA[ */
-   script { display: none; }
-
-   #mp_footer {
-       margin-top: 35px;
-       padding: 10px 0 35px;
-       border-top: 1px solid #E5E5E5;
-   }
-
-   #mp_footer_widgets {
-       margin-bottom: 10px;
-   }
-
-   .elfinder-resize-preview img {
-       max-width: none;
-   }
-
-   {IN_CSS}
+    div#mp_head { min-height: 30px; }
+    #mp_footer { margin-top: 35px; padding: 10px 0 35px; border-top: 1px solid #E5E5E5; }
+    #mp_footer_widgets { margin-bottom: 10px; }
+    {IN_CSS}
   /* ]]> CSS ends here */
   </style>
-  {ENDIF}
 
-  <!--[if lt IE 9]>
-    <script type="text/javascript" src="static/js/respond.min.js" charset="utf-8"></script>
-  <![endif]-->
-  <!-- Load require -->
-  <script type="text/javascript" src="static/js/require.js{IF:IN_SITE_BUILD}?build={!IN_SITE_BUILD}{/IF}" charset="utf-8"></script>
-  <script type="text/javascript" src="static/js/require.config.js{IF:IN_SITE_BUILD}?build={!IN_SITE_BUILD}{/IF}" charset="utf-8"></script>
-  <script type="text/javascript">
+  {VIS:HTMLPAGE_BOOTSTRAP_JS|_}
+  {VIS:HTMLPAGE_HEAD_INCLUDES|_}
+
+  {IF:IN_JS}<script type="text/javascript">
   // JavaScript Starts Here <![CDATA[
-      require.config({
-          "baseUrl": "{FULLURL:"static/js"}",
-          {IF:IN_SITE_BUILD}"urlArgs": "build="+{JS_DEF:IN_SITE_BUILD},{/IF}
-          "paths": {
-              "static": "{FULLURL:"static"}"
-          }
-      });
+    {IN_JS}
   //]]> JavaScript ends here
-  </script>
+  </script>{/IF}
 
-  <script type="text/javascript">
-  // JavaScript Starts Here <![CDATA[
-      define('SOne', ['jquery', 'sone.misc'], function($) {
-          var SOne = {
-              root: '{ROOTURL}',
-              config: {IF:IN_SONE_CONFIG}{IN_SONE_CONFIG}{ELSE}{ }{/IF},
-              prepareContent: function(block) {
-                  var jq = typeof block !== 'undefined'
-                      ? function() { return $.fn.find.apply($(block), arguments); }
-                      : $;
-                  jq('select').sOneSelect();
-                  jq('time').timeFormat();
-                  jq('a.post-button').postButton();
-
-                  if (jq('textarea.htmleditor').length) {
-                      require(['sone.wysiwyg'], function () {
-                          // create editor
-                          jq('textarea.htmleditor').wysiwyg();
-                      });
-                  }
-              }
-          };
-
-          $().ready(function() {
-              SOne.prepareContent();
-          });
-
-          $.SOne = SOne;
-
-          return SOne;
-      });
-
-      require(['SOne']);
-
-      {IN_JS}
-
-  //]]> JavaScript ends here
-  </script>
   {IN_JS_BLOCKS}
-
-  {VIS:HTMLPAGE_HEAD_INCLUDES}
 </head>
 <body>
 <div id="mp_outer" class="container">
@@ -178,11 +114,11 @@
 </div>
 
 {IN_BOTT_JS_BLOCKS}
-<script type="text/javascript">
+{IF:IN_BOTT_JS}<script type="text/javascript">
 // JavaScript Starts Here (bottom section) <![CDATA[
     {IN_BOTT_JS}
 //]]> JavaScript ends here
-</script>
+</script>{/IF}
 </body>
 </html>
 <<- 'GLOBAL_HTMLPAGE'>>

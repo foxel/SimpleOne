@@ -6286,6 +6286,9 @@ button.close {
   }
 }
 /* custom */
+script {
+  display: none;
+}
 h1,
 .h1,
 h2,
@@ -6302,6 +6305,9 @@ h3,
 .elfinder-dialog input,
 .elfinder-dialog select {
   width: auto;
+}
+.elfinder-resize-preview img {
+  max-width: none;
 }
 span.input-append,
 span.input-prepend {
