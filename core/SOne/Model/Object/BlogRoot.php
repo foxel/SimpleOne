@@ -291,11 +291,41 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
 
         $this->_filterParams = K3_Util_Url::parseZendStyleURLParams($subPath);
         $this->_subPath = $subPath;
-        if (array_diff(array_keys($this->_filterParams), array('date', 'tag', 'author'))) {
+        if (!$this->_validateFilterParams()) {
             return new SOne_Model_Object_Page404(array('path' => $this->path.'/'.$subPath));
         }
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function _validateFilterParams()
+    {
+        $isValid = true;
+
+        if (array_diff(array_keys($this->_filterParams), array('date', 'tag', 'author'))) {
+            return false;
+        }
+
+        foreach ($this->_filterParams as $filterType => $filterValue) {
+            switch ($filterType) {
+                case 'date':
+                    $isValid = $isValid && preg_match('#^\d{4}(-\d{2}){0,2}$#', $filterValue);
+                    break;
+                case 'tag':
+                    //no validation
+                    break;
+                case 'author':
+                    $isValid = $isValid && ctype_digit($filterValue);
+                    break;
+                default:
+                    return false;
+            }
+        }
+
+        return $isValid;
     }
 
     /**
