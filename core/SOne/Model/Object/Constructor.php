@@ -60,9 +60,13 @@ class SOne_Model_Object_Constructor extends SOne_Model_Object implements SOne_In
      */
     protected function prepareAction(SOne_Environment $env, &$objectUpdated = false)
     {
+        $objectUpdated = false;
+
         $class = $env->request->getString('class', K3_Request::ALL, K3_Util_String::FILTER_WORD);
         $path  = $env->request->getString('path',  K3_Request::ALL, K3_Util_String::FILTER_WORD);
         $parentPath = $env->request->getString('parentPath', K3_Request::ALL, K3_Util_String::FILTER_PATH);
+        $accessLevel = $env->request->getNumber('accessLevel', K3_Request::ALL);
+        $editLevel   = $env->request->getNumber('editLevel', K3_Request::ALL);
 
         if (!$path) {
             $this->pool['errors'] = 'Путь является обязательным';
@@ -86,12 +90,26 @@ class SOne_Model_Object_Constructor extends SOne_Model_Object implements SOne_In
 
         $uid = md5($this->path.$path);
 
+        if (is_null($accessLevel)) {
+            $accessLevel = SOne_Model_Object::DEFAULT_ACCESS_LEVEL;
+        } else {
+            $accessLevel = min($accessLevel, $env->user->accessLevel);
+        }
+
+        if (is_null($editLevel) || !$env->user->modLevel) {
+            $editLevel = SOne_Model_Object::DEFAULT_EDIT_LEVEL;
+        } else {
+            $editLevel = min($editLevel, $env->user->modLevel);
+        }
+
+        $editLevel = max($accessLevel, $editLevel);
+
         $object = SOne_Model_Object::construct(array(
             'class'       => $class,
             'path'        => $this->path.'/'.$uid,
             'parentId'    => $parentObject ? $parentObject->id : null,
-            'accessLevel' => $parentObject ? $parentObject->accessLevel : SOne_Model_Object::DEFAULT_ACCESS_LEVEL,
-            'editLevel'   => $parentObject ? $parentObject->editLevel   : SOne_Model_Object::DEFAULT_EDIT_LEVEL,
+            'accessLevel' => $parentObject ? max($parentObject->accessLevel, $accessLevel) : $accessLevel,
+            'editLevel'   => $parentObject ? max($parentObject->accessLevel, $editLevel)   : $editLevel,
             'ownerId'     => $env->getUser()->id,
         ));
 
@@ -122,11 +140,18 @@ class SOne_Model_Object_Constructor extends SOne_Model_Object implements SOne_In
                 if (!$item instanceof SOne_Interface_Object_AcceptChildren) {
                     continue;
                 }
+                /** @var SOne_Model_Object $item */
                 $pathOptions[] = array(
                     'path'    => $item->path,
                     'caption' => $item->caption,
                 );
             }
+
+            $node->addDataArray($env->user->toArray(), 'user_');
+            $node->addDataArray(array(
+                'defaultAccessLevel' => SOne_Model_Object::DEFAULT_ACCESS_LEVEL,
+                'defaultEditLevel' => SOne_Model_Object::DEFAULT_EDIT_LEVEL,
+            ));
 
             if ($pathOptions) {
                 $node->appendChild('pathOptions', $optionsNode = new FVISNode('SONE_OBJECT_CONSTRUCTOR_PATHOPTION', FVISNode::VISNODE_ARRAY, $env->getVIS()));

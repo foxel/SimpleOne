@@ -315,6 +315,18 @@
     <option value="Form">Форма</option>
     <option value="FileIndex">Обзор файлов</option>
     <option value="Redirector">Внешняя ссылка</option>
+{!WRITE:ACCESS_LEVEL_OPTIONS}
+{FOR:0|IN_user_accessLevel}
+    {IF:I==IN_defailtAccessLevel}{VIS:SONE_HTML_WIDGET_FORM_SELECT_OPTION|value=I|caption=I|selected=1}
+    {ELSE}{VIS:SONE_HTML_WIDGET_FORM_SELECT_OPTION|value=I|caption=I}
+    {/IF}
+{/FOR}
+{!WRITE:EDIT_LEVEL_OPTIONS}
+{FOR:0|IN_user_modLevel}
+    {IF:I==IN_defaultEditLevel}{VIS:SONE_HTML_WIDGET_FORM_SELECT_OPTION|value=I|caption=I|selected=1}
+    {ELSE}{VIS:SONE_HTML_WIDGET_FORM_SELECT_OPTION|value=I|caption=I}
+    {/IF}
+{/FOR}
 {!WRITE:PARENT_OPTIONS}
     <option value=""> ---</option>
     {IN_PATHOPTIONS}
@@ -327,8 +339,15 @@
     {VIS:SONE_HTML_WIDGET_FORM_HORISONTAL_SELECT|label="Класс:"|name="class"|options=CLASS_OPTIONS|width=4}
     {VIS:SONE_HTML_WIDGET_FORM_HORISONTAL_SELECT|label="Родитель:"|name="parentPath"|options=PARENT_OPTIONS|width=4}
     {VIS:SONE_HTML_WIDGET_FORM_HORISONTAL_CONTROL|label="Путь:"|controls=PATH_CONTROL|width=6}
+    <hr />
+    {VIS:SONE_HTML_WIDGET_FORM_HORISONTAL_SELECT|label="Уровень доступа для чтения:"|name="accessLevel"|options=ACCESS_LEVEL_OPTIONS|width=2}
+    {IF:IN_user_modLevel>0}{VIS:SONE_HTML_WIDGET_FORM_HORISONTAL_SELECT|label="Уровень доступа для записи:"|name="editLevel"|options=EDIT_LEVEL_OPTIONS|width=2}
+    {/IF}
 {!WRITE:FORM_BUTTONS}
-    <button class="btn btn-primary" type="submit">Создать</button>
+    <button class="btn btn-primary" type="submit">
+        <i class="glyphicon glyphicon-ok"></i>
+        Создать
+    </button>
 {!WRITE:FORM_ACTION}{FULLURL:IN_PATH}/?prepare{WRITE}
     {VIS:SONE_HTML_WIDGET_FORM_HORISONTAL|controls=FORM_CONTROLS|buttons=FORM_BUTTONS|action=FORM_ACTION|id="constructorForm"}
 
