@@ -28,6 +28,7 @@ class SOne_Application extends K3_Application
     const EVENT_PAGE_OBJECT_VISUALIZED = 'pageObjectVisualized';
     const EVENT_PAGE_OBJECT_ROUTED = 'pageObjectRouted';
     const EVENT_WIDGETS_BOOTSTRAPPED = 'widgetsBootstrapped';
+    const EVENT_BOOTSTRAPPED = 'appBootstrapped';
     const EVENT_CRON_PROCESS = 'cronProcess';
 
     const COOKIE_AUTO_LOGIN  = 'ALID';
@@ -121,8 +122,11 @@ class SOne_Application extends K3_Application
         $this->_env
             ->setDb($this->_db)
             ->setVIS($this->_VIS)
-            ->setLang($this->_lang)
-            ->setUser($this->_bootstrapUser());
+            ->setLang($this->_lang);
+
+        $this->_bootstrapPlugins();
+
+        $this->_env->setUser($this->_bootstrapUser());
 
         // HTML post processing
         $env = $this->_env;
@@ -139,7 +143,7 @@ class SOne_Application extends K3_Application
             return $buffer;
         });
 
-        $this->_bootstrapPlugins();
+        $this->throwEvent(self::EVENT_BOOTSTRAPPED);
 
         F()->Profiler->logEvent('App Bootstrap end');
 
