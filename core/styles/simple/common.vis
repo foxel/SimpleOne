@@ -133,7 +133,7 @@
 
 <<+ 'NAVIGATOR_ITEM'>>
 <li class="mp_navigator_item{IF:IN_ISCURRENT} active{/IF}">
- <a class="mp_navigator_item_a" href="{!IN_HREF}" title="{!IN_CAPTION}">{!IN_shortCaption}</a>
+ <a class="mp_navigator_item_a ellipsis" href="{!IN_HREF}" title="{!IN_CAPTION}">{!IN_CAPTION}</a>
  {IF:IN_SUBS}
   <ul class="mp_navigator_item_subs nav nav-list">
    {IN_SUBS}

@@ -6336,3 +6336,8 @@ span.input-prepend {
   border-top-color: #ffffff;
   border-bottom-color: #ffffff;
 }
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
