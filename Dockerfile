@@ -35,6 +35,7 @@ ADD docker/ /
 
 RUN \
     chmod 0600 /etc/crontab && \
+    chmod 0644 /etc/logrotate.d/* && \
     ln -s /etc/nginx/sites-available/simpleone.conf /etc/nginx/sites-enabled/simpleone.conf
 
 EXPOSE 80

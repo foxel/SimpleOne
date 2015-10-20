@@ -1,6 +1,6 @@
 /var/www/logs/nginx.*.log {
-	rotate 12
-	weekly
+	rotate 60
+	daily
 	missingok
 	notifempty
 	compress
