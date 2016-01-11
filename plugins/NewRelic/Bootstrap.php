@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2013 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2013, 2016 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -20,9 +20,13 @@
 
 class NewRelic_Bootstrap implements SOne_Interface_PluginBootstrap
 {
-    /** @var ElFinder_Plugin */
+    /** @var NewRelic_Plugin */
     protected static $_pluginInstance;
 
+    /**
+     * @param SOne_Application $app
+     * @param K3_Config $config
+     */
     public static function bootstrap(SOne_Application $app, K3_Config $config)
     {
         if (extension_loaded('newrelic')) {
