@@ -28,18 +28,19 @@
   <meta http-equiv="Content-Script-Type" content="text/javascript" />
   <meta name="viewport" content="{IF:IN_MARKUP_META_VIEWPORT}{!IN_MARKUP_META_VIEWPORT}{ELSE}initial-scale=1,minimum-scale=1{/IF}" />
   <meta name="Generator" content="QuickFox SimpleOne Alpha" />
-  <link href="{FULLURL:"static/css/simple.css"}{IF:IN_SITE_BUILD}?build={!IN_SITE_BUILD}{/IF}" rel="stylesheet" />
-  {IF:IN_customCss}<link href="{FULLURL:IN_MARKUP_customCss}{IF:IN_SITE_BUILD}?build={!IN_SITE_BUILD}{/IF}" rel="stylesheet" />{/IF}
-  <!--[if lt IE 8]><link href="{FULLURL:"static/css/bootstrap-ie7.css"}" rel="stylesheet"><![endif]-->
-  {IN_META}
-
   {IF:IN_MARKUP_META_DESCRIPTION}<meta name="Description" content="{!IN_MARKUP_META_DESCRIPTION}" />{ENDIF}
   {IF:IN_MARKUP_META_KEYWORDS}<meta name="Keywords" content="{!IN_MARKUP_META_KEYWORDS}" />{ENDIF}
   <!-- <meta http-equiv="MSThemeCompatible" content="no" /> -->
-  <title>{!IN_SITE_NAME}{IF:IN_PAGE_TITLE} :: {!IN_PAGE_TITLE}{IF:IN_PAGE_SUBTITLE} :: {!IN_PAGE_SUBTITLE}{ENDIF}{ENDIF}</title>
+  {IN_META}
 
   <link rel="shortcut icon" href="{IF:IN_MARKUP_FAVICON}{FULLURL:IN_MARKUP_FAVICON}{ELSE}{FULLURL:"static/images/sone.ico"}{/IF}" />
   <link rel="apple-touch-icon" href="{IF:IN_MARKUP_touchIcon}{FULLURL:IN_MARKUP_touchIcon}{ELSEIF:IN_MARKUP_FAVICON}{FULLURL:IN_MARKUP_FAVICON}{ELSE}{FULLURL:"static/images/sone.png"}{/IF}" />
+
+  <title>{!IN_SITE_NAME}{IF:IN_PAGE_TITLE} :: {!IN_PAGE_TITLE}{IF:IN_PAGE_SUBTITLE} :: {!IN_PAGE_SUBTITLE}{ENDIF}{ENDIF}</title>
+
+  <link href="{FULLURL:"static/css/simple.css"}{IF:IN_SITE_BUILD}?build={!IN_SITE_BUILD}{/IF}" rel="stylesheet" />
+  {IF:IN_customCss}<link href="{FULLURL:IN_MARKUP_customCss}{IF:IN_SITE_BUILD}?build={!IN_SITE_BUILD}{/IF}" rel="stylesheet" />{/IF}
+  <!--[if lt IE 8]><link href="{FULLURL:"static/css/bootstrap-ie7.css"}" rel="stylesheet"><![endif]-->
 
   <style type="text/css">
   /* CSS starts here <![CDATA[ */
