@@ -270,7 +270,7 @@ class SOne_Application extends K3_Application
         $pageNode->addData('site_name', $this->_config->site->name);
         $pageNode->addData('site_build', $this->_config->site->build);
         if ($this->_config->markup instanceof K3_Config) {
-            $pageNode->addDataArray($this->_config->markup->toArray());
+            $pageNode->addDataArray($this->_config->markup->toArray(), 'MARKUP_');
         }
         if ($this->_config->front instanceof K3_Config) {
             $pageNode->addData('SONE_CONFIG', K3_Util_Value::defineJSON($this->_config->front->toArray()));
