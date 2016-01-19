@@ -100,7 +100,7 @@ class SOne_Repository_Object extends SOne_Repository
     {
         $path = explode('/', trim($path, '/'));
 
-        return preg_replace('#\W+#', '_', $path);
+        return $path;
     }
 
     /**
