@@ -19,6 +19,8 @@
 #
 # usage: bash setup.sh
 
+set -e
+
 SIMPLEONE_DIR="${PWD}"
 
 [ -f composer.phar ] || php -r "readfile('https://getcomposer.org/installer');" | php
