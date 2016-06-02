@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 # set pm.max_children to number of processing units
 sed "/pm.max_children/cpm.max_children = `nproc`" -i /etc/php5/fpm/pool.d/simpleone.conf
 
@@ -9,5 +11,7 @@ fi
 
 find /data /var/www/logs \! \( -user www-data -group www-data \) \
     -print -exec chown www-data:www-data {} \;
+
+make db
 
 exec supervisord -nc /etc/supervisor/supervisord.conf

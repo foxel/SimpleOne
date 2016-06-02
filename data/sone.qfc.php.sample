@@ -63,14 +63,14 @@ widgets.tags.block => sidebar
 #widgets.navbar.links.a.caption => #tag
 
 # sample static login page
-#staticRoutes.login.class => LoginPage
-#staticRoutes.login.caption => Login
-#staticRoutes.login.registerAllowed => 1
+staticRoutes.login.class => LoginPage
+staticRoutes.login.caption => Login
+staticRoutes.login.registerAllowed => 1
 
 # sample static constructor page
-#staticRoutes.constructor.class => Constructor
-#staticRoutes.constructor.caption => Constructor
-#staticRoutes.constructor.accessLevel => 6
+staticRoutes.constructor.class => Constructor
+staticRoutes.constructor.caption => Constructor
+staticRoutes.constructor.accessLevel => 6
 
 staticRoutes.uploader.class => ElFinderConnector
 staticRoutes.uploader.accessLevel => 1
@@ -102,6 +102,7 @@ staticRoutes.uploads.class => FileIndex
 staticRoutes.uploads.caption => Uploaded Files
 staticRoutes.uploads.basePath => {F_DATA_ROOT}/uploads/
 staticRoutes.uploads.disposition => inline
+staticRoutes.uploads.uploadAllowed => 1
 staticRoutes.uploads.xAccelLocation => /_uploads/
 
 
