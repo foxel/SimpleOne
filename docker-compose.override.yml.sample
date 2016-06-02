@@ -1,0 +1,8 @@
+version: '2'
+
+services:
+  simpleone:
+    ports:
+      - "9080:80"
+#    volumes:
+#      - /docker/simpleone-data:/data
