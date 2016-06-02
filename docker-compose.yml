@@ -1,0 +1,31 @@
+version: '2'
+
+services:
+  simpleone:
+    build: .
+    links:
+      - mysql
+      - elastic
+    volumes:
+      - data:/data
+  mysql:
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: 1
+      MYSQL_DATABASE: simpleone
+      MYSQL_USER: simpleone
+      MYSQL_PASSWORD: simpleone
+    volumes:
+      - mysql:/var/lib/mysql
+    image: mysql:5.5
+  elastic:
+    build: lib/elastic
+    volumes:
+      - elastic:/usr/share/elasticsearch/data
+
+volumes:
+  mysql:
+    driver: local
+  elastic:
+    driver: local
+  data:
+    driver: local

@@ -7,7 +7,8 @@ RUN \
   apt-get update && \
   apt-get -y --no-install-recommends install \
     wget curl ca-certificates supervisor cron \
-    nginx php5-cli php5-curl php5-fpm php5-gd php5-mcrypt php5-mysql && \
+    nginx php5-cli php5-curl php5-fpm php5-gd php5-mcrypt php5-mysql \
+    php5-readline make openjdk-7-jre-headless && \
   update-locale LANG=C.UTF-8 && \
   rm -f /etc/php5/fpm/pool.d/* /etc/nginx/sites-enabled/* && \
   rm -rf /etc/logrotate.d/* && \
@@ -18,7 +19,7 @@ COPY db /var/www/db
 COPY lib /var/www/lib
 COPY plugins /var/www/plugins
 COPY static /var/www/static
-COPY composer.json cron.php index.php ping.php setup.sh  /var/www/
+COPY composer.json cron.php index.php ping.php setup.sh Makefile /var/www/
 
 ADD data/sone.qfc.php.sample /etc/simpleone/
 
@@ -39,6 +40,8 @@ RUN \
     ln -s /etc/nginx/sites-available/simpleone.conf /etc/nginx/sites-enabled/simpleone.conf
 
 EXPOSE 80
+
+WORKDIR /var/www
 
 VOLUME /data /var/www/logs /var/log
 

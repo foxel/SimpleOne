@@ -17,7 +17,7 @@
  along with SimpleOne. If not, see <http://www.gnu.org/licenses/>.
 -->
 
-// <?xml version="1.0"?> deleted from the top... IE bugs with drawing
+<!-- <?xml version="1.0"?> deleted from the top... IE bugs with drawing -->
 
 <<+ 'GLOBAL_HTMLPAGE'>>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -495,7 +495,7 @@
 <script type="text/javascript">
     require(['jquery', 'jquery.tagcloud'], function($) {
         $(function () {
-            $('#tagcloud_{blockId} a').tagcloud({size: {start: 10, end: 16, unit: 'px'}});
+            $('#tagcloud_{blockId} a').tagcloud({ size: { start: 10, end: 16, unit: 'px'}});
         });
     });
 </script>
@@ -510,7 +510,7 @@
 <div id="timecheck-{UNIQID}" style="display: none;"></div>
 <script type="text/javascript">
 require(['jquery'], function($) {
-    $.get('{FULLURL:"/ping.php"}?'+Math.random(), function (serverTime) {
+    $.get('{FULLURL:"/ping"}?'+Math.random(), function (serverTime) {
         var clientShift = serverTime - (new Date()).valueOf();
 
         if (Math.abs(clientShift) > 120 * 1000) {

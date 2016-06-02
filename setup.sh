@@ -25,7 +25,7 @@ SIMPLEONE_DIR="${PWD}"
 
 [ -f composer.phar ] || php -r "readfile('https://getcomposer.org/installer');" | php
 
-php -f composer.phar -- update
+php -f composer.phar -- --prefer-dist update
 
 KERNEL3_PATH="lib/vendor/foxel/kernel3"
 echo "kernel dir is ${KERNEL3_PATH}"
