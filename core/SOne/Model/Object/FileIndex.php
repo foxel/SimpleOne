@@ -23,6 +23,7 @@
  * @property-read string $xAccelLocation
  * @property-read bool   $m3uEnabled
  * @property-read bool   $uploadAllowed
+ * @property-read string $uploadAllow
  * @property-read int    $uploadLevel
  */
 class SOne_Model_Object_FileIndex extends SOne_Model_Object
@@ -48,7 +49,7 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object
                     'path'  => $basePath,
                     'startPath' => $startPath,
                     'URL'   => K3_Util_Url::fullUrl($this->path, $env),
-                    'uploadAllow' => 'image,application/x-shockwave-flash,video,audio',
+                    'uploadAllow' => $this->uploadAllow,
                     'uploadOrder' => 'allow,deny',
                 )),
                 'editLevel' => $this->uploadAllowed ? $this->uploadLevel : 999,
@@ -239,6 +240,7 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object
             'xAccelLocation' => false,
             'm3uEnabled'    => false,
             'uploadAllowed' => false,
+            'uploadAllow'   => 'image,application/x-shockwave-flash,video,audio',
             'uploadLevel'   => $this->editLevel,
         );
 
@@ -246,6 +248,7 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object
         $this->pool['xAccelLocation'] =& $this->pool['data']['xAccelLocation'];
         $this->pool['m3uEnabled'] =& $this->pool['data']['m3uEnabled'];
         $this->pool['uploadAllowed'] =& $this->pool['data']['uploadAllowed'];
+        $this->pool['uploadAllow'] =& $this->pool['data']['uploadAllow'];
         $this->pool['uploadLevel'] =& $this->pool['data']['uploadLevel'];
 
         return $this;
