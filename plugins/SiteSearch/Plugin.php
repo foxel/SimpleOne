@@ -33,6 +33,8 @@ class SiteSearch_Plugin
     /** @var K3_Config */
     protected $_config;
 
+    const RESULTS_LIMIT = 5000;
+
     /**
      * @param SOne_Application $app
      * @param K3_Config $config
@@ -106,6 +108,13 @@ class SiteSearch_Plugin
             ));
         }
 
+        if (($offset + $limit) > self::RESULTS_LIMIT) {
+            return array('hits' => array(
+                'total' => 0,
+                'hits'  => array(),
+            ));
+        }
+
         $post = array(
             'fields' => array('path', 'caption', 'content', 'createTime'),
             'query' => $query,
@@ -139,7 +148,12 @@ class SiteSearch_Plugin
             throw new FException(json_last_error_msg(), json_last_error());
         }
         if (!empty($result['error'])) {
-            throw new FException($result['error']);
+            $message = $result['error']['root_cause'][0]['reason'];
+            throw new FException($message);
+        }
+
+        if (isset($result['hits']['total'])) {
+            $result['hits']['total'] = min($result['hits']['total'], self::RESULTS_LIMIT);
         }
 
         return $result;
