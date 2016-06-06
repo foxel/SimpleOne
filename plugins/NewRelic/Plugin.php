@@ -40,7 +40,7 @@ class NewRelic_Plugin
 
         $this->_app    = $app;
         $this->_config = $config;
-        $this->_app->addEventHandler(SOne_Application::EVENT_PAGE_OBJECT_ROUTED, array($this, 'soneObjectRoutedHandle'));
+        $this->_app->addEventHandler(SOne_Application::EVENT_PAGE_OBJECT_ROUTED, array($this, 'objectRoutedHandle'));
         $this->_app->addEventHandler(SOne_Application::EVENT_PAGE_RENDERED, array($this, 'addAppVisData'));
         $this->_app->addEventHandler(SOne_Application::EVENT_CRON_PROCESS, array($this, 'processCronJob'));
 
@@ -51,7 +51,7 @@ class NewRelic_Plugin
     /**
      * @param SOne_Model_Object $object
      */
-    public function soneObjectRoutedHandle(SOne_Model_Object $object)
+    public function objectRoutedHandle(SOne_Model_Object $object)
     {
         $request = $this->_app->getRequest();
 
@@ -64,6 +64,8 @@ class NewRelic_Plugin
      */
     public function processCronJob(SOne_Environment $env)
     {
+        /** @noinspection PhpUndefinedFunctionInspection */
+        newrelic_background_job(true);
         /** @noinspection PhpUndefinedFunctionInspection */
         newrelic_name_transaction('Cron');
     }
