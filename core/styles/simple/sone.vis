@@ -36,7 +36,7 @@
 
     define('SOne', ['jquery', 'sone.misc'], function($) {
         var SOne = {
-            root: '{ROOTURL}',
+            root: '{C_ROOTURL}',
             config: {IF:IN_SONE_CONFIG}{IN_SONE_CONFIG}{ELSE}{ }{/IF},
             prepareContent: function(block) {
                 var jq = typeof block !== 'undefined'

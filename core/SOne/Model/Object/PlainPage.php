@@ -87,16 +87,17 @@ abstract class SOne_Model_Object_PlainPage extends SOne_Model_Object_Commentable
         /* @var FLNGData $lang */
         $lang = $env->getLang();
 
+        $errors = array();
         if (!$this->caption) {
-            $this->pool['errors'][] = $lang->lang('SONE_OBJECT_ERROR_CAPTION_REQUIRED');
+            $errors[] = $lang->lang('SONE_OBJECT_ERROR_CAPTION_REQUIRED');
         }
         if (!$this->content) {
-            $this->pool['errors'][] = $lang->lang('SONE_OBJECT_ERROR_CONTENT_REQUIRED');
+            $errors[] = $lang->lang('SONE_OBJECT_ERROR_CONTENT_REQUIRED');
         }
 
-        if (!empty($this->pool['errors'])) {
+        if (!empty($errors)) {
             $this->pool['actionState'] = 'edit';
-            $this->pool['errors'] = '<ul><li>'.implode('</li><li>', $this->pool['errors']).'</li></ul>';
+            $this->pool['errors'] = '<ul><li>'.implode('</li><li>', $errors).'</li></ul>';
         } else {
             $updated = true;
         }

@@ -1,4 +1,5 @@
-FROM ubuntu:14.04
+FROM ubuntu:16.04
+
 MAINTAINER Andrey F. Kupreychik <foxel@quickfox.ru>
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -7,10 +8,11 @@ RUN \
   apt-get update && \
   apt-get -y --no-install-recommends install \
     wget curl ca-certificates supervisor cron \
-    nginx php5-cli php5-curl php5-fpm php5-gd php5-mcrypt php5-mysql \
-    php5-readline make openjdk-7-jre-headless && \
+    nginx php7.0-cli php7.0-curl php7.0-fpm php7.0-gd \
+    php7.0-mcrypt php7.0-mysql php7.0-xml php7.0-mbstring \
+    php7.0-readline make default-jre-headless unzip && \
   update-locale LANG=C.UTF-8 && \
-  rm -f /etc/php5/fpm/pool.d/* /etc/nginx/sites-enabled/* && \
+  rm -f /etc/php/7.0/fpm/pool.d/* /etc/nginx/sites-enabled/* && \
   rm -rf /etc/logrotate.d/* && \
   rm -rf /var/lib/apt/lists/*
 

@@ -63,7 +63,7 @@
     line-height: 18px;
 }
 .oauth i {
-    background: transparent url("{ROOTURL}static/images/oauth.png") no-repeat top left;
+    background: transparent url("{C_ROOTURL}static/images/oauth.png") no-repeat top left;
     padding-left: 18px;
     height: 16px;
     display: inline-block;
