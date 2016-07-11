@@ -21,6 +21,16 @@ markup.responsive => 1
 #plugins.SOneImages.lazyload => 1
 #plugins.SOneImages.containerSelector => #mp_pagecont .htmlpage
 
+#PushAll integration for blogs: https://pushall.ru/
+#plugins.PushAll.blogs.all.channelId => 1
+#plugins.PushAll.blogs.all.channelKey => xxxxxxxx
+
+#PushAll subscribe widget: https://pushall.ru/
+#widgets.subscribe.class => PushAllSubscribe
+#widgets.subscribe.caption => Subscribe
+#widgets.subscribe.block => sidebar
+#widgets.subscribe.channelId => 1
+
 #OAuth integration for Facebook/VK
 plugins.OAuth.vkAppId => 2833416
 plugins.OAuth.vkAppSecret => XxxX
