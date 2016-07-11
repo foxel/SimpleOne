@@ -24,6 +24,8 @@
 class SOne_Repository_Object extends SOne_Repository
 {
     const EVENT_OBJECT_SAVED = 'objectSaved';
+    const EVENT_OBJECT_CREATED = 'objectCreated';
+    const EVENT_OBJECT_UPDATED = 'objectUpdated';
 
     /**
      * @var array
@@ -304,11 +306,12 @@ class SOne_Repository_Object extends SOne_Repository
     public function save(SOne_Model_Object $object)
     {
         $objData = self::mapModelToDb($object, self::$dbMap, 'id');
+        $isNew = !$object->id;
 
-        if ($object->id) {
-            $this->_db->doUpdate('objects', $objData, array('id' => $object->id));
-        } else {
+        if ($isNew) {
             $object->id = $this->_db->doInsert('objects', $objData);
+        } else {
+            $this->_db->doUpdate('objects', $objData, array('id' => $object->id));
         }
 
         if (!is_null($object->path)) {
@@ -340,6 +343,7 @@ class SOne_Repository_Object extends SOne_Repository
         }
 
         $this->throwEventRef(self::EVENT_OBJECT_SAVED, $object);
+        $this->throwEventRef($isNew ? self::EVENT_OBJECT_CREATED : self::EVENT_OBJECT_UPDATED, $object);
     }
 
     /**
