@@ -236,7 +236,7 @@ require(['jquery', 'sone.wysiwyg'], function ($) {
     {IN_tagBlocks}
 </div>
 <script type="text/javascript">
-    require(['jquery', 'bootstrap.carousel'], function($) {
+    require(['jquery', 'bootstrap'], function($) {
         var $carousel = $('#carousel{UNIQID}');
         $carousel.carousel();
         /*$carousel.find('.item img').each(function () {

@@ -72,7 +72,7 @@
         <button class="btn btn-primary" type="submit">{L_EDITOR_SUBMIT_FILL}</button>
     </form>
     <script type="text/javascript">
-        require(['jquery', 'bootstrap.tooltip'], function($) {
+        require(['jquery', 'bootstrap'], function($) {
             $('a.captcha-update').click(function() {
                 var src = String($(this).find('img').attr('src'));
                 var sp = src.indexOf('?') == -1 ? '?' : '&';

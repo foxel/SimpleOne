@@ -14,6 +14,8 @@
         "foxel/kernel3": "~0.2.2"
     },
     "require-dev": {
+        "components/jquery": "1.12.4",
+        "twbs/bootstrap": "^3.3"
     },
     "config": {
         "vendor-dir": "lib/vendor",

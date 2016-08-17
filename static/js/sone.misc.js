@@ -32,9 +32,6 @@ define(['jquery', 'date.format', 'select2', 'select2.i18n', 'i18n/date.format.ru
          * @param {Object} [options]
          */
         sOneSelect: function (options) {
-            if ($.browser.msie && ($.browser.version === "6.0" || ($.browser.version === "7.0" && document.documentMode === 7))) {
-                return this;
-            }
             return this.each(function (input_field) {
                 var $this = $(this);
                 var emptyValue = $('option[value=""]', this).text();
@@ -138,7 +135,7 @@ define(['jquery', 'date.format', 'select2', 'select2.i18n', 'i18n/date.format.ru
                         });
                         return false;
                     });
-                    require(['bootstrap.tooltip'], function () {
+                    require(['bootstrap'], function () {
                         $this.tooltip({title: 'Увеличить'});
                     });
                 }

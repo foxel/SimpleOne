@@ -18,8 +18,19 @@
  */
 require.config({
     paths: {
-        "jquery": "jquery-1.7.2.min",
-        "jquery.ui": "../libs/jquery-ui/js/jquery-ui-1.8.21.custom.min",
+        "jquery": [
+            "https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min",
+            "https://code.jquery.com/jquery-1.12.4.min",
+            "../libs/jquery/jquery.min"
+        ],
+        "jquery.ui": [
+            "https://code.jquery.com/ui/1.8.24/jquery-ui.min",
+            "../libs/jquery-ui/js/jquery-ui.min"
+        ],
+        "jquery.migrate": [
+            "https://code.jquery.com/jquery-migrate-1.3.0.min",
+            "../libs/jquery/jquery-migrate.min"
+        ],
         "jquery.timepicker": "../libs/jquery-ui/js/jquery-ui-timepicker-addon",
         "jquery.colorbox": "../libs/colorbox/js/jquery.colorbox",
         "elrte": "../libs/elrte/js/elrte.min",
@@ -29,28 +40,19 @@ require.config({
         "select2": "../libs/select2/js/select2",
         "select2.i18n": "../libs/select2/js/i18n/select2_locale_ru",
         /* bootstrap */
-        "bootstrap.transition": "../libs/bootstrap/js/transition",
-        "bootstrap.collapse": "../libs/bootstrap/js/collapse",
-        "bootstrap.dropdown": "../libs/bootstrap/js/dropdown",
-        "bootstrap.modal": "../libs/bootstrap/js/modal",
-        "bootstrap.tooltip": "../libs/bootstrap/js/tooltip",
-        "bootstrap.carousel": "../libs/bootstrap/js/carousel"
+        "bootstrap": "../libs/bootstrap/js/bootstrap.min"
     },
     shim: {
-        "bootstrap.transition": ["jquery"],
-        "bootstrap.modal": ["jquery", "bootstrap.transition"],
-        "bootstrap.collapse": ["jquery", "bootstrap.transition"],
-        "bootstrap.dropdown": ["jquery", "bootstrap.transition"],
-        "bootstrap.tooltip": ["jquery", "bootstrap.transition"],
-        "bootstrap.carousel": ["jquery", "bootstrap.transition"],
+        "bootstrap": ["jquery"],
+        "jquery.ui": ["jquery", "css!static/libs/jquery-ui/css/jquery-ui.custom"],
+        "jquery.migrate": ["jquery"],
         "jquery.chosen": ["jquery"],
         "jquery.colorbox": ["jquery", "css!static/libs/colorbox/css/colorbox"],
         "jquery.tagcloud": ["jquery"],
-        "jquery.ui": ["jquery", "css!static/libs/jquery-ui/css/jquery-ui.custom"],
         "jquery.timepicker": ["jquery.ui"],
-        "elrte": ["jquery.ui", "css!static/libs/elrte/css/elrte.min"],
+        "elrte": ["jquery.ui", "jquery.migrate", "css!static/libs/elrte/css/elrte.min"],
         "elrte.i18n": ["elrte"],
-        "elfinder": ["jquery.ui", "css!static/libs/elfinder/css/elfinder.full"],
+        "elfinder": ["jquery.ui", "jquery.migrate", "css!static/libs/elfinder/css/elfinder.full"],
         "elfinder.i18n": ["elfinder"],
         "select2": ["jquery", "css!static/libs/select2/css/select2", "css!static/libs/select2/css/select2-bootstrap"],
         "select2.i18n": ["select2"]

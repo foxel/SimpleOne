@@ -439,7 +439,7 @@
         </ul>
         </div>
         <script type="text/javascript">//<!--
-            require(['bootstrap.collapse', 'bootstrap.dropdown']);
+            require(['bootstrap']);
         // --></script>
     {/IF}
     </div>
