@@ -75,7 +75,7 @@ define(['jquery', 'SOne', 'elrte', 'elrte.i18n'], function ($, SOne) {
             toolbar: 'sone',
             resizable: true,
             resizeHandle: 's',
-            cssfiles: [SOne.root+'static/css/bootstrap.css', SOne.root+'static/libs/elrte/css/elrte.inner.css']
+            cssfiles: [SOne.root+'static/css/simple.css', SOne.root+'static/libs/elrte/css/elrte.inner.css']
         }
     });
 
