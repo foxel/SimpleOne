@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 - 2015 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2016 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -322,18 +322,20 @@ class SOne_Application extends K3_Application
             foreach ($this->_config->plugins as $pluginName => $pluginConfig) {
                 if (is_dir($pluginsDir.DIRECTORY_SEPARATOR.$pluginName)) {
                     F()->Autoloader->registerClassPath($pluginsDir.DIRECTORY_SEPARATOR.$pluginName, $pluginName);
-                    $pluginBootstrapClass = ($pluginConfig instanceof K3_Config) && isset($pluginConfig->bootstrapClass)
-                        ? $pluginConfig->bootstrapClass
-                        : $pluginName.'_Bootstrap';
-                    if (class_exists($pluginBootstrapClass, true)) {
-                        try {
-                            $pluginBootstrapClass::bootstrap($this, ($pluginConfig instanceof K3_Config) ? $pluginConfig : new K3_Config((array) $pluginConfig));
-                        } catch (Exception $e) {
-                            throw new FException(array('Error loading plugin "%s": %s', $pluginName, $e->getMessage()), 0, $e);
-                        }
+                }
 
-                        $this->_loadedPlugins[] = $pluginName;
+                $pluginBootstrapClass = ($pluginConfig instanceof K3_Config) && isset($pluginConfig->bootstrapClass)
+                    ? $pluginConfig->bootstrapClass
+                    : $pluginName.'_Bootstrap';
+
+                if (class_exists($pluginBootstrapClass, true) && method_exists($pluginBootstrapClass, 'bootstrap')) {
+                    try {
+                        $pluginBootstrapClass::bootstrap($this, ($pluginConfig instanceof K3_Config) ? $pluginConfig : new K3_Config((array) $pluginConfig));
+                    } catch (Exception $e) {
+                        throw new FException(array('Error loading plugin "%s": %s', $pluginName, $e->getMessage()), 0, $e);
                     }
+
+                    $this->_loadedPlugins[] = $pluginName;
                 }
             }
         }
