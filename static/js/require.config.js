@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2013, 2016 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -59,7 +59,9 @@ require.config({
     },
     map: {
         '*': {
-            'css': 'require.css'
+            'SOne': 'sone',
+            'css': 'require.css',
+            'script': 'require.script'
         }
     },
     waitSeconds: 15
