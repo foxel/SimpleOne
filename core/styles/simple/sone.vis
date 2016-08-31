@@ -22,7 +22,7 @@
 <script type="text/javascript" src="static/js/respond.min.js" charset="utf-8"></script>
 <![endif]-->
 <!-- Load require -->
-<script type="text/javascript" src="static/js/require.js{IF:IN_SITE_BUILD}?build={!IN_SITE_BUILD}{/IF}" charset="utf-8"></script>
+<script type="text/javascript" src="static/js/require.min.js{IF:IN_SITE_BUILD}?build={!IN_SITE_BUILD}{/IF}" charset="utf-8"></script>
 <script type="text/javascript" src="static/js/require.config.js{IF:IN_SITE_BUILD}?build={!IN_SITE_BUILD}{/IF}" charset="utf-8"></script>
 <script type="text/javascript">
     // JavaScript Starts Here <![CDATA[
