@@ -33,24 +33,16 @@ class SOne_Application extends K3_Application
 
     const COOKIE_AUTO_LOGIN  = 'ALID';
 
-    /**
-     * @var K3_Config
-     */
+    /** @var K3_Config */
     protected $_config  = null;
 
-    /**
-     * @var K3_Db_Abstract
-     */
+    /** @var K3_Db_Abstract */
     protected $_db      = null;
 
-    /**
-     * @var SOne_Request
-     */
+    /** @var SOne_Request */
     protected $_request = null;
 
-    /**
-     * @var FVISInterface
-     */
+    /** @var FVISInterface */
     protected $_VIS     = null;
 
     /**
@@ -59,15 +51,14 @@ class SOne_Application extends K3_Application
      */
     protected $_objects = null; // objects repository
 
-    /**
-     * @var FLNGData
-     */
+    /** @var FLNGData */
     protected $_lang    = null;
 
-    /**
-     * @var string[]
-     */
+    /** @var string[] */
     protected $_loadedPlugins = array();
+
+    /** @var SOne_Interface_Router */
+    protected $_router;
 
     /**
      * @param K3_Environment $env
@@ -118,6 +109,8 @@ class SOne_Application extends K3_Application
         $this->_lang = F()->LNG;
         $this->_lang->addAutoLoadDir(SONE_CORE_DIR.'/lang/ru');
 
+        $this->_router = new SOne_Router($this->_env, $this->_config);
+
         // putting to environment
         $this->_env
             ->setDb($this->_db)
@@ -159,9 +152,7 @@ class SOne_Application extends K3_Application
 
     public function run()
     {
-        $object = $this->routeRequest($this->_request, true);
-
-        F()->Profiler->logEvent('Object routed');
+        $object = $this->_routeRequest($this->_request);
 
         // performing action
         if ($action = $this->_request->action) {
@@ -195,56 +186,13 @@ class SOne_Application extends K3_Application
      * @param SOne_Request $request
      * @return SOne_Model_Object
      */
-    public function routeRequest(SOne_Request $request)
+    protected function _routeRequest(SOne_Request $request)
     {
         /** @var $tipObject SOne_Model_Object */
-        $tipObject = null;
-        if ($this->_env->user->id && ($systemRoute = $this->_config->systemRoute) && ($request->path == $systemRoute || strpos($request->path, $systemRoute.'/') === 0)) {
-            $tipObject = SOne_Model_Object::construct(array(
-                'isStatic' => true,
-                'class'    => 'System_Root',
-                'path'     => $systemRoute,
-            ));
-        } else if (($staticRoutes = $this->_config->staticRoutes) && $staticRoutes instanceof K3_Config) {
-            $staticRoutes = $staticRoutes->toArray();
-            foreach ($staticRoutes as $route => $data) {
-                if ($request->path == $route || strpos($request->path, $route.'/') === 0) {
-                    if (!is_array($data)) {
-                        $data = array(
-                            'isStatic' => true,
-                            'class'    => $data,
-                            'path'     => $route,
-                        );
-                    } else {
-                        $data['path'] = $route;
-                        $data['isStatic'] = true;
-                    }
-                    $tipObject = SOne_Model_Object::construct($data);
-                }
-            }
-        }
-
-        if (!$tipObject) {
-            $navis = $this->_objects->loadNavigationByPath($request->path);
-            $tipObjectNavi = !empty($navis) ? end($navis) : null;
-            $tipObject = $tipObjectNavi ? $this->_objects->loadOne($tipObjectNavi['id']) : null;
-        }
-
-        if (($tipObject instanceof SOne_Model_Object) && (trim($tipObject->path, '/') == $request->path)) {
-            // Routed OK
-        } elseif ($tipObject instanceof SOne_Interface_Object_WithSubRoute) {
-            $subPath = preg_replace('#'.preg_quote(trim($tipObject->path, '/').'/', '#').'#i', '', $request->path);
-            /** @var $tipObject SOne_Interface_Object_WithSubRoute */
-            $tipObject = $tipObject->routeSubPath($subPath, $request, $this->_env);
-        } else {
-            $tipObject = new SOne_Model_Object_Page404(array('path' => $request->path));
-        }
-
-        if ($tipObject->accessLevel > $this->_env->getUser()->accessLevel) {
-            $tipObject = new SOne_Model_Object_Page403(array('path' => $request->path));
-        }
+        $tipObject = $this->_router->routeRequest($request);
 
         $this->throwEvent(self::EVENT_PAGE_OBJECT_ROUTED, $tipObject);
+        F()->Profiler->logEvent('Object routed');
 
         return $tipObject;
     }
