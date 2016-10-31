@@ -39,7 +39,7 @@
   <title>{!IN_SITE_NAME}{IF:IN_PAGE_TITLE} :: {!IN_PAGE_TITLE}{IF:IN_PAGE_SUBTITLE} :: {!IN_PAGE_SUBTITLE}{ENDIF}{ENDIF}</title>
 
   <link href="{FULLURL:"static/css/simple.css"}{IF:IN_SITE_BUILD}?build={!IN_SITE_BUILD}{/IF}" rel="stylesheet" />
-  {IF:IN_customCss}<link href="{FULLURL:IN_MARKUP_customCss}{IF:IN_SITE_BUILD}?build={!IN_SITE_BUILD}{/IF}" rel="stylesheet" />{/IF}
+  {IF:IN_MARKUP_customCss}<link href="{FULLURL:IN_MARKUP_customCss}{IF:IN_SITE_BUILD}?build={!IN_SITE_BUILD}{/IF}" rel="stylesheet" />{/IF}
   <!--[if lt IE 8]><link href="{FULLURL:"static/css/bootstrap-ie7.css"}" rel="stylesheet"><![endif]-->
 
   <style type="text/css">
