@@ -141,18 +141,19 @@ require(['jquery', 'sone.wysiwyg'], function ($) {
 {IF:IN_actionState="edit"}
 {!WRITE:formElements}
     {VIS:SONE_HTML_WIDGET_FORM_CHECKBOX|label="Разрешить генерацию RSS-потока"|name="rssEnabled"|checked=IN_rssEnabled}
+{!WRITE:formButtons}
+    <a class="btn btn-danger post-button" href="{FULLURL:IN_PATH}?delete" data-confirm="Вы уверены, что хотите удалить эту страницу?"><i class="glyphicon glyphicon-trash"></i> Удалить</a>
 {WRITE}
-{VIS:SONE_OBJECT_EDITFORM|formElements=formElements|_}
+{VIS:SONE_OBJECT_EDITFORM|formElements=formElements|formButtons=formButtons|_}
 {ELSEIF:IN_actionState="new"}
 <h2>{!IN_CAPTION}</h2>
 <h3>Создание новой записи</h3>
     {VIS:SONE_OBJECT_BLOG_ITEM|actionState="edit"|path=IN_newPath|parentPath=IN_path|commentsAllowed="1"|allTagsJson=IN_allTagsJson|lastPubTime=IN_lastPubTime|canSetPubTime=1}
 {ELSE}
-{if:in_canAddItem}
-<div class="pull-right">
-    <a class="btn btn-default" href="{FULLURL:IN_PATH}?new"><i class="glyphicon glyphicon-plus"></i> Новая запись</a>
+<div class="pull-right btn-group">
+    {if:in_canAddItem}<a class="btn btn-default" href="{FULLURL:IN_PATH}?new"><i class="glyphicon glyphicon-plus"></i> Новая запись</a>{/if}
+    {if:IN_canEdit}<a class="btn btn-default" href="{FULLURL:IN_PATH}?edit"><i class="glyphicon glyphicon-pencil"></i> Править</a>{/if}
 </div>
-{/if}
 <div itemscope itemtype="http://schema.org/Blog">
 <h2 itemprop="name">{!IN_CAPTION}</h2>
 {if:in_filter_date}

@@ -67,6 +67,7 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
 
         $node->addDataArray($this->pool + array(
             'canAddItem' => $this->isActionAllowed('new', $env->getUser()) ? 1 : null,
+            'canEdit'    => $this->isActionAllowed('edit', $env->getUser()) ? 1 : null,
         ));
 
         $currentPath = $this->path;

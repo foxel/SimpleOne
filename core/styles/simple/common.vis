@@ -189,8 +189,10 @@
  {!WRITE:formElements}
     {VIS:SONE_HTML_WIDGET_FORM_TEXTAREA|name="content"|class="htmleditor"|value=IN_CONTENT}
     {VIS:SONE_HTML_WIDGET_FORM_CHECKBOX|name="commentsAllowed"|label="разрешить комментарии"|checked=IN_commentsAllowed}
+ {!WRITE:formButtons}
+    <a class="btn btn-danger post-button" href="{FULLURL:IN_PATH}?delete" data-confirm="Вы уверены, что хотите удалить эту страницу?"><i class="glyphicon glyphicon-trash"></i> Удалить</a>
  {WRITE}
- {VIS:SONE_OBJECT_EDITFORM|formElements=formElements|_}
+ {VIS:SONE_OBJECT_EDITFORM|formElements=formElements|formButtons=formButtons|_}
 {ELSE}
 {IF:IN_canEdit}<div class="pull-right">
     <a class="btn btn-default" href="{FULLURL:IN_PATH}?edit"><i class="glyphicon glyphicon-pencil"></i> Править</a>
