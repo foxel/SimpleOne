@@ -16,21 +16,24 @@ RUN \
   rm -rf /etc/logrotate.d/* && \
   rm -rf /var/lib/apt/lists/*
 
+COPY composer.json setup.sh /var/www/
+RUN \
+    cd /var/www && \
+    bash ./setup.sh && \
+    rm setup.sh composer.json
+
 COPY core /var/www/core
 COPY db /var/www/db
 COPY lib /var/www/lib
 COPY plugins /var/www/plugins
 COPY static /var/www/static
-COPY composer.json cron.php index.php ping.php setup.sh Makefile /var/www/
-
-ADD data/sone.qfc.php.sample /etc/simpleone/
+COPY cron.php index.php ping.php Makefile /var/www/
+COPY data/sone.qfc.php.sample /etc/simpleone/
 
 RUN \
     mkdir /data && \
     cd /var/www && \
     ln -s /data ./data && \
-    bash ./setup.sh && \
-    rm setup.sh && \
     mkdir ./logs
 
 # config
