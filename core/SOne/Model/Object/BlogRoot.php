@@ -39,6 +39,20 @@ class SOne_Model_Object_BlogRoot extends SOne_Model_Object
     protected $_itemPerPage  = 10;
 
     /**
+     * @param  string $action
+     * @param  SOne_Model_User $user
+     * @return boolean
+     */
+    public function isActionAllowed($action, SOne_Model_User $user)
+    {
+        if ($action == 'new') {
+            return !$this->isStatic && ($this->pool['editLevel'] ?: 1) <= $user->accessLevel;
+        }
+
+        return parent::isActionAllowed($action, $user);
+    }
+
+    /**
      * @param  SOne_Environment $env
      * @return FVISNode
      */
