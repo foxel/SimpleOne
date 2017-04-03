@@ -150,6 +150,11 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object
                     $fileType = $file->getType();
                     // dereferencing type
                     if ($fileType == 'link') {
+                        // fix missing symlink targets
+                        if (!file_exists($file->getRealPath())) {
+                            continue;
+                        }
+
                         $fileType = is_dir($file->getRealPath())
                             ? 'dir'
                             : 'file';

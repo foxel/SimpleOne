@@ -29,7 +29,8 @@
 {ELSE}
     <div class="pull-right btn-group">
         {IF:IN_m3uEnabled}<a class="btn btn-default" href="{FULLURL:IN_PATH}{IF:IN_curPath}/{!IN_curPath}{/IF}?m3u"><i class="glyphicon glyphicon-music"></i> M3U</a>{/IF}
-        {IF:IN_canEdit}<a class="btn btn-default" href="{FULLURL:IN_PATH}?edit"><i class="glyphicon glyphicon-pencil"></i> Править</a>{/IF}
+        {IF:IN_canEdit}<a class="btn btn-default" href="{FULLURL:IN_PATH}?edit"><i class="glyphicon glyphicon-pencil"></i> Править</a>
+        <a class="btn btn-danger post-button" href="{FULLURL:IN_PATH}?delete" data-confirm="Вы уверены, что хотите удалить эту страницу?"><i class="glyphicon glyphicon-trash"></i> Удалить</a>{/IF}
         {IF:IN_canUpload}<a class="btn btn-default" id="btn-upload-{UNIQID}" href="#"><i class="glyphicon glyphicon-upload"></i> Загрузить</a>{/IF}
     </div>
     <script type="text/javascript">

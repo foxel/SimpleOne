@@ -148,7 +148,7 @@ define(['jquery', 'date.format', 'select2', 'select2.i18n', 'i18n/date.format.ru
             $(this).click(function() {
                 var opts = $.extend({}, options, $(this).data());
                 if (!opts.confirm || confirm(opts.confirm)) {
-                    $('<form />', {action: this.href, method: 'POST'}).submit();
+                    $('<form />', {action: this.href, method: 'POST', style: 'display: none;'}).appendTo('body').submit();
                 }
                 return false;
             })
