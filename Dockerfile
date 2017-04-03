@@ -2,7 +2,8 @@ FROM ubuntu:16.04
 
 MAINTAINER Andrey F. Kupreychik <foxel@quickfox.ru>
 
-ENV DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND='noninteractive' \
+  LANG='C.UTF-8'
 
 RUN \
   apt-get update && \
