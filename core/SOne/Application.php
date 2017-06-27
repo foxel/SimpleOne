@@ -352,6 +352,7 @@ class SOne_Application extends K3_Application
                     } elseif ($alSignature && $alSignature != $alData->userSig) {
                         $alRepo->delete(array('id' => $alId));
                     } elseif ($user = $users->loadOne(array('id' => (int)$alData->userId))) {
+                        $this->_env->session->set('userId', $user->id);
                         $users->save($user->updateLastSeen($this->_env));
                         $alData->update();
                         $alRepo->save($alData);
@@ -383,7 +384,10 @@ class SOne_Application extends K3_Application
         /* @var SOne_Repository_User $users */
         $users = SOne_Repository_User::getInstance($this->_db);
 
-        $this->_env->session->open();
+        if ($setSession) {
+            $this->_env->session->set('userId', $user->id);
+        }
+
         $users->save($user->updateLastSeen($this->_env));
 
         if ($setAutoLogin) {
@@ -399,10 +403,6 @@ class SOne_Application extends K3_Application
             if ($alData->id) {
                 $this->_env->client->setCookie(self::COOKIE_AUTO_LOGIN, $alData->id, time() + SOne_Model_User_AutoLogin::LIFETIME);
             }
-        }
-
-        if ($setSession) {
-            $this->_env->session->set('userId', $user->id);
         }
 
         $this->_env->setUser($user);
