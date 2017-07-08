@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 - 2013, 2015 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013, 2015, 2017 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -77,7 +77,7 @@ class Google_Plugin
      */
     public function processCronJob(SOne_Environment $env)
     {
-        $this->fetchStats();
+        $this->fetchStats($env);
     }
 
     /**
@@ -103,26 +103,72 @@ class Google_Plugin
     }
 
     /**
+     * @param SOne_Environment $env
      * @return bool
      */
-    public function fetchStats()
+    public function fetchStats(SOne_Environment $env)
     {
         $config  = $this->getConfig();
         $cacheId = 'googleStatsTS';
 
-        $rawStats = null;
         if (($statsTimeStamp = F()->Cache->get($cacheId)) && $statsTimeStamp >= time() - 900) {
             return true;
         }
 
         $auth = Google_Bootstrap::getPluginInstance()->getAPIAuth(Google_API_Analytics::SCOPE_URL);
         $analytics = new Google_API_Analytics($auth);
-        $rawStats = $analytics->getMostVisitedPagesStats($analytics->getFistProfileId($config->analytics->accountId));
 
+        $rows = array();
+
+        $profileId    = $analytics->getFirstProfileId($config->analytics->accountId);
+        $minTime      = $env->getDb()->doSelect('objects', 'MIN(create_time)');
         $pathToIdMap = $this->_app->getObjects()->loadPathToIdMap(array());
 
+        $twoDaysStats = $analytics->getMostVisitedPagesStats($profileId);
+        $twoDaysStatsById = $this->_groupStatsByObjectId($twoDaysStats, $pathToIdMap);
+        unset($twoDaysStats);
+        foreach($twoDaysStatsById as $id => $row) {
+            $rows[] = array(
+                'period'    => 'D',
+                'object_id' => $id,
+                'pageviews' => $row['ga:pageviews'],
+                'visitors'  => $row['ga:visitors'],
+                'visits'    => $row['ga:visits'],
+            );
+        }
+        unset($twoDaysStatsById);
+
+        $overallStats = $analytics->getMostVisitedPagesStats($profileId, null, ceil((time() - $minTime)/24/3600));
+        $overallStatsById = $this->_groupStatsByObjectId($overallStats, $pathToIdMap);
+        unset($overallStats);
+        foreach($overallStatsById as $id => $row) {
+            $rows[] = array(
+                'period'    => 'A',
+                'object_id' => $id,
+                'pageviews' => $row['ga:pageviews'],
+                'visitors'  => $row['ga:visitors'],
+                'visits'    => $row['ga:visits'],
+            );
+        }
+        unset($overallStatsById);
+
+        $this->_app->getEnv()->db->doDelete('google_stats');
+        $this->_app->getEnv()->db->doInsert('google_stats', $rows, false, K3_Db::SQL_INSERT_MULTI);
+
+        F()->Cache->set($cacheId, time());
+
+        return true;
+    }
+
+    /**
+     * @param array $twoDaysStats
+     * @param array $pathToIdMap
+     * @return array
+     */
+    public function _groupStatsByObjectId(array $twoDaysStats, array $pathToIdMap)
+    {
         $statsById = array();
-        foreach ($rawStats as $rawRow) {
+        foreach ($twoDaysStats as $rawRow) {
             $path = trim(preg_replace('#[?\#]+.*$#', '', $rawRow['ga:pagePath']), '/');
             unset($rawRow['ga:pagePath']);
             // non ascii paths to be ignored
@@ -134,7 +180,7 @@ class Google_Plugin
 
             while (!isset($pathToIdMap[$path]) && strlen($path)) {
                 $subPaths[] = $path;
-                $path = implode('/', array_slice(explode('/', $path), 0, -1));
+                $path       = implode('/', array_slice(explode('/', $path), 0, -1));
             }
 
             if (!isset($pathToIdMap[$path])) {
@@ -143,7 +189,7 @@ class Google_Plugin
 
             $id = $pathToIdMap[$path];
 
-            foreach($subPaths as $subPath) {
+            foreach ($subPaths as $subPath) {
                 $pathToIdMap[$subPath] = $id;
             }
 
@@ -155,25 +201,7 @@ class Google_Plugin
                 $statsById[$id] = $rawRow;
             }
         }
-        unset($rawStats);
 
-        $rows = array();
-        foreach($statsById as $id => $row) {
-            $rows[] = array(
-                'period' => 'D',
-                'object_id' => $id,
-                'pageviews' => $row['ga:pageviews'],
-                'visitors'  => $row['ga:visitors'],
-                'visits'    => $row['ga:visits'],
-            );
-        }
-        unset($statsById);
-
-        $this->_app->getEnv()->db->doDelete('google_stats');
-        $this->_app->getEnv()->db->doInsert('google_stats', $rows, false, K3_Db::SQL_INSERT_MULTI);
-
-        F()->Cache->set($cacheId, time());
-
-        return true;
+        return $statsById;
     }
 }

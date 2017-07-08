@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 - 2013, 2015 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013, 2015, 2017 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -24,7 +24,7 @@ class Google_API_Analytics
     const REPORTING_URL = 'https://www.googleapis.com/analytics/v3/data/ga';
     const MANAGEMENT_URL = 'https://www.googleapis.com/analytics/v3/management';
 
-    /** @var Google_Auth */
+    /** @var Google_API_Auth */
     protected $_auth;
 
     public function __construct(Google_API_Auth $auth)
@@ -61,6 +61,9 @@ class Google_API_Analytics
         $response = Google_Misc::makeRequest($url, array(), $this->_auth->getAuthHeaders());
 
         if ($decoded = json_decode($response, true)) {
+            if ($decoded['error']) {
+                throw new FException('Error loading Stats: '.$decoded['error']['message']);
+            }
             return $this->_parseStatGrid($decoded);
         }
 
@@ -101,6 +104,9 @@ class Google_API_Analytics
         $response = Google_Misc::makeRequest($url, array(), $this->_auth->getAuthHeaders());
 
         if ($decoded = json_decode($response, true)) {
+            if ($decoded['error']) {
+                throw new FException('Error loading Accounts: '.$decoded['error']['message']);
+            }
             return $decoded['items'];
         }
 
@@ -119,6 +125,9 @@ class Google_API_Analytics
         $response = Google_Misc::makeRequest($url, array(), $this->_auth->getAuthHeaders());
 
         if ($decoded = json_decode($response, true)) {
+            if ($decoded['error']) {
+                throw new FException('Error loading WebProperties: '.$decoded['error']['message']);
+            }
             return $decoded['items'];
         }
 
@@ -146,6 +155,9 @@ class Google_API_Analytics
         $response = Google_Misc::makeRequest($url, array(), $this->_auth->getAuthHeaders());
 
         if ($decoded = json_decode($response, true)) {
+            if ($decoded['error']) {
+                throw new FException('Error loading Profiles: '.$decoded['error']['message']);
+            }
             return $decoded['items'];
         }
 
@@ -156,7 +168,7 @@ class Google_API_Analytics
      * @param string $webPropertyId
      * @return int
      */
-    public function getFistProfileId($webPropertyId)
+    public function getFirstProfileId($webPropertyId)
     {
         list($profile) = $this->getProfiles($webPropertyId);
         return $profile['id'];
