@@ -42,13 +42,14 @@ class Google_API_Analytics
     public function getMostVisitedPagesStats($profileId, $pathFilter = null, $daysToFetch = 2)
     {
         $query = array(
-            'ids'        => 'ga:'.$profileId,
-            'start-date' => date('Y-m-d', time() - 3600*24*$daysToFetch),
-            'end-date'   => date('Y-m-d'),
-            'metrics'    => 'ga:pageviews,ga:visitors,ga:visits',
-            'dimensions' => 'ga:pagePath',
-            'sort'       => '-ga:pageviews,-ga:visitors,-ga:visits',
-            'filters'    => 'ga:visitors>0',
+            'ids'         => 'ga:'.$profileId,
+            'start-date'  => date('Y-m-d', time() - 3600*24*$daysToFetch),
+            'end-date'    => date('Y-m-d'),
+            'metrics'     => 'ga:pageviews,ga:visitors,ga:visits',
+            'dimensions'  => 'ga:pagePath',
+            'sort'        => '-ga:pageviews,-ga:visitors,-ga:visits',
+            'filters'     => 'ga:visitors>0',
+            'max-results' => 10000,
         );
 
         if ($pathFilter) {
@@ -56,18 +57,26 @@ class Google_API_Analytics
             $query['filters'].= ';ga:pagePath=~^/?'.preg_quote($pathFilter);
         }
 
-        $url = self::REPORTING_URL.'?'.http_build_query($query);
+        $rows = array();
 
-        $response = Google_Misc::makeRequest($url, array(), $this->_auth->getAuthHeaders());
+        do {
+            $query['start-index'] = count($rows) + 1;
+            $url = self::REPORTING_URL.'?'.http_build_query($query);
 
-        if ($decoded = json_decode($response, true)) {
-            if ($decoded['error']) {
-                throw new FException('Error loading Stats: '.$decoded['error']['message']);
+            $response = Google_Misc::makeRequest($url, array(), $this->_auth->getAuthHeaders());
+
+            if ($decoded = json_decode($response, true)) {
+                if ($decoded['error']) {
+                    throw new FException('Error loading Stats: '.$decoded['error']['message']);
+                }
+                $totalRows = (int) $decoded['totalResults'];
+                $rows = array_merge($rows, $this->_parseStatGrid($decoded));
+            } else {
+                throw new FException('Error loading Stats: '.$response);
             }
-            return $this->_parseStatGrid($decoded);
-        }
+        } while (count($rows) < $totalRows);
 
-        throw new FException('Error loading Stats: '.$response);
+        return $rows;
     }
 
     /**

@@ -103,6 +103,19 @@ class Google_Plugin
     }
 
     /**
+     * @param int $objectId
+     * @param string $statsPeriod: 'D' or 'A'
+     * @return array|null
+     */
+    public function getStats($objectId, $statsPeriod = 'D')
+    {
+        return $this->_app->getEnv()->getDb()->doSelect('google_stats', '*', array(
+            'object_id' => $objectId,
+            'period' => $statsPeriod,
+        ));
+    }
+
+    /**
      * @param SOne_Environment $env
      * @return bool
      */
