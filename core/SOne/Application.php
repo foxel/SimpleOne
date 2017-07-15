@@ -214,7 +214,6 @@ class SOne_Application extends K3_Application
         $pageNode = new FVISNode('GLOBAL_HTMLPAGE', 0, $this->_VIS);
         $this->_VIS->setRootNode($pageNode);
 
-        $pageNode->appendChild('page_cont', $objectNode);
         $pageNode->addData('site_name', $this->_config->site->name);
         $pageNode->addData('site_build', $this->_config->site->build);
         if ($this->_config->markup instanceof K3_Config) {
@@ -223,9 +222,9 @@ class SOne_Application extends K3_Application
         if ($this->_config->front instanceof K3_Config) {
             $pageNode->addData('SONE_CONFIG', K3_Util_Value::defineJSON($this->_config->front->toArray()));
         }
-        $pageNode->addData('page_title', $pageObject->caption);
-        //$pageNode->addData('page_cont', '<pre>'.print_r(get_included_files(), true).'</pre>');
-        //$pageNode->addData('page_cont', '<pre>'.print_r($this->env, true).'</pre>');
+
+        $pageNode->appendChild('page_cont', $objectNode);
+        $pageNode->addData('page_title', $pageObject->getTitle());
 
         $widgets = $this->_bootstrapWidgets();
         foreach ($widgets as $widgetId => $widget) {
