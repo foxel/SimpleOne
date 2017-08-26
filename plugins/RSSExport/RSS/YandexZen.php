@@ -20,9 +20,6 @@
 
 class RSSExport_RSS_YandexZen extends K3_RSS
 {
-    /** @var resource */
-    private $_xmlParser;
-
     /**
      * @param array $params
      * @param array $items
@@ -37,7 +34,6 @@ class RSSExport_RSS_YandexZen extends K3_RSS
 
         parent::__construct($params, array(), $env);
 
-        $this->_xmlParser = xml_parser_create(F::INTERNAL_ENCODING);
 
         $this->_xml->documentElement->setAttribute('xmlns:content', 'http://purl.org/rss/1.0/modules/content/');
 
@@ -57,7 +53,9 @@ class RSSExport_RSS_YandexZen extends K3_RSS
         if ($itemData instanceof SOne_Model_Object_PlainPage) {
             $this->_currentItem->appendChild($fullText = $this->_xml->createElement('content:encoded'));
 
-            xml_parse_into_struct($this->_xmlParser, $itemData->content, $xmlData, $xmlIndex);
+            $parser = xml_parser_create(F::INTERNAL_ENCODING);
+            xml_parse_into_struct($parser, $itemData->content, $xmlData, $xmlIndex);
+            xml_parser_free($parser);
 
             $figures = Array();
             if (isset($xmlIndex['IMG'])) {
@@ -98,6 +96,5 @@ class RSSExport_RSS_YandexZen extends K3_RSS
 
     public function __destruct()
     {
-        xml_parser_free($this->_xmlParser);
     }
 }
