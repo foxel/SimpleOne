@@ -87,7 +87,7 @@ class RSSExport_RSS_YandexZen extends K3_RSS
 
         if ($itemData instanceof SOne_Model_Object_BlogItem) {
             $description = $this->_currentItem->getElementsByTagName('description')->item(0);
-            $description->nodeValue = $itemData->headline;
+            $description->nodeValue = $itemData->headline ?: $itemData->caption;
         }
 
         return $this;
