@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 - 2014 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2014, 2017 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -30,6 +30,7 @@ class RSSExport_Model_Object_BlogRSS extends SOne_Model_Object
     protected $_modeClasses = array(
         'yandex'  => 'RSSExport_RSS_Yandex',
         'rambler' => 'RSSExport_RSS_Rambler',
+        'ya_zen'  => 'RSSExport_RSS_YandexZen',
     );
 
     /**

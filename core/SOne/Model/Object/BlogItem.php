@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 - 2015 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2015, 2017 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -21,6 +21,7 @@
 /**
  * @property array $tags
  * @property string $thumbnailImage
+ * @property string $headline
  */
 class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
     implements SOne_Interface_Object_WithExtraData
@@ -169,6 +170,8 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
             $this->content = '';
         }
 
+        $this->pool['headline'] = $env->request->getString('headline', K3_Request::POST);
+
         if (!$this->id || $this->createTime > time()) {
             $pubTime = $env->request->getString('pubTime', K3_Request::POST, K3_Util_String::FILTER_LINE);
             $this->pool['createTime'] = max(strtotime($pubTime), time());
@@ -185,10 +188,12 @@ class SOne_Model_Object_BlogItem extends SOne_Model_Object_PlainPage
     public function setData(array $data)
     {
         parent::setData($data);
-        $this->pool['data']['thumbnailImage'] = isset($data['thumbnailImage'])
-            ? (string) $data['thumbnailImage']
-            : '';
+        $this->pool['data'] += array(
+            'headline'       => '',
+            'thumbnailImage' => '',
+        );
 
+        $this->pool['headline']       =& $this->pool['data']['headline'];
         $this->pool['thumbnailImage'] =& $this->pool['data']['thumbnailImage'];
 
         return $this;

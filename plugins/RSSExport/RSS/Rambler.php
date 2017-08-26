@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013, 2017 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -28,10 +28,6 @@ class RSSExport_RSS_Rambler extends K3_RSS
      */
     public function __construct(array $params, array $items = array(), SOne_Environment $env = null)
     {
-        if (!isset($params['siteUrl'], $params['siteName'], $params['siteImage'])) {
-            throw new FException('siteUrl, siteName, siteImage are required to produce Yandex capable RSS feed');
-        }
-
         parent::__construct($params, array(), $env);
 
         $this->_xml->documentElement->setAttribute('xmlns:rambler', 'http://news.rambler.ru');
@@ -43,14 +39,18 @@ class RSSExport_RSS_Rambler extends K3_RSS
 
     /**
      * @param array|I_K3_RSS_Item|object $itemData
-     * @return K3_RSS|void
+     * @return $this
      */
     public function addItem($itemData)
     {
         parent::addItem($itemData);
 
-        $this->_currentItem->appendChild($fullText = $this->_xml->createElement('rambler:fulltext'));
-        $fullText->appendChild($this->_xml->createCDATASection(strip_tags(preg_replace('#(</(p|div)>)\s*#i', '$1'.PHP_EOL.PHP_EOL, $itemData->content))));
+        if ($itemData instanceof SOne_Model_Object_PlainPage) {
+            $this->_currentItem->appendChild($fullText = $this->_xml->createElement('rambler:fulltext'));
+            $fullText->appendChild($this->_xml->createCDATASection(strip_tags(preg_replace('#(</(p|div)>)\s*#i', '$1'.PHP_EOL.PHP_EOL, $itemData->content))));
+        }
+
+        return $this;
     }
 
 }

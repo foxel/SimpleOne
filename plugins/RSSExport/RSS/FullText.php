@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2013 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2013, 2017 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -23,17 +23,21 @@ class RSSExport_RSS_FullText extends K3_RSS
 
     /**
      * @param array|I_K3_RSS_Item|object $itemData
-     * @return K3_RSS|void
+     * @return $this
      */
     public function addItem($itemData)
     {
         parent::addItem($itemData);
 
-        $description = $this->_currentItem->getElementsByTagName('description')->item(0);
-        while ($child = $description->firstChild) {
-            $description->removeChild($description->firstChild);
+        if ($itemData instanceof SOne_Model_Object_PlainPage) {
+            $description = $this->_currentItem->getElementsByTagName('description')->item(0);
+            while ($child = $description->firstChild) {
+                $description->removeChild($description->firstChild);
+            }
+            $description->appendChild($this->_xml->createCDATASection($itemData->content));
         }
-        $description->appendChild($this->_xml->createCDATASection($itemData->content));
+
+        return $this;
     }
 
 }

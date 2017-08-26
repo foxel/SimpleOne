@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013, 2017 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -56,14 +56,16 @@ class RSSExport_RSS_Yandex extends RSSExport_RSS_FullText
 
     /**
      * @param array|I_K3_RSS_Item|object $itemData
-     * @return K3_RSS|void
+     * @return $this|K3_RSS
      */
     public function addItem($itemData)
     {
         parent::addItem($itemData);
 
-        $this->_currentItem->appendChild($fullText = $this->_xml->createElement('yandex:full-text'));
-        $fullText->appendChild($this->_xml->createCDATASection($itemData->content));
+        if ($itemData instanceof SOne_Model_Object_PlainPage) {
+            $this->_currentItem->appendChild($fullText = $this->_xml->createElement('yandex:full-text'));
+            $fullText->appendChild($this->_xml->createCDATASection($itemData->content));
+        }
 
         // cleaning categories
         // @TODO: add replacing categories with single item
@@ -72,6 +74,8 @@ class RSSExport_RSS_Yandex extends RSSExport_RSS_FullText
         while($categoryElement = $categories->item(--$i)) {
             $this->_currentItem->removeChild($categoryElement);
         }
+
+        return $this;
     }
 
 }
