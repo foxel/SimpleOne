@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2015 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2015, 2018 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -67,34 +67,43 @@ abstract class SOne_Model_WithFactory extends SOne_Model
     }
 
     /**
-     * @param string $baseClass
-     * @param string $class
+     * @param string $classRef
      * @return null|string
      */
-    protected static function _getClassName($baseClass, $class)
+    public static function resolveClass($classRef)
+    {
+        return static::_getClassName(get_called_class(), $classRef);
+    }
+
+    /**
+     * @param string $baseClass
+     * @param string $classRef
+     * @return null|string
+     */
+    protected static function _getClassName($baseClass, $classRef)
     {
         $baseClass = self::_checkClass($baseClass);
 
         $classNames = array();
 
         foreach (self::$_prefixedNamespaces[$baseClass] as $prefix => $namespace) {
-            if (strpos($class, $prefix.'_') !== 0) {
+            if (strpos($classRef, $prefix.'_') !== 0) {
                 continue;
             }
-            $className = $namespace.'_'.ucfirst(substr($class, strlen($prefix)+1));
+            $className = $namespace.'_'.ucfirst(substr($classRef, strlen($prefix)+1));
             if (class_exists($className, true)) {
                 $classNames[] = $className;
             }
         }
 
         foreach (self::$_namespaces[$baseClass] as $namespace) {
-            $className = $namespace.'_'.ucfirst($class);
+            $className = $namespace.'_'.ucfirst($classRef);
             if (class_exists($className, true)) {
                 $classNames[] = $className;
             }
         }
 
-        $className = $baseClass.'_'.ucfirst($class);
+        $className = $baseClass.'_'.ucfirst($classRef);
         if (class_exists($className, true)) {
             $classNames[] = $className;
         }

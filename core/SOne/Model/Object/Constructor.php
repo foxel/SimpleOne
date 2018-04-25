@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 - 2013 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013, 2018 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -134,17 +134,32 @@ class SOne_Model_Object_Constructor extends SOne_Model_Object implements SOne_In
                 $node->appendChild('content', $this->object->visualize($env));
             }
         } else {
-            $tree = SOne_Repository_Object::getInstance($env->getDb())->loadObjectsTree();
-            $pathOptions = array();
-            foreach ($tree as $item) {
-                if (!$item instanceof SOne_Interface_Object_AcceptChildren) {
-                    continue;
+            $repo = SOne_Repository_Object::getInstance($env->getDb());
+            $allClasses = $repo->loadClasses(array());
+            $supportedClasses = array();
+            foreach ($allClasses as $classRef) {
+                $className = SOne_Model_Object::resolveClass($classRef);
+                if (in_array('SOne_Interface_Object_AcceptChildren', class_implements($className))) {
+                    $supportedClasses[] = $classRef;
                 }
-                /** @var SOne_Model_Object $item */
-                $pathOptions[] = array(
-                    'path'    => $item->path,
-                    'caption' => $item->caption,
-                );
+            }
+
+            $pathOptions = array();
+            if (!empty($supportedClasses)) {
+                $tree = SOne_Repository_Object::getInstance($env->getDb())->loadObjectsTree(array(
+                    'class' => $supportedClasses,
+                ));
+                foreach ($tree as $item) {
+                    // just in case
+                    if (!$item instanceof SOne_Interface_Object_AcceptChildren) {
+                        continue;
+                    }
+                    /** @var SOne_Model_Object $item */
+                    $pathOptions[] = array(
+                        'path'    => $item->path,
+                        'caption' => $item->caption,
+                    );
+                }
             }
 
             $node->addDataArray($env->user->toArray(), 'user_');

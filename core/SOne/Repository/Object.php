@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012, 2015 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012, 2015, 2018 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -269,6 +269,30 @@ class SOne_Repository_Object extends SOne_Repository
         $select = $this->_db->select('objects', 'o', array())
             ->joinLeft('objects_navi', array('id' => 'o.id'), 'n', array('path'))
             ->joinLeft('objects_data', array('o_id' => 'o.id'), 'd', array());
+
+        foreach (self::mapFilters($filters, self::$dbMap, 'o') as $key => $filter) {
+            $select->where($key, $filter);
+        }
+        foreach (self::mapFilters($filters, self::$dbMapNavi, 'n') as $key => $filter) {
+            $select->where($key, $filter);
+        }
+
+        return $noExecute
+            ? $select
+            : $select->fetchAll();
+    }
+
+    /**
+     * @param array $filters
+     * @param bool $noExecute
+     * @return string[]|K3_Db_Select
+     */
+    public function loadClasses(array $filters, $noExecute = false)
+    {
+        $select = $this->_db->select('objects', 'o', array('class'))
+            ->joinLeft('objects_navi', array('id' => 'o.id'), 'n', array())
+            ->joinLeft('objects_data', array('o_id' => 'o.id'), 'd', array())
+            ->distinct();
 
         foreach (self::mapFilters($filters, self::$dbMap, 'o') as $key => $filter) {
             $select->where($key, $filter);
