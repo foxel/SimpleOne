@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 - 2013, 2015 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013, 2015, 2020 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -147,6 +147,10 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object
                         continue;
                     }
 
+                    if (!is_readable($file->getRealPath())) {
+                        continue;
+                    }
+
                     $fileType = $file->getType();
                     // dereferencing type
                     if ($fileType == 'link') {
@@ -205,6 +209,10 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object
 
         if (!file_exists($realPath)) {
             return new SOne_Model_Object_Page404(array('path' => $this->path.'/'.$subPath));
+        }
+
+        if (!is_readable($realPath)) {
+            return new SOne_Model_Object_Page403(array('path' => $this->path.'/'.$subPath));
         }
 
         return $this;
