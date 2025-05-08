@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2012 - 2013, 2015, 2020 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2012 - 2013, 2015, 2020, 2025 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -42,6 +42,16 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object
             $startPath = $basePath = rtrim($this->basePath, DIRECTORY_SEPARATOR);
             if ($this->_subPath) {
                 $startPath.= DIRECTORY_SEPARATOR.strtr($this->_subPath, array('/' => DIRECTORY_SEPARATOR));
+            }
+            if (!is_dir($basePath)) {
+                if (file_exists($basePath)) {
+                    $sub = new SOne_Model_Object_Page403(array('path' => $this->path.'/'.$this->_subPath));
+                    return $sub->visualize($env);
+                }
+                if (!@mkdir($basePath)) {
+                    $sub = new SOne_Model_Object_Page403(array('path' => $this->path.'/'.$this->_subPath));
+                    return $sub->visualize($env);
+                }
             }
             $uploaderConfig = array(
                 'roots' => array(array(
@@ -243,7 +253,7 @@ class SOne_Model_Object_FileIndex extends SOne_Model_Object
 
     /**
      * @param array $data
-     * @return SOne_Model_Object_HTMLPage
+     * @return static
      */
     public function setData(array $data)
     {
