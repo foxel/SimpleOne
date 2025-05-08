@@ -1,18 +1,22 @@
-FROM ubuntu:16.04
+FROM ubuntu:24.04
 
-MAINTAINER Andrey F. Kupreychik <foxel@quickfox.ru>
+LABEL maintainer="Andrey F. Kupreychik <foxel@quickfox.ru>"
 
 ENV DEBIAN_FRONTEND='noninteractive' \
-  LANG='C.UTF-8'
+    LANG='C.UTF-8'
 
 RUN \
   apt-get update && \
   apt-get -y --no-install-recommends install \
-    wget curl ca-certificates supervisor cron \
-    nginx php7.0-cli php7.0-curl php7.0-fpm php7.0-gd \
-    php7.0-mcrypt php7.0-mysql php7.0-xml php7.0-mbstring \
-    php7.0-readline make default-jre-headless unzip && \
-  rm -f /etc/php/7.0/fpm/pool.d/* /etc/nginx/sites-enabled/* && \
+    wget curl ca-certificates supervisor cron gpg && \
+  (wget -qO- 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x71daeaab4ad4cab6' | gpg --dearmor -o /usr/share/keyrings/ondrej-php.gpg) && \
+  echo "deb [signed-by=/usr/share/keyrings/ondrej-php.gpg] https://ppa.launchpadcontent.net/ondrej/php/ubuntu noble main" > /etc/apt/sources.list.d/php.list && \
+  apt-get update && \
+  apt-get -y --no-install-recommends install \
+    nginx php7.4-cli php7.4-curl php7.4-fpm php7.4-gd \
+    php7.4-mysql php7.4-xml php7.4-mbstring \
+    php7.4-readline php7.4-mcrypt make default-jre-headless unzip && \
+  rm -f /etc/php/7.4/fpm/pool.d/* /etc/nginx/sites-enabled/* && \
   rm -rf /etc/logrotate.d/* && \
   rm -rf /var/lib/apt/lists/*
 

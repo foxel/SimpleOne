@@ -1,5 +1,3 @@
-version: '2'
-
 services:
   simpleone:
     build: .
@@ -18,7 +16,8 @@ services:
       - mysql:/var/lib/mysql
     image: mysql:5.5
   elastic:
-    build: lib/elastic
+#    build: lib/elastic
+    image: elasticsearch:2.3.3
     volumes:
       - elastic:/usr/share/elasticsearch/data
 
