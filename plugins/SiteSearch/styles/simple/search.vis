@@ -1,5 +1,5 @@
 <!--
- Copyright (C) 2015 Andrey F. Kupreychik (Foxel)
+ Copyright (C) 2015, 2025 Andrey F. Kupreychik (Foxel)
 
  This file is part of QuickFox SimpleOne.
 
@@ -48,7 +48,11 @@
     <hr/>
     <h4>
         <small class="pull-right">
-            <a href="{FULLURL:IN_PARENTPATH}/date/{FTIME:IN_createTime|"Y-m-d"|false|true}"><i class="glyphicon glyphicon-time"></i> <time itemprop="datePublished" datetime="{FTIME:IN_createTime|"c"|false|true}">{FTIME:IN_createTime}</time></a>
+            {IF:IN_blogPath}
+            <a href="{FULLURL:IN_blogPath}/date/{FTIME:IN_createTime|"Y-m-d"|false|true}"><i class="glyphicon glyphicon-time"></i> <time itemprop="datePublished" datetime="{FTIME:IN_createTime|"c"|false|true}">{FTIME:IN_createTime}</time></a>
+            {ELSE}
+            <i class="glyphicon glyphicon-time"></i> <time itemprop="datePublished" datetime="{FTIME:IN_createTime|"c"|false|true}">{FTIME:IN_createTime}</time>
+            {/IF}
         </small>
         <a href="{!FULLURL:IN_path}">{IN_CAPTION}</a>
     </h4>

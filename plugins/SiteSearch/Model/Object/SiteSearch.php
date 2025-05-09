@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2015 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2015, 2025 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -70,6 +70,10 @@ class SiteSearch_Model_Object_SiteSearch extends SOne_Model_Object
 
                     if (isset($data['createTime'])) {
                         $data['createTime'] = strtotime($data['createTime']);
+                    }
+                    
+                    if ($data['class'] == 'BlogItem') {
+                        $data['blogPath'] = preg_replace('#(/|^)[^/]+$#', '', $data['path']);
                     }
 
                     return $data;

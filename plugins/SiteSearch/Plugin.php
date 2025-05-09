@@ -93,7 +93,7 @@ class SiteSearch_Plugin
      * @param int $limit
      * @param int $offset
      * @throws FException
-     * @return string
+     * @return array
      */
     public function search($queryString, $limit = 20, $offset = 0)
     {
@@ -116,7 +116,7 @@ class SiteSearch_Plugin
         }
 
         $post = array(
-            'fields' => array('path', 'caption', 'content', 'createTime'),
+            'fields' => array('class', 'path', 'caption', 'content', 'createTime'),
             'query' => $query,
             'highlight' => $this->_highlightConfig,
             'from' => $offset,
