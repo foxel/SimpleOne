@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2015 Andrey F. Kupreychik (Foxel)
+ * Copyright (C) 2015, 2025 Andrey F. Kupreychik (Foxel)
  *
  * This file is part of QuickFox SimpleOne.
  *
@@ -74,7 +74,7 @@ class SiteSearch_Plugin
 
         $indexName = $this->_config->indexName ?: 'simpleone';
 
-        curl_setopt($ch, CURLOPT_URL, 'http://'.$this->_config->server->host.':9200/'.rawurlencode($indexName).'/object/'.$object->id);
+        curl_setopt($ch, CURLOPT_URL, 'http://'.$this->_config->server->host.':9200/'.rawurlencode($indexName).'/_doc/'.$object->id);
         curl_setopt($ch, CURLOPT_USERAGENT, 'QuickFox SimpleOne');
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Content-Length: '.strlen($payload)));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -129,7 +129,7 @@ class SiteSearch_Plugin
 
         $indexName = $this->_config->indexName ?: 'simpleone';
 
-        curl_setopt($ch, CURLOPT_URL, 'http://'.$this->_config->server->host.':9200/'.rawurlencode($indexName).'/object/_search');
+        curl_setopt($ch, CURLOPT_URL, 'http://'.$this->_config->server->host.':9200/'.rawurlencode($indexName).'/_search');
         curl_setopt($ch, CURLOPT_USERAGENT, 'QuickFox SimpleOne');
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Content-Length: '.strlen($payload)));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -153,7 +153,8 @@ class SiteSearch_Plugin
         }
 
         if (isset($result['hits']['total'])) {
-            $result['hits']['total'] = min($result['hits']['total'], self::RESULTS_LIMIT);
+            $total = (int) is_array($result['hits']['total']) ? $result['hits']['total']['value'] : $result['hits']['total'];
+            $result['hits']['total'] = min($total, self::RESULTS_LIMIT);
         }
 
         return $result;
@@ -181,16 +182,16 @@ class SiteSearch_Plugin
      */
     public function prepareDefaultQuery($queryString)
     {
-        return array('filtered' => array(
-            'query'  => array('bool' => array('should' => array(
+        return array('bool' => array(
+            'must'  => array('bool' => array('should' => array(
                 array('constant_score' => array(
-                    'query' => array('match_phrase' => array(
+                    'filter' => array('match_phrase' => array(
                         'caption' => $queryString,
                     )),
                     'boost' => 100,
                 )),
                 array('constant_score' => array(
-                    'query' => array('match_phrase' => array(
+                    'filter' => array('match_phrase' => array(
                         'content' => $queryString,
                     )),
                     'boost' => 50,
@@ -261,7 +262,7 @@ class SiteSearch_Plugin
     protected $_scoringFunctions = array(
         array('exp' => array(
             'createTime' => array(
-                'scale'  => '52w',
+                'scale'  => '365d',
                 'offset' => '1d',
                 'decay'  => 0.5,
             ),

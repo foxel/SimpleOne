@@ -16,8 +16,10 @@ services:
       - mysql:/var/lib/mysql
     image: mysql:5.5
   elastic:
-#    build: lib/elastic
-    image: elasticsearch:2.3.3
+    build: lib/elastic
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: false
     volumes:
       - elastic:/usr/share/elasticsearch/data
 
